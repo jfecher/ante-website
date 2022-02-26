@@ -1,0 +1,5 @@
+weight: 1
+name: "Refinement Types"
+icon: "fa fa-bug"
+description: "Refinement types can prevent bugs like array index out of bounds errors at compile-time. They can also be inferred to cut down on the number of annotations required."
+link: "docs/language/#refinement-types"

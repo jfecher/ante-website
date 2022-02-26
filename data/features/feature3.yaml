@@ -1,0 +1,5 @@
+weight: 3
+name: "Simple Module System"
+icon: "fa fa-cube"
+description: "Ante’s module system mirrors the file tree and is easy to understand and easy to build as a result."
+link: "docs/language/#modules"

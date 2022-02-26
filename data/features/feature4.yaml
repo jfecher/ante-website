@@ -1,0 +1,5 @@
+weight: 4
+name: "Always-Incremental Compilation"
+icon: "fa fa-cubes"
+description: "Incremental compilation metadata is distributed along with source code. This avoids the need for each user to rebuild most libraries or applications."
+link: "docs/ideas/#always-incremental-compilation"

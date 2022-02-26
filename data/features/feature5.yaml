@@ -1,0 +1,5 @@
+weight: 5
+name: "High & Low Level language"
+icon: "fa fa-code"
+description: "To try to bridge the gap between high and low level languages, ante adapts a high-level approach by default, maintaining the ability to drop into low-level code when needed."
+link: "docs/ideas/#allocator-optimizations"

@@ -1,0 +1,5 @@
+weight: 2
+name: "Expressive"
+icon: "fa fa-chevron-right"
+description: "Common patterns like error handling and looping have syntax sugar to cut down on repetitive code while keeping things explicit."
+link: "docs/language/#error-handling"

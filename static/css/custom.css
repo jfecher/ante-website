@@ -1,0 +1,154 @@
+
+/* homepage */
+.box-simple h3 {
+    color: #dddddd;
+}
+
+.col-sm-5 {
+    width: 100%;
+}
+
+.center-align {
+    align-content: center;
+}
+
+#blog-listing-medium .post h2 a {
+    color: #eee;
+}
+
+.pager .disabled > a, .pager .disabled > a:hover,
+.pager .disabled > a:focus {
+    background-color: #181818;
+    border: none;
+}
+
+.pager li  a, .pager li > span {
+    background-color: rgba(256, 256, 256, 0.1);
+    border: none;
+}
+
+.pager {
+    border: none;
+}
+
+.post .row {
+    background-color: rgb(33, 33, 33);
+    padding-top: 1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+#blog-listing-medium .post {
+    margin-bottom: 20px;
+}
+
+.btn-template-main {
+    background-color: rgba(256, 256, 256, 0.1);
+    border: none;
+}
+
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+    background-color: transparent;
+}
+
+.home-carousel h1 {
+    text-align: center;
+}
+
+.highlight-textalign-left {
+    text-align: left;
+    background-color: rgba(26, 26, 26, 0.8);
+    overflow-y: hidden;
+}
+
+body, .box-simple p, h1, h2, h3, h4 {
+    color: #cccccc;
+}
+
+.navbar-default .navbar-nav > li > a:hover{
+    color: #ffffff;
+}
+
+.navbar-default .navbar-nav > li > a{
+    color: #cccccc;
+}
+
+.navbar-default, .bar.background-white {
+    background: #1d1d1d;
+}
+
+#all, html {
+    background-color: rgb(15,15,15);
+}
+
+.sidebar-sticky {
+    position: sticky;
+}
+
+#footer {
+    display: none;
+    visibility: hidden;
+}
+
+/* fix bottom darkmask to match carousel darkmask */
+.bar .dark-mask {
+    background: var(--primary-accent);
+    opacity: 0.8;
+}
+
+.home-carousel .owl-carousel {
+    padding-top: 20px !important;
+}
+
+.home-carousel .dark-mask {
+    opacity: 0.8;
+}
+
+.nopadding {
+    padding: 0;
+}
+
+.logo {
+    float: left;
+    padding: 1rem;
+}
+
+
+/* homepage & post themes */
+#content {
+    background-color: transparent;
+}
+
+#blog-post {
+    background-color: rgb(33, 33, 33);
+    padding-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+pre {
+    background-color: rgba(0, 0, 0, 0.2);
+    color: #dddddd;
+    border: transparent;
+}
+
+pre code {
+    white-space: pre;
+}
+
+.sidebar-sticky {
+    background-color: rgb(33, 33, 33);
+    max-width: 150%;
+}
+
+code {
+    background-color: rgba(0,0,0,0.2);
+}
+
+#heading-breadcrumbs h1 {
+    color: #cccccc;
+}
+
+hr {
+    border-top: 1px solid rgba(255,255,255,0.22);
+}

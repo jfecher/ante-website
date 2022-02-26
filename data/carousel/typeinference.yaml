@@ -1,0 +1,24 @@
+weight: 4
+title: "Type Inference"
+description: >
+    <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="kt">Index</span> array = x:<span class="kt">usz</span> <span class="k">where</span> x < len array
+
+
+    <span class="c1">//A collection c of elements of type e</span>
+
+    <span class="k">trait</span> <span class="kt">Collection c</span> -> <span class="kt">e</span> <span class="k">with</span> 
+        len: <span class="kt">c</span> -> <span class="kt">usz</span>
+        get: collection:<span class="kt">c</span> -> <span class="kt">Index</span> collection -> <span class="kt">e</span>
+
+    <span class="k">trait</span> <span class="kt">Show t</span> <span class="k">with</span>
+        to_string: <span class="kt">t</span> -> <span class="kt">string</span>
+
+    <span class="c1">// Inferred type:
+
+    // elem_to_string: collection:a -> Index collection -> string
+
+    //    with Collection a b, Show b</span>
+
+    elem_to_string c i =
+        get c i .to_string
+    </code></pre></div>

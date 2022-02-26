@@ -1,0 +1,21 @@
+
+<div class="navbar-buttons">
+        <div class="navbar-collapse collapse" id="navigation">
+            <ul class="nav navbar-nav navbar-right">
+            
+            <li class="dropdown">
+                <a href="{{ .Site.BaseURL }}">Home</a>
+            </li>
+            <li class="dropdown">
+                <a href="{{ .Site.BaseURL }}/docs/language">Documentation</a>
+            </li>
+            <li class="dropdown">
+                <a href="{{ .Site.BaseURL }}/docs/ideas">Ideas</a>
+            </li>
+            </ul>
+        </div>
+        <button type="button" class="navbar-toggle btn-template-main" onclick="document.getElementById('navigation').classList.toggle('collapse')">
+    <span class="sr-only">{{ i18n "navToggle" }}</span>
+        <i class="fa fa-align-justify"></i>
+    </button>
+</div>

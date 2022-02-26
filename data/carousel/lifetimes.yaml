@@ -1,0 +1,21 @@
+weight: 2
+title: "Lifetime Inference"
+description: >
+    <div class="highlight-textalign-left"><pre><span class="k">type</span> <span class="kt">Person</span> = job: <span class="kt">string</span>, name: <span class="kt">ref string</span>
+
+
+    <span class="c1">// The data referenced via `&` should not be freed inside this function</span>
+
+    make_person job =
+        <span class="kt">Person</span> job &<span class="s">"bob"</span>
+
+    <span class="c1">// bob is only used at this scope, so it can be safely freed afterward.</span>
+
+    bob = make_person <span class="s">"programmer"</span>
+
+
+    <span class="c1">// unlike ownership systems, aliasing is allowed in region inference</span>
+
+    bob_twin = bob
+
+    assert (bob.name == bob_twin.name)</code></pre></div>

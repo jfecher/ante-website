@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.LanguageCode }}">
+
+  <head>
+    {{ partial "headers.html" . }}
+    {{ partial "custom_headers.html" . }}
+  </head>
+
+  <body>
+
+    <div id="all">
+
+        <header>
+
+            <div data-spy="affix" data-offset-top="200">
+                <div class="navbar navbar-default yamm" role="navigation" id="navbar">
+
+                    <div class="container">
+                        <div class="navbar-header">
+                            {{ partial "navbar.html" . }}
+                        </div>
+                        
+                        <div class="collapse clearfix" id="search">
+
+                            <form class="navbar-form" role="search">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Search">
+                                    <span class="input-group-btn">
+
+                                <button type="submit" class="btn btn-template-main"><i class="fa fa-search"></i></button>
+
+                            </span>
+                                </div>
+                            </form>
+
+                        </div>
+                        <!--/.nav-collapse -->
+
+                    </div>
+                </div>
+            </div>
+            <!-- /#navbar -->
+        </header>
+
+        <section class="bar background-white nopadding">
+            <div class="container">
+                <img src="{{ .Site.BaseURL }}img/ante_white.svg" class="logo" width="200rem" alt="{{ .Title }}">
+
+                <div class="container" padding=0 margin=0>
+
+                    <h2>A low-level functional language</h2>
+
+                    <div class="lead" text-align="center">{{ .Site.Params.description }}</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bar background-white"style="padding: 0 !important; margin-top: -3rem; margin-bottom: 2rem;">
+            <div class="container" >
+                <h2>Ante is in active development</h2>
+
+                <div class="lead" text-align="center">
+                    Ante is currently in active development and the compiler is in a very early state.
+                    In addition, the features listed on this website detail the language itself rather
+                    than the subset that is implemented by the current compiler. If you are interested
+                    to see which features are implemented, please look at the github page linked below.
+                    Otherwise, if you just want to see the current design of the language, check out the
+                    <a href="{{ .Site.BaseURL }}docs/language">language tour</a>.
+                </div>
+            </div>
+        </section>
+
+
+        {{ partial "carousel.html" . }}
+        
+        <section class="bar background-white">
+            <div class="container">
+                <h2>Goals</h2>
+
+                <div class="lead" text-align="center">
+                    Ante aims to help bridge the gap between low-level languages like C++/Rust and higher
+                    level garbage-collected languages like Java, OCaml, or Haskell. Another key goal is
+                    experimentation with novel features like refinement type inference, always-incremental
+                    compilation, lifetime inference, and algebraic effects.
+                </div>
+            </div>
+        </section>
+
+        {{ partial "features.html" . }}
+
+        {{ partial "testimonials.html" . }}
+
+        {{ partial "see_more.html" . }}
+
+        {{ partial "recent_posts.html" . }}
+
+        {{ partial "clients.html" . }}
+
+        {{ partial "footer.html" . }}
+
+    </div>
+    <!-- /#all -->
+
+    {{ partial "scripts.html" . }}
+
+  </body>
+</html>
