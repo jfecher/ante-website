@@ -94,14 +94,13 @@ print "Hello, World!"
 
 // The string type is equivalent to the following struct:
 type string =
-    data: Ptr char
-    len: usz
+    c_string: Ptr char
+    length: usz
 
-// C-interop often requires using the `c_string` function:
-c_string (s: string) -> CString = ...
+// C-interop often requires accessing the `c_string` field:
 
-extern puts : CString -> i32
-puts (c_string "Hello, C!")
+extern puts : Ptr char -> i32
+puts "Hello, C!".c_string
 ```
 
 ## String Interpolation
@@ -1412,16 +1411,16 @@ a type. Make sure the type is accurate as the compiler
 cannot check these signatures for correctness:
 
 ```ante
-extern puts: C.String -> C.Int
+extern puts: Ptr char -> i32
 ```
 
 You can also use extern with a block of declarations:
 
 ```ante
 extern
-    exit: C.Int -> never_returns
+    exit: i32 -> never_returns
     malloc: usz -> Ptr a
-    printf: C.String -> ... -> C.Int
+    free: Ptr a -> i32
 ```
 
 Note that you can also use varargs (`...`) in these declarations
