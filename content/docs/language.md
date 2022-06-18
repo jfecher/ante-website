@@ -94,14 +94,13 @@ print "Hello, World!"
 
 // The string type is equivalent to the following struct:
 type string =
-    data: Ptr char
-    len: usz
+    c_string: Ptr char
+    length: usz
 
-// C-interop often requires using the `c_string` function:
-c_string (s: string) -> CString = ...
+// C-interop often requires accessing the `c_string` field:
 
-extern puts : CString -> i32
-puts (c_string "Hello, C!")
+extern puts : Ptr char -> i32
+puts "Hello, C!".c_string
 ```
 
 ## String Interpolation
@@ -254,7 +253,6 @@ than python and particularly when working the [pipeline operators](#pipeline-ope
 chain of lines ending with `\`:
 
 ```ante
-// x |> f = f x in older versions of ante
 data  \
 |> map (_ + 2) \
 |> filter (_ > 5) \
@@ -420,11 +418,11 @@ of whether `struct` is a struct or a pointer to a struct.
 
 ## Pipeline Operators
 
-The pipeline operators `.` and `$` are sugar for function application and
+The pipeline operators `|>` and `<|` are sugar for function application and
 serve to pipe the results from one function to the input of another.
 
-`x.f y` is equivalent to `f x y` and functions similar to method syntax
-`x.f(y)` in object-oriented languages. It is left-associative so `x .f y .g z`
+`x |> f y` is equivalent to `f x y` and functions similar to method syntax
+`x |> f(y)` in object-oriented languages. It is left-associative so `x |> f y |> g z`
 desugars to `g (f x y) z`. This operator is particularly useful for chaining
 iterator functions:
 
@@ -432,22 +430,22 @@ iterator functions:
 // Parse a csv's data into a matrix of integers
 parse_csv (text: string) -> Vec (Vec i32) =
     lines text
-        .skip 1  // Skip the column labels line
-        .split ","
-        .map parse!
-        .collect
+        |> skip 1  // Skip the column labels line
+        |> split ","
+        |> map parse!
+        |> collect
 ```
 
-In contrast to `.`, `$` is right associative and applies a function on its
-left to an argument on its right. Where `.`
-is used mostly to spread operations across multiple lines, `$` is often
+In contrast to `|>`, `<|` is right associative and applies a function on its
+left to an argument on its right. Where `|>`
+is used mostly to spread operations across multiple lines, `<|` is often
 used for getting rid of parenthesis on one line.
 
 ```ante
 print (sqrt (3 + 1))
 
 // Could also be written as:
-print $ sqrt $ 3 + 1
+print <| sqrt <| 3 + 1
 ```
 
 ## Pair Operator
@@ -650,16 +648,16 @@ less than `unwrap`s do. Here's an example:
 ```ante
 find_least_cost_neighbor graph =
     get_root graph
-        .unwrap
-        .get_neighbors
-        .min_by fn node -> unwrap (node_cost node)
-        .unwrap
+        |> unwrap
+        |> get_neighbors
+        |> min_by fn node -> unwrap (node_cost node)
+        |> unwrap
 
 // Compared to:
 find_least_cost_neighbor graph =
     get_root! graph
-        .get_neighbors
-        .min_by! node_cost!
+        |> get_neighbors
+        |> min_by! node_cost!
 ```
 
 Note that while `!` can conceptually be used for all errors, in practice
@@ -732,8 +730,8 @@ nested x = add3 1 2 (x + 3)
 ```ante
 // Given a matrix of Vec (Vec i32), output a string formatted like a csv file
 map matrix to_string
-  .map (join _ ",") // join columns with commas
-  .join "\n"        // and join rows with newlines.
+  |> map (join _ ",") // join columns with commas
+  |> join "\n"        // and join rows with newlines.
 ```
 
 ---
@@ -1412,16 +1410,16 @@ a type. Make sure the type is accurate as the compiler
 cannot check these signatures for correctness:
 
 ```ante
-extern puts: C.String -> C.Int
+extern puts: Ptr char -> i32
 ```
 
 You can also use extern with a block of declarations:
 
 ```ante
 extern
-    exit: C.Int -> never_returns
+    exit: i32 -> never_returns
     malloc: usz -> Ptr a
-    printf: C.String -> ... -> C.Int
+    free: Ptr a -> i32
 ```
 
 Note that you can also use varargs (`...`) in these declarations
@@ -1643,11 +1641,11 @@ Eval = State (Map string i32)
 
 lookup (name: string) -> Maybe i32 with Eval =
     map = get ()
-    map.get name
+    map |> get name
 
 define (name: string) (value: i32) -> unit with Eval =
     map = get ()
-    put (map.insert name value)
+    put (map |> insert name value)
 
 eval (expr: Expr) -> i32 with Eval =
     match expr
@@ -1725,7 +1723,7 @@ loop_examples (vec: Vec i32) -> unit with Print, State i32 =
 
     // While our current integer State value is_even, loop
     while is_even fn x ->
-        put $ x + random_in (1..10)
+        put <| x + random_in (1..10)
 
     do_while fn x ->
         print "looping..."
