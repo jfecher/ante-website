@@ -79,7 +79,7 @@ Character escapes can also be used to represent characters not on a traditional 
 '\t' // tab
 '\0' // null character
 
-'\xFFFF' // an arbitrary UTF-8 scalar value given by the
+'\xFFFF' // an arbitrary Unicode scalar value given by the
          // number 'FFFF' in hex
 ```
 

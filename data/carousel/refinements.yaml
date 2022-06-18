@@ -7,6 +7,6 @@ description: >
       sum products
 
 
-    <span class="nf">dotproduct</span> [<span class="m">1</span>, <span class="m">2</span>, <span class="m">3</span>] [<span class="m">4</span>, <span class="m">5</span>, <span class="m">6</span>]   <span class="c1">//=> 22</span>
+    <span class="nf">dotproduct</span> [<span class="m">1</span>, <span class="m">2</span>, <span class="m">3</span>] [<span class="m">4</span>, <span class="m">5</span>, <span class="m">6</span>]   <span class="c1">//=> 32</span>
 
     <span class="nf">dotproduct</span> [<span class="m">1</span>, <span class="m">2</span>, <span class="m">3</span>] [<span class="m">4</span>, <span class="m">5</span>]      <span class="c1">//error, failed to prove len [1, 2, 3] == len [4, 5]</span></code></pre></div>
