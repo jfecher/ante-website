@@ -12,82 +12,270 @@ included in the language already. These features are listed
 in no particular order.
 
 ---
-# Polymorphic Variants or Union Types
+# Derive Without Macros
 
-Originally, polymorphic variants were devised as a scheme to infer
-union types in a hindley-milner type system. Their inclusion into
-ante would simplify error handling, allowing error unions to automatically
-combine with each other:
+Trait deriving is an extremely useful feature for any language with traits and trait impls.
+It cuts down on so much boilerplate that I would even argue it to be necessary. Rust, for example,
+relies on implementing derives via procedural macros which are quite difficult for IDEs to handle,
+slow compile times, come with a hefty learning curve, and are required to be put in a separate crate.
+To provide a derive mechanism without these downsides, I propose aa system based on GHC's [Datatype
+Generic Programming](https://wiki.haskell.org/GHC.Generics) in which we can define how to derive a 
+trait by specifying rules for what to do for product types, sum types, and annotated types.
+
+Here's an example in ante (syntax not final):
 
 ```ante
-// Using 'A for a polymorphic variant constructor
-get (vec: Vec a) (index: usz) -> Result a 'NotFound =
-    if index < len vec
-    then Ok $ vec#index
-    else 'NotFound
+trait Hash a with
+    hash: a -> u64
 
-open (filename: string) -> Result File 'NoSuchFile =
-    match File.open filename
-    | Some file -> Ok file
-    | None -> 'NoSuchFile
+to_derive Hash a match a
+| Product a b -> hash_combine (hash a) (hash b)
+| Sum (Left s) -> hash s
+| Sum (Right s) -> hash s
+| Field t _name -> hash t
+| Annotated t _anno -> hash t
 
-// Both error tags are automatically combined in the inferred
-// return type: Result string [> 'NotFound | 'NoSuchFile]
-foo (vec: Vec string) =
-    filename = get? vec 0
-    file = open? filename
-    Ok (read_all file)
+!derive Hash
+type Foo = x: i32, y: i32
 ```
 
-They are, however unable to accurately infer
-types in all situations. Here are some problematic examples
-along with their error messages (in OCaml 4.12.0) or inferred types
-and what types we would ideally infer.
+These would function somewhat as type-directed rewrite rules for the compiler to generate impls
+from a given type. The exact cases we would need may push toward a different list of cases
+(e.g. a simple Product pair type won't enable easy differentiation of the begin and end of a 
+struct's fields) so the final design may be more general with a bit more noise (e.g. we could
+add StartStruct and StructEnd variants which may be useful for Serialization and other traits).
 
-```ocaml
-let foo x =
-    match x with
-    | `A -> x
-    | `B -> `C
+The above strategy with Hash simply recurses on each field of the type. This is a common enough
+usecase that we can consider even providing this as a builtin strategy to save users some trouble:
 
-(*
-Error: This expression has type [> `C ]
-       but an expression was expected of type [< `A | `B ]
-       The second variant type does not allow tag(s) `C
-*)
+```ante
+to_derive Hash a recur with hash_combine
 ```
 
-Because we returned our input `x` which can only be either `A` or `B`,
-polymorphic variants restrict our output types to be the same even though
-we know in the branch `x` is returned in, it can only be `A`. When `C`
-is returned from the second branch it then errors that it expected
-(at most) `A` or `B` instead of inferring the preferred result of
-```ocaml
-foo : [< `A | `B ] -> [> `A | `C ]
+If the trait functions take more than the single `a` parameter it is unclear if an error should be
+issued or the strategy can default to passing along these parameters as-is. We could try to generalize
+the `with` clause to accept a function taking all parameters and return values as well but this starts
+to cut into its brevity and ease of use over the more general approach.
+
+---
+# Method Forwarding
+
+Without inheritance, it can still be useful to provide easier composition via a feature like Go's
+[struct embeddings](https://golangbyexample.com/inheritance-go-struct/):
+
+```go
+type person struct {
+    animal
+    job string
+}
 ```
 
-Another problematic example is:
+This will forward all methods of `animal` to work with the type `person`. Notably, this does not make
+person a subtype of animal, it only generates new wrapper functions.
 
-```ocaml
-let bar = function
-    | `A -> `B
-    | y -> y
-```
-which infers
-```ocaml
-bar : ([> `A | `B ] as 'a) -> 'a
-```
-even though `A` can never be returned from the function, and the parameter
-should be able to be any variant type instead of just `A` or `B`.
-Ideally, it should infer something resembling
-```ocaml
-bar : [< `A | a] -> [> `B | a]
+Implementing a similar feature for ante is more difficult since ante doesn't have true methods. There
+are a few paths we could explore:
+
+1. Explicit inclusion of functions into a new type:
+
+  ```ante
+  // Create species, size, and ferocity wrapper functions around the `animal` field
+  !include animal species size ferocity
+  type Person =
+      animal: Animal
+      job: string
+  ```
+
+  Since these are arbitrary functions with no `self` parameter we must decide how to translate the
+  types within, say `Animal.species` to our new `Person.species` function. One approach would be
+  to naively translate all references of `Animal` to `Person`, but this gets difficult for parameters
+  with types like `Vec Animal` where we now must add an entire map operation. It would be simpler to
+  only change parameters matching exactly the type `Animal`, but this leaves out the common usecases
+  of pointer-wrapper types like `ref Animal`. We could try to only replace types `a` given `Deref a Animal`,
+  but involving impl search in this makes it increasingly complex.
+
+  With these complexities it may be better to have users write some boilerplate wrappers for the methods
+  since the boilerplate is at least easier in ante with type inference:
+
+  ```ante
+  species p = species p.animal
+  size p = size p.animal
+  ferocity p = ferocity p.animal
+  ```
+
+  But this is a rather unsatisfactory solution.
+
+2. Abandon the notion of forwarding arbitrary functions and limit it to only forward impls. This
+approach still has its own difficulties. Notably, there is no notion of a Self type for traits either,
+though it may be reasonable to manually specify which type to use for Self as the [derive without macros](#derive-without-macros)
+and [traits as types](#traits-as-types) proposals do. A similar effect to impl forwarding can be achieved
+with normal impl deriving for newtypes:
+
+```ante
+!derive Add Mul
+type NonZeroU32 = x: u32
 ```
 
-While useful, polymorphic variants aren't perfect. Generalized union types
-may be more useful in they do not fall to these problems, but have the
-caveat of requiring more advanced type machinary to infer them (namely
-subtyping and intersection typing).
+However, a generalized forwarding mechanism could be made more generic. For example, it could allow
+deriving from some (but not all) fields:
+
+```ante
+!forward (a, b) Hash
+type Wrapper =
+    a: i32
+    b: i32
+    context: OpaqueContext
+```
+
+---
+# Overloading
+
+Given ante does not have true methods, some form of overloading could greatly help alleviate user frustration
+by allowing modules like `Vec` and `HashMap` to both be imported despite defining conflicting names like `empty`,
+`of`, `insert`, `get`, etc. Overloading would also reduce the need for traits as users would no longer need to
+use traits to be lazy with their function names. It would however complicate documentation somewhat. An identifier
+would no longer be uniquely determined by its full module path, referring to a specific instance of it must now
+specify the full module path and type of the function.
+
+Basic usage would be relatively simple:
+
+```ante
+import Map
+import Vec
+
+foo (map: HashMap i32 string) =
+    elem = get map 4
+    print elem
+```
+
+Here, the type checker has both `get: HashMap a b - a -> Maybe b` and `get: Vec a - usz -> Maybe a` in scope.
+Since it knows `map: HashMap i32 string` ther is only valid choice and the code is thus unambiguous. Its worth
+noting there may be implementation concerns - if we have more than 2 of these in scope, the resolution
+order of these constraints could affect whether subsequent constraints can be inferred to a single instance or not.
+
+In addition, there is the question of what should be done for the following code:
+
+```ante
+foo map =
+    elem = get map 4
+    print elem
+```
+
+This `foo` would be valid for both `map: HashMap a b` and `map: Vec b` (given `Int a, Print b`).
+There are two options here:
+
+1. We can be more flexible and generalize the constraint: 
+
+```ante
+foo: a -> unit given 
+    get: a -> b -> c, 
+    Int b, 
+    Print c
+```
+
+In which case we end up with a kind of compile-time duck typing. Worst case scenario if we made
+a typo (`gett` instead of `get`), this could generalize our `gett` constraint instaed of issuing
+a method not found error. This seems like it can be avoided however by only generalizing if there
+is actually at least 2 functions in scope with that name.
+
+It is an open question whether generalized function requirements should be resolved via the set of
+functions visible to the caller or just those visible to the definer. If it is the former, this functions
+as a sort of ad-hoc trait feature and the "only generalize if there are at least 2 functions in scope" of the
+definer rule seems more arbitrary if these functions won't be used for resolution anyway. For this reason,
+it is perhaps better to opt into this feature via a separate syntax, e.g. via `.` hinting at method
+calls in other languages:
+
+```ante
+foo map =
+    elem = map.get 4
+    print elem
+```
+
+This method is opt-in so users are less likely to accidentally hit it and get confused. Moreover, it
+largely follows the already-established type inference and generalization rules for `.` on fields.
+
+2. We can choose to never generalize and always issue an error if there are more than two functions
+that may match in scope. If the user still wishes to allow such functionality, they must use traits
+and impl the trait for each combination of types they want. This approach is less compatible with
+type inference and may lead to users avoiding type inference to be able to use overloading. It may
+also be a stumbling block for new programmers, though both of these proposals realistically may be.
+
+---
+# Allocator Effect
+
+In low level code it can often be helpful to provide a custom allocator for a type.
+Languages like rust and C++ realized the usefulness of this later on and needed to refactor types like `std::vector` and `std::vec::Vec`
+to be parameterized over an allocator. Zig on the other hand instead opts to have users manually thread through
+an allocator parameter to all functions that may allocate. This simplifies the types and makes it easier to make libraries
+providing custom types also accept custom allocators but can be quite burdensome to users to manually thread the allocator through everywhere.standard 
+Can we do better?
+
+Yes we can. This pattern of "manually threading through X through our program" is the same as the `State` effect. We can design a similar
+effect for allocate which should compile to the same state-passing code but standard with the benefit of having the compiler thread through
+the allocator for us:
+
+```ante
+effect Allocate a with
+    allocate: unit -> Ptr a
+```
+
+Now functions that may allocate are marked with an effect:
+
+```ante
+type Rc a =
+    raw_ptr: Ptr a
+    aliases: u32
+
+of (value: a) : Rc a can Allocate a =
+    Rc (allocate a) 1
+```
+
+Providing a custom allocator can now be done through a regular handler:
+
+```ante
+malloc_allocator (f: unit -> a can Allocate b) : a =
+    handle f ()
+    | allocate () -> size_of (MkType : Type b) |> malloc |> resume
+
+rc = Rc.of 3 with malloc_allocator
+```
+
+or if no handler is provided then `main` will automatically handle Allocate effects
+with a default handler (presumably deferring to malloc or region allocation).
+
+There are a number of open questions however:
+
+1. The interface to `allocate` is unclear, the interface above doesn't
+allow allocating dynamically sized arrays. An interface closer to 
+`calloc` may be better here.
+
+2. A raw `Ptr` is returned by the Allocator interface. This means we can
+easily leak values if not careful. We could try to add a lifetime constraint
+of sorts, or perhaps this limitation may be acceptable for users that need
+the low level control.
+
+3. Allocators also need `deallocate` functionality which is not given. There
+are two options I see here: Add `deallocate` to the `Allocate` interface (more flexible),
+or expect all `Allocate` handlers to outlive their allocations and cleanup when
+the handler finishes (this would be another useful place for a lifetime parameter).
+The first approach seems more viable than the second since the second can be implemented
+in terms of the first by adding cleanup code to the end of the handler and using an
+empty `deallocate` match.
+
+4. This `Allocate a` effect would be so ubiquitous that it is perhaps unreasonable to expect
+users to type `can Allocate a, Allocate b` for every function that may allocate types a and b.
+If we get rid of the type variable and use a slightly different design:
+
+```ante
+effect Allocate with
+    allocate: Type a -> Ptr a
+```
+
+Then the effect could be folded into the `IO` effect alias: `IO = can Print, Allocate, ...`, though
+this would force all allocations within a function to use the same allocator (rather than just
+all allocations of the same type) which seems too limiting. Alternatively, we could encourage users
+to infer the effects for most functions rather than explicitly adding `can` clauses. This could possibly
+be added with an effect row `..` to specify some effects while inferring the rest: `foo: a -> a can Print, ..`.
 
 --- 
 # Traits as Types

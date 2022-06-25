@@ -1277,7 +1277,7 @@ separate parent modules so there is no name conflict.
 
 ## Imports
 
-Importing all symbols within a module into scope can be
+Importing symbols within a module into scope can be
 done with an `import` expression. Lets say
 we were using the module hierarchy given in the
 [section above](#modules). In our `Baz.Nested` file we
@@ -1295,7 +1295,7 @@ get_baz () = "baz"
 To use these definitions from `Foo` we can import them:
 
 ```ante
-import Baz.Nested
+import Baz.Nested.*
 
 baz = get_baz ()
 print "baz: $baz, nested_baz = $nested_baz"
@@ -1304,14 +1304,44 @@ print "baz: $baz, nested_baz = $nested_baz"
 We can also import only some symbols into scope:
 
 ```ante
-import Baz.Nested.(print_baz, get_baz)
+// This syntax was chosen so that when adding new imports
+// you only need to edit the end of the line rather than 
+// needing to add a '{' or similar token before print_baz as well.
+import Baz.Nested.print_baz, get_baz
 
 print (get_baz ())
 print_baz ()
 ```
 
-You'll note that `import`s are not qualified by default,
-this may change in the future.
+Now, lets say we are in module Bar and want to import `Baz.Nested`
+but we already have a function named `get_baz` in scope. We cannot
+do `import Baz.Nested.*` since there would be conflicting names in scope.
+We could import only the functions we need but if we require many functions
+from `Baz.Nested` then this may take some time. For this reason, when using
+wildcard imports, you can also specify definitions to exclude, via the `hiding` clause:
+
+```ante
+import Baz.Nested.* hiding get_baz
+
+// No error here
+get_baz () = my_local_baz
+```
+
+Alternatively, you can also rename imports via `as`:
+
+```ante
+import Baz.Nested.* hiding get_baz
+
+// If we want to import everything from Baz.Nested while renaming
+// some of the items we need to list them separately since `as`
+// doesn't work with * imports:
+import Baz.Nested.get_baz as other_get_baz
+
+import Foo.a as foo_a, b, c, d as foo_d
+
+// No error here
+get_baz () = my_local_baz
+```
 
 ---
 # Lifetime Inference
@@ -1335,8 +1365,8 @@ example
 ```ante
 get_value () -> ref i32 =
     three = 3
-    // This & operation will copy and allocate 3
-    &three
+    // This 'new' operation will copy and allocate 3
+    new three
 
 value = get_value ()
 
@@ -1361,26 +1391,26 @@ int main() {
 ```
 
 The above program showcased we can return a `ref` value to extend its
-lifetime. Perhaps a more standard operation is to just use them as
-temporary references:
+lifetime. Unlike rust for example, we can never have a lifetime error in this
+system since the lifetime is simply extended instead.
 
-```ante
-type VeryLarge = ...
-
-some_operation (x: ref VeryLarge) (n: i32) -> Result i32 string
-    ... // do things with x
-    Ok n
-
-verylarge: VeryLarge = ...
-
-some_operation &verylarge 2
-```
-
-Unlike C++-references the lifetime inference system will ensure
-this reference never outlives the value (since the lifetime will
-automatically be lengthened), and compared to Rust, you will never
-get an error that the lifetime was too short since it is always
-inferred to be long enough.
+There are many tradeoffs here however between lack of runtime
+checks, compile-times, and runtime memory usage. It is possible, for example,
+to statically determine the furthest stack frame any allocation may reach
+and use that memory for the allocation (which may still be on the heap if the
+inferred region must allocate multiple values). However, in practice many of
+these objects could be deallocated far before the end of this stack frame is
+reached. This can be improved with more complex analysis (like the 
+[AFL](https://www.microsoft.com/en-us/research/publication/better-static-memory-management-improving-region-based-analysis-of-higher-order-languages/)
+or [imperative region management](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.388.4008&rep=rep1&type=pdf) schemes),
+but there are still some fundamental issues of these schemes with regard
+to collection types. The problem is since this analysis is type based, and
+all elements in a collection have their type unified, then their lifetimes
+are unified as well. Ante aims to mitigate this via move semantics and runtime
+checks. These runtime checks would be configurable since lifetime inference
+already assures memory safety, they would only serve to further tighten lifetimes
+and deallocate earlier. Their exact form is indeterminate however and further
+restricting inferred lifetimes is still an exciting part of research for ante.
 
 ## Details
 
