@@ -39,7 +39,7 @@ to_derive Hash a match a
 type Foo = x: i32, y: i32
 ```
 
-These would function somewhat as type-directed rewrite rules for the compiler to generate impls
+These would function somewhat as type-directed rules for the compiler to generate impls
 from a given type. The exact cases we would need may push toward a different list of cases
 (e.g. a simple Product pair type won't enable easy differentiation of the begin and end of a 
 struct's fields) so the final design may be more general with a bit more noise (e.g. we could

@@ -9,8 +9,7 @@ in the compiler. Note that the basic compiler passes from lexing, parsing, etc t
 (llvm) codegen have been implemented for quite some time so readers can assume the basic
 inner workings of the compiler are working.
 
-If there is a feature you see in the language tour that is not listed here, please file an issue.
-All designs in the [ideas](docs/ideas) page are not implemented as their design is still non-final and may
+All designs in the [ideas](/docs/ideas) page are not implemented as their design is still non-final and may
 not be selected at all.
 
 Key:
@@ -19,7 +18,7 @@ Key:
 - [ ] Not implemented
 
 ---
-### Literals
+# Literals
 
 All literals are implemented except for:
 
@@ -32,7 +31,7 @@ whether ante should continue using rust's model or Swift's model for chars.
 
 ---
 
-### Operators
+# Operators
 
 - [x] Basic arithmetic, `+`, `-`, `*`, `/`, comparisons, etc.
 - [x] Pipeline operators `|>` and `<|`
@@ -42,7 +41,7 @@ whether ante should continue using rust's model or Swift's model for chars.
 - [~] `.` - functions only as field access currently and has no semantics for methods
 
 ---
-### Functions and Control Flow
+# Functions and Control Flow
 
 - [x] Functions + lambdas
 - [x] Explicit currying
@@ -60,7 +59,7 @@ whether ante should continue using rust's model or Swift's model for chars.
 - [ ] `C` module in stdlib to move extern C functions and types to, they are currently in the prelude.
 
 ---
-### Types
+# Types
 
 - [x] Global type inference (HM)
 - [x] Product and sum (struct and enum) type definitions
@@ -75,13 +74,13 @@ whether ante should continue using rust's model or Swift's model for chars.
   - [x] Lack of coherence
   - [x] Int trait for polymorphic integer literals
     - [x] Defaulting to `i32`
-  - [~] Member access traits. These were fully implemented but have been replaced with
+  - [~] Member access traits. These were fully implemented but have been replaced with row-polymorphic struct types for better error messages.
   - [x] Impl search
   - [x] Static dispatch of traits - implemented, but a constant source of bugs.
 row polymorphic struct types recently to improve error message quality.
 
 ---
-### Modules
+# Modules
 
 - [x] Basic module hierarchy
 - [x] Relative roots. This refers to the ability to refer to `Vec.push` defined in `stdlib/Vec.an`
@@ -95,16 +94,20 @@ but is otherwise implemented.
 - [ ] Hiding imports
 
 ---
-### Compiler-specific
+# Compiler-specific
 
 - [x] LLVM backend
 - [x] Cranelift backend
 - [ ] Compiler option to write inferred types into the file
 - [~] Language server. There is a skeleton for a LSP client [here](https://github.com/jfecher/ante-lsp) but is more of an experiment than
 anything vaguely resemblign practiality.
+- [x] Unused variable warning message
+- [ ] Parser recoverable on error
+- [x] Name resolution recoverable on error
+- [x] Type system recoverable on error
 
 ---
-### Other
+# Other
 
 - [~] Mutability. Conflated with the `ref` type currently. Needs redesign, [issue on github](https://github.com/jfecher/ante/issues/101).
 due to the lack of lifetime inference it is also easy currently to allocate a mutable cell on the stack and return the dangling reference.
