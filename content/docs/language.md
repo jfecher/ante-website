@@ -203,7 +203,7 @@ first_equals_two it =
     | _ -> false
 ```
 We never gave any type for `first_equals_two` yet ante infers its type for us as
-`a -> bool with Iterator a i32` - that is a function that returns a `bool` and takes
+`a -> bool given Iterator a i32` - that is a function that returns a `bool` and takes
 a generic parameter of type `a` which must be an iterator producing elements of type `i32`.
 
 ---
@@ -475,7 +475,7 @@ With tuples we must [create a different impl for every possible tuple size](http
 with pairs on the other hand the simple implementation works for all sizes:
 
 ```ante
-cast_pair_string = impl
+cast_pair_string = impl Cast (Pair a b) string via
     cast (a, b) = "$a, $b"
 ```
 
@@ -549,125 +549,66 @@ If we wanted to surround our nested pairs with parenthesis we have to work a bit
 harder by having a helper trait so we can specialize the impl for pairs:
 
 ```ante
-cast_pair_string = impl
-    cast pair = "(${to_string_helper pair})"
-
 trait ToStringHelper t with
     to_string_helper (x: t) -> string = cast x
 
-// Specialize the impl for pairs so we can recurse on the rhs
-pair_to_string_helper = impl
-    to_string_helper (a, b) = "$a, ${to_string_helper b}"
+cast_pair_string = impl 
+    Cast (Pair a b) string via
+        cast pair = "(${to_string_helper pair})"
+
+    // Specialize the impl for pairs so we can recurse on the rhs
+    ToStringHelper (Pair a b) via
+        to_string_helper (a, b) = "$a, ${to_string_helper b}"
 ```
 
 And these two functions will cover all possible lengths of nested pairs.
 
 ## Error Handling
 
-Since ante does not have exceptions, the natural approach for error handling
-is using the `Maybe` and `Result` types. To avoid the boilerplate of manually
-matching on these types to propagate up errors, ante provides the `?` operator.
-By default, an expression `foo ?` is equivalent to:
+Ante primarily uses [algebraic effects](#algebraic-effects) for error handling. Specifically,
+the `Fail` and `Throw e` effects are most commonly used for this purpose.
+These correspond roughly to the `Maybe t` and `Result t e` types respectively.
+but as effects they are automatically propagated up the callstack:
 
 ```ante
-match cast foo : Result t e
-| Ok x -> x
-| Err e -> return error e
+add_even_numbers (a: string) (b: string) -> u64 can Fail =
+    n1 = parse a
+    n2 = parse b // parse: string -> u64 can Fail
+
+    if n1 % 2 == 0 and n2 % 2 == 0
+    then n1 + n2
+    else fail ()
 ```
 
-which uses the `try` trait:
+Handling these effects can be done via manual `handle` expressions, or
+via the `try` and `catch` helper functions
+which convert Fails to Maybe, and Throws to Results:
 
 ```ante
-trait Try t -> ok err with
-    with Cast t (Result ok err)
-    error: err -> t
+try (f: unit -> a can Fail) -> Maybe a =
+    handle f ()
+    | return x -> Some x
+    | fail () -> None
+
+catch (f: unit -> a can Throw e) -> Result a e =
+    handle f ()
+    | return x -> Ok x
+    | throw e -> Error e
+
+print (add_even_numbers "2" "4" with try) //=> Some 6
+print (add_even_numbers "2" "5" with try) //=> None
 ```
 
-Here's an example function that handles some optional values,
-written with and without the `?` operator:
+Because effects can be naturally composed, functions returning multiple
+different errors can also be naturally composed without requiring users
+to define their own error unions:
 
 ```ante
-add_even_numbers1 (a: string) (b: string) -> Maybe u64 =
-    n1 = match parse a
-        | Ok n -> n
-        | Err e -> return None
-
-    n2 = match parse b
-        | Ok n -> n
-        | Err e -> return None
-
-    if n1 % 2 == 0 and n2 % 2 == 0 then
-        Some (n1 + n2)
-    else
-        None
-
-add_even_numbers2 (a: string) (b: string) -> Maybe u64 =
-    n1 = parse a ?
-    n2 = parse b ?
-
-    if n1 % 2 == 0 and n2 % 2 == 0 then
-        Some (n1 + n2)
-    else
-        None
+foo () can Throw FileError, Throw IOError, Throw BarError =
+    f = File.open "foo.txt"
+    print (read f)
+    bar f
 ```
-
-By default `?` will return early in the current function. Sometimes,
-we may want to only "return" to an intermediate point where we can
-better handle the error. This is where `try` comes in - any `?`s
-on its right hand side will "return" to the innermost try expression
-rather than the function as a whole. Here's an example:
-
-```ante
-add_optionals_or_default (a: Maybe i32) (b: Maybe i32) (default: i32) -> i32 =
-    result = try a? + b?
-    result.unwrap_or default
-```
-
-## Unwrap Operator
-
-In addition to `?`, ante has another error-handling operator `!`. Where
-`?` forwards up an error, `!` unwraps the error, asserting at runtime that
-the error is impossible and panicing if it occurs. Unlike the
-`unwrap` function however - `!` operates on another function as its argument.
-It takes a function on its lhs that returns a value that implements `Try` and
-returns a function taking the same arguments but returning only the non-error
-value. It is similar to the function in pseudocode below:
-
-```ante
-(!) (f: Args -> t) -> (Args -> ok) with Try t ok err =
-    fn args ->
-        match cast (f args)
-        | Ok val -> val
-        | Err e -> panic "Tried to unwrap error value $e"
-```
-
-While many operations can conceptually fail, in practice `unwrap` tends to
-be used a fair amount since there are still situations we do not expect to
-fail. For these situations `!` is quite useful since it still functions as
-a visual indication something can fail but also obscures our business logic
-less than `unwrap`s do. Here's an example:
-
-```ante
-find_least_cost_neighbor graph =
-    get_root graph
-        .unwrap
-        .get_neighbors
-        .min_by fn node -> unwrap (node_cost node)
-        .unwrap
-
-// Compared to:
-find_least_cost_neighbor graph =
-    get_root! graph
-        .get_neighbors
-        .min_by! node_cost!
-```
-
-Note that while `!` can conceptually be used for all errors, in practice
-it is not a good idea to do so. If you do not know or want to assert an
-error is impossible, then it is a better idea to propagate up the error
-via `?` to a callsite that knows more. Resultingly, library code rarely
-uses `!` and application code tends to use it more often,
-but usually still less than `?`.
 
 ---
 # Lambdas
@@ -761,7 +702,7 @@ Ante does not include traditional for or while loops since these constructs usua
 
 ```ante
 // The type of iter is:
-// iter : a -> (elem -> unit) -> unit with Iterator a elem
+// iter : a -> (elem -> unit) -> unit given Iterator a elem
 
 iter (0..10) print   // prints 0-9 inclusive
 
@@ -1005,12 +946,12 @@ With this, we can write another function that can abstract over all `t`'s that
 can be converted to strings:
 
 ```ante
-stringify_print (x: t) -> unit with Stringify t =
+stringify_print (x: t) -> unit given Stringify t =
     print (stringify x)
 ```
 
 Just like types and algebraic effects, we can leave out all our traits
-in the `with` clauses and they can still be inferred.
+in the `given` clauses and they can still be inferred.
 
 Traits can also define relations over multiple types. For example,
 we may want to be more general than the `Stringify` cast above -
@@ -1034,14 +975,14 @@ we'll have to `impl`ement the trait for the types we want
 to use it with. This can be done with `impl` blocks:
 
 ```ante
-stringify_bool = impl
+stringify_bool = impl Stringify bool via
     stringify b =
         if b then "true"
         else "false"
 ```
 
 Then, when we call a function like `print_to_string` which
-requires `ToString t` we can pass in a `bool` and the
+requires `Stringify t` we can pass in a `bool` and the
 compiler will automatically find the `stringify_bool` impl
 in scope and use that:
 
@@ -1049,12 +990,54 @@ in scope and use that:
 print_to_string true  //=> outputs true
 ```
 
-Note that because `impl`s are named, we can also manually specify
-which one to use if there are ever multiple conflicting ones in scope.
+## Named Impls
+
+In contrast to other languages with traits or typeclasses, all impls
+are named in ante. This enables impls to be imported or hidden from
+scope in the same manner as any other construct: by name.
 
 ```ante
-print_to_string true with stringify_bool
+import Foo.hash_bar, std_impls hiding eq_foo
 ```
+
+This also enables the ability to specify which impl to use via the `via`
+keyword if there are ever multiple conflicting impls in scope.
+
+```ante
+empty = impl Stringify a via stringify _ = ""
+
+print_to_string true via stringify_bool
+```
+
+Having multiple conflicting impls anywhere in a codebase is often an error
+in other languages, necessitating extensive use of the newtype pattern
+for otherwise unnecessary wrapper types and boilerplate. Ante does not
+enforce global [coherence](#coherence), instead opting for this name-based
+approach to disambiguate where necessary.
+
+As a final example, note that names don't have to be given to individual impls,
+we can also group impls together to reduce the notational burden of needing to
+name each individual impl. Note that becaues impls are disambiguated by name,
+we should avoid including multiple impls for the same trait in the same named group
+so that we can disambiguate between them if needed.
+
+```ante
+type Foo = first: Bar, second: Baz
+
+foo_impls = impl
+    // We can impl multiple traits via the same method:
+    (Hash, Eq, Cmp) Foo via derive
+
+    // We can also forward to a subset of fields:
+    Print Foo via forward second
+
+    // And we can use manual impls
+    Combine Foo via
+        (++) a b = Foo a.first (qux a b)
+```
+
+Note that the mechanism to specify how to derive impls for custom traits is still experimental.
+See more on [the ideas page](/docs/ideas#derive-without-macros).
 
 ## Functional Dependencies
 
@@ -1085,13 +1068,12 @@ At first glance this looks fine, but there's a problem: we
 can implement it with any combination of `c` and `elem`:
 
 ```ante
-// Implements Container (Vec i32) i32
-intvec_container = impl
-    get (v: Vec i32) (index: usz) -> Maybe i32 = ...
+conflicting_impls = impl
+    Container (Vec i32) i32 via
+        get (v: Vec i32) (index: usz) -> Maybe i32 = ...
 
-// Implements Container (Vec i32) string
-intvec_container_that_somehow_holds_strings = impl
-    get (v: Vec i32) (index: usz) -> Maybe string = ...
+    Container (Vec i32) string via
+        get (v: Vec i32) (index: usz) -> Maybe string = ...
 ```
 
 But we already had an impl for `Vec i32`, and defining a
@@ -1105,7 +1087,7 @@ specify that for any given type `c`, there's only 1 valid
 trait Container c -> elem with
     get: c -> usz -> Maybe elem
 
-vec_container = impl
+vec_container = impl Container (Vec a) a via
     get (v: Vec a) (i: usz) -> Maybe a = ...
 ```
 
@@ -1134,20 +1116,17 @@ impls for types outside of the modules the type or trait were
 declared in. If there are ever conflicts with multiple valid
 impls being found, an error is given at the callsite and the
 user will have to manually specify which to use either by only
-importing one of these impls or with an explicit `with` clause
+importing one of these impls or with an explicit `via` clause
 at the callsite:
 
 ```
-add = impl
-    (++) (x: i32) (y: i32) = x + y
-
-mul = impl
-    (++) (x: i32) (y: i32) = x * y
+add = impl Combine i32 via (++) = (+)
+mul = impl Combine i32 via (++) = (*)
 
 print (2 ++ 3)  // Error, multiple matching impls found! `add` and `mul` are both in scope
 
-print (2 ++ 3) with add  //=> 5
-print (2 ++ 3) with mul  //=> 6
+print (2 ++ 3) via add  //=> 5
+print (2 ++ 3) via mul  //=> 6
 ```
 
 ## Int Trait
@@ -1172,7 +1151,7 @@ keeps its generic type. This sometimes pops up in function signatures:
 
 ```ante
 // This works with any integer type
-add1 (x: a) -> a with Int a =
+add1 (x: a) -> a given Int a =
     x + 1
 ```
 
@@ -1183,7 +1162,7 @@ constraint - ie it must be a primitive integer or we get a compile-time error).
 
 ```ante
 // Fine, we're still generic over a
-foo () -> a with Int a =
+foo () -> a given Int a =
     0
 
 x: i32 = 1  // also fine, we constrained 1 : i32 now
@@ -1225,7 +1204,7 @@ Now we can type `get_foo` as a function which takes
 any value of type `a` that has a field named `foo` of type `b`:
 
 ```ante
-get_foo (x: a) -> b with .foo a b =
+get_foo (x: a) -> b given .foo a b =
     x.foo
 ```
 
@@ -1493,7 +1472,7 @@ expression. For example, if we want to write a handler for the `GiveInt` effect 
 we may write a function like:
 
 ```an
-handle_give_int (f: unit -> a with GiveInt) -> a =
+handle_give_int (f: unit -> a can GiveInt) -> a =
     handle f ()
     | give_int str ->
         if str == "zero"
@@ -1505,7 +1484,7 @@ Finally, if we have a function `do_math` which uses the `GiveInt` effect, here's
 how we'd pass it to `handle_give_int` to properly handle the effect:
 
 ```an
-do_math (x: i32) -> i32 with GiveInt =
+do_math (x: i32) -> i32 can GiveInt =
     a = give_int "zero"
     b = give_int "foo"
     x + a + b
@@ -1513,9 +1492,11 @@ do_math (x: i32) -> i32 with GiveInt =
 handle_give_int (fn () -> do_math 3)  //=> 126
 ```
 
+## Sugar for applying handlers
+
 You'll notice `handle_give_int` expects a function, so we have to wrap `do_math 3` in a
 lambda before we pass it into our handler. Since this operation is so common, ante provides
-the `with` operator which will wrap it's left argument in a lambda and pass it to the function
+the `with` operator which will wrap its left argument in a lambda and pass it to the function
 on its right. Here is the definition of `with` in pseudocode:
 
 ```ante
@@ -1525,9 +1506,32 @@ a with b
 
 With this we can rewrite the last line as:
 
-```an
+```ante
 do_math 3 with handle_give_int
 ```
+
+There are also times when we want to use a handler to handle an entire block. For this,
+we can use the `using` keyword:
+
+```ante
+// try: (unit -> a can Fail) -> Maybe a
+using try
+
+foo = failable_operation ()
+bar = failable_operation ()
+foo + bar * 2
+```
+
+Which desugars to:
+
+```ante
+try fn () ->
+    foo = failable_operation ()
+    bar = failable_operation ()
+    foo + bar * 2
+```
+
+This is often useful for error handling or early returns across function boundaries.
 
 ## More on Handlers
 
@@ -1539,7 +1543,7 @@ to be defined for any effect. As an example, lets define another handler
 for `GiveInt` in addition to `handle_give_int`:
 
 ```an
-the_int (int: i32) (f: unit -> a with GiveInt) -> a =
+the_int (int: i32) (f: unit -> a can GiveInt) -> a =
     handle f ()
     | give_int _ -> resume int
 
@@ -1552,7 +1556,7 @@ Handle expressions can also match on the return value
 of the handled expression
 
 ```an
-count_giveint_calls (f: unit -> a with GiveInt) -> i32 =
+count_giveint_calls (f: unit -> a can GiveInt) -> i32 =
     handle f ()
     | return x -> 0
     | give_int _ -> 1 + resume 0
@@ -1611,7 +1615,7 @@ can call it multiple times, or pass it to higher-order functions
 like `map` and `flatmap`:
 
 ```an
-these_ints (f: unit -> a with GiveInt) (ints: Vec i32) -> Vec a =
+these_ints (f: unit -> a can GiveInt) (ints: Vec i32) -> Vec a =
     handle f ()
     | return x -> [x]
     | give_int _ -> flatmap ints resume
@@ -1631,7 +1635,7 @@ Handlers may also choose not to resume at all, simply by
 not calling `resume`:
 
 ```an
-interpret (default_value: a) (f: unit -> a with GiveInt) -> a =
+interpret (default_value: a) (f: unit -> a can GiveInt) -> a =
     import Random.random
     handle f ()
     | give_int "zero" -> resume 0
@@ -1653,11 +1657,11 @@ Algebraic Effects can be used to emulate mutable state - automatically
 threading stateful values through multiple functions.
 
 ```ante
-effect State a with
+effect Use a with
     get: unit -> a
     put: a -> unit
 
-state (current_state: s) (f: unit -> a with State s) -> a =
+state (current_state: s) (f: unit -> a can Use s) -> a =
     handle f ()
     | put new_state -> resume () with state new_state
     | get () -> resume current_state with state current_state
@@ -1669,17 +1673,17 @@ type Expr =
    | Add Expr Expr
    | Let string (rhs: Expr) (body: Expr)
 
-Eval = State (Map string i32)
+Eval = Use (Map string i32)
 
-lookup (name: string) -> Maybe i32 with Eval =
+lookup (name: string) -> Maybe i32 can Eval =
     map = get ()
     map.get name
 
-define (name: string) (value: i32) -> unit with Eval =
+define (name: string) (value: i32) -> unit can Eval =
     map = get ()
     put (map.insert name value)
 
-eval (expr: Expr) -> i32 with Eval =
+eval (expr: Expr) -> i32 can Eval =
     match expr
     | Int x -> x
     | Var s -> lookup s .or_error "$s not defined"
@@ -1707,10 +1711,10 @@ whether a function requires such a context or not can be inferred,
 removing a context from a function no longer requires manually removing
 function arguments from every call site of that function. We gain all
 this while still keeping the use of a context explicit in the function's
-signature. We know any function marked `with Eval` will
+signature. We know any function marked `can Eval` will
 make use of this context and potentially modify it. If we wanted to
 separate these two notions, we could split `Get` and `Put` into different
-effects instead of including them both in a `State` effect
+effects instead of including them both in a `Use` effect
 
 This example also highlights we can use type aliases for effect types.
 
@@ -1725,7 +1729,7 @@ effect Loop with
     break: unit -> a
     continue: unit -> a
 
-for (iter: i) (f: e -> unit with Loop) -> unit with Iterate i e =
+for (iter: i) (f: e -> unit can Loop) -> unit can Iterate i e =
     match next iter
     | None -> ()
     | Some (rest, elem) ->
@@ -1735,16 +1739,16 @@ for (iter: i) (f: e -> unit with Loop) -> unit with Iterate i e =
         // If the body returns normally, we also want to continue the loop
         | return _ -> for rest f
 
-while (cond: a -> bool) (body: a -> unit) -> unit with State a =
+while (cond: a -> bool) (body: a -> unit) -> unit can State a =
     if cond (get ()) then
         body (get ())
         while cond body
 
-do_while (body: a -> bool) -> unit with State a =
+do_while (body: a -> bool) -> unit can State a =
     if body (get ()) then do_while body
 
 // Loop until we eventually find a prime number through sheer luck
-loop_examples (vec: Vec i32) -> unit with Print, State i32 =
+loop_examples (vec: Vec i32) -> unit can Print, State i32 =
     for vec fn elem ->
         largest = get ()
         if largest > 100 then
@@ -1762,7 +1766,7 @@ loop_examples (vec: Vec i32) -> unit with Print, State i32 =
         put (x + 2)
         not is_prime (x + 2)
 
-find_random_prime (vec: Vec i32) -> i32 with Print =
+find_random_prime (vec: Vec i32) -> i32 can Print =
     loop_examples vec with final_state 0
 ```
 
@@ -1774,22 +1778,22 @@ The yield effect provides a way to implement generators.
 effect Yield a with
     yield: unit -> a
 
-traverse (xs: List Int) -> unit with Yield Int =
+traverse (xs: List Int) -> unit can Yield Int =
     match xs
     | Cons x xs -> yield x; traverse xs
     | None -> ()
 
-filter (k: unit -> a with Yield b) (f: b -> bool) -> a with Yield b =
+filter (k: unit -> a can Yield b) (f: b -> bool) -> a can Yield b =
     handle k ()
     | yield x ->
         if f x then yield x
         resume ()
 
-iter (k: unit -> a with Yield b) (f: b -> unit) -> a =
+iter (k: unit -> a can Yield b) (f: b -> unit) -> a =
     handle k ()
     | yield x -> resume (f x)
 
-yield_to_list (k: unit -> a with Yield b) -> List b =
+yield_to_list (k: unit -> a can Yield b) -> List b =
     handle k ()
     | return _ -> []
     | yield x -> Cons x (resume ())
@@ -1834,7 +1838,7 @@ ignore_db f =
     handle f ()
     | querydb _ -> Response.empty
 
-business_logic (should_query: bool) -> unit with Print, QueryDatabase =
+business_logic (should_query: bool) -> unit can Print, QueryDatabase =
     if should_query then
         print "querying..."
         response = querydb "SELECT column FROM table"
@@ -1844,7 +1848,7 @@ business_logic (should_query: bool) -> unit with Print, QueryDatabase =
         print "did not query"
 
 // Print effect handling is builtin, let ante handle it
-main () with Print =
+main () can Print =
     business_logic true with database
 
 // Mock our business function. Use a different handler for
@@ -1877,7 +1881,7 @@ calculation () =
         else 4.0
     else 1.0
 
-expected_value (f: unit -> f64 with Flip) -> f64 =
+expected_value (f: unit -> f64 can Flip) -> f64 =
     handle f ()
     | flip () -> (resume true + resume false) / 2.0
 
@@ -1905,7 +1909,7 @@ effect Parse with
 choice p1 p2 =
     if flip () then p1 () else p2 ()
 
-many (p: unit -> a with Repeat) -> List a with Repeat =
+many (p: unit -> a can Repeat) -> List a can Repeat =
     choice (fn () -> many1 p)
            (fn () -> Nil)
 
@@ -1913,14 +1917,14 @@ many1 p = Cons (p ()) (many p)
 
 
 // Return all possible solutions from the given computation
-solutions (f: unit -> a with Repeat) -> List a =
+solutions (f: unit -> a can Repeat) -> List a =
     handle f ()
     | return x -> [x]
     | fail () -> []
     | flip () -> resume false ++ resume true
 
 // Return the first succeeding computation (taking the false Flip branch first)
-eager (f: unit -> a with Repeat) -> Maybe a =
+eager (f: unit -> a can Repeat) -> Maybe a =
     handle f ()
     | return x -> Some x
     | fail () -> None
@@ -1930,7 +1934,7 @@ eager (f: unit -> a with Repeat) -> Maybe a =
         | None -> resume true
 
 // Handle any Parse effects (letting Repeat effects pass through)
-parse (input: string) (f: unit -> a with Parse, Repeat) -> a, string with Repeat =
+parse (input: string) (f: unit -> a can Parse, Repeat) -> a, string can Repeat =
     handle f ()
     | return x -> x, input
     | satisfy p ->
@@ -1939,13 +1943,13 @@ parse (input: string) (f: unit -> a with Parse, Repeat) -> a, string with Repeat
         | Some (x, rest) -> resume x with parse rest
 
 // These will be our parsing primitives
-symbol (c: char) -> char with Parse =
+symbol (c: char) -> char can Parse =
     satisfy fn input ->
         match input
         | Cons x rest if x == c -> Some (c, rest)
         | _ -> None
 
-digit () -> Int with Parse =
+digit () -> Int can Parse =
     satisfy fn input ->
         match input
         | Cons d rest if is_digit d -> Some (int (d - '0'), rest)
@@ -1967,7 +1971,7 @@ mul () = binop '*' (*) factor
 expr () = choice add term
 term () = choice mul factor
 
-factor () -> Int with Parse, Repeat =
+factor () -> Int can Parse, Repeat =
     choice number fn () ->
         symbol '('
         e = expr ()

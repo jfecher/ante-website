@@ -28,15 +28,16 @@ Here's an example in ante (syntax not final):
 trait Hash a with
     hash: a -> u64
 
-to_derive Hash a match a
+derive Hash a via match a
 | Product a b -> hash_combine (hash a) (hash b)
 | Sum (Left s) -> hash s
 | Sum (Right s) -> hash s
 | Field t _name -> hash t
 | Annotated t _anno -> hash t
 
-!derive Hash
 type Foo = x: i32, y: i32
+
+hash_foo = impl Hash Foo via derive
 ```
 
 These would function somewhat as type-directed rules for the compiler to generate impls
@@ -49,7 +50,7 @@ The above strategy with Hash simply recurses on each field of the type. This is 
 usecase that we can consider even providing this as a builtin strategy to save users some trouble:
 
 ```ante
-to_derive Hash a recur with hash_combine
+derive Hash a via recur hash_combine
 ```
 
 If the trait functions take more than the single `a` parameter it is unclear if an error should be
@@ -112,19 +113,21 @@ and [traits as types](#traits-as-types) proposals do. A similar effect to impl f
 with normal impl deriving for newtypes:
 
 ```ante
-!derive Add Mul
 type NonZeroU32 = x: u32
+
+derives = impl (Add, Mul) NonZeroU32 via derive
 ```
 
 However, a generalized forwarding mechanism could be made more generic. For example, it could allow
 deriving from some (but not all) fields:
 
 ```ante
-!forward (a, b) Hash
 type Wrapper =
     a: i32
     b: i32
     context: OpaqueContext
+
+hash_wrapper = impl Hash Wrapper via forward a b
 ```
 
 ---

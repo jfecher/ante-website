@@ -66,18 +66,20 @@ whether ante should continue using rust's model or Swift's model for chars.
 - [ ] Type aliases
 - [x] Type annotations
 - [ ] Refinement types
+  - [ ] Named types (`foo:Foo` in type position, arbitrarily nested)
+  - [ ] Refinement inference
+  - [ ] Rectifying interactions between refinement types and numeric traits
+  - [ ] Sum-type refinements
 - [x] Traits
   - [x] Restricted Functional Dependency clause (`->`). Equivalent to associated types.
 - [~] Trait impls
   - [x] Given clause
   - [ ] Named impls
-  - [x] Lack of coherence
   - [x] Int trait for polymorphic integer literals
     - [x] Defaulting to `i32`
   - [~] Member access traits. These were fully implemented but have been replaced with row-polymorphic struct types for better error messages.
   - [x] Impl search
   - [x] Static dispatch of traits - implemented, but a constant source of bugs.
-row polymorphic struct types recently to improve error message quality.
 
 ---
 # Modules
@@ -99,8 +101,8 @@ but is otherwise implemented.
 - [x] LLVM backend
 - [x] Cranelift backend
 - [ ] Compiler option to write inferred types into the file
-- [~] Language server. There is a skeleton for a LSP client [here](https://github.com/jfecher/ante-lsp) but is more of an experiment than
-anything vaguely resemblign practiality.
+- [~] Language server. There is a skeleton for a LSP client [here](https://github.com/jfecher/ante-lsp) but it is more of an experiment than
+anything vaguely resembling practicality.
 - [x] Unused variable warning message
 - [ ] Parser recoverable on error
 - [x] Name resolution recoverable on error
