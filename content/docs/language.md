@@ -563,53 +563,6 @@ cast_pair_string = impl
 
 And these two functions will cover all possible lengths of nested pairs.
 
-## Error Handling
-
-Ante primarily uses [algebraic effects](#algebraic-effects) for error handling. Specifically,
-the `Fail` and `Throw e` effects are most commonly used for this purpose.
-These correspond roughly to the `Maybe t` and `Result t e` types respectively.
-but as effects they are automatically propagated up the callstack:
-
-```ante
-add_even_numbers (a: string) (b: string) -> u64 can Fail =
-    n1 = parse a
-    n2 = parse b // parse: string -> u64 can Fail
-
-    if n1 % 2 == 0 and n2 % 2 == 0
-    then n1 + n2
-    else fail ()
-```
-
-Handling these effects can be done via manual `handle` expressions, or
-via the `try` and `catch` helper functions
-which convert Fails to Maybe, and Throws to Results:
-
-```ante
-try (f: unit -> a can Fail) -> Maybe a =
-    handle f ()
-    | return x -> Some x
-    | fail () -> None
-
-catch (f: unit -> a can Throw e) -> Result a e =
-    handle f ()
-    | return x -> Ok x
-    | throw e -> Error e
-
-print (add_even_numbers "2" "4" with try) //=> Some 6
-print (add_even_numbers "2" "5" with try) //=> None
-```
-
-Because effects can be naturally composed, functions returning multiple
-different errors can also be naturally composed without requiring users
-to define their own error unions:
-
-```ante
-foo () can Throw FileError, Throw IOError, Throw BarError =
-    f = File.open "foo.txt"
-    print (read f)
-    bar f
-```
-
 ---
 # Lambdas
 
@@ -941,8 +894,8 @@ trait Stringify t with
     stringify: t -> string
 ```
 
-Here we say `stringify` is a function that take in a `t` and returns a `string`.
-With this, we can write another function that can abstract over all `t`'s that
+Here we say `stringify` is a function that takes a value of type `t` and returns a
+`string`. With this, we can write another function that abstracts over all `t`'s that
 can be converted to strings:
 
 ```ante
@@ -1119,7 +1072,7 @@ user will have to manually specify which to use either by only
 importing one of these impls or with an explicit `via` clause
 at the callsite:
 
-```
+```ante
 add = impl Combine i32 via (++) = (+)
 mul = impl Combine i32 via (++) = (*)
 
@@ -1224,7 +1177,7 @@ print_debug x =
 ---
 # Modules
 
-Ante's module system files a simple, hierarchical structure
+Ante's module system follows a simple, hierarchical structure
 based on the file system. Given the following file system:
 
 ```
@@ -1644,6 +1597,52 @@ interpret (default_value: a) (f: unit -> a can GiveInt) -> a =
     | give_int _ -> default_value
 
 do_math 7 with interpret 42  //=> 42
+```
+
+## Error Handling
+
+Ante primarily uses the `Fail` and `Throw e` effects for error handling.
+These roughly correspond to `Maybe t` and `Result t e` respectively.
+Being effects however, these are automatically propagated up the callstack:
+
+```ante
+add_even_numbers (a: string) (b: string) -> u64 can Fail =
+    n1 = parse a
+    n2 = parse b // parse: string -> u64 can Fail
+
+    if n1 % 2 == 0 and n2 % 2 == 0
+    then n1 + n2
+    else fail ()
+```
+
+Handling these effects can be done via manual `handle` expressions, or
+via the `try` and `catch` helper functions
+which convert Fails to Maybe, and Throws to Results:
+
+```ante
+try (f: unit -> a can Fail) -> Maybe a =
+    handle f ()
+    | return x -> Some x
+    | fail () -> None
+
+catch (f: unit -> a can Throw e) -> Result a e =
+    handle f ()
+    | return x -> Ok x
+    | throw e -> Error e
+
+print (add_even_numbers "2" "4" with try) //=> Some 6
+print (add_even_numbers "2" "5" with try) //=> None
+```
+
+Because effects can be naturally composed, functions returning multiple
+different errors can also be naturally composed without requiring users
+to define their own error unions:
+
+```ante
+foo () can Throw FileError, Throw ParseError, Throw BarError =
+    f = File.open "foo.txt"
+    contents = parse (read f)
+    bar contents
 ```
 
 ## Useful Effects

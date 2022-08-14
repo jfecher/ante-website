@@ -484,3 +484,75 @@ or program contains all the information needed to compile it. Then downloading t
 would only entail downloading the metadata and not the source code itself. One potential issue with this solution is IDE integration.
 A hypothetical ante-language-server could be able to read type signatures or documentation from this, but if the user wished
 to explore the source code of the library they would likely only be able to see a pretty-printed AST recreated from the metadata.
+
+---
+# Builtin Recursion Schemes
+
+Often in functional programming we encounter familiar looping patterns that can be factored out
+into functions like map, filter, or fold. Functions over arbitrary recursive types (like trees)
+however, tend to be written by hand with manual recursion.
+[Recursion Schemes](https://hackage.haskell.org/package/recursion-schemes) provide a solution to
+factoring out these recursive patterns, but they come with a high barrier to understanding and
+require users to manually define a fixpoint version of their types. Ante could in theory create
+and convert between the fixpoint version of the type behind the scenes to give users a nicer API.
+Lets consider a sum function for a tree type:
+
+```ante
+type Tree =
+   | Branch Tree Tree
+   | Leaf i32
+
+sum tree =
+    match tree
+    | Branch a b -> sum a + sum b
+    | Leaf x -> x
+```
+
+We can use the `cata` (or `fold`) recursion scheme to replace each recursive part of our
+data type with the result of our recursive function on that data. Here's an example using
+a new `fold` keyword for this purpose:
+
+```ante
+sum tree =
+    fold tree
+    | Branch a b -> a + b
+    | Leaf x -> x
+```
+
+So far, the little we gain in brevity is countered with the additional cognitive overhead
+of requiring users to understand the additional construct(s) that would be added to the language.
+Lets look at a more complex example:
+
+```ante
+type Ast =
+    | Var string
+    | Int i32
+    | Let (name: string) (value: Ast) (body: Ast)
+    | Add Ast Ast
+
+free_vars (ast: Ast) -> Set string =
+    match ast
+    | Var name -> [name]
+    | Int _ -> []
+    | Let name value body -> (free_vars value ++ free_vars body).remove name
+    | Add l r -> free_vars l ++ free_vars r
+```
+
+And written with the cata/fold scheme:
+
+```ante
+free_vars (ast: Ast) -> Set string =
+    fold ast
+    | Var name -> [name]
+    | Int _ -> []
+    | Let name value_names body_names -> (value_names ++ body_names).remove name
+    | Add l r -> l ++ r
+```
+
+Another slight improvement. It is also worth noting that recursive functions taking multiple
+parameters would not work with this scheme since it would not know which values to pass
+at each recursive call. There are other recursion schemes including `ana` for unfolding, and
+`hylo` for folding and unfolding, among many more that are more flexible, though adding these
+must be weighed against the additional complexity they would add to the language. Currently the
+expected benefit of adding support for recursion schemes directly into the language seems
+too small to be worth the implementation effort, but it was still a useful avenue to explore.
