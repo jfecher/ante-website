@@ -415,7 +415,7 @@ average_first_two array =
 
 Dereferencing pointers in ante is somewhat uncommon, so ante provides no pointer
 dereference operator. Instead, you can use the `deref` function in the standard library.
-If you need to access a stuct field, `struct.field` in will work as expected regardless 
+If you need to access a struct field, `struct.field` in will work as expected regardless 
 of whether `struct` is a struct or a pointer to a struct.
 
 ## Pipeline Operators
