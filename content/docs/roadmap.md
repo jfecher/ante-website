@@ -27,7 +27,7 @@ All literals are implemented except for:
 - [~] `char` - implemented but is 1 byte rather than 4. There is an open design question of
 whether ante should continue using rust's model or Swift's model for chars.
 
-- [ ] String interpolation
+- [x] String interpolation
 
 ---
 
@@ -38,7 +38,9 @@ whether ante should continue using rust's model or Swift's model for chars.
 - [x] Assignment `:=`
 - [ ] `+=`, `-=`, `*=` and friends
 - [ ] `Bits` module - There are `bnot`, `band`, `bor`, and `bxor` functions in the prelude however.
-- [~] `.` - functions only as field access currently and has no semantics for methods
+- [~] `.`
+  - [x] Field access
+  - [ ] Method calls
 
 ---
 # Functions and Control Flow
@@ -53,7 +55,7 @@ whether ante should continue using rust's model or Swift's model for chars.
   - [x] Completeness & Redundancy checking
   - [ ] 'Or' clause in pattern matching, combining patterns via `|`
   - [ ] Pattern guards: `| pattern if expr -> ...`
-- [ ] `loop` sugar
+- [x] `loop` sugar
 - [x] `Iterator` trait in prelude
 - [x] `extern`
 - [ ] `C` module in stdlib to move extern C functions and types to, they are currently in the prelude.
@@ -79,7 +81,7 @@ whether ante should continue using rust's model or Swift's model for chars.
     - [x] Defaulting to `i32`
   - [~] Member access traits. These were fully implemented but have been replaced with row-polymorphic struct types for better error messages.
   - [x] Impl search
-  - [x] Static dispatch of traits - implemented, but a constant source of bugs.
+  - [x] Static dispatch of traits
 
 ---
 # Modules
@@ -102,7 +104,7 @@ but is otherwise implemented.
 - [x] Cranelift backend
 - [ ] Compiler option to write inferred types into the file
 - [~] Language server. There is a skeleton for a LSP client [here](https://github.com/jfecher/ante-lsp) but it is more of an experiment than
-anything vaguely resembling practicality.
+anything vaguely practical.
 - [x] Unused variable warning message
 - [ ] Parser recoverable on error
 - [x] Name resolution recoverable on error
@@ -119,12 +121,13 @@ due to the lack of lifetime inference it is also easy currently to allocate a mu
   - [ ] Runtime checks to further restrict lifetimes (e.g. move between regions)
     - [ ] Compiler option(s) to toggle/configure runtime checks
 - [ ] Algebraic effects
-  - [ ] Handlers
-    - [ ] Matching on effects
-    - [ ] Matching on return values
-  - [ ] `resume`
-    - [ ] Single resumptions
-    - [ ] Multiple resumptions
-    - [ ] 0 resumptions
-  - [~] Effects in stdlib. Some mock apis are given in `stdlib/future`
+  - [x] Type checking
+  - [ ] Runtime
+    - [ ] Handlers
+      - [ ] Matching on effects
+      - [ ] Matching on return values
+    - [ ] `resume`
+      - [ ] Single resumptions
+      - [ ] Multiple resumptions
+      - [ ] 0 resumptions
 
