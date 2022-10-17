@@ -22,12 +22,8 @@ Key:
 
 All literals are implemented except for:
 
-- [ ] `f32`.
-- [~] `f64` - implemented but named `float` currently.
 - [~] `char` - implemented but is 1 byte rather than 4. There is an open design question of
-whether ante should continue using rust's model or Swift's model for chars.
-
-- [x] String interpolation
+whether ante should use rust's model for chars (4 bytes), Swift's model (variable bytes), or something else.
 
 ---
 
