@@ -26,7 +26,7 @@ Here's an example in ante (syntax not final):
 
 ```ante
 trait Hash a with
-    hash: a -> u64
+    hash: a -> U64
 
 derive Hash a via match a
 | Product a b -> hash_combine (hash a) (hash b)
@@ -35,7 +35,7 @@ derive Hash a via match a
 | Field t _name -> hash t
 | Annotated t _anno -> hash t
 
-type Foo = x: i32, y: i32
+type Foo = x: I32, y: I32
 
 hash_foo = impl Hash Foo via derive
 ```
@@ -84,7 +84,7 @@ are a few paths we could explore:
   !include animal species size ferocity
   type Person =
       animal: Animal
-      job: string
+      job: String
   ```
 
   Since these are arbitrary functions with no `self` parameter we must decide how to translate the
@@ -113,7 +113,7 @@ and [traits as types](#traits-as-types) proposals do. A similar effect to impl f
 with normal impl deriving for newtypes:
 
 ```ante
-type NonZeroU32 = x: u32
+type NonZeroU32 = x: U32
 
 derives = impl (Add, Mul) NonZeroU32 via derive
 ```
@@ -123,8 +123,8 @@ deriving from some (but not all) fields:
 
 ```ante
 type Wrapper =
-    a: i32
-    b: i32
+    a: I32
+    b: I32
     context: OpaqueContext
 
 hash_wrapper = impl Hash Wrapper via forward a b
@@ -146,13 +146,13 @@ Basic usage would be relatively simple:
 import Map
 import Vec
 
-foo (map: HashMap i32 string) =
+foo (map: HashMap I32 String) =
     elem = get map 4
     print elem
 ```
 
-Here, the type checker has both `get: HashMap a b - a -> Maybe b` and `get: Vec a - usz -> Maybe a` in scope.
-Since it knows `map: HashMap i32 string` ther is only valid choice and the code is thus unambiguous. Its worth
+Here, the type checker has both `get: HashMap a b - a -> Maybe b` and `get: Vec a - Usz -> Maybe a` in scope.
+Since it knows `map: HashMap I32 String` ther is only valid choice and the code is thus unambiguous. Its worth
 noting there may be implementation concerns - if we have more than 2 of these in scope, the resolution
 order of these constraints could affect whether subsequent constraints can be inferred to a single instance or not.
 
@@ -164,15 +164,14 @@ foo map =
     print elem
 ```
 
-This `foo` would be valid for both `map: HashMap a b` and `map: Vec b` (given `Int a, Print b`).
+This `foo` would be valid for both `map: HashMap (Int a) b` and `map: Vec b` (given `Print b`).
 There are two options here:
 
 1. We can be more flexible and generalize the constraint: 
 
 ```ante
-foo: a -> unit given 
-    get: a -> b -> c, 
-    Int b, 
+foo: a -> Unit given 
+    get: a -> Int b -> c, 
     Print c
 ```
 
@@ -219,7 +218,7 @@ the allocator for us:
 
 ```ante
 effect Allocate a with
-    allocate: unit -> Ptr a
+    allocate: Unit -> Ptr a
 ```
 
 Now functions that may allocate are marked with an effect:
@@ -227,7 +226,7 @@ Now functions that may allocate are marked with an effect:
 ```ante
 type Rc a =
     raw_ptr: Ptr a
-    aliases: u32
+    aliases: U32
 
 of (value: a) : Rc a can Allocate a =
     Rc (allocate a) 1
@@ -236,7 +235,7 @@ of (value: a) : Rc a can Allocate a =
 Providing a custom allocator can now be done through a regular handler:
 
 ```ante
-malloc_allocator (f: unit -> a can Allocate b) : a =
+malloc_allocator (f: Unit -> a can Allocate b) : a =
     handle f ()
     | allocate () -> size_of (MkType : Type b) |> malloc |> resume
 
@@ -293,14 +292,14 @@ rust to get rid of the distinction between `impl` and `dyn` trait to just choose
 one where possible. This should allow for both:
 
 ```ante
-print (x: Show) -> unit =
+print (x: Show) : Unit =
     printne "${show x}\n"
 ```
 
 and
 
 ```ante
-print_all (xs: Vec Show) -> unit =
+print_all (xs: Vec Show) : Unit =
     printne '['
     fields = map xs show |> join ", "
     iter fields printne
@@ -320,10 +319,10 @@ at runtime. For example, given the traits
 
 ```ante
 trait Pair a b with
-    pack : a -> b -> string
+    pack : a - b -> String
 
 trait Parse a with
-    parse : string -> a
+    parse : String -> a
 
 example1 (x: Pair) = pack ???
 
@@ -338,9 +337,9 @@ example, if we change our syntax such that the existential type variable must be
 specified, then `Pair` becomes usable as a trait object as long as we specify a type to pack with:
 
 ```ante
-example1 (x: Pair _ i32) = pack x 7
+example1 (x: Pair _ I32) = pack x 7
 
-example1b (x: Pair string _) = pack "hello" x
+example1b (x: Pair String _) = pack "hello" x
 ```
 
 This would incur some notational burden but is otherwise explicit and strictly more
@@ -356,7 +355,7 @@ type variables ante has). It sidesteps most of the issues with previous syntaxes
 objects by separating the exists clause from where the type is used later in the signature:
 
 ```ante
-example1 (x: e?) -> string with Pair e? i32 = ...
+example1 (x: e?) : String with Pair e? I32 = ...
 ```
 
 Although flexible, this does not solve the original problem of improving the ergonomics of
@@ -423,7 +422,7 @@ A trivial example would be:
 
 ```ante
 foo () =
-    l1 = [1, 2, 3] : List i32
+    l1 = [1, 2, 3] : List I32
     l2 = [4, 5, 6] ++ l1
     ...
     ()
@@ -500,7 +499,7 @@ Lets consider a sum function for a tree type:
 ```ante
 type Tree =
    | Branch Tree Tree
-   | Leaf i32
+   | Leaf I32
 
 sum tree =
     match tree
@@ -525,12 +524,12 @@ Lets look at a more complex example:
 
 ```ante
 type Ast =
-    | Var string
-    | Int i32
-    | Let (name: string) (value: Ast) (body: Ast)
+    | Var String
+    | Int I32
+    | Let (name: String) (value: Ast) (body: Ast)
     | Add Ast Ast
 
-free_vars (ast: Ast) -> Set string =
+free_vars (ast: Ast) : Set String =
     match ast
     | Var name -> [name]
     | Int _ -> []
@@ -541,7 +540,7 @@ free_vars (ast: Ast) -> Set string =
 And written with the cata/fold scheme:
 
 ```ante
-free_vars (ast: Ast) -> Set string =
+free_vars (ast: Ast) : Set String =
     fold ast
     | Var name -> [name]
     | Int _ -> []

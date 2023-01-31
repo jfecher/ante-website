@@ -10,13 +10,13 @@ description: >
     <span class="k">trait</span> <span class="kt">Iterator it elem</span> <span class="k">with</span> 
         next: <span class="kt">it</span> -> <span class="kt">Maybe</span> (<span class="kt">it</span>, <span class="kt">elem</span>)
 
-    parse_csv (text: <span class="kt">it</span>) -> <span class="kt">Vec</span> (<span class="kt">Vec string</span>) <span class="k">with</span> <span class="kt">Iterator it string</span> =
+    parse_csv (text: <span class="kt">it</span>) -> <span class="kt">Vec</span> (<span class="kt">Vec String</span>) <span class="k">with</span> <span class="kt">Iterator it String</span> =
         lines text
             .skip <span class="m">1</span>
             .map (split _ <span class="s">","</span>)
             .collect
 
-    csv1 = parse_csv (<span class="kt">File</span>.open<span class="k">!</span> <span class="s">"input.csv"</span>)
+    csv1 = parse_csv (<span class="kt">File</span>.open <span class="s">"input.csv"</span>)
 
     csv2 = parse_csv <span class="s">"a,b,c\n1,2,3\n4,5,6"</span>
 

@@ -1,7 +1,7 @@
 weight: 1
 title: "Refinement Types"
 description: >
-    <div class="highlight-textalign-left"><pre><code class="language/ante" data-lang="ante"><span class="nf">dotproduct</span> (v1:<span class="kt"> Array u64</span>) (v2:<span class="kt"> Array u64</span> <span class="k">where</span> len v1 == len v2) -> <span class="kt">u64</span> =
+    <div class="highlight-textalign-left"><pre><code class="language/ante" data-lang="ante"><span class="nf">dotproduct</span> (v1:<span class="kt"> Array U64</span>) (v2:<span class="kt"> Array U64</span> <span class="k">where</span> len v1 == len v2) : <span class="kt">U64</span> =
       <span class="c1">// Sum the products of each element of both arrays</span>
       products = map2 v1 v2 (*)
       sum products

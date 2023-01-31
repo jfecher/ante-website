@@ -20,11 +20,11 @@ semantics through lifetime inference.
 
 ## Integers
 
-Integer literals can be of any signed integer type (i8, i16,
-i32, i64, isz) or any unsigned integer type (u8, u16, u32, u64, usz) but by
-default integer literals are [polymorphic](#int-trait). Integers come in
+Integer literals can be of any signed integer type (I8, I16,
+I32, I64, Isz) or any unsigned integer type (U8, U16, U32, U64, Usz) but by
+default integer literals are [polymorphic](#int-type). Integers come in
 different sizes given by the number in their type that specifies
-how many bits they take up. `isz` and `usz` are the signed and unsigned
+how many bits they take up. `Isz` and `Usz` are the signed and unsigned
 integer types respectively of the same size as a pointer.
 
 ```ante
@@ -43,27 +43,29 @@ integer types respectively of the same size as a pointer.
 ## Floats
 
 Floats in ante conform to the IEEE 754 standard for floating-point arithmetic
-and come in two varieties: `f32` and `f64` for 32-bit floats and 64-bit
+and come in two varieties: `F32` and `F64` for 32-bit floats and 64-bit
 floats respectively. Floats have a similar syntax to integers, but with
 a `.` separating the decimal digits.
 
 ```ante
-// Float literals aren't polymorphic - they are of type f64
 3.0 + 4.5 / 1.5
 
-// 32-bit floats can be created with the f32 suffix
+// 32-bit floats can be created with the F32 suffix
 3.0f32
 ```
 
+Like integers, floating-point literals are also [polymorphic](#float-type).
+If no type is specified they will default to `F64`.
+
 ## Booleans
 
-Ante also has boolean literals which are of the `bool` type and can be either
+Ante also has boolean literals which are of the `Bool` type and can be either
 `true` or `false`.
 
 ## Characters
 
 Characters in ante are a single, 32-bit [Unicode scalar value](http://www.unicode.org/glossary/#unicode_scalar_value).
-Note that since `string`s are UTF-8, multiple characters are packed into strings and if
+Note that since `String`s are UTF-8, multiple characters are packed into strings and if
 the string contains only ASCII characters, it's size in memory is 1 byte per character in the string.
 
 ```ante
@@ -92,15 +94,15 @@ If desired, C-style null-terminated strings can be obtained by calling the `c_st
 ```ante
 print "Hello, World!"
 
-// The string type is equivalent to the following struct:
-type string =
-    data: Ptr char
-    len: usz
+// The String type is equivalent to the following struct:
+type String =
+    data: Ptr Char
+    len: Usz
 
 // C-interop often requires using the `c_string` function:
-c_string (s: string) -> CString = ...
+c_string (s: String) : CString = ...
 
-extern puts : CString -> i32
+extern puts : CString -> I32
 puts (c_string "Hello, C!")
 ```
 
@@ -135,7 +137,7 @@ n = 3 * 4
 name = "Alice"
 
 // We can optionally specify a variable's type with `:`
-reading_about_variables: bool = true
+reading_about_variables: Bool = true
 
 // Mutable variables are created with `mut` and mutated with `:=`
 pet_name = mut "Ember"
@@ -172,9 +174,9 @@ two expressions which can be done by separating the expressions with a newline.
 `;` can also be used to sequence two expressions on the same line if needed. 
 
 ```ante
-// We can specify parameter types via `:`
-// and the function's return type via `->`
-foo1 (a: u32) (b: u32) -> unit =
+// We can specify parameter types and the
+// function return type via `:`
+foo1 (a: U32) (b: U32) : Unit =
     print a
     print b
     print (a + b)
@@ -203,8 +205,8 @@ first_equals_two it =
     | _ -> false
 ```
 We never gave any type for `first_equals_two` yet ante infers its type for us as
-`a -> bool given Iterator a i32` - that is a function that returns a `bool` and takes
-a generic parameter of type `a` which must be an iterator producing elements of type `i32`.
+`a -> Bool given Iterator a I32` - that is a function that returns a `Bool` and takes
+a generic parameter of type `a` which must be an iterator producing elements of type `I32`.
 
 ---
 # Significant Whitespace
@@ -258,7 +260,7 @@ chain of lines ending with `\`:
 data  \
 |> map (_ + 2) \
 |> filter (_ > 5) \
-|> max!
+|> max
 
 a = 3 + 2 *  \
     5 + 4    \
@@ -309,15 +311,12 @@ with the new rule:
 data
 |> map (_ + 2)  // error here, |> has no lhs! We must continue the line by indenting it
 |> filter (_ > 5)
-|> max!
+|> max
 
-// Newer versions of ante use . instead which helps break old habits
-// and encourage indenting. It also reads slightly better when used
-// for shorter function calls. Compare `vec |> push 4` with `vec.push 4`.
 // Here's the fixed, indented version
 map data (_ + 2)
-    .filter (_ > 5)
-    .max!
+    |> filter (_ > 5)
+    |> max
 
 // The other examples work as expected
 a = 3 + 2 *
@@ -430,11 +429,11 @@ iterator functions:
 
 ```ante
 // Parse a csv's data into a matrix of integers
-parse_csv (text: string) -> Vec (Vec i32) =
+parse_csv (text: String) : Vec (Vec I32) =
     lines text
         .skip 1  // Skip the column labels line
         .split ","
-        .map parse!
+        .map parse
         .collect
 ```
 
@@ -454,8 +453,8 @@ print $ sqrt $ 3 + 1
 
 Ante does not have tuples, instead it provides a right-associative pair
 operator `,` to construct a value of the pair type. We can use it like
-`1, 2, 3` to construct a value of type `i32, i32, i32`
-which in turn is just sugar for `Pair i32 (Pair i32 i32)`.
+`1, 2, 3` to construct a value of type `I32, I32, I32`
+which in turn is just sugar for `Pair I32 (Pair I32 I32)`.
 
 Compared to tuples, pairs are:
 
@@ -475,7 +474,7 @@ With tuples we must [create a different impl for every possible tuple size](http
 with pairs on the other hand the simple implementation works for all sizes:
 
 ```ante
-cast_pair_string = impl Cast (Pair a b) string via
+cast_pair_string = impl Cast (Pair a b) String via
     cast (a, b) = "$a, $b"
 ```
 
@@ -490,7 +489,7 @@ to extract a `List a, List (b, c)` for us. This means if we wanted, we may imple
 
 ```ante
 // given we have unzip : List (a, b) -> List a, List b
-unzip3 (list: List (a, b, c)) -> List a, List b, List c =
+unzip3 (list: List (a, b, c)) : List a, List b, List c =
         as, bcs = unzip list
         bs, cs = unzip bcs
         as, bs, cs
@@ -550,10 +549,10 @@ harder by having a helper trait so we can specialize the impl for pairs:
 
 ```ante
 trait ToStringHelper t with
-    to_string_helper (x: t) -> string = cast x
+    to_string_helper (x: t) -> String = cast x
 
 cast_pair_string = impl 
-    Cast (Pair a b) string via
+    Cast (Pair a b) String via
         cast pair = "(${to_string_helper pair})"
 
     // Specialize the impl for pairs so we can recurse on the rhs
@@ -624,7 +623,7 @@ nested x = add3 1 2 (x + 3)
 
 `_` really shines when using higher order functions and iterators:
 ```ante
-// Given a matrix of Vec (Vec i32), output a string formatted like a csv file
+// Given a matrix of Vec (Vec I32), output a String formatted like a csv file
 map matrix to_string
   .map (join _ ",") // join columns with commas
   .join "\n"        // and join rows with newlines.
@@ -655,7 +654,7 @@ Ante does not include traditional for or while loops since these constructs usua
 
 ```ante
 // The type of iter is:
-// iter : a -> (elem -> unit) -> unit given Iterator a elem
+// iter : a -> (elem -> Unit) -> Unit given Iterator a elem
 
 iter (0..10) print   // prints 0-9 inclusive
 
@@ -705,7 +704,7 @@ list<unsigned int> get_digits(unsigned int x) {
 This can be translated into ante as the following loop:
 
 ```ante
-get_digits (x: u32) -> List u32 =
+get_digits (x: U32) : List U32 =
     loop x (digits = Nil) ->
         if x == 0 then return digits
         last_digit = x % 10
@@ -742,8 +741,8 @@ we expect:
 
 ```ante
 type IntOrString =
-   | Int i32
-   | String string
+   | Int I32
+   | String String
 
 match Int 7
 | Int 3 -> print "Found 3!"
@@ -771,7 +770,7 @@ Ante is a strongly, statically typed language with global type inference.
 Types are used to restrict the set of values as best as possible such that
 only valid values are representable. For example, since references in ante
 cannot be null we can instead represent possibly null references with
-`Maybe (ref t)` which makes it explicit whether a function can accept or
+`Maybe (Ref t)` which makes it explicit whether a function can accept or
 return possibly null values.
 
 ## Type Definitions
@@ -784,12 +783,12 @@ You can define struct types with commas separating each field or
 newlines if the type spans multiple lines:
 
 ```ante
-type Person = name: string, age: u8
+type Person = name: String, age: U8
 
 type Vec a =
     data: Ptr [a]
-    len: usz
-    capacity: usz
+    len: Usz
+    capacity: Usz
 ```
 
 Tagged unions can be defined with `|`s separating each variant.
@@ -818,10 +817,10 @@ Both operations are generic so we'll need to specify what type we should
 parse out of the string:
 
 ```ante
-parse_and_print_int (s: string) -> unit =
-    x = parse s : i32
+parse_and_print_int (s: String) : Unit =
+    x = parse s : I32
     // alternatively we could do
-    // x: i32 = parse s
+    // x: I32 = parse s
     print x
 ```
 
@@ -829,7 +828,7 @@ parse_and_print_int (s: string) -> unit =
 
 Refinement types are an additional boolean constraint on a normal type.
 For example, we may have an integer type that must be greater than 5.
-This is written as `x: i32 where x > 5`. These refinements can be
+This is written as `x: I32 where x > 5`. These refinements can be
 written anywhere after a type is expected, and are mostly restricted
 to numbers or "uninterpreted functions." This limitation is so we can
 infer these refinements like normal types. If we instead allow any value
@@ -839,7 +838,7 @@ inference and basic type checking (without manual proofs) is undecidable.
 Refinement types can be used to ensure indexing into a vector is always valid:
 
 ```ante
-get (a: Vec t) (index: usz where index < len a) -> t = ...
+get (a: Vec t) (index: Usz where index < len a) : t = ...
 
 a = [1, 2, 3]
 get a 2  // valid
@@ -860,9 +859,9 @@ to only sorted vectors:
 
 ```ante
 // You can name a return type for use in refinements
-sort (vec: Vec t) -> ret: Vec t where sorted ret = ...
+sort (vec: Vec t) : ret: Vec t where sorted ret = ...
 
-binary_search (vec: Vec t where sorted vec) (elem: t) -> Maybe (index: usz where index < len vec) = ...
+binary_search (vec: Vec t where sorted vec) (elem: t) : Maybe (index: Usz where index < len vec) = ...
 ```
 
 Type aliases can be used to cut down on the annotations:
@@ -870,11 +869,11 @@ Type aliases can be used to cut down on the annotations:
 ```ante
 SortedVec t = a: Vec t where sorted a
 
-Index vec = x:usz where x < len vec
+Index vec = x:Usz where x < len vec
 
-sort (vec: Vec t) -> SortedVec t = ...
+sort (vec: Vec t) : SortedVec t = ...
 
-binary_search (vec: SortedVec t) (elem: t) -> Maybe (Index vec) = ...
+binary_search (vec: SortedVec t) (elem: t) : Maybe (Index vec) = ...
 ```
 
 In contrast to contracts in other languages, these refinements are in
@@ -891,15 +890,15 @@ is done via traits. You can define a trait as follows:
 
 ```ante
 trait Stringify t with
-    stringify: t -> string
+    stringify: t -> String
 ```
 
 Here we say `stringify` is a function that takes a value of type `t` and returns a
-`string`. With this, we can write another function that abstracts over all `t`'s that
+`String`. With this, we can write another function that abstracts over all `t`'s that
 can be converted to strings:
 
 ```ante
-stringify_print (x: t) -> unit given Stringify t =
+stringify_print (x: t) : Unit given Stringify t =
     print (stringify x)
 ```
 
@@ -917,8 +916,8 @@ first to the second:
 trait Cast a b with
     cast: a -> b
 
-// We can cast to a string using
-cast 3 : string
+// We can cast to a String using
+cast 3 : String
 ```
 
 ## Impls
@@ -928,14 +927,14 @@ we'll have to `impl`ement the trait for the types we want
 to use it with. This can be done with `impl` blocks:
 
 ```ante
-stringify_bool = impl Stringify bool via
+stringify_bool = impl Stringify Bool via
     stringify b =
         if b then "true"
         else "false"
 ```
 
 Then, when we call a function like `print_to_string` which
-requires `Stringify t` we can pass in a `bool` and the
+requires `Stringify t` we can pass in a `Bool` and the
 compiler will automatically find the `stringify_bool` impl
 in scope and use that:
 
@@ -1005,7 +1004,7 @@ To illustrate the need for such a construct, lets say we wanted
 to abstract over a vector's `get` function:
 
 ```ante
-get (vector: Vec t) (index: usz) -> Maybe t = ...
+get (vector: Vec t) (index: Usz) : Maybe t = ...
 ```
 
 We want to be able to use this with any container type, but how?
@@ -1014,7 +1013,7 @@ before:
 
 ```ante
 trait Container c elem with
-    get: c -> usz -> Maybe elem
+    get: c -> Usz -> Maybe elem
 ```
 
 At first glance this looks fine, but there's a problem: we
@@ -1022,14 +1021,14 @@ can implement it with any combination of `c` and `elem`:
 
 ```ante
 conflicting_impls = impl
-    Container (Vec i32) i32 via
-        get (v: Vec i32) (index: usz) -> Maybe i32 = ...
+    Container (Vec I32) I32 via
+        get (v: Vec I32) (index: Usz) : Maybe I32 = ...
 
-    Container (Vec i32) string via
-        get (v: Vec i32) (index: usz) -> Maybe string = ...
+    Container (Vec I32) String via
+        get (v: Vec I32) (index: Usz) : Maybe String = ...
 ```
 
-But we already had an impl for `Vec i32`, and defining a
+But we already had an impl for `Vec I32`, and defining a
 way to get another element type from it makes no sense!
 This is what associated types or ante's restricted functional
 dependencies solve. We can modify our Container trait to
@@ -1038,27 +1037,27 @@ specify that for any given type `c`, there's only 1 valid
 
 ```ante
 trait Container c -> elem with
-    get: c -> usz -> Maybe elem
+    get: c -> Usz -> Maybe elem
 
 vec_container = impl Container (Vec a) a via
-    get (v: Vec a) (i: usz) -> Maybe a = ...
+    get (v: Vec a) (i: Usz) : Maybe a = ...
 ```
 
 This information is used during type inference
 so if we have e.g. `e = get (b: ByteString) 0` and there
-is an impl for `Container ByteString u8` in scope then we also
-know that `e : u8`.
+is an impl for `Container ByteString U8` in scope then we also
+know that `e : U8`.
 
 Note that using a functional dependency in a trait signature
 looks a lot like separating the return type from the arguments
-of a function (both use `->`). This was intentional; a good
+of a function. This was intentional; a good
 rule of thumb on when to use functional dependencies is if
 the type in question only appears as a return type for the
 function defined by the trait. For the `Container` example
 above, `elem` is indeed only used in the return type of `get`.
 The most notable exception to this rule is the `Cast` trait
 defined earlier in which it is useful to have two impls
-`Cast i32 string` and `Cast i32 f64` to cast integers
+`Cast I32 String` and `Cast I32 F64` to cast integers
 to strings and to floats respectively.
 
 ## Coherence
@@ -1073,8 +1072,8 @@ importing one of these impls or with an explicit `via` clause
 at the callsite:
 
 ```ante
-add = impl Combine i32 via (++) = (+)
-mul = impl Combine i32 via (++) = (*)
+add = impl Combine I32 via (++) = (+)
+mul = impl Combine I32 via (++) = (*)
 
 print (2 ++ 3)  // Error, multiple matching impls found! `add` and `mul` are both in scope
 
@@ -1082,29 +1081,28 @@ print (2 ++ 3) via add  //=> 5
 print (2 ++ 3) via mul  //=> 6
 ```
 
-## Int Trait
+## Int Type
 
 Ante has quite a few [integer types](#integers) so one question
 that gets raised is what is the type of an integer literal?
-If we randomly choose a type like `i32` then when using all
+If we randomly choose a type like `I32` then when using all
 other integer types we'd have to constaintly annotate our
 operations with the type used which can be annoying. Imagine
 `a + 1u64` every few lines.
 
-Instead, integer literals are polymorphic over the `Int` trait:
+Instead, integer literals are given the polymorphic `Int a` type:
 
 ```ante
-trait Int a with
-    // no operations, this trait is built into
-    // the compiler and is used somewhat like a typetag
+3 : Int a // for some unknown 'a' which will later be resolved
+          // to one of I8, I16, ..., U8, U16, ... etc.
 ```
 
 When we use an integer with no specific type, the integer literal
-keeps its generic type. This sometimes pops up in function signatures:
+keeps this generic type. This sometimes pops up in function signatures:
 
 ```ante
 // This works with any integer type
-add1 (x: a) -> a given Int a =
+add1 (x: Int a) : Int a =
     x + 1
 ```
 
@@ -1115,27 +1113,43 @@ constraint - ie it must be a primitive integer or we get a compile-time error).
 
 ```ante
 // Fine, we're still generic over a
-foo () -> a given Int a =
+foo () : Int a =
     0
 
-x: i32 = 1  // also fine, we constrained 1 : i32 now
+x: I32 = 1  // also fine, we constrained 1 : I32 now
 
 y = 2u16  // still fine, now we're specifying the type
           // of the integer literal directly
 ```
 
-## Member Access Traits
+## Float Type
+
+Like the [Int type](#int-type), there is also a polymorphic `Float a` type:
+
+```ante
+3.0  // has the type `Float a` until it is later used in an expression
+     // which forces it to be either a F32 or F64.
+```
+
+Values of the `Float a` type will default to `F64` if they are never constrained:
+
+```ante
+print 5.0  // Since we can print any float type, we arbitrarily default 5.0 to an F64
+           // making this snippet equivalent to `print (5.0 : F64)`
+```
+
+## Anonymous Struct Types
 
 If we have multiple types with the same field in scope:
 
 ```ante
-type A = foo: i32
+type A = foo: I32
 
-type B = foo: string
+type B = foo: String
 ```
 
 Then we are left with the problem of deciding what the type
-of the `x.foo` expression should be:
+of an `x.foo` expression should be:
 
 ```ante
 // Does this work?
@@ -1144,30 +1158,26 @@ of the `x.foo` expression should be:
 get_foo x = x.foo
 ```
 
-Ante solves this with member access traits. Whenever ante
-sees an expression like `x.foo` it makes a new trait like
-the following pseudocode:
+Ante solves this with anonymous struct types which are row-polymorphic.
+In other words, they are polymorphic over what fields are in the struct,
+which allows any struct type to be used so long as it has the required
+fields. For example, `{ x: I32 }` would be the type of any struct that
+has a field `x` of type `I32`.
+
+Using this, we can type `get_foo` as a function which takes
+any struct that has a field named `foo` of type `b`:
 
 ```ante
-trait .foo struct -> field with
-    (.foo) : struct -> field
-```
-
-Now we can type `get_foo` as a function which takes
-any value of type `a` that has a field named `foo` of type `b`:
-
-```ante
-get_foo (x: a) -> b given .foo a b =
+get_foo (x: { foo: b }) : b =
     x.foo
 ```
 
-Since member access traits are just traits generated by the
-compiler under the hood, we get all the benefits of traits as
-well, including composability of multiple traits and trait inference.
-Here's a function that can print anything with `debug` field
+As a more complex example, here's a function that can print anything with `debug` field
 that itself is printable and a `prefix` field that must be a string:
 
 ```ante
+// Type inferred as:
+//   { prefix: String, debug: a } -> Unit given Print a
 print_debug x =
     prefix = x.prefix ++ ": "
     print prefix
@@ -1280,7 +1290,7 @@ get_baz () = my_local_baz
 
 To protect against common mistakes in manual memory management
 like double-frees, memory leaks, and use-after-free, ante automatically
-infers the lifetime of `ref`s. If you're familiar with rust's
+infers the lifetime of `Ref`s. If you're familiar with rust's
 lifetime system, this works in a similar way but is intentionaly
 less restrictive since it abandons the ownership rule of only
 allowing either a single mutable reference or multiple immutable ones.
@@ -1288,21 +1298,21 @@ Also unlike rust, ante hides the lifetime parameter on references.
 Since it is inferred automatically by the compiler there is no need
 to manually mess around with them. There is a tradeoff compared to
 rust however: to accomplish this hands-off approach ante typically
-infers `ref`s to live longer than they need to.
+infers `Ref`s to live longer than they need to.
 
-`ref`s can be created with `new : a -> ref a` and the underlying
-value can be accessed with `deref : ref a -> a`. Here's a simple
+`Ref`s can be created with `new : a -> Ref a` and the underlying
+value can be accessed with `deref : Ref a -> a`. Here's a simple
 example 
 
 ```ante
-get_value () -> ref i32 =
+get_value () : Ref I32 =
     three = 3
     // This 'new' operation will copy and allocate 3
     new three
 
 value = get_value ()
 
-// the ref value is still valid here and
+// the Ref value is still valid here and
 // is deallocated when it goes out of scope.
 print value
 ```
@@ -1322,7 +1332,7 @@ int main() {
 }
 ```
 
-The above program showcased we can return a `ref` value to extend its
+The above program showcased we can return a `Ref` value to extend its
 lifetime. Unlike rust for example, we can never have a lifetime error in this
 system since the lifetime is simply extended instead.
 
@@ -1351,12 +1361,12 @@ stack-based algorithm. This algorithm can infer references which
 can be optimized to allocate on the stack instead of the heap
 even if it needs to be allocated on a prior stack frame. The
 tradeoff for this is that, as previously mentioned, the inferred
-lifetimes tend to be imprecise. As such, `ref`s in ante are meant
+lifetimes tend to be imprecise. As such, `Ref`s in ante are meant
 to be used for temporary unowned references like where you'd use
 `&` in rust. It is not a complete replacement for smart pointer types
 such as `Box` and `Rc` (unless you're fine with using more memory).
-The place where `ref`s are typically worst are in implementing container types.
-`ref`s are implemented using memory pools on the stack under the
+The place where `Ref`s are typically worst are in implementing container types.
+`Ref`s are implemented using memory pools on the stack under the
 hood so any container that wants to free early or reallocate and
 free/resize memory (ie. the vast majority of containers) should use
 one of the smart pointer types to hold their elements instead.
@@ -1382,7 +1392,7 @@ You can also use extern with a block of declarations:
 ```ante
 extern
     exit: C.Int -> never_returns
-    malloc: usz -> Ptr a
+    malloc: Usz -> Ptr a
     printf: C.String -> ... -> C.Int
 ```
 
@@ -1415,17 +1425,17 @@ the return type of the effect. For example, if our effect is:
 
 ```an
 effect GiveInt with
-    give_int: string -> i32
+    give_int: String -> I32
 ```
 
-Then we will have to call `resume` with an `i32` to continue the original computation.
+Then we will have to call `resume` with an `I32` to continue the original computation.
 
 In an effect handler, we can match on any effects performed within the matched
 expression. For example, if we want to write a handler for the `GiveInt` effect above,
 we may write a function like:
 
 ```an
-handle_give_int (f: unit -> a can GiveInt) -> a =
+handle_give_int (f: Unit -> a can GiveInt) : a =
     handle f ()
     | give_int str ->
         if str == "zero"
@@ -1437,7 +1447,7 @@ Finally, if we have a function `do_math` which uses the `GiveInt` effect, here's
 how we'd pass it to `handle_give_int` to properly handle the effect:
 
 ```an
-do_math (x: i32) -> i32 can GiveInt =
+do_math (x: I32) : I32 can GiveInt =
     a = give_int "zero"
     b = give_int "foo"
     x + a + b
@@ -1467,7 +1477,7 @@ There are also times when we want to use a handler to handle an entire block. Fo
 we can use the `using` keyword:
 
 ```ante
-// try: (unit -> a can Fail) -> Maybe a
+// try: (Unit -> a can Fail) -> Maybe a
 using try
 
 foo = failable_operation ()
@@ -1496,7 +1506,7 @@ to be defined for any effect. As an example, lets define another handler
 for `GiveInt` in addition to `handle_give_int`:
 
 ```an
-the_int (int: i32) (f: unit -> a can GiveInt) -> a =
+the_int (int: I32) (f: Unit -> a can GiveInt) : a =
     handle f ()
     | give_int _ -> resume int
 
@@ -1509,7 +1519,7 @@ Handle expressions can also match on the return value
 of the handled expression
 
 ```an
-count_giveint_calls (f: unit -> a can GiveInt) -> i32 =
+count_giveint_calls (f: Unit -> a can GiveInt) : I32 =
     handle f ()
     | return x -> 0
     | give_int _ -> 1 + resume 0
@@ -1568,7 +1578,7 @@ can call it multiple times, or pass it to higher-order functions
 like `map` and `flatmap`:
 
 ```an
-these_ints (f: unit -> a can GiveInt) (ints: Vec i32) -> Vec a =
+these_ints (f: Unit -> a can GiveInt) (ints: Vec I32) : Vec a =
     handle f ()
     | return x -> [x]
     | give_int _ -> flatmap ints resume
@@ -1588,7 +1598,7 @@ Handlers may also choose not to resume at all, simply by
 not calling `resume`:
 
 ```an
-interpret (default_value: a) (f: unit -> a can GiveInt) -> a =
+interpret (default_value: a) (f: Unit -> a can GiveInt) : a =
     import Random.random
     handle f ()
     | give_int "zero" -> resume 0
@@ -1606,9 +1616,9 @@ These roughly correspond to `Maybe t` and `Result t e` respectively.
 Being effects however, these are automatically propagated up the callstack:
 
 ```ante
-add_even_numbers (a: string) (b: string) -> u64 can Fail =
+add_even_numbers (a: String) (b: String) : U64 can Fail =
     n1 = parse a
-    n2 = parse b // parse: string -> u64 can Fail
+    n2 = parse b // parse: String -> U64 can Fail
 
     if n1 % 2 == 0 and n2 % 2 == 0
     then n1 + n2
@@ -1620,12 +1630,12 @@ via the `try` and `catch` helper functions
 which convert Fails to Maybe, and Throws to Results:
 
 ```ante
-try (f: unit -> a can Fail) -> Maybe a =
+try (f: Unit -> a can Fail) : Maybe a =
     handle f ()
     | return x -> Some x
     | fail () -> None
 
-catch (f: unit -> a can Throw e) -> Result a e =
+catch (f: Unit -> a can Throw e) : Result a e =
     handle f ()
     | return x -> Ok x
     | throw e -> Error e
@@ -1657,32 +1667,32 @@ threading stateful values through multiple functions.
 
 ```ante
 effect Use a with
-    get: unit -> a
-    put: a -> unit
+    get: Unit -> a
+    put: a -> Unit
 
-state (current_state: s) (f: unit -> a can Use s) -> a =
+state (current_state: s) (f: Unit -> a can Use s) : a =
     handle f ()
     | put new_state -> resume () with state new_state
     | get () -> resume current_state with state current_state
 
 
 type Expr =
-   | Int i32
-   | Var string
+   | Int I32
+   | Var String
    | Add Expr Expr
-   | Let string (rhs: Expr) (body: Expr)
+   | Let String (rhs: Expr) (body: Expr)
 
-Eval = Use (Map string i32)
+Eval = Use (Map String I32)
 
-lookup (name: string) -> Maybe i32 can Eval =
+lookup (name: String) : Maybe I32 can Eval =
     map = get ()
     map.get name
 
-define (name: string) (value: i32) -> unit can Eval =
+define (name: String) (value: I32) : Unit can Eval =
     map = get ()
     put (map.insert name value)
 
-eval (expr: Expr) -> i32 can Eval =
+eval (expr: Expr) : I32 can Eval =
     match expr
     | Int x -> x
     | Var s -> lookup s .or_error "$s not defined"
@@ -1725,10 +1735,10 @@ while remaining purely functional behind the scenes.
 
 ```an
 effect Loop with
-    break: unit -> a
-    continue: unit -> a
+    break: Unit -> a
+    continue: Unit -> a
 
-for (iter: i) (f: e -> unit can Loop) -> unit can Iterate i e =
+for (iter: i) (f: e -> Unit can Loop) : Unit can Iterate i e =
     match next iter
     | None -> ()
     | Some (rest, elem) ->
@@ -1738,16 +1748,16 @@ for (iter: i) (f: e -> unit can Loop) -> unit can Iterate i e =
         // If the body returns normally, we also want to continue the loop
         | return _ -> for rest f
 
-while (cond: a -> bool) (body: a -> unit) -> unit can State a =
+while (cond: a -> Bool) (body: a -> Unit) : Unit can State a =
     if cond (get ()) then
         body (get ())
         while cond body
 
-do_while (body: a -> bool) -> unit can State a =
+do_while (body: a -> Bool) : Unit can State a =
     if body (get ()) then do_while body
 
 // Loop until we eventually find a prime number through sheer luck
-loop_examples (vec: Vec i32) -> unit can Print, State i32 =
+loop_examples (vec: Vec I32) : Unit can Print, State I32 =
     for vec fn elem ->
         largest = get ()
         if largest > 100 then
@@ -1765,7 +1775,7 @@ loop_examples (vec: Vec i32) -> unit can Print, State i32 =
         put (x + 2)
         not is_prime (x + 2)
 
-find_random_prime (vec: Vec i32) -> i32 can Print =
+find_random_prime (vec: Vec I32) : I32 can Print =
     loop_examples vec with final_state 0
 ```
 
@@ -1775,24 +1785,24 @@ The yield effect provides a way to implement generators.
 
 ```ante
 effect Yield a with
-    yield: unit -> a
+    yield: Unit -> a
 
-traverse (xs: List Int) -> unit can Yield Int =
+traverse (xs: List Int) : Unit can Yield Int =
     match xs
     | Cons x xs -> yield x; traverse xs
     | None -> ()
 
-filter (k: unit -> a can Yield b) (f: b -> bool) -> a can Yield b =
+filter (k: Unit -> a can Yield b) (f: b -> Bool) : a can Yield b =
     handle k ()
     | yield x ->
         if f x then yield x
         resume ()
 
-iter (k: unit -> a can Yield b) (f: b -> unit) -> a =
+iter (k: Unit -> a can Yield b) (f: b -> Unit) : a =
     handle k ()
     | yield x -> resume (f x)
 
-yield_to_list (k: unit -> a can Yield b) -> List b =
+yield_to_list (k: Unit -> a can Yield b) : List b =
     handle k ()
     | return _ -> []
     | yield x -> Cons x (resume ())
@@ -1821,10 +1831,10 @@ mock them for testing.
 
 ```an
 effect Print with
-    print: string -> unit
+    print: String -> Unit
 
 effect QueryDatabase with
-    querydb: string -> Response
+    querydb: String -> Response
 
 database f =
     db = Database.connect "..."
@@ -1837,7 +1847,7 @@ ignore_db f =
     handle f ()
     | querydb _ -> Response.empty
 
-business_logic (should_query: bool) -> unit can Print, QueryDatabase =
+business_logic (should_query: Bool) : Unit can Print, QueryDatabase =
     if should_query then
         print "querying..."
         response = querydb "SELECT column FROM table"
@@ -1871,7 +1881,7 @@ use an effect like `Flip` to decide on branches to take within the function.
 
 ```ante
 effect Flip with
-    flip: unit -> bool
+    flip: Unit -> Bool
 
 calculation () =
     if flip () then
@@ -1880,7 +1890,7 @@ calculation () =
         else 4.0
     else 1.0
 
-expected_value (f: unit -> f64 can Flip) -> f64 =
+expected_value (f: Unit -> F64 can Flip) : F64 =
     handle f ()
     | flip () -> (resume true + resume false) / 2.0
 
@@ -1896,19 +1906,19 @@ and parenthesized expressions. This example was adapted from
 
 ```ante
 effect Repeat with
-    flip: unit -> bool
-    fail: unit -> a
+    flip: Unit -> Bool
+    fail: Unit -> a
 
 effect Parse with
     // The parameter to Satisfy is a function which takes
     // our current input and returns a pair of
     // (result, rest_of_input) on success, or None on failure.
-    satisfy: (string -> Maybe (a, string)) -> a
+    satisfy: (String -> Maybe (a, String)) -> a
 
 choice p1 p2 =
     if flip () then p1 () else p2 ()
 
-many (p: unit -> a can Repeat) -> List a can Repeat =
+many (p: Unit -> a can Repeat) : List a can Repeat =
     choice (fn () -> many1 p)
            (fn () -> Nil)
 
@@ -1916,14 +1926,14 @@ many1 p = Cons (p ()) (many p)
 
 
 // Return all possible solutions from the given computation
-solutions (f: unit -> a can Repeat) -> List a =
+solutions (f: Unit -> a can Repeat) : List a =
     handle f ()
     | return x -> [x]
     | fail () -> []
     | flip () -> resume false ++ resume true
 
 // Return the first succeeding computation (taking the false Flip branch first)
-eager (f: unit -> a can Repeat) -> Maybe a =
+eager (f: Unit -> a can Repeat) : Maybe a =
     handle f ()
     | return x -> Some x
     | fail () -> None
@@ -1933,7 +1943,7 @@ eager (f: unit -> a can Repeat) -> Maybe a =
         | None -> resume true
 
 // Handle any Parse effects (letting Repeat effects pass through)
-parse (input: string) (f: unit -> a can Parse, Repeat) -> a, string can Repeat =
+parse (input: String) (f: Unit -> a can Parse, Repeat) : a, String can Repeat =
     handle f ()
     | return x -> x, input
     | satisfy p ->
@@ -1942,13 +1952,13 @@ parse (input: string) (f: unit -> a can Parse, Repeat) -> a, string can Repeat =
         | Some (x, rest) -> resume x with parse rest
 
 // These will be our parsing primitives
-symbol (c: char) -> char can Parse =
+symbol (c: Char) : Char can Parse =
     satisfy fn input ->
         match input
         | Cons x rest if x == c -> Some (c, rest)
         | _ -> None
 
-digit () -> Int can Parse =
+digit () : Int can Parse =
     satisfy fn input ->
         match input
         | Cons d rest if is_digit d -> Some (int (d - '0'), rest)
@@ -1970,7 +1980,7 @@ mul () = binop '*' (*) factor
 expr () = choice add term
 term () = choice mul factor
 
-factor () -> Int can Parse, Repeat =
+factor () : Int can Parse, Repeat =
     choice number fn () ->
         symbol '('
         e = expr ()

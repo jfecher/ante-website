@@ -22,7 +22,7 @@ Key:
 
 All literals are implemented except for:
 
-- [~] `char` - implemented but is 1 byte rather than 4. There is an open design question of
+- [~] `Char` - implemented but is 1 byte rather than 4. There is an open design question of
 whether ante should use rust's model for chars (4 bytes), Swift's model (variable bytes), or something else.
 
 ---
@@ -70,12 +70,13 @@ whether ante should use rust's model for chars (4 bytes), Swift's model (variabl
   - [ ] Sum-type refinements
 - [x] Traits
   - [x] Restricted Functional Dependency clause (`->`). Equivalent to associated types.
+- [x] Polymorphic `Int` and `Float` types for polymorphic integer and float literals
+  - [x] Defaulting to `I32` and `F64`
+- [~] Row polymorphic struct types. Implemented internally, except for:
+  - [ ] Allow users to specify these in type annotations. They are currently only inferred.
 - [~] Trait impls
   - [x] Given clause
   - [ ] Named impls
-  - [x] Int trait for polymorphic integer literals
-    - [x] Defaulting to `i32`
-  - [~] Member access traits. These were fully implemented but have been replaced with row-polymorphic struct types for better error messages.
   - [x] Impl search
   - [x] Static dispatch of traits
 
@@ -99,7 +100,7 @@ but is otherwise implemented.
 - [x] LLVM backend
 - [x] Cranelift backend
 - [ ] Compiler option to write inferred types into the file
-- [~] Language server. There is a skeleton for a LSP client [here](https://github.com/jfecher/ante-lsp) but it is more of an experiment than
+- [ ] Language server. There is a skeleton for a LSP client [here](https://github.com/jfecher/ante-lsp) but it is more of an experiment than
 anything vaguely practical.
 - [x] Unused variable warning message
 - [ ] Parser recoverable on error
@@ -109,7 +110,7 @@ anything vaguely practical.
 ---
 # Other
 
-- [~] Mutability. Conflated with the `ref` type currently. Needs redesign, [issue on github](https://github.com/jfecher/ante/issues/101).
+- [~] Mutability. Conflated with the `Ref` type currently. Needs redesign, [issue on github](https://github.com/jfecher/ante/issues/101).
 due to the lack of lifetime inference it is also easy currently to allocate a mutable cell on the stack and return the dangling reference.
 - [ ] Lifetime inference
   - [ ] Initial static inference (likely start with basic Tofte-Taplin)

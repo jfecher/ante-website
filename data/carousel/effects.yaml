@@ -4,7 +4,7 @@ description: >
     <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="c1">// computing expected value from a function that takes a coin flip effect.</span>
 
     <span class="k">effect</span> <span class="kt">Flip</span> <span class="k">with</span>
-        flip: <span class="kt">unit</span> -> <span class="kt">bool</span>
+        flip: <span class="kt">Unit</span> -> <span class="kt">Bool</span>
 
     calculation () =
         <span class="k">if</span> flip () <span class="k">then</span>
@@ -13,7 +13,7 @@ description: >
             <span class="k">else</span> <span class="m">4.0</span>
         <span class="k">else</span> <span class="m">1.0</span>
 
-    expected_value (f: <span class="kt">unit</span> -> <span class="kt">f64</span> <span class="k">can</span> <span class="kt">Flip</span>): <span class="kt">f64</span> =
+    expected_value (f: <span class="kt">Unit</span> -> <span class="kt">F64</span> <span class="k">can</span> <span class="kt">Flip</span>): <span class="kt">F64</span> =
         <span class="k">handle</span> f ()
         | flip () -> (<span class="k">resume</span> <span class="m">true</span> + <span class="k">resume</span> <span class="m">false</span>) / <span class="m">2.0</span>
 
