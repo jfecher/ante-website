@@ -110,8 +110,7 @@ anything vaguely practical.
 ---
 # Other
 
-- [~] Mutability. Conflated with the `Ref` type currently. Needs redesign, [issue on github](https://github.com/jfecher/ante/issues/101).
-due to the lack of lifetime inference it is also easy currently to allocate a mutable cell on the stack and return the dangling reference.
+- [~] Mutability. Conflated with the `Ref` type currently rather than being its own type.
 - [ ] Lifetime inference
   - [ ] Initial static inference (likely start with basic Tofte-Taplin)
   - [ ] Non-stack based, more complex static inference.

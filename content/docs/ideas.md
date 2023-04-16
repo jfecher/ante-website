@@ -152,7 +152,7 @@ foo (map: HashMap I32 String) =
 ```
 
 Here, the type checker has both `get: HashMap a b - a -> Maybe b` and `get: Vec a - Usz -> Maybe a` in scope.
-Since it knows `map: HashMap I32 String` ther is only valid choice and the code is thus unambiguous. Its worth
+Since it knows `map: HashMap I32 String`, there is only one valid choice and the code is thus unambiguous. Its worth
 noting there may be implementation concerns - if we have more than 2 of these in scope, the resolution
 order of these constraints could affect whether subsequent constraints can be inferred to a single instance or not.
 
@@ -206,14 +206,14 @@ also be a stumbling block for new programmers, though both of these proposals re
 # Allocator Effect
 
 In low level code it can often be helpful to provide a custom allocator for a type.
-Languages like rust and C++ realized the usefulness of this later on and needed to refactor types like `std::vector` and `std::vec::Vec`
+Languages like C++ and Rust realized the usefulness of this later on and needed to refactor types like `std::vector` and `std::vec::Vec`
 to be parameterized over an allocator. Zig on the other hand instead opts to have users manually thread through
 an allocator parameter to all functions that may allocate. This simplifies the types and makes it easier to make libraries
-providing custom types also accept custom allocators but can be quite burdensome to users to manually thread the allocator through everywhere.standard 
+that provide custom types also accept custom allocators. However, it can be quite burdensome to users to manually thread the allocator through everywhere.
 Can we do better?
 
 Yes we can. This pattern of "manually threading through X through our program" is the same as the `State` effect. We can design a similar
-effect for allocate which should compile to the same state-passing code but standard with the benefit of having the compiler thread through
+effect for allocate which should compile to the same state-passing code but with the benefit of having the compiler thread through
 the allocator for us:
 
 ```ante

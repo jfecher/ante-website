@@ -138,16 +138,9 @@ name = "Alice"
 
 // We can optionally specify a variable's type with `:`
 reading_about_variables: Bool = true
-
-// Mutable variables are created with `mut` and mutated with `:=`
-pet_name = mut "Ember"
-print pet_name  //=> Ember
-
-pet_name := "Cinder"
-print pet_name  //=> Cinder
 ```
 
-## A brief note on mutability
+## Mutability
 
 Generally, mutability can make larger programs
 more difficult to reason about, creating more bugs and increasing the cost
@@ -155,7 +148,166 @@ of development. However, there are algorithms that are simpler or more efficient
 when written using mutability. Being a systems language, ante takes the position
 that mutability should generally be avoided but is sometimes a necessary evil.
 
-## Functions
+### Shared Mutability
+
+The `Mut a` type provides a shared, mutable reference to its inner element.
+Any variable can be made mutable by shallow copying it into the `Mut` reference:
+
+```ante
+// Mutable variables can be created with `mut`:
+pet_name: Mut String = mut "Ember"
+print pet_name  //=> Ember
+
+// And can be mutated with `:=`
+pet_name := "Cinder"
+print pet_name  //=> Cinder
+
+// And can be aliased as with other variables
+alias = pet_name
+alias := "Teak"
+
+print pet_name  // => Teak
+```
+
+Here's another example showing a function that can mutate the passed in parameter:
+
+```ante
+count_evens array counter =
+    for array fn elem ->
+        if even elem then
+            counter += 1
+
+counter: Mut I32 = &mut 0
+count_evens [4, 5, 6] counter
+
+print counter  //=> 2
+```
+
+If you have a mutable struct, you can also transfer this mutability to its
+fields to mutate them directly. This can be done via the `.&` operator to retrieve
+a reference to a field:
+
+```ante
+my_pair = mut 1, 2
+my_pair.&first := 3
+
+field_ref = my_pair.&second
+field_ref := 4
+
+print my_pair  //=> 3, 4
+
+// The following two lines give an error because we never declared `bad` to be mutable
+bad = 1, 2
+bad.&first := 3
+```
+
+Mutating a parameter of a function creates a `Mutate` [effect](#algebraic-effects) to mark
+the current function as impure. This is a primitive effect that cannot be handled via a `handle` expression.
+
+```ante
+inc (counter: Mut I32) : Unit can Mutate =
+    counter += 1
+
+// Functions that only read references do not need the Mutate effect
+read_counter (counter: Mut I32) : I32 =
+    @counter
+```
+
+#### Limitations
+
+To preserve safety, `Mut` cannot be transfered across a few key boundaries.
+
+Firstly, if you have a `Mut (Ref a)`, there is no way to obtain a `Mut a` without
+copying `a`. In other words, you cannot directly mutate the element held inside of an
+immutable reference.
+
+```ante
+foo: Mut (Ref I32) = mut (ref 0)
+
+// We can mutate foo to another reference:
+foo := ref 1
+
+// We can also copy the element and mutate the copy
+element = mut @foo
+element += 1
+
+// But there is no way to retrieve a `Mut I32` that will
+// alias the original foo reference.
+```
+
+If mutating a reference's element is required, `Mut` must be used
+from the start rather than the explicitly immutable `Ref` type.
+
+Additionally, while you can transfer the mutability to struct elements, you may
+not transfer to union elements. If this was allowed, then we could potentially corrupt data:
+
+```ante
+type IntOrString =
+   | I I32
+   | S String
+
+var: Mut IntOrString = mut I 0
+
+n: Mut I32 = match var
+    | I n -> n
+    | _ -> unreachable ()
+
+var := S "foo"
+
+// Uh-oh, we're mutating the integer but var is a String now
+n := 17
+
+// var is likely corrupted here (if this were allowed)
+print var
+```
+
+Instead of allowing this, `match` will not match on mutable references and forces
+you to dereference before a match, removing any mutability in the process:
+
+```ante
+var: Mut IntOrString = mut I 0
+
+// We can still create a mutable n by copying the I32 into our variable
+n: Mut I32 = mut match @var
+    | I n -> n
+    | _ -> unreachable ()
+
+var := S "foo"
+
+// Fine, we're just mutating a copy
+n := 17
+
+print var  //=> S foo
+```
+
+Similarly, we also cannot transfer mutability to elements of resizable data structures like
+vectors:
+
+```ante
+my_vec = mut Vec.of [1, 2, 3]
+
+// If this was possible, we could push to my_vec afterward
+// and potentially invalidate the element reference if the Vec resizes.
+//
+// invalid: Mut I32 = Vec.get_mut my_vec 0
+
+// We can retrieve a shallow copy of the element just fine
+valid: I32 = my_vec#0
+
+// If we do want mutable references to Vec elements, we must decide that
+// when we create the vector:
+mutable_elements = mut Vec.of [&mut 0, &mut 1, &mut 2]
+
+first_element: MutRef I32 = mutable_elements#0
+push mutable_elements 3
+
+// This mutation is fine since first_element is behind a separate, stable pointer now
+first_element := 10
+
+print mutable_elements  //=> [10, 1, 2, 3]
+```
+
+# Functions
 
 Functions in ante are also defined via `=` and are just syntactic
 sugar for assigning a lambda for a variable. That is, `foo1` and `foo2`
@@ -1283,6 +1435,31 @@ import Foo.a as foo_a, b, c, d as foo_d
 
 // No error here
 get_baz () = my_local_baz
+```
+
+---
+# Exports and Visibility
+
+All names defined at global scope are by default visible to the entire
+package but not to any external packages. Items can optionally be exported
+across package boundaries by adding each name to an `export` list at the top
+of the module.
+
+```ante
+// fib and sum will be exported as library functions
+export fib, sum
+
+fib n = fib_helper n 0 1
+
+fib_helper n a b =
+    if n <= 0 then a
+    else fib_helper (n - 1) b (a + b)
+
+sum n = sum_helper n 0
+
+sum_helper n acc =
+    if n <= 0 then acc
+    else sum_helper (n - 1) (acc + n)
 ```
 
 ---
