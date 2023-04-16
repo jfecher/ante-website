@@ -66,7 +66,7 @@ Ante also has boolean literals which are of the `Bool` type and can be either
 
 Characters in ante are a single, 32-bit [Unicode scalar value](http://www.unicode.org/glossary/#unicode_scalar_value).
 Note that since `String`s are UTF-8, multiple characters are packed into strings and if
-the string contains only ASCII characters, it's size in memory is 1 byte per character in the string.
+the string contains only ASCII characters, its size in memory is 1 byte per character in the string.
 
 ```ante
 print 'H'

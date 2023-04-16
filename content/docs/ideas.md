@@ -18,7 +18,7 @@ Trait deriving is an extremely useful feature for any language with traits and t
 It cuts down on so much boilerplate that I would even argue it to be necessary. Rust, for example,
 relies on implementing derives via procedural macros which are quite difficult for IDEs to handle,
 slow compile times, come with a hefty learning curve, and are required to be put in a separate crate.
-To provide a derive mechanism without these downsides, I propose aa system based on GHC's [Datatype
+To provide a derive mechanism without these downsides, I propose a system based on GHC's [Datatype
 Generic Programming](https://wiki.haskell.org/GHC.Generics) in which we can define how to derive a 
 trait by specifying rules for what to do for product types, sum types, and annotated types.
 
@@ -384,7 +384,7 @@ At the time of writing, I'm leaning towards "no" as an answer for two reasons.
 --- 
 # Allocator Optimizations
 
-The default allocator malloc in addition to it's faster friends jemalloc and mimalloc are
+The default allocator malloc in addition to its faster friends jemalloc and mimalloc are
 designed in such a way to make them general purpose: they must be thread-safe and they cannot
 assume any lifetime constraints of their data. A very common manual optimization in languages
 like C or C++ is then to switch out to a faster allocator for some data. For example, a game
