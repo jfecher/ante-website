@@ -127,9 +127,8 @@ print "The ${offset}th number after 3 is ${3 + offset}"
 # Variables
 
 Variables are immutable by default and can be created via `=`.
-Mutable variables are created via `= mut` and can be mutated
-via the assignment operator `:=`. Also note that ante is strongly,
-statically typed yet we do not need to specify the types of variables.
+Also note that ante is strongly, statically typed yet we do not 
+need to specify the types of variables.
 This is because ante has global [type inference](#type-inference).
 
 ```ante
@@ -147,8 +146,6 @@ more difficult to reason about, creating more bugs and increasing the cost
 of development. However, there are algorithms that are simpler or more efficient
 when written using mutability. Being a systems language, ante takes the position
 that mutability should generally be avoided but is sometimes a necessary evil.
-
-### Shared Mutability
 
 The `Mut a` type provides a shared, mutable reference to its inner element.
 Any variable can be made mutable by shallow copying it into the `Mut` reference:
@@ -177,7 +174,7 @@ count_evens array counter =
         if even elem then
             counter += 1
 
-counter: Mut I32 = &mut 0
+counter: Mut I32 = mut 0
 count_evens [4, 5, 6] counter
 
 print counter  //=> 2
@@ -188,7 +185,7 @@ fields to mutate them directly. This can be done via the `.&` operator to retrie
 a reference to a field:
 
 ```ante
-my_pair = mut 1, 2
+my_pair = mut (1, 2)
 my_pair.&first := 3
 
 field_ref = my_pair.&second
@@ -213,7 +210,7 @@ read_counter (counter: Mut I32) : I32 =
     @counter
 ```
 
-#### Limitations
+### Limitations
 
 To preserve safety, `Mut` cannot be transfered across a few key boundaries.
 
@@ -246,7 +243,7 @@ type IntOrString =
    | I I32
    | S String
 
-var: Mut IntOrString = mut I 0
+var: Mut IntOrString = mut (I 0)
 
 n: Mut I32 = match var
     | I n -> n
@@ -265,7 +262,7 @@ Instead of allowing this, `match` will not match on mutable references and force
 you to dereference before a match, removing any mutability in the process:
 
 ```ante
-var: Mut IntOrString = mut I 0
+var: Mut IntOrString = mut (I 0)
 
 // We can still create a mutable n by copying the I32 into our variable
 n: Mut I32 = mut match @var
@@ -284,7 +281,7 @@ Similarly, we also cannot transfer mutability to elements of resizable data stru
 vectors:
 
 ```ante
-my_vec = mut Vec.of [1, 2, 3]
+my_vec = Vec.of [1, 2, 3]
 
 // If this was possible, we could push to my_vec afterward
 // and potentially invalidate the element reference if the Vec resizes.
@@ -296,9 +293,9 @@ valid: I32 = my_vec#0
 
 // If we do want mutable references to Vec elements, we must decide that
 // when we create the vector:
-mutable_elements = mut Vec.of [&mut 0, &mut 1, &mut 2]
+mutable_elements = Vec.of [mut 0, mut 1, mut 2]
 
-first_element: MutRef I32 = mutable_elements#0
+first_element: Mut I32 = mutable_elements#0
 push mutable_elements 3
 
 // This mutation is fine since first_element is behind a separate, stable pointer now
@@ -1437,8 +1434,7 @@ import Foo.a as foo_a, b, c, d as foo_d
 get_baz () = my_local_baz
 ```
 
----
-# Exports and Visibility
+## Exports and Visibility
 
 All names defined at global scope are by default visible to the entire
 package but not to any external packages. Items can optionally be exported
