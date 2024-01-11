@@ -152,7 +152,7 @@ foo (map: HashMap I32 String) =
 ```
 
 Here, the type checker has both `get: HashMap a b - a -> Maybe b` and `get: Vec a - Usz -> Maybe a` in scope.
-Since it knows `map: HashMap I32 String`, there is only one valid choice and the code is thus unambiguous. Its worth
+Since it knows `map: HashMap I32 String`, there is only one valid choice and the code is thus unambiguous. It's worth
 noting there may be implementation concerns - if we have more than 2 of these in scope, the resolution
 order of these constraints could affect whether subsequent constraints can be inferred to a single instance or not.
 

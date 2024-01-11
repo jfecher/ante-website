@@ -1459,6 +1459,71 @@ sum_helper n acc =
 ```
 
 ---
+# Packages
+
+In addition to modules, Ante has another unit of organization called packages.
+Each package is meant to correspond to a project where each dependency is
+also a package. 
+
+At the source code level, import paths are prefixed by a package name.
+For example, in `import Foo.Bar.Baz`, `Foo` is the package to search for `Bar.Baz`
+within. For new programs in an otherwise empty directory, the only packages
+visible will be the current package, using the current directory's name,
+and the `Std` package containing the standard library.
+
+Packages are not required to all be in the same directory as the current project.
+Instead, the compiler searches for packages in a few directories by default:
+
+- `.` for the current package
+- `/path/to/stdlib` for the stdlib
+- `./deps` for dependencies of the current package
+
+These directories to search for packages in are called the "relative roots" and can
+be configured via compiler flags. The advantages of this design are as follows:
+
+- An internet connection is never required to build a project
+- This design is flexible and compatible with a package manager, although it does not require one
+- Git repositories or other local projects can be cloned into the `deps` directory to quickly add local dependencies
+- Dependencies aren't required to be registered with a package repository just to be used at the language level
+- A package manager is free to configure the relative roots itself so that users never need to touch
+  the `deps` directory or relative roots if they use a package manager
+- Versioning is left to the package manager
+- Multiple projects sharing the same dependencies can be accomplished by simple symlinks
+- Diamond dependencies are naturally allowed
+
+## Diamond Dependencies
+
+Diamond dependencies occur when two dependencies of a project both depend on the same
+dependency, e.g. package `A` has dependencies `B` and `C` which both depend on `D`.
+
+```
+  B
+ / \
+A   D
+ \ /
+  C
+```
+
+This is a valid configuration, and whether or not the `D` that is shared by `B` and `C`
+is the same `D` is determined by the absolute file path to `D`. If the file path is the
+same, the package is the same and its types are thus interchangeable. This can be done
+automatically - for example by a package manager recognizing both `B` and `C` require `D`
+and providing the same `D` to both by configuring the compiler's relative roots or using symlinks.
+
+Similarly, if `B` and `C` require different versions of `D`, these will naturally be
+located at separate filepaths and treated as different packages. So `B` would require `D1`
+and `C` would require `D2`. The result would be the following valid package graph, and
+types from `D1` would be incompatible with types from `D2` (and vice-versa).
+
+```
+  B - D1
+ /
+A
+ \
+  C - D2
+```
+
+---
 # Lifetime Inference
 
 To protect against common mistakes in manual memory management
