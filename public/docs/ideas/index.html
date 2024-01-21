@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+    <meta charset="utf-8">
+<meta name="robots" content="all,follow">
+<meta name="googlebot" content="index,follow,snippet,archive">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Ideas</title>
+<meta name="author" content="jfecher" />
+
+
+
+
+<meta name="keywords" content="ante, programming, language, antelang, lang">
+
+
+<meta name="description" content="">
+
+<meta name="generator" content="Hugo 0.89.0-DEV" />
+
+
+<link href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800' rel='stylesheet' type='text/css'>
+
+
+<link rel="stylesheet" href="//use.fontawesome.com/releases/v5.11.2/css/all.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+
+<link href="/css/animate.css" rel="stylesheet">
+
+
+
+  <link href="/css/style.red.css" rel="stylesheet" id="theme-stylesheet">
+
+
+
+<link href="/css/custom.css" rel="stylesheet">
+
+
+
+  <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+
+
+<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon" />
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
+
+
+<link href="/css/owl.carousel.css" rel="stylesheet">
+<link href="/css/owl.theme.css" rel="stylesheet">
+
+
+<link rel="alternate" href="https://antelang.org/index.xml" type="application/rss+xml" title="Ante">
+
+
+
+
+
+
+
+<meta property="og:updated_time" content="2021-11-02T00:00:00Z">
+
+
+
+<meta name="twitter:card" content="summary">
+
+<meta name="twitter:title" content="Ideas">
+
+<meta name="twitter:description" content="">
+
+
+      <meta charset="utf-8">
+  <meta name="robots" content="all,follow">
+  <meta name="googlebot" content="index,follow,snippet,archive">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ideas</title>
+  <meta name="author" content="" />
+
+  <meta name="keywords" content="ante, programming, language, antelang, lang">	
+  <meta name="description" content="For exploring refinement types, lifetime inference, and algebraic effects">
+
+  <meta name="generator" content="Hugo 0.89.0-DEV" />
+
+  <link href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800' rel='stylesheet' type='text/css'>
+
+  
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+  
+  <link href="https://antelang.org/css/animate.css" rel="stylesheet">
+
+  
+  
+    <link href="https://antelang.org/css/style.red.css" rel="stylesheet" id="theme-stylesheet">
+  
+
+
+  
+  <link href="https://antelang.org/css/custom.css" rel="stylesheet">
+ 
+  
+  <link rel="stylesheet" href="https://antelang.org/css/syntax.css">
+
+  
+  
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  
+
+  
+  <link rel="shortcut icon" href="https://antelang.org/img/favicon.ico" type="image/x-icon" />
+  <link rel="apple-touch-icon" href="https://antelang.org/img/apple-touch-icon.png" />
+  
+
+  <link href="https://antelang.org/css/owl.carousel.css" rel="stylesheet">
+  <link href="https://antelang.org/css/owl.theme.css" rel="stylesheet">
+
+  <link rel="alternate" href="https://antelang.org/index.xml" type="application/rss+xml" title="Ante">
+
+  
+  <meta property="og:title" content="Ideas" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://antelang.org/docs/ideas//" />
+  <meta property="og:image" content="" />
+
+  </head>
+
+  <body>
+
+    <div id="all">
+
+        
+
+    <div class="navbar navbar-default yamm" role="navigation" id="navbar">
+
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand home" href="https://antelang.org/">
+                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="Ideas" class="hidden-xs hidden-sm">
+                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="Ideas" class="visible-xs visible-sm">
+                    <span class="sr-only">Ideas - go to homepage</span>
+                </a>
+                
+<div class="navbar-buttons">
+        <div class="navbar-collapse collapse" id="navigation">
+            <ul class="nav navbar-nav navbar-right">
+            
+            <li class="dropdown">
+                <a href="https://antelang.org/">Home</a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//docs/language">Documentation</a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//docs/ideas">Ideas</a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//docs/roadmap">Roadmap</a>
+            </li>
+            </ul>
+        </div>
+        <button type="button" class="navbar-toggle btn-template-main" onclick="document.getElementById('navigation').classList.toggle('collapse')">
+    <span class="sr-only">Toggle Navigation</span>
+        <i class="fa fa-align-justify"></i>
+    </button>
+</div>
+
+            </div>
+            
+
+            
+            
+
+            <div class="collapse clearfix" id="search">
+
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search">
+                        <span class="input-group-btn">
+
+                    <button type="submit" class="btn btn-template-main"><i class="fa fa-search"></i></button>
+
+                </span>
+                    </div>
+                </form>
+
+            </div>
+            
+
+        </div>
+    </div>
+    
+
+
+
+
+
+
+        <div id="heading-breadcrumbs">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Ideas</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+        <div id="content">
+            <div class="container">
+
+                <div class="row">
+
+                    
+
+                    <div class="col-md-9" id="blog-post">
+
+                        
+                          <p class="text-muted text-uppercase mb-small text-right">
+                            
+                            
+                            
+                              
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                              
+                            
+                          </p>
+                        
+
+                        <div id="post-content">
+                          <hr>
+<p>This page is an incomplete list of features that are currently
+being considered for ante but for one reason or another are not
+included in the language already. These features are listed
+in no particular order.</p>
+<hr>
+<h1 id="derive-without-macros">Derive Without Macros</h1>
+<p>Trait deriving is an extremely useful feature for any language with traits and trait impls.
+It cuts down on so much boilerplate that I would even argue it to be necessary. Rust, for example,
+relies on implementing derives via procedural macros which are quite difficult for IDEs to handle,
+slow compile times, come with a hefty learning curve, and are required to be put in a separate crate.
+To provide a derive mechanism without these downsides, I propose a system based on GHC&rsquo;s <a href="https://wiki.haskell.org/GHC.Generics">Datatype
+Generic Programming</a> in which we can define how to derive a
+trait by specifying rules for what to do for product types, sum types, and annotated types.</p>
+<p>Here&rsquo;s an example in ante (syntax not final):</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">trait</span> <span class="kt">Hash</span> <span class="n">a</span> <span class="k">with</span>
+    <span class="n">hash</span><span class="o">:</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">U64</span>
+
+<span class="k">derive</span> <span class="kt">Hash</span> <span class="n">a</span> <span class="k">via</span> <span class="k">match</span> <span class="n">a</span>
+<span class="o">|</span> <span class="kt">Product</span> <span class="n">a</span> <span class="n">b</span> <span class="ow">-&gt;</span> <span class="n">hash_combine</span> <span class="p">(</span><span class="n">hash</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">hash</span> <span class="n">b</span><span class="p">)</span>
+<span class="o">|</span> <span class="kt">Sum</span> <span class="p">(</span><span class="kt">Left</span> <span class="n">s</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="n">hash</span> <span class="n">s</span>
+<span class="o">|</span> <span class="kt">Sum</span> <span class="p">(</span><span class="kt">Right</span> <span class="n">s</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="n">hash</span> <span class="n">s</span>
+<span class="o">|</span> <span class="kt">Field</span> <span class="n">t</span> <span class="n">_name</span> <span class="ow">-&gt;</span> <span class="n">hash</span> <span class="n">t</span>
+<span class="o">|</span> <span class="kt">Annotated</span> <span class="n">t</span> <span class="n">_anno</span> <span class="ow">-&gt;</span> <span class="n">hash</span> <span class="n">t</span>
+
+<span class="k">type</span> <span class="kt">Foo</span> <span class="ow">=</span> <span class="n">x</span><span class="o">:</span> <span class="kt">I32</span><span class="p">,</span> <span class="n">y</span><span class="o">:</span> <span class="kt">I32</span>
+
+<span class="nf">hash_foo</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Hash</span> <span class="kt">Foo</span> <span class="k">via</span> <span class="k">derive</span>
+</code></pre></div><p>These would function somewhat as type-directed rules for the compiler to generate impls
+from a given type. The exact cases we would need may push toward a different list of cases
+(e.g. a simple Product pair type won&rsquo;t enable easy differentiation of the begin and end of a
+struct&rsquo;s fields) so the final design may be more general with a bit more noise (e.g. we could
+add StartStruct and StructEnd variants which may be useful for Serialization and other traits).</p>
+<p>The above strategy with Hash simply recurses on each field of the type. This is a common enough
+usecase that we can consider even providing this as a builtin strategy to save users some trouble:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">derive</span> <span class="kt">Hash</span> <span class="n">a</span> <span class="k">via</span> <span class="k">recur</span> <span class="n">hash_combine</span>
+</code></pre></div><p>If the trait functions take more than the single <code>a</code> parameter it is unclear if an error should be
+issued or the strategy can default to passing along these parameters as-is. We could try to generalize
+the <code>with</code> clause to accept a function taking all parameters and return values as well but this starts
+to cut into its brevity and ease of use over the more general approach.</p>
+<hr>
+<h1 id="method-forwarding">Method Forwarding</h1>
+<p>Without inheritance, it can still be useful to provide easier composition via a feature like Go&rsquo;s
+<a href="https://golangbyexample.com/inheritance-go-struct/">struct embeddings</a>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">person</span> <span class="kd">struct</span> <span class="p">{</span>
+    <span class="nx">animal</span>
+    <span class="nx">job</span> <span class="kt">string</span>
+<span class="p">}</span>
+</code></pre></div><p>This will forward all methods of <code>animal</code> to work with the type <code>person</code>. Notably, this does not make
+person a subtype of animal, it only generates new wrapper functions.</p>
+<p>Implementing a similar feature for ante is more difficult since ante doesn&rsquo;t have true methods. There
+are a few paths we could explore:</p>
+<ol>
+<li>Explicit inclusion of functions into a new type:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Create species, size, and ferocity wrapper functions around the `animal` field</span>
+<span class="o">!</span><span class="n">include</span> <span class="n">animal</span> <span class="n">species</span> <span class="n">size</span> <span class="n">ferocity</span>
+<span class="k">type</span> <span class="kt">Person</span> <span class="ow">=</span>
+    <span class="n">animal</span><span class="o">:</span> <span class="kt">Animal</span>
+    <span class="n">job</span><span class="o">:</span> <span class="kt">String</span>
+</code></pre></div><p>Since these are arbitrary functions with no <code>self</code> parameter we must decide how to translate the
+types within, say <code>Animal.species</code> to our new <code>Person.species</code> function. One approach would be
+to naively translate all references of <code>Animal</code> to <code>Person</code>, but this gets difficult for parameters
+with types like <code>Vec Animal</code> where we now must add an entire map operation. It would be simpler to
+only change parameters matching exactly the type <code>Animal</code>, but this leaves out the common usecases
+of pointer-wrapper types like <code>ref Animal</code>. We could try to only replace types <code>a</code> given <code>Deref a Animal</code>,
+but involving impl search in this makes it increasingly complex.</p>
+<p>With these complexities it may be better to have users write some boilerplate wrappers for the methods
+since the boilerplate is at least easier in ante with type inference:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">species</span> <span class="n">p</span> <span class="ow">=</span> <span class="n">species</span> <span class="n">p</span><span class="o">.</span><span class="n">animal</span>
+<span class="nf">size</span> <span class="n">p</span> <span class="ow">=</span> <span class="n">size</span> <span class="n">p</span><span class="o">.</span><span class="n">animal</span>
+<span class="nf">ferocity</span> <span class="n">p</span> <span class="ow">=</span> <span class="n">ferocity</span> <span class="n">p</span><span class="o">.</span><span class="n">animal</span>
+</code></pre></div><p>But this is a rather unsatisfactory solution.</p>
+<ol start="2">
+<li>Abandon the notion of forwarding arbitrary functions and limit it to only forward impls. This
+approach still has its own difficulties. Notably, there is no notion of a Self type for traits either,
+though it may be reasonable to manually specify which type to use for Self as the <a href="#derive-without-macros">derive without macros</a>
+and <a href="#traits-as-types">traits as types</a> proposals do. A similar effect to impl forwarding can be achieved
+with normal impl deriving for newtypes:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">NonZeroU32</span> <span class="ow">=</span> <span class="n">x</span><span class="o">:</span> <span class="kt">U32</span>
+
+<span class="nf">derives</span> <span class="ow">=</span> <span class="k">impl</span> <span class="p">(</span><span class="kt">Add</span><span class="p">,</span> <span class="kt">Mul</span><span class="p">)</span> <span class="kt">NonZeroU32</span> <span class="k">via</span> <span class="k">derive</span>
+</code></pre></div><p>However, a generalized forwarding mechanism could be made more generic. For example, it could allow
+deriving from some (but not all) fields:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Wrapper</span> <span class="ow">=</span>
+    <span class="n">a</span><span class="o">:</span> <span class="kt">I32</span>
+    <span class="n">b</span><span class="o">:</span> <span class="kt">I32</span>
+    <span class="n">context</span><span class="o">:</span> <span class="kt">OpaqueContext</span>
+
+<span class="nf">hash_wrapper</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Hash</span> <span class="kt">Wrapper</span> <span class="k">via</span> <span class="k">forward</span> <span class="n">a</span> <span class="n">b</span>
+</code></pre></div><hr>
+<h1 id="overloading">Overloading</h1>
+<p>Given ante does not have true methods, some form of overloading could greatly help alleviate user frustration
+by allowing modules like <code>Vec</code> and <code>HashMap</code> to both be imported despite defining conflicting names like <code>empty</code>,
+<code>of</code>, <code>insert</code>, <code>get</code>, etc. Overloading would also reduce the need for traits as users would no longer need to
+use traits to be lazy with their function names. It would however complicate documentation somewhat. An identifier
+would no longer be uniquely determined by its full module path, referring to a specific instance of it must now
+specify the full module path and type of the function.</p>
+<p>Basic usage would be relatively simple:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Map</span>
+<span class="k">import</span> <span class="kt">Vec</span>
+
+<span class="nf">foo</span> <span class="p">(</span><span class="n">map</span><span class="o">:</span> <span class="kt">HashMap</span> <span class="kt">I32</span> <span class="kt">String</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="n">elem</span> <span class="ow">=</span> <span class="n">get</span> <span class="n">map</span> <span class="mi">4</span>
+    <span class="n">print</span> <span class="n">elem</span>
+</code></pre></div><p>Here, the type checker has both <code>get: HashMap a b - a -&gt; Maybe b</code> and <code>get: Vec a - Usz -&gt; Maybe a</code> in scope.
+Since it knows <code>map: HashMap I32 String</code>, there is only one valid choice and the code is thus unambiguous. It&rsquo;s worth
+noting there may be implementation concerns - if we have more than 2 of these in scope, the resolution
+order of these constraints could affect whether subsequent constraints can be inferred to a single instance or not.</p>
+<p>In addition, there is the question of what should be done for the following code:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo</span> <span class="n">map</span> <span class="ow">=</span>
+    <span class="n">elem</span> <span class="ow">=</span> <span class="n">get</span> <span class="n">map</span> <span class="mi">4</span>
+    <span class="n">print</span> <span class="n">elem</span>
+</code></pre></div><p>This <code>foo</code> would be valid for both <code>map: HashMap (Int a) b</code> and <code>map: Vec b</code> (given <code>Print b</code>).
+There are two options here:</p>
+<ol>
+<li>We can be more flexible and generalize the constraint:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo</span><span class="o">:</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">given</span> 
+    <span class="n">get</span><span class="o">:</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Int</span> <span class="n">b</span> <span class="ow">-&gt;</span> <span class="n">c</span><span class="p">,</span> 
+    <span class="kt">Print</span> <span class="n">c</span>
+</code></pre></div><p>In which case we end up with a kind of compile-time duck typing. Worst case scenario if we made
+a typo (<code>gett</code> instead of <code>get</code>), this could generalize our <code>gett</code> constraint instaed of issuing
+a method not found error. This seems like it can be avoided however by only generalizing if there
+is actually at least 2 functions in scope with that name.</p>
+<p>It is an open question whether generalized function requirements should be resolved via the set of
+functions visible to the caller or just those visible to the definer. If it is the former, this functions
+as a sort of ad-hoc trait feature and the &ldquo;only generalize if there are at least 2 functions in scope&rdquo; of the
+definer rule seems more arbitrary if these functions won&rsquo;t be used for resolution anyway. For this reason,
+it is perhaps better to opt into this feature via a separate syntax, e.g. via <code>.</code> hinting at method
+calls in other languages:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo</span> <span class="n">map</span> <span class="ow">=</span>
+    <span class="n">elem</span> <span class="ow">=</span> <span class="n">map</span><span class="o">.</span><span class="n">get</span> <span class="mi">4</span>
+    <span class="n">print</span> <span class="n">elem</span>
+</code></pre></div><p>This method is opt-in so users are less likely to accidentally hit it and get confused. Moreover, it
+largely follows the already-established type inference and generalization rules for <code>.</code> on fields.</p>
+<ol start="2">
+<li>We can choose to never generalize and always issue an error if there are more than two functions
+that may match in scope. If the user still wishes to allow such functionality, they must use traits
+and impl the trait for each combination of types they want. This approach is less compatible with
+type inference and may lead to users avoiding type inference to be able to use overloading. It may
+also be a stumbling block for new programmers, though both of these proposals realistically may be.</li>
+</ol>
+<hr>
+<h1 id="allocator-effect">Allocator Effect</h1>
+<p>In low level code it can often be helpful to provide a custom allocator for a type.
+Languages like C++ and Rust realized the usefulness of this later on and needed to refactor types like <code>std::vector</code> and <code>std::vec::Vec</code>
+to be parameterized over an allocator. Zig on the other hand instead opts to have users manually thread through
+an allocator parameter to all functions that may allocate. This simplifies the types and makes it easier to make libraries
+that provide custom types also accept custom allocators. However, it can be quite burdensome to users to manually thread the allocator through everywhere.
+Can we do better?</p>
+<p>Yes we can. This pattern of &ldquo;manually threading through X through our program&rdquo; is the same as the <code>State</code> effect. We can design a similar
+effect for allocate which should compile to the same state-passing code but with the benefit of having the compiler thread through
+the allocator for us:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Allocate</span> <span class="n">a</span> <span class="k">with</span>
+    <span class="n">allocate</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">Ptr</span> <span class="n">a</span>
+</code></pre></div><p>Now functions that may allocate are marked with an effect:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Rc</span> <span class="n">a</span> <span class="ow">=</span>
+    <span class="n">raw_ptr</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="n">a</span>
+    <span class="n">aliases</span><span class="o">:</span> <span class="kt">U32</span>
+
+<span class="nf">of</span> <span class="p">(</span><span class="n">value</span><span class="o">:</span> <span class="n">a</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Rc</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Allocate</span> <span class="n">a</span> <span class="ow">=</span>
+    <span class="kt">Rc</span> <span class="p">(</span><span class="n">allocate</span> <span class="n">a</span><span class="p">)</span> <span class="mi">1</span>
+</code></pre></div><p>Providing a custom allocator can now be done through a regular handler:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">malloc_allocator</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Allocate</span> <span class="n">b</span><span class="p">)</span> <span class="o">:</span> <span class="n">a</span> <span class="ow">=</span>
+    <span class="k">handle</span> <span class="n">f</span> <span class="p">()</span>
+    <span class="o">|</span> <span class="n">allocate</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="n">size_of</span> <span class="p">(</span><span class="kt">MkType</span> <span class="o">:</span> <span class="kt">Type</span> <span class="n">b</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="n">malloc</span> <span class="o">|&gt;</span> <span class="k">resume</span>
+
+<span class="nf">rc</span> <span class="ow">=</span> <span class="kt">Rc</span><span class="o">.</span><span class="n">of</span> <span class="mi">3</span> <span class="k">with</span> <span class="n">malloc_allocator</span>
+</code></pre></div><p>or if no handler is provided then <code>main</code> will automatically handle Allocate effects
+with a default handler (presumably deferring to malloc or region allocation).</p>
+<p>There are a number of open questions however:</p>
+<ol>
+<li>
+<p>The interface to <code>allocate</code> is unclear, the interface above doesn&rsquo;t
+allow allocating dynamically sized arrays. An interface closer to
+<code>calloc</code> may be better here.</p>
+</li>
+<li>
+<p>A raw <code>Ptr</code> is returned by the Allocator interface. This means we can
+easily leak values if not careful. We could try to add a lifetime constraint
+of sorts, or perhaps this limitation may be acceptable for users that need
+the low level control.</p>
+</li>
+<li>
+<p>Allocators also need <code>deallocate</code> functionality which is not given. There
+are two options I see here: Add <code>deallocate</code> to the <code>Allocate</code> interface (more flexible),
+or expect all <code>Allocate</code> handlers to outlive their allocations and cleanup when
+the handler finishes (this would be another useful place for a lifetime parameter).
+The first approach seems more viable than the second since the second can be implemented
+in terms of the first by adding cleanup code to the end of the handler and using an
+empty <code>deallocate</code> match.</p>
+</li>
+<li>
+<p>This <code>Allocate a</code> effect would be so ubiquitous that it is perhaps unreasonable to expect
+users to type <code>can Allocate a, Allocate b</code> for every function that may allocate types a and b.
+If we get rid of the type variable and use a slightly different design:</p>
+</li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Allocate</span> <span class="k">with</span>
+    <span class="n">allocate</span><span class="o">:</span> <span class="kt">Type</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Ptr</span> <span class="n">a</span>
+</code></pre></div><p>Then the effect could be folded into the <code>IO</code> effect alias: <code>IO = can Print, Allocate, ...</code>, though
+this would force all allocations within a function to use the same allocator (rather than just
+all allocations of the same type) which seems too limiting. Alternatively, we could encourage users
+to infer the effects for most functions rather than explicitly adding <code>can</code> clauses. This could possibly
+be added with an effect row <code>..</code> to specify some effects while inferring the rest: <code>foo: a -&gt; a can Print, ..</code>.</p>
+<hr>
+<h1 id="traits-as-types">Traits as Types</h1>
+<p>Allowing traits to be used in a type position such that they match with any type
+that implements them could help ease some of the notational burden of traits. Prior
+art here includes <code>impl Trait</code> and <code>dyn Trait</code> in rust, existential types in haskell,
+any interface type in OO langs, and others.</p>
+<p>An ideal implementation would take advantage of ante being slightly higher level than
+rust to get rid of the distinction between <code>impl</code> and <code>dyn</code> trait to just choose the right
+one where possible. This should allow for both:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">print</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">Show</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span>
+    <span class="n">printne</span> <span class="s">&#34;${show x}</span><span class="se">\n</span><span class="s">&#34;</span>
+</code></pre></div><p>and</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">print_all</span> <span class="p">(</span><span class="n">xs</span><span class="o">:</span> <span class="kt">Vec</span> <span class="kt">Show</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span>
+    <span class="n">printne</span> <span class="sc">&#39;[&#39;</span>
+    <span class="n">fields</span> <span class="ow">=</span> <span class="n">map</span> <span class="n">xs</span> <span class="n">show</span> <span class="o">|&gt;</span> <span class="n">join</span> <span class="s">&#34;, &#34;</span>
+    <span class="n">iter</span> <span class="n">fields</span> <span class="n">printne</span>
+    <span class="n">printne</span> <span class="sc">&#39;]&#39;</span>
+</code></pre></div><p>Where the semantics of <code>print</code> likely translates to <code>fn print(x: impl Show)</code> in rust, and
+the semantics of <code>print_all</code> likely translate to <code>fn print_all(xs: Vec&lt;dyn Show&gt;)</code>. An
+alternative would be to have both functions be polymorphic over whether the underlying type
+is known or whether the trait is dynamic.</p>
+<h2 id="multiple-variable-traits">Multiple variable traits</h2>
+<p>In traits with multiple type parameters or traits with type parameters which are not used
+directly in a function&rsquo;s parameters it is unclear which type a trait object would represent
+at runtime. For example, given the traits</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">trait</span> <span class="kt">Pair</span> <span class="n">a</span> <span class="n">b</span> <span class="k">with</span>
+    <span class="n">pack</span> <span class="o">:</span> <span class="n">a</span> <span class="o">-</span> <span class="n">b</span> <span class="ow">-&gt;</span> <span class="kt">String</span>
+
+<span class="k">trait</span> <span class="kt">Parse</span> <span class="n">a</span> <span class="k">with</span>
+    <span class="n">parse</span> <span class="o">:</span> <span class="kt">String</span> <span class="ow">-&gt;</span> <span class="n">a</span>
+
+<span class="nf">example1</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">Pair</span><span class="p">)</span> <span class="ow">=</span> <span class="n">pack</span> <span class="o">???</span>
+
+<span class="nf">example2</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">Parse</span><span class="p">)</span> <span class="ow">=</span> <span class="n">parse</span> <span class="o">?</span>
+</code></pre></div><p>What should a trait object for <code>Pair</code> represent? Arbitrarily picking one type seems out
+of the question. To be able to call <code>pack</code> we&rsquo;d need to supply both parameters somehow.
+A valid response may be just to limit trait objects to single parameter traits with
+&ldquo;object-safe&rdquo; functions as rust does, but this may be more limiting than is needed. For
+example, if we change our syntax such that the existential type variable must be explicitly
+specified, then <code>Pair</code> becomes usable as a trait object as long as we specify a type to pack with:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">example1</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">Pair</span> <span class="n">_</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span> <span class="n">pack</span> <span class="n">x</span> <span class="mi">7</span>
+
+<span class="nf">example1b</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">Pair</span> <span class="kt">String</span> <span class="n">_</span><span class="p">)</span> <span class="ow">=</span> <span class="n">pack</span> <span class="s">&#34;hello&#34;</span> <span class="n">x</span>
+</code></pre></div><p>This would incur some notational burden but is otherwise explicit and strictly more
+flexible than the previous approach. <code>_</code> is likely not a good keyword to be used here
+however since it is already used for explicit currying in ante, and this may be
+applicable to type constructors some day.</p>
+<h2 id="exists-syntax">Exists syntax</h2>
+<p>It is worth briefly exploring a more explicit and flexible syntax via an <code>exists</code>
+keyword to introduce an existential type variable (rather than the default <code>forall</code> quantified
+type variables ante has). It sidesteps most of the issues with previous syntaxes for trait
+objects by separating the exists clause from where the type is used later in the signature:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">example1</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="n">e</span><span class="o">?</span><span class="p">)</span> <span class="o">:</span> <span class="kt">String</span> <span class="k">with</span> <span class="kt">Pair</span> <span class="n">e</span><span class="o">?</span> <span class="kt">I32</span> <span class="ow">=</span> <span class="o">...</span>
+</code></pre></div><p>Although flexible, this does not solve the original problem of improving the ergonomics of
+using traits in function signatures. Instead, it makes it worse.</p>
+<h2 id="traits-and-effects">Traits and effects</h2>
+<p>Since traits in ante can be thought of as a restricted form of effects which must resume in
+a tail position and have an automatic impl search, a natural question that arises is &ldquo;if there
+are trait objects, are there effect objects too?&rdquo;</p>
+<p>At the time of writing, I&rsquo;m leaning towards &ldquo;no&rdquo; as an answer for two reasons.</p>
+<ol>
+<li>Trait objects exist to ease notational burden of traits or to provide dynamic dispatch.
+<ul>
+<li>Effects do not have the same notational burden since they do not need to have a type
+implementing the effect passed in through the function&rsquo;s parameters. There would thus
+be no benefit for most effects like <code>State s</code> because these are already only found in
+the effects clause of a type signature. Using traits in this way would be useless since
+without an accompanying <code>(iter: it)</code> parameter, a trait like <code>Iterator it elem</code> would
+not be usable within a function to begin with.</li>
+<li>For similar reasons, effects do not need to be dynamically dispatched since they have
+no type that can represent them and handlers should be statically known.</li>
+</ul>
+</li>
+<li>Erasing effects in any way increases the difficulty of optimizing effects which would be
+a hard sell when algebraic effects must already be carefully optimized out to not incur
+great performance loss.</li>
+</ol>
+<hr>
+<h1 id="allocator-optimizations">Allocator Optimizations</h1>
+<p>The default allocator malloc in addition to its faster friends jemalloc and mimalloc are
+designed in such a way to make them general purpose: they must be thread-safe and they cannot
+assume any lifetime constraints of their data. A very common manual optimization in languages
+like C or C++ is then to switch out to a faster allocator for some data. For example, a game
+may elect to use a bump-pointer allocator for any temporary data that is only needed to process
+the current frame. Another optimization could be to swap out these global allocators for faster
+thread-local allocators that require no atomic or locking instructions for synchronization.</p>
+<h2 id="automatic-usage-of-thread-local-allocators">Automatic usage of thread-local allocators</h2>
+<p>In Ante, the goal should be to perform these optimizations automatically. The compiler should
+be able to analyze the transfer of data such that if it is only used in a single thread, a faster thread-local
+allocator is used over the global allocator. Otherwise, we&rsquo;d fall back to a global thread-safe allocator like mimalloc.
+This optimization would be similar to Koka&rsquo;s Perceus system in which atomic reference count instructions
+are optimized into non-atomic reference count instructions if the referenced data is used in a single
+threaded manner.</p>
+<p>This will likely end up being an important optimization since thread local allocators can be
+substantially faster than global allocators. A key property of this optimization however is that it
+would only change the default allocator. If users wish to manually optimize their program and decide
+which allocators to use where they will still be able to as before.</p>
+<h2 id="allocate-all-memory-up-front-on-the-stack">Allocate all memory up-front on the stack</h2>
+<p>If the compiler can put a bound on the amount of memory a thread may allocate for either thread-local
+or shared data, we would be able to allocate all of a thread&rsquo;s memory up front. Thread-local data could
+simply be allocated on the thread&rsquo;s stack and shared data on the parent thread&rsquo;s stack or global allocator.
+This optimization is likely less practical for longer running threads where no memory bound
+is likely to be found.</p>
+<h2 id="grouping-allocations-with-lifetime-inference">Grouping allocations with lifetime inference</h2>
+<p>A good way to optimize allocations is to simply make fewer of them. Ante should be able to leverage
+lifetime analysis to find places where we can combine allocations and deallocations of multiple variables.
+A trivial example would be:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo</span> <span class="p">()</span> <span class="ow">=</span>
+    <span class="n">l1</span> <span class="ow">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">:</span> <span class="kt">List</span> <span class="kt">I32</span>
+    <span class="n">l2</span> <span class="ow">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span> <span class="o">++</span> <span class="n">l1</span>
+    <span class="o">...</span>
+    <span class="p">()</span>
+</code></pre></div><p>A naive implementation may allocate all these list nodes separately but since they are created adjacent
+to each other and neither are needed outside the current function we should be able to optimize the 6
+list node allocations into 1 call to the allocator. In this specific example, the allocator may also
+simply be the stack itself since we do not need a dynamic lifetime for these nodes in this function.</p>
+<p>Grouping allocations in this way however leads to questions on how aggressively we should group adjacent
+items. What if they are separated by other definitons? Or arbitrary function calls? In general widening
+the lifetime of one allocation to match another&rsquo;s so it may be grouped increases the amount of memory
+the resulting program would use by allocating earlier and freeing later. It is unclear what heuristics
+should be used - if any - to make this decision on when to group allocations separated by other statements.</p>
+<hr>
+<h1 id="always-incremental-compilation">Always Incremental Compilation</h1>
+<p>For languages with long compile times like rust (and presumably ante due to refinement types, lifetime inference,
+and monomorphisation) incremental compilation largely solves the problem of speeding up compile times when developers
+are iterating on a problem. It does not solve the problem for users however when they go to download a
+program or library which now must be recompiled from scratch. Why is this the case? Even if the user is on
+some new architecture that the compiler must optimize for, this does not mean we should have to re-do all of
+lexing, parsing, name resolution, type checking, etc for programs that we already know to compile.</p>
+<p>Ante&rsquo;s solution to this will be experimenting with distributing the incremental compilation metadata along with
+the code. When you download a library from a trusted source (centralized package repository or a company-specific
+local repository) you can compile the project incrementally rather than compiling from scratch. Downloading a new
+library and adding a line to your program making use of it should take no longer to compile than adding a line to
+your program without adding a new library.</p>
+<h2 id="formatting">Formatting</h2>
+<p>The language Unison represents a codebase as a sqlite database rather than traditional text. It achieves
+incremental compilation by only inserting verified code that passed type checking and all
+prior passes into this database. It would be possible for ante to store incremental compilation metadata in
+such a database as well. Advantages of this scheme would be leveraging a pre-existing tool and packing metadata
+together into a single somewhat standard binary format.</p>
+<h2 id="limitations">Limitations</h2>
+<p>This approach of distributing incremental compilation metadata has a few limitations that are worth noting.</p>
+<h3 id="space-and-downloads">Space and Downloads</h3>
+<p>Locally, little to no extra space should be required from this feature as the extra incremental information downloaded
+from a library would have been created anyway when users go to compile the library. It is possible to use extra space
+if the compiler ever stores extra information that would be unneeded for some users. For example, caching different llvm
+IR representations that are dependent on the host&rsquo;s architecture. Solving this may either mean compressing the data so that
+as little space as possible is duplicated, or it may mean not saving data that is very dependent on the host&rsquo;s system such
+as llvm IR.</p>
+<p>Downloading this data rather than creating it on compilation would mean an increase in download times. Compared to Unison,
+ante users would be downloading both the textual code and the incremental version rather than just the later. It is unclear
+how much of a problem it would be in practice. One potential solution would be to ensure the incremental data of a library
+or program contains all the information needed to compile it. Then downloading the release of a library from a package manager
+would only entail downloading the metadata and not the source code itself. One potential issue with this solution is IDE integration.
+A hypothetical ante-language-server could be able to read type signatures or documentation from this, but if the user wished
+to explore the source code of the library they would likely only be able to see a pretty-printed AST recreated from the metadata.</p>
+<hr>
+<h1 id="builtin-recursion-schemes">Builtin Recursion Schemes</h1>
+<p>Often in functional programming we encounter familiar looping patterns that can be factored out
+into functions like map, filter, or fold. Functions over arbitrary recursive types (like trees)
+however, tend to be written by hand with manual recursion.
+<a href="https://hackage.haskell.org/package/recursion-schemes">Recursion Schemes</a> provide a solution to
+factoring out these recursive patterns, but they come with a high barrier to understanding and
+require users to manually define a fixpoint version of their types. Ante could in theory create
+and convert between the fixpoint version of the type behind the scenes to give users a nicer API.
+Lets consider a sum function for a tree type:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Tree</span> <span class="ow">=</span>
+   <span class="o">|</span> <span class="kt">Branch</span> <span class="kt">Tree</span> <span class="kt">Tree</span>
+   <span class="o">|</span> <span class="kt">Leaf</span> <span class="kt">I32</span>
+
+<span class="nf">sum</span> <span class="n">tree</span> <span class="ow">=</span>
+    <span class="k">match</span> <span class="n">tree</span>
+    <span class="o">|</span> <span class="kt">Branch</span> <span class="n">a</span> <span class="n">b</span> <span class="ow">-&gt;</span> <span class="n">sum</span> <span class="n">a</span> <span class="o">+</span> <span class="n">sum</span> <span class="n">b</span>
+    <span class="o">|</span> <span class="kt">Leaf</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">x</span>
+</code></pre></div><p>We can use the <code>cata</code> (or <code>fold</code>) recursion scheme to replace each recursive part of our
+data type with the result of our recursive function on that data. Here&rsquo;s an example using
+a new <code>fold</code> keyword for this purpose:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">sum</span> <span class="n">tree</span> <span class="ow">=</span>
+    <span class="n">fold</span> <span class="n">tree</span>
+    <span class="o">|</span> <span class="kt">Branch</span> <span class="n">a</span> <span class="n">b</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+    <span class="o">|</span> <span class="kt">Leaf</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">x</span>
+</code></pre></div><p>So far, the little we gain in brevity is countered with the additional cognitive overhead
+of requiring users to understand the additional construct(s) that would be added to the language.
+Lets look at a more complex example:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Ast</span> <span class="ow">=</span>
+    <span class="o">|</span> <span class="kt">Var</span> <span class="kt">String</span>
+    <span class="o">|</span> <span class="kt">Int</span> <span class="kt">I32</span>
+    <span class="o">|</span> <span class="kt">Let</span> <span class="p">(</span><span class="n">name</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">(</span><span class="n">value</span><span class="o">:</span> <span class="kt">Ast</span><span class="p">)</span> <span class="p">(</span><span class="n">body</span><span class="o">:</span> <span class="kt">Ast</span><span class="p">)</span>
+    <span class="o">|</span> <span class="kt">Add</span> <span class="kt">Ast</span> <span class="kt">Ast</span>
+
+<span class="nf">free_vars</span> <span class="p">(</span><span class="n">ast</span><span class="o">:</span> <span class="kt">Ast</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Set</span> <span class="kt">String</span> <span class="ow">=</span>
+    <span class="k">match</span> <span class="n">ast</span>
+    <span class="o">|</span> <span class="kt">Var</span> <span class="n">name</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">name</span><span class="p">]</span>
+    <span class="o">|</span> <span class="kt">Int</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="kt">[]</span>
+    <span class="o">|</span> <span class="kt">Let</span> <span class="n">name</span> <span class="n">value</span> <span class="n">body</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="n">free_vars</span> <span class="n">value</span> <span class="o">++</span> <span class="n">free_vars</span> <span class="n">body</span><span class="p">)</span><span class="o">.</span><span class="n">remove</span> <span class="n">name</span>
+    <span class="o">|</span> <span class="kt">Add</span> <span class="n">l</span> <span class="n">r</span> <span class="ow">-&gt;</span> <span class="n">free_vars</span> <span class="n">l</span> <span class="o">++</span> <span class="n">free_vars</span> <span class="n">r</span>
+</code></pre></div><p>And written with the cata/fold scheme:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">free_vars</span> <span class="p">(</span><span class="n">ast</span><span class="o">:</span> <span class="kt">Ast</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Set</span> <span class="kt">String</span> <span class="ow">=</span>
+    <span class="n">fold</span> <span class="n">ast</span>
+    <span class="o">|</span> <span class="kt">Var</span> <span class="n">name</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">name</span><span class="p">]</span>
+    <span class="o">|</span> <span class="kt">Int</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="kt">[]</span>
+    <span class="o">|</span> <span class="kt">Let</span> <span class="n">name</span> <span class="n">value_names</span> <span class="n">body_names</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="n">value_names</span> <span class="o">++</span> <span class="n">body_names</span><span class="p">)</span><span class="o">.</span><span class="n">remove</span> <span class="n">name</span>
+    <span class="o">|</span> <span class="kt">Add</span> <span class="n">l</span> <span class="n">r</span> <span class="ow">-&gt;</span> <span class="n">l</span> <span class="o">++</span> <span class="n">r</span>
+</code></pre></div><p>Another slight improvement. It is also worth noting that recursive functions taking multiple
+parameters would not work with this scheme since it would not know which values to pass
+at each recursive call. There are other recursion schemes including <code>ana</code> for unfolding, and
+<code>hylo</code> for folding and unfolding, among many more that are more flexible, though adding these
+must be weighed against the additional complexity they would add to the language. Currently the
+expected benefit of adding support for recursion schemes directly into the language seems
+too small to be worth the implementation effort, but it was still a useful avenue to explore.</p>
+
+                        </div>
+                        
+                        
+
+                    </div>
+                    
+
+                    
+
+                    
+
+                    <div class="col-md-3">
+
+                        
+
+                        <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://antelang.org/"><h1>Ante</h1></a>
+    </div>
+
+    
+    
+    
+    
+    <div class="table-of-contents toc bd-callout">
+        
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                    
+                    
+                    
+                    <a href="/docs/ideas/#derive-without-macros">
+                        <li>Derive Without Macros</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                    
+                    
+                    
+                    <a href="/docs/ideas/#method-forwarding">
+                        <li>Method Forwarding</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                    
+                    
+                    
+                    <a href="/docs/ideas/#overloading">
+                        <li>Overloading</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                    
+                    
+                    
+                    <a href="/docs/ideas/#allocator-effect">
+                        <li>Allocator Effect</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                    
+                    
+                    
+                    <a href="/docs/ideas/#traits-as-types">
+                        <li>Traits as Types</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/docs/ideas/#multiple-variable-traits">
+                        <li>Multiple variable traits</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/docs/ideas/#exists-syntax">
+                        <li>Exists syntax</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/docs/ideas/#traits-and-effects">
+                        <li>Traits and effects</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                    
+                    
+                    
+                    <a href="/docs/ideas/#allocator-optimizations">
+                        <li>Allocator Optimizations</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/docs/ideas/#automatic-usage-of-thread-local-allocators">
+                        <li>Automatic usage of thread-local allocators</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/docs/ideas/#allocate-all-memory-up-front-on-the-stack">
+                        <li>Allocate all memory up-front on the stack</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/docs/ideas/#grouping-allocations-with-lifetime-inference">
+                        <li>Grouping allocations with lifetime inference</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                    
+                    
+                    
+                    <a href="/docs/ideas/#always-incremental-compilation">
+                        <li>Always Incremental Compilation</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/docs/ideas/#formatting">
+                        <li>Formatting</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/docs/ideas/#limitations">
+                        <li>Limitations</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                        <ul class="toc-h3">
+                    
+                    
+                    
+                    
+                    <a href="/docs/ideas/#space-and-downloads">
+                        <li>Space and Downloads</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                    
+                    
+                    
+                    <a href="/docs/ideas/#builtin-recursion-schemes">
+                        <li>Builtin Recursion Schemes</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                
+            
+        
+    </div>
+    
+
+
+    <p>&copy; 2024. All rights reserved. </p>
+  </div>
+</div>
+
+
+                        
+
+                    </div>
+                    
+
+                    
+
+                </div>
+                
+
+            </div>
+            
+        </div>
+        
+
+        <footer id="footer">
+    <div class="container">
+
+        
+
+        <div class="col-md-4 col-sm-6">
+
+            
+            <h4>Recent posts</h4>
+
+            <div class="blog-entries">
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="https://antelang.org/docs/roadmap/">
+                          
+                            <img src="/img/placeholder.png" class="img-responsive" alt="Roadmap">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/docs/roadmap/">Roadmap</a></h5>
+                    </div>
+                </div>
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="https://antelang.org/docs/ideas/">
+                          
+                            <img src="/img/placeholder.png" class="img-responsive" alt="Ideas">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/docs/ideas/">Ideas</a></h5>
+                    </div>
+                </div>
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="https://antelang.org/docs/language/">
+                          
+                            <img src="/img/placeholder.png" class="img-responsive" alt="Language Tour">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/docs/language/">Language Tour</a></h5>
+                    </div>
+                </div>
+                
+            </div>
+
+            <hr class="hidden-md hidden-lg">
+            
+
+        </div>
+        
+
+        
+
+    </div>
+    
+</footer>
+
+
+
+
+
+
+
+<div id="copyright">
+    <div class="container">
+        <div class="col-md-12">
+            
+            <p class="pull-right">
+              Template by <a href="https://bootstrapious.com/p/universal-business-e-commerce-template">Bootstrapious</a>.
+              
+
+              Ported to Hugo by <a href="https://github.com/devcows/hugo-universal-theme">DevCows</a>.
+            </p>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+    </div>
+    
+
+    
+<script src="//code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Counter-Up/1.0/jquery.counterup.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-parallax/1.1.3/jquery-parallax.js"></script>
+
+<script src="https://antelang.org/js/front.js"></script>
+
+
+<script src="https://antelang.org/js/owl.carousel.min.js"></script>
+
+
+  </body>
+</html>
