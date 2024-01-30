@@ -12,9 +12,9 @@ newContentEditor = "vim"
   viewMorePostLink = "/blog/"
   mainSections = ["blog"]
   description = "For exploring refinement types, lifetime inference, and algebraic effects"
-  author = "jfecher"
+  author = "Jake Fecher"
   defaultKeywords = ["ante", "programming", "language", "antelang", "lang"]
-  date_format = ""
+  date_format = "2006-01-02"
   style = "red"
 # default, blue, green, marsala, pink, red, turquoise, violet
 
@@ -86,6 +86,11 @@ newContentEditor = "vim"
     subtitle = ""
 
 [params.recent_posts]
-    enable = false
+    enable = true
     title = "Recent posts"
     subtitle = "Read the latest blog posts"
+
+[taxonomies]
+  category = "categories"
+  tag = "tags"
+  authors = "authors"

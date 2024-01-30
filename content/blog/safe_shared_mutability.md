@@ -1,4 +1,5 @@
 +++
+authors = ["Jake Fecher"]
 title = "Achieving Safe, Aliasable Mutability with Unboxed Types"
 date = "2024-01-29"
 categories = ["mutability", "thread safety", "memory management"]
@@ -47,8 +48,8 @@ we rightfully get an error.
 This is a great thing to prevent, but it is unfortunate that AxM errors are some of the most common
 errors in Rust and make the language more difficult to learn when they are run into so often. As
 someone who has been writing Rust roughly since 1.0, I think it's fair to say even experienced users
-run into AxM errors every now and then. Fixing these often requires excessive cloning or reworking
-an algorithm which can be tedious. 
+run into AxM errors every now and then. Fixing these often requires laboriously reworking an algorithm
+or - unfortunately - giving up and resorting to inserting excessive calls to `clone` in the program.
 
 Moreover, the issue with AxM is that aliasable mutability isn't actually always dangerous.
 Consider the following program:
@@ -132,18 +133,11 @@ reference subtyping here instead. Most importantly, this polymorphism allows mos
 to be written in a familiar style, ignoring the fact that `shared` or `own` exist:
 
 ```ante
-evaluate (program: &Ast) (context: &mut Context) : I32 can Fail =
-    match program
-    | Int x -> x
-    | Var name -> lookup context name
-    | Add lhs rhs -> evaluate lhs context + evaluate rhs context
-    | Let name expr body ->
-        expr_value = evaluate expr context
-        define context name expr_value
-        evaluate body context
+log_foo (foo: &Foo) (context: &mut Context) : Unit =
+    if context.logging_enabled then
+        log "Found foo: ${foo}"
+        context.logs += 1
 ```
-
-(`can Fail` here is an [Algebraic Effect](/docs/language/#algebraic-effects))
 
 How then, does Ante prevent holding onto references of things that may change out from under itself,
 such as vector elements or union fields?
@@ -156,6 +150,8 @@ These cases are simply marked as requiring owning references:
 ```ante
 get (v: &own Vec t) (index: Usz) : &own t can Fail = ...
 ```
+
+(`Fail` here is an [Algebraic Effect](/docs/language/#algebraic-effects))
 
 This function signature states that in order to return a reference to a vector's elements,
 it needs an owned, though immutable, reference to the Vec. Note that "owned" here still allows
@@ -264,6 +260,32 @@ which may be mutably aliased, we are all good to go!
 
 If you ever do need interior mutability to lend out owning references, then you will still need
 to resort to a `RefCell t` or similar interior mutability type inherited from Rust.
+
+---
+
+## New User Experience
+
+The last important point to consider is that of a new user to Ante or Rust. This user may be
+familiar with other programming languages but crucially is not yet aware of ownership or borrowing
+which are somewhat unique to these languages.
+
+In Rust, trying to mutably borrow an already borrowed reference is one of the more memorable errors
+for new users to make due to how easy it is to encounter and how difficult it can be to understand at first.
+A new user just experimenting with the language for the first time will likely have a hard time avoiding
+these errors until learning about borrowing. As a result, new users tend to insert excessive calls to 
+`clone` and tutorials need to introduce borrowing and AxM somewhat early on.
+
+In Ante, new users also have the option of simply using shape-stable types. When defining their types
+they can define their vectors to be vectors of pointer types and their unions to have pointers for
+each variant's data. This will avoid any AxM errors for the rest of their program - unless they accidentally
+call `get` over `get_cloned` or similar. In that case, they will be given a type error and (hopefully)
+a helpful message suggesting to use `get_cloned` as an alternative. Tutorials can encourage this approach
+as well by using pointer types more often at first, until introducing owning references later on as
+a method of reducing boxing. Compared to the Rust approach, this approach requires a one-time change
+in data types (if not done already / copied from a tutorial), but in return new users are much less likely
+to encounter AxM related errors. Comparing the runtime costs of the two work arounds, excessive cloning has the
+potential to degrade performance considerably when using larger types, but extra boxing in collection types
+and tagged unions won't generally have as drastic a performance impact.
 
 ---
 
