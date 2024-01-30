@@ -139,7 +139,7 @@ log_foo (foo: &Foo) (context: &mut Context) : Unit =
         context.logs += 1
 ```
 
-How then, does Ante prevent holding onto references of things that may change out from under itself,
+How then, does Ante prevent holding onto references of things that may change out from under themselves,
 such as vector elements or union fields?
 
 ---
