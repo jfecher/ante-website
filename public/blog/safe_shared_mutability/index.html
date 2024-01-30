@@ -36,7 +36,7 @@
 
 
 
-<link href="/css/custom.css?1706640501" rel="stylesheet">
+<link href="/css/custom.css?1706640582" rel="stylesheet">
 
 
 
@@ -404,7 +404,8 @@ such as vector elements or union fields?</p>
 <h2 id="preventing-borrows-when-a-types-shape-is-not-stable">Preventing borrows when a type&rsquo;s shape is not stable</h2>
 <p>These cases are simply marked as requiring owning references:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">get</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">own</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="o">:</span> <span class="o">&amp;</span><span class="k">own</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
-</code></pre></div><p>(<code>Fail</code> here is an <a href="/docs/language/#algebraic-effects">Algebraic Effect</a>)</p>
+</code></pre></div><p>(<code>Fail</code> here is an <a href="/docs/language/#algebraic-effects">Algebraic Effect</a>. In this example, it is used
+to signal the index was out of bounds)</p>
 <p>This function signature states that in order to return a reference to a vector&rsquo;s elements,
 it needs an owned, though immutable, reference to the Vec. Note that &ldquo;owned&rdquo; here still allows
 multiple immutable references. A type is only considered to be shared when there is a mutable

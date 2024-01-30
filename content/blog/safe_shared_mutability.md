@@ -151,7 +151,8 @@ These cases are simply marked as requiring owning references:
 get (v: &own Vec t) (index: Usz) : &own t can Fail = ...
 ```
 
-(`Fail` here is an [Algebraic Effect](/docs/language/#algebraic-effects))
+(`Fail` here is an [Algebraic Effect](/docs/language/#algebraic-effects). In this example, it is used
+to signal the index was out of bounds)
 
 This function signature states that in order to return a reference to a vector's elements,
 it needs an owned, though immutable, reference to the Vec. Note that "owned" here still allows
