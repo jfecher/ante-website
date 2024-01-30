@@ -37,7 +37,7 @@ by a related feature to ownership: Rust's borrowing rules. It turns out that mov
 into and out of each function is not very convenient, so Rust also lets us create borrowed
 references to values. These references can be mutable or immutable, and their lifetimes are tied
 to that of the owned value. This particular error is prevented by Rust's "Aliasibility XOR Mutability"
-rule, which I'll call AxM for short. AxM in Rust states that you can have alias-able borrowed
+rule, which I'll call AxM for short. AxM in Rust states that you can have aliasable borrowed
 references, or you can have mutability, but not both. So in the example above, since `Vec::push`
 requires a mutable `&mut Vec<i32>` reference, we got a compile-time error trying to call it since
 we also had the immutably borrowed reference `first_elem: &i32` in scope. Had we not printed
@@ -96,9 +96,7 @@ with move semantics. As a bonus, this scheme is also completely zero-cost.
 
 Ante's system for ensuring memory & thread safety uses Rust as a foundation. Anywhere a non-reference
 value is seen, it is an owned value. Similarly, anytime `&t` or `&mut t` are seen, these are borrowed
-references. The first difference compared to Rust is that Ante's references are [second-class](../second_class_references).
-This isn't terribly important for shared mutability, but it helps alleviate the amount of required
-notation users need to write. More on that later.
+references.
 
 The most important change from Rust's system is that in addition to being tagged with whether they
 are `mut`able or not, references are also tagged with whether they are `own`ed, or whether they
@@ -112,7 +110,7 @@ also_elem1 = &mut my_tuple.0
 print elem1  // Outputs 1
 print also_elem1  // Outputs 1
 ```
-The type of `elem1` and `also_elem1` here is `&shared mut (I32, I32)`.
+The type of `elem1` and `also_elem1` here is `&shared mut I32`.
 
 We can also mutate through these shared references:
 ```ante
@@ -126,11 +124,12 @@ print elem1  // Outputs 3
 ```
 
 This is because unadorned references (`&` and `&mut`) are polymorphic in whether they are `own`ed
-or `shared`. These polymorphic references have the capabilities of a `shared` references since they
-may also be shared. The polymorphism comes in handy when returning a reference. If you passed in an
+or `shared`. These polymorphic references have the capabilities of `shared` references since anywhere
+a `shared` reference is valid, an `own`ed reference would be as well.
+This polymorphism comes in handy when returning a reference. If you passed in an
 owned reference, you'll get an owned one back. This would not be the case if Ante were designed to use
 reference subtyping here instead. Most importantly, this polymorphism allows most code with references 
-to be written the same familiar style, ignoring the fact that `shared` or `own` exist:
+to be written in a familiar style, ignoring the fact that `shared` or `own` exist:
 
 ```ante
 evaluate (program: &Ast) (context: &mut Context) : I32 can Fail =
@@ -193,6 +192,9 @@ print v_ref1
 print v_ref2
 ```
 
+Taking the reference of a tagged union's fields also requires an owned reference, although this
+must be built into the language.
+
 ---
 
 ## Making Shared Useful
@@ -227,9 +229,9 @@ get_cloned (v: &Vec t) (index: Usz) : t can Fail given Clone t = ...
 
 As long as we don't return a reference to an element, the API itself is safe.
 Note that since this requires cloning each value, this will be fine for small,
-primitive types, but for vectors of potentially large struct elements, cloning
-can be expensive. To work around this, we can have a vector of pointer types instead
-to reduce cloning: `Vec (Rc MyStruct)`. Looks like we've rediscovered why languages
+primitive types, but will be expensive for vectors with more complex element types. 
+To work around this, we can have a vector of pointer types instead
+to reduce the cost of cloning: `Vec (Rc MyStruct)`. Looks like we've rediscovered why languages
 like Pony, Koka, Haskell, Java, and many others box values! With this, we've gone full
 circle and (I think) have achieved the best of both the unboxed and boxed worlds.
 
@@ -237,19 +239,18 @@ circle and (I think) have achieved the best of both the unboxed and boxed worlds
 
 ## Shared Interior Mutability
 
-Rust users will note the `Vec (Rc MyStruct)` suggestion above does not have quite 
+Eagle-eyed Rust users will note that the `Vec (Rc MyStruct)` suggestion above does not have quite 
 the same semantics as an owned `Vec<MyStruct>` in Rust. Most notably, `Rc<T>` in Rust
 (and `Rc t` in Ante) prevent mutating the inner element by only handing out immutable
 references. If we want to still be able to mutate `MyStruct`, we have to resort to interior
 mutability. In Rust, this can be quite loathsome. Using a type like `RefCell<T>` enables us
-to mutate the inner value but also requires runtime checking to ensure a single writeable
-reference is borrowed at a time. This can even cause runtime panics in our code if we get
-this incorrect!
+to mutate the inner value but also requires runtime checking to ensure AxM rules are upheld. 
+This can even cause runtime panics in our code if we get this incorrect!
 
 Ante however, provides the `Mut t` type for aliasable interior mutability. Since Ante already
 allows aliasable mutability, there are absoluately no runtime checks required and `Mut t`
 is just a wrapper struct containing only the wrapped `t`. This, along with the lack of runtime
-checks for other `&shared mut t` references detailed above is what makes this scheme zero-cost.
+checks for other `&shared mut t` references is what makes this scheme zero-cost.
 
 The key difference with `Mut t` which makes it safe is that it can only hand out shared
 mutable references:
