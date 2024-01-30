@@ -36,7 +36,7 @@
 
 
 
-<link href="/css/custom.css?1706640375" rel="stylesheet">
+<link href="/css/custom.css?1706640501" rel="stylesheet">
 
 
 
@@ -410,7 +410,7 @@ it needs an owned, though immutable, reference to the Vec. Note that &ldquo;owne
 multiple immutable references. A type is only considered to be shared when there is a mutable
 reference to it and at least one other reference to it of any kind.
 When we try to call <code>get</code> with a shared vector, we&rsquo;ll get an error:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">v</span> <span class="ow">=</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">v</span> <span class="ow">=</span> <span class="k">mut</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 
 <span class="nf">v_ref1</span> <span class="ow">=</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">v</span>
 <span class="nf">v_ref2</span> <span class="ow">=</span> <span class="o">&amp;</span><span class="n">v</span>
@@ -421,7 +421,7 @@ When we try to call <code>get</code> with a shared vector, we&rsquo;ll get an er
 <span class="nf">print</span> <span class="n">v_ref1</span>
 <span class="nf">print</span> <span class="n">v_ref2</span>
 </code></pre></div><p>Similarly, if we try to explicitly grab an owned reference for <code>v_ref2</code>, we&rsquo;ll get the error there instead:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">v</span> <span class="ow">=</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">v</span> <span class="ow">=</span> <span class="k">mut</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 
 <span class="nf">v_ref1</span> <span class="ow">=</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">v</span>
 

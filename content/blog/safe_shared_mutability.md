@@ -160,7 +160,7 @@ reference to it and at least one other reference to it of any kind.
 When we try to call `get` with a shared vector, we'll get an error:
 
 ```ante
-v = Vec.of [1, 2, 3]
+v = mut Vec.of [1, 2, 3]
 
 v_ref1 = &mut v
 v_ref2 = &v
@@ -175,7 +175,7 @@ print v_ref2
 Similarly, if we try to explicitly grab an owned reference for `v_ref2`, we'll get the error there instead:
 
 ```ante
-v = Vec.of [1, 2, 3]
+v = mut Vec.of [1, 2, 3]
 
 v_ref1 = &mut v
 
