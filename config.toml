@@ -9,6 +9,8 @@ defaultContentLanguage = "en"
 newContentEditor = "vim"
 
 [params]
+  viewMorePostLink = "/blog/"
+  mainSections = ["blog"]
   description = "For exploring refinement types, lifetime inference, and algebraic effects"
   author = "jfecher"
   defaultKeywords = ["ante", "programming", "language", "antelang", "lang"]
@@ -85,5 +87,5 @@ newContentEditor = "vim"
 
 [params.recent_posts]
     enable = false
-    title = "From our Latin blog, apparently."
-    subtitle = "Why are you still reading?"
+    title = "Recent posts"
+    subtitle = "Read the latest blog posts"

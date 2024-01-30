@@ -6,7 +6,52 @@
     <description>Recent content in Categories on Ante</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 25 Jun 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://antelang.org/categories/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 29 Jan 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://antelang.org/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>lifetimes</title>
+      <link>https://antelang.org/categories/lifetimes/</link>
+      <pubDate>Mon, 29 Jan 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/categories/lifetimes/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>memory management</title>
+      <link>https://antelang.org/categories/memory-management/</link>
+      <pubDate>Mon, 29 Jan 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/categories/memory-management/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>mutability</title>
+      <link>https://antelang.org/categories/mutability/</link>
+      <pubDate>Mon, 29 Jan 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/categories/mutability/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>thread safety</title>
+      <link>https://antelang.org/categories/thread-safety/</link>
+      <pubDate>Mon, 29 Jan 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/categories/thread-safety/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>type inference</title>
+      <link>https://antelang.org/categories/type-inference/</link>
+      <pubDate>Mon, 29 Jan 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/categories/type-inference/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>docs</title>
       <link>https://antelang.org/categories/docs/</link>

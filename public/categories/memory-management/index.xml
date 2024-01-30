@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>memory management on Ante</title>
+    <link>https://antelang.org/categories/memory-management/</link>
+    <description>Recent content in memory management on Ante</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 29 Jan 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://antelang.org/categories/memory-management/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Achieving Safe, Aliasable Mutability with Unboxed Types</title>
+      <link>https://antelang.org/blog/safe_shared_mutability/</link>
+      <pubDate>Mon, 29 Jan 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/blog/safe_shared_mutability/</guid>
+      <description>This is part of Ante&amp;rsquo;s goal of loosening restrictions on low-level programming while remaining fast, memory-safe, and thread-safe.
+ Background  When writing low-level, memory-safe, and thread-safe programs, a nice feature that lets us achieve all of these is an ownership model. These have been used by quite a few languages, but the language which popularized ownership was Rust. In Rust, the compiler will check our code to ensure we have no dangling references and cannot access already-freed memory.</description>
+    </item>
+    
+    <item>
+      <title>Avoiding Lifetime Variables</title>
+      <link>https://antelang.org/blog/second_class_references/</link>
+      <pubDate>Mon, 29 Jan 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/blog/second_class_references/</guid>
+      <description>Introduction  (yet to be written)</description>
+    </item>
+    
+  </channel>
+</rss>
