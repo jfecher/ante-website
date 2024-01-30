@@ -36,7 +36,7 @@
 
 
 
-<link href="/css/custom.css?1706585793" rel="stylesheet">
+<link href="/css/custom.css" rel="stylesheet">
 
 
 
@@ -317,7 +317,7 @@ by a related feature to ownership: Rust&rsquo;s borrowing rules. It turns out th
 into and out of each function is not very convenient, so Rust also lets us create borrowed
 references to values. These references can be mutable or immutable, and their lifetimes are tied
 to that of the owned value. This particular error is prevented by Rust&rsquo;s &ldquo;Aliasibility XOR Mutability&rdquo;
-rule, which I&rsquo;ll call AxM for short. AxM in Rust states that you can have alias-able borrowed
+rule, which I&rsquo;ll call AxM for short. AxM in Rust states that you can have aliasable borrowed
 references, or you can have mutability, but not both. So in the example above, since <code>Vec::push</code>
 requires a mutable <code>&amp;mut Vec&lt;i32&gt;</code> reference, we got a compile-time error trying to call it since
 we also had the immutably borrowed reference <code>first_elem: &amp;i32</code> in scope. Had we not printed
@@ -365,9 +365,7 @@ with move semantics. As a bonus, this scheme is also completely zero-cost.</p>
 <h1 id="a-new-approach-for-a-new-age">A New Approach for A New Age</h1>
 <p>Ante&rsquo;s system for ensuring memory &amp; thread safety uses Rust as a foundation. Anywhere a non-reference
 value is seen, it is an owned value. Similarly, anytime <code>&amp;t</code> or <code>&amp;mut t</code> are seen, these are borrowed
-references. The first difference compared to Rust is that Ante&rsquo;s references are <a href="../second_class_references">second-class</a>.
-This isn&rsquo;t terribly important for shared mutability, but it helps alleviate the amount of required
-notation users need to write. More on that later.</p>
+references.</p>
 <p>The most important change from Rust&rsquo;s system is that in addition to being tagged with whether they
 are <code>mut</code>able or not, references are also tagged with whether they are <code>own</code>ed, or whether they
 are <code>shared</code> (able to be mutably aliased). For example, when we take multiple mutable references
@@ -378,7 +376,7 @@ to the same value, they are all inferred to be shared:</p>
 
 <span class="nf">print</span> <span class="n">elem1</span>  <span class="c1">// Outputs 1</span>
 <span class="nf">print</span> <span class="n">also_elem1</span>  <span class="c1">// Outputs 1</span>
-</code></pre></div><p>The type of <code>elem1</code> and <code>also_elem1</code> here is <code>&amp;shared mut (I32, I32)</code>.</p>
+</code></pre></div><p>The type of <code>elem1</code> and <code>also_elem1</code> here is <code>&amp;shared mut I32</code>.</p>
 <p>We can also mutate through these shared references:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">my_tuple</span> <span class="ow">=</span> <span class="k">mut</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="nf">elem1</span> <span class="ow">=</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">my_tuple</span><span class="o">.</span><span class="mi">0</span>
@@ -388,11 +386,12 @@ to the same value, they are all inferred to be shared:</p>
 
 <span class="nf">print</span> <span class="n">elem1</span>  <span class="c1">// Outputs 3</span>
 </code></pre></div><p>This is because unadorned references (<code>&amp;</code> and <code>&amp;mut</code>) are polymorphic in whether they are <code>own</code>ed
-or <code>shared</code>. These polymorphic references have the capabilities of a <code>shared</code> references since they
-may also be shared. The polymorphism comes in handy when returning a reference. If you passed in an
+or <code>shared</code>. These polymorphic references have the capabilities of <code>shared</code> references since anywhere
+a <code>shared</code> reference is valid, an <code>own</code>ed reference would be as well.
+This polymorphism comes in handy when returning a reference. If you passed in an
 owned reference, you&rsquo;ll get an owned one back. This would not be the case if Ante were designed to use
 reference subtyping here instead. Most importantly, this polymorphism allows most code with references
-to be written the same familiar style, ignoring the fact that <code>shared</code> or <code>own</code> exist:</p>
+to be written in a familiar style, ignoring the fact that <code>shared</code> or <code>own</code> exist:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">evaluate</span> <span class="p">(</span><span class="n">program</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">Ast</span><span class="p">)</span> <span class="p">(</span><span class="n">context</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="kt">Context</span><span class="p">)</span> <span class="o">:</span> <span class="kt">I32</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span>
     <span class="k">match</span> <span class="n">program</span>
     <span class="o">|</span> <span class="kt">Int</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">x</span>
@@ -408,7 +407,7 @@ such as vector elements or union fields?</p>
 <hr>
 <h2 id="preventing-borrows-when-a-types-shape-is-not-stable">Preventing borrows when a type&rsquo;s shape is not stable</h2>
 <p>These cases are simply marked as requiring owning references:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">get</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">own</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="o">:</span> <span class="o">&amp;</span><span class="k">own</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">get</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="o">&amp;</span><span class="n">own</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="o">:</span> <span class="o">&amp;</span><span class="n">own</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><p>This function signature states that in order to return a reference to a vector&rsquo;s elements,
 it needs an owned, though immutable, reference to the Vec. Note that &ldquo;owned&rdquo; here still allows
 multiple immutable references. A type is only considered to be shared when there is a mutable
@@ -430,13 +429,15 @@ When we try to call <code>get</code> with a shared vector, we&rsquo;ll get an er
 <span class="nf">v_ref1</span> <span class="ow">=</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">v</span>
 
 <span class="c1">// error: Cannot borrow an owned reference, `v` is already mutably borrowed</span>
-<span class="nf">v_ref2</span> <span class="ow">=</span> <span class="o">&amp;</span><span class="k">own</span> <span class="n">v</span>
+<span class="nf">v_ref2</span> <span class="ow">=</span> <span class="o">&amp;</span><span class="n">own</span> <span class="n">v</span>
 
 <span class="nf">v_elem</span> <span class="ow">=</span> <span class="n">get</span> <span class="n">v_ref1</span> <span class="mi">3</span>
 
 <span class="nf">print</span> <span class="n">v_ref1</span>
 <span class="nf">print</span> <span class="n">v_ref2</span>
-</code></pre></div><hr>
+</code></pre></div><p>Taking the reference of a tagged union&rsquo;s fields also requires an owned reference, although this
+must be built into the language.</p>
+<hr>
 <h2 id="making-shared-useful">Making Shared Useful</h2>
 <p>Hold on, this is great and all, but how usable are shared references really if we can&rsquo;t do something
 as common as holding onto a vector&rsquo;s elements with them? Does this mean we can&rsquo;t use a shared vector
@@ -458,28 +459,27 @@ removing them from the Vec. It turns out however, we can do that too:</p>
 </code></pre></div><p>(<code>given Clone t</code> is Ante&rsquo;s way of writing trait constraints)</p>
 <p>As long as we don&rsquo;t return a reference to an element, the API itself is safe.
 Note that since this requires cloning each value, this will be fine for small,
-primitive types, but for vectors of potentially large struct elements, cloning
-can be expensive. To work around this, we can have a vector of pointer types instead
-to reduce cloning: <code>Vec (Rc MyStruct)</code>. Looks like we&rsquo;ve rediscovered why languages
+primitive types, but will be expensive for vectors with more complex element types.
+To work around this, we can have a vector of pointer types instead
+to reduce the cost of cloning: <code>Vec (Rc MyStruct)</code>. Looks like we&rsquo;ve rediscovered why languages
 like Pony, Koka, Haskell, Java, and many others box values! With this, we&rsquo;ve gone full
 circle and (I think) have achieved the best of both the unboxed and boxed worlds.</p>
 <hr>
 <h2 id="shared-interior-mutability">Shared Interior Mutability</h2>
-<p>Rust users will note the <code>Vec (Rc MyStruct)</code> suggestion above does not have quite
+<p>Eagle-eyed Rust users will note that the <code>Vec (Rc MyStruct)</code> suggestion above does not have quite
 the same semantics as an owned <code>Vec&lt;MyStruct&gt;</code> in Rust. Most notably, <code>Rc&lt;T&gt;</code> in Rust
 (and <code>Rc t</code> in Ante) prevent mutating the inner element by only handing out immutable
 references. If we want to still be able to mutate <code>MyStruct</code>, we have to resort to interior
 mutability. In Rust, this can be quite loathsome. Using a type like <code>RefCell&lt;T&gt;</code> enables us
-to mutate the inner value but also requires runtime checking to ensure a single writeable
-reference is borrowed at a time. This can even cause runtime panics in our code if we get
-this incorrect!</p>
+to mutate the inner value but also requires runtime checking to ensure AxM rules are upheld.
+This can even cause runtime panics in our code if we get this incorrect!</p>
 <p>Ante however, provides the <code>Mut t</code> type for aliasable interior mutability. Since Ante already
 allows aliasable mutability, there are absoluately no runtime checks required and <code>Mut t</code>
 is just a wrapper struct containing only the wrapped <code>t</code>. This, along with the lack of runtime
-checks for other <code>&amp;shared mut t</code> references detailed above is what makes this scheme zero-cost.</p>
+checks for other <code>&amp;shared mut t</code> references is what makes this scheme zero-cost.</p>
 <p>The key difference with <code>Mut t</code> which makes it safe is that it can only hand out shared
 mutable references:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">as_mut</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">Mut</span> <span class="n">t</span><span class="p">)</span> <span class="o">:</span> <span class="o">&amp;</span><span class="k">shared</span> <span class="k">mut</span> <span class="n">t</span> <span class="ow">=</span> <span class="o">...</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">as_mut</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">Mut</span> <span class="n">t</span><span class="p">)</span> <span class="o">:</span> <span class="o">&amp;</span><span class="n">shared</span> <span class="k">mut</span> <span class="n">t</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><p>Since <code>shared</code> references are already restricted to only operations safe to perform on references
 which may be mutably aliased, we are all good to go!</p>
 <p>If you ever do need interior mutability to lend out owning references, then you will still need
