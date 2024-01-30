@@ -152,7 +152,7 @@ get (v: &own Vec t) (index: Usz) : &own t can Fail = ...
 ```
 
 (`Fail` is an [Algebraic Effect](/docs/language/#algebraic-effects). In this example, it is used
-to signal the index was out of bounds)
+to signal to the caller if the index was out of bounds)
 
 This function signature states that in order to return a reference to a vector's elements,
 it needs an owned, though immutable, reference to the Vec. Note that "owned" here still allows
@@ -173,17 +173,19 @@ print v_ref1
 print v_ref2
 ```
 
-Similarly, if we try to explicitly grab an owned reference for `v_ref2`, we'll get the error there instead:
+Similarly, if we try to explicitly grab an owned reference for `v_ref1`, we'll move the error
+up to when `v_ref2` is borrowed:
 
 ```ante
 v = mut Vec.of [1, 2, 3]
 
-v_ref1 = &mut v
+// note: Owning reference to `v` created here
+v_ref1 = &own mut v
 
-// error: Cannot borrow an owned reference, `v` is already mutably borrowed
-v_ref2 = &own v
+// error: Cannot borrow `v`, there is already an owning reference to it
+v_ref2 = &v
 
-v_elem = get v_ref1 3
+v_elem = get v_ref2 3
 
 print v_ref1
 print v_ref2

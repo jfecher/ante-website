@@ -36,7 +36,7 @@
 
 
 
-<link href="/css/custom.css?1706640635" rel="stylesheet">
+<link href="/css/custom.css?1706640937" rel="stylesheet">
 
 
 
@@ -405,7 +405,7 @@ such as vector elements or union fields?</p>
 <p>These cases are simply marked as requiring owning references:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">get</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">own</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="o">:</span> <span class="o">&amp;</span><span class="k">own</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><p>(<code>Fail</code> is an <a href="/docs/language/#algebraic-effects">Algebraic Effect</a>. In this example, it is used
-to signal the index was out of bounds)</p>
+to signal to the caller if the index was out of bounds)</p>
 <p>This function signature states that in order to return a reference to a vector&rsquo;s elements,
 it needs an owned, though immutable, reference to the Vec. Note that &ldquo;owned&rdquo; here still allows
 multiple immutable references. A type is only considered to be shared when there is a mutable
@@ -421,15 +421,17 @@ When we try to call <code>get</code> with a shared vector, we&rsquo;ll get an er
 
 <span class="nf">print</span> <span class="n">v_ref1</span>
 <span class="nf">print</span> <span class="n">v_ref2</span>
-</code></pre></div><p>Similarly, if we try to explicitly grab an owned reference for <code>v_ref2</code>, we&rsquo;ll get the error there instead:</p>
+</code></pre></div><p>Similarly, if we try to explicitly grab an owned reference for <code>v_ref1</code>, we&rsquo;ll move the error
+up to when <code>v_ref2</code> is borrowed:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">v</span> <span class="ow">=</span> <span class="k">mut</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 
-<span class="nf">v_ref1</span> <span class="ow">=</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">v</span>
+<span class="c1">// note: Owning reference to `v` created here</span>
+<span class="nf">v_ref1</span> <span class="ow">=</span> <span class="o">&amp;</span><span class="k">own</span> <span class="k">mut</span> <span class="n">v</span>
 
-<span class="c1">// error: Cannot borrow an owned reference, `v` is already mutably borrowed</span>
-<span class="nf">v_ref2</span> <span class="ow">=</span> <span class="o">&amp;</span><span class="k">own</span> <span class="n">v</span>
+<span class="c1">// error: Cannot borrow `v`, there is already an owning reference to it</span>
+<span class="nf">v_ref2</span> <span class="ow">=</span> <span class="o">&amp;</span><span class="n">v</span>
 
-<span class="nf">v_elem</span> <span class="ow">=</span> <span class="n">get</span> <span class="n">v_ref1</span> <span class="mi">3</span>
+<span class="nf">v_elem</span> <span class="ow">=</span> <span class="n">get</span> <span class="n">v_ref2</span> <span class="mi">3</span>
 
 <span class="nf">print</span> <span class="n">v_ref1</span>
 <span class="nf">print</span> <span class="n">v_ref2</span>
