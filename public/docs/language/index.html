@@ -8,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>Language Tour</title>
-<meta name="author" content="jfecher" />
+<meta name="author" content="Jake Fecher" />
 
 
 
@@ -36,7 +36,7 @@
 
 
 
-<link href="/css/custom.css" rel="stylesheet">
+<link href="/css/custom.css?1706633008" rel="stylesheet">
 
 
 
@@ -261,7 +261,7 @@
                               
                                   
                               
-                              
+                              2021-03-01
                             
                           </p>
                         
@@ -420,10 +420,10 @@ the current function as impure. This is a primitive effect that cannot be handle
 <p>Firstly, if you have a <code>Mut (Ref a)</code>, there is no way to obtain a <code>Mut a</code> without
 copying <code>a</code>. In other words, you cannot directly mutate the element held inside of an
 immutable reference.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo</span><span class="o">:</span> <span class="kt">Mut</span> <span class="p">(</span><span class="kt">Ref</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span> <span class="k">mut</span> <span class="p">(</span><span class="kt">ref</span> <span class="mi">0</span><span class="p">)</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo</span><span class="o">:</span> <span class="kt">Mut</span> <span class="p">(</span><span class="kt">Ref</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span> <span class="k">mut</span> <span class="p">(</span><span class="n">ref</span> <span class="mi">0</span><span class="p">)</span>
 
 <span class="c1">// We can mutate foo to another reference:</span>
-<span class="nf">foo</span> <span class="o">:=</span> <span class="kt">ref</span> <span class="mi">1</span>
+<span class="nf">foo</span> <span class="o">:=</span> <span class="n">ref</span> <span class="mi">1</span>
 
 <span class="c1">// We can also copy the element and mutate the copy</span>
 <span class="nf">element</span> <span class="ow">=</span> <span class="k">mut</span> <span class="o">@</span><span class="n">foo</span>
@@ -732,7 +732,7 @@ Lets compare the task of converting a tuple to a string with doing the same for 
 With tuples we must <a href="https://hackage.haskell.org/package/base-4.14.1.0/docs/src/GHC.Show.html#line-268">create a different impl for every possible tuple size</a>.
 with pairs on the other hand the simple implementation works for all sizes:</li>
 </ol>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">cast_pair_string</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Cast</span> <span class="p">(</span><span class="kt">Pair</span> <span class="n">a</span> <span class="n">b</span><span class="p">)</span> <span class="kt">String</span> <span class="k">via</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">cast_pair_string</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Cast</span> <span class="p">(</span><span class="kt">Pair</span> <span class="n">a</span> <span class="n">b</span><span class="p">)</span> <span class="kt">String</span> <span class="n">via</span>
     <span class="n">cast</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="ow">=</span> <span class="s">&#34;$a, $b&#34;</span>
 </code></pre></div><ol start="3">
 <li>
@@ -802,11 +802,11 @@ harder by having a helper trait so we can specialize the impl for pairs:</p>
     <span class="n">to_string_helper</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">String</span> <span class="ow">=</span> <span class="n">cast</span> <span class="n">x</span>
 
 <span class="nf">cast_pair_string</span> <span class="ow">=</span> <span class="k">impl</span> 
-    <span class="kt">Cast</span> <span class="p">(</span><span class="kt">Pair</span> <span class="n">a</span> <span class="n">b</span><span class="p">)</span> <span class="kt">String</span> <span class="k">via</span>
+    <span class="kt">Cast</span> <span class="p">(</span><span class="kt">Pair</span> <span class="n">a</span> <span class="n">b</span><span class="p">)</span> <span class="kt">String</span> <span class="n">via</span>
         <span class="n">cast</span> <span class="n">pair</span> <span class="ow">=</span> <span class="s">&#34;(${to_string_helper pair})&#34;</span>
 
     <span class="c1">// Specialize the impl for pairs so we can recurse on the rhs</span>
-    <span class="kt">ToStringHelper</span> <span class="p">(</span><span class="kt">Pair</span> <span class="n">a</span> <span class="n">b</span><span class="p">)</span> <span class="k">via</span>
+    <span class="kt">ToStringHelper</span> <span class="p">(</span><span class="kt">Pair</span> <span class="n">a</span> <span class="n">b</span><span class="p">)</span> <span class="n">via</span>
         <span class="n">to_string_helper</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="ow">=</span> <span class="s">&#34;$a, ${to_string_helper b}&#34;</span>
 </code></pre></div><p>And these two functions will cover all possible lengths of nested pairs.</p>
 <hr>
@@ -1005,7 +1005,7 @@ infer these refinements like normal types. If we instead allow any value
 to be used in refinements we would get fully-dependent types for which
 inference and basic type checking (without manual proofs) is undecidable.</p>
 <p>Refinement types can be used to ensure indexing into a vector is always valid:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">get</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span> <span class="k">where</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="n">len</span> <span class="n">a</span><span class="p">)</span> <span class="o">:</span> <span class="n">t</span> <span class="ow">=</span> <span class="o">...</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">get</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span> <span class="n">where</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="n">len</span> <span class="n">a</span><span class="p">)</span> <span class="o">:</span> <span class="n">t</span> <span class="ow">=</span> <span class="o">...</span>
 
 <span class="nf">a</span> <span class="ow">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 <span class="nf">get</span> <span class="n">a</span> <span class="mi">2</span>  <span class="c1">// valid</span>
@@ -1022,13 +1022,13 @@ example uses this technique to tag vectors returned by the <code>sort</code>
 function as being sorted, then restricting the input of <code>binary_search</code>
 to only sorted vectors:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// You can name a return type for use in refinements</span>
-<span class="nf">sort</span> <span class="p">(</span><span class="n">vec</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="o">:</span> <span class="n">ret</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span> <span class="k">where</span> <span class="n">sorted</span> <span class="n">ret</span> <span class="ow">=</span> <span class="o">...</span>
+<span class="nf">sort</span> <span class="p">(</span><span class="n">vec</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="o">:</span> <span class="n">ret</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span> <span class="n">where</span> <span class="n">sorted</span> <span class="n">ret</span> <span class="ow">=</span> <span class="o">...</span>
 
-<span class="nf">binary_search</span> <span class="p">(</span><span class="n">vec</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span> <span class="k">where</span> <span class="n">sorted</span> <span class="n">vec</span><span class="p">)</span> <span class="p">(</span><span class="n">elem</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Maybe</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span> <span class="k">where</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="n">len</span> <span class="n">vec</span><span class="p">)</span> <span class="ow">=</span> <span class="o">...</span>
+<span class="nf">binary_search</span> <span class="p">(</span><span class="n">vec</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span> <span class="n">where</span> <span class="n">sorted</span> <span class="n">vec</span><span class="p">)</span> <span class="p">(</span><span class="n">elem</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Maybe</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span> <span class="n">where</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="n">len</span> <span class="n">vec</span><span class="p">)</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><p>Type aliases can be used to cut down on the annotations:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">SortedVec</span> <span class="n">t</span> <span class="ow">=</span> <span class="n">a</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span> <span class="k">where</span> <span class="n">sorted</span> <span class="n">a</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">SortedVec</span> <span class="n">t</span> <span class="ow">=</span> <span class="n">a</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span> <span class="n">where</span> <span class="n">sorted</span> <span class="n">a</span>
 
-<span class="kt">Index</span> <span class="n">vec</span> <span class="ow">=</span> <span class="n">x</span><span class="o">:</span><span class="kt">Usz</span> <span class="k">where</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">len</span> <span class="n">vec</span>
+<span class="kt">Index</span> <span class="n">vec</span> <span class="ow">=</span> <span class="n">x</span><span class="o">:</span><span class="kt">Usz</span> <span class="n">where</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">len</span> <span class="n">vec</span>
 
 <span class="nf">sort</span> <span class="p">(</span><span class="n">vec</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="o">:</span> <span class="kt">SortedVec</span> <span class="n">t</span> <span class="ow">=</span> <span class="o">...</span>
 
@@ -1066,7 +1066,7 @@ first to the second:</p>
 <p>To use functions like <code>stringify</code> or <code>stringify_print</code> above,
 we&rsquo;ll have to <code>impl</code>ement the trait for the types we want
 to use it with. This can be done with <code>impl</code> blocks:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">stringify_bool</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Stringify</span> <span class="kt">Bool</span> <span class="k">via</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">stringify_bool</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Stringify</span> <span class="kt">Bool</span> <span class="n">via</span>
     <span class="n">stringify</span> <span class="n">b</span> <span class="ow">=</span>
         <span class="k">if</span> <span class="n">b</span> <span class="k">then</span> <span class="s">&#34;true&#34;</span>
         <span class="k">else</span> <span class="s">&#34;false&#34;</span>
@@ -1079,12 +1079,12 @@ in scope and use that:</p>
 <p>In contrast to other languages with traits or typeclasses, all impls
 are named in ante. This enables impls to be imported or hidden from
 scope in the same manner as any other construct: by name.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Foo</span><span class="o">.</span><span class="n">hash_bar</span><span class="p">,</span> <span class="n">std_impls</span> <span class="k">hiding</span> <span class="n">eq_foo</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Foo</span><span class="o">.</span><span class="n">hash_bar</span><span class="p">,</span> <span class="n">std_impls</span> <span class="n">hiding</span> <span class="n">eq_foo</span>
 </code></pre></div><p>This also enables the ability to specify which impl to use via the <code>via</code>
 keyword if there are ever multiple conflicting impls in scope.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">empty</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Stringify</span> <span class="n">a</span> <span class="k">via</span> <span class="n">stringify</span> <span class="n">_</span> <span class="ow">=</span> <span class="s">&#34;&#34;</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">empty</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Stringify</span> <span class="n">a</span> <span class="n">via</span> <span class="n">stringify</span> <span class="n">_</span> <span class="ow">=</span> <span class="s">&#34;&#34;</span>
 
-<span class="nf">print_to_string</span> <span class="kc">true</span> <span class="k">via</span> <span class="n">stringify_bool</span>
+<span class="nf">print_to_string</span> <span class="kc">true</span> <span class="n">via</span> <span class="n">stringify_bool</span>
 </code></pre></div><p>Having multiple conflicting impls anywhere in a codebase is often an error
 in other languages, necessitating extensive use of the newtype pattern
 for otherwise unnecessary wrapper types and boilerplate. Ante does not
@@ -1099,13 +1099,13 @@ so that we can disambiguate between them if needed.</p>
 
 <span class="nf">foo_impls</span> <span class="ow">=</span> <span class="k">impl</span>
     <span class="c1">// We can impl multiple traits via the same method:</span>
-    <span class="p">(</span><span class="kt">Hash</span><span class="p">,</span> <span class="kt">Eq</span><span class="p">,</span> <span class="kt">Cmp</span><span class="p">)</span> <span class="kt">Foo</span> <span class="k">via</span> <span class="k">derive</span>
+    <span class="p">(</span><span class="kt">Hash</span><span class="p">,</span> <span class="kt">Eq</span><span class="p">,</span> <span class="kt">Cmp</span><span class="p">)</span> <span class="kt">Foo</span> <span class="n">via</span> <span class="n">derive</span>
 
     <span class="c1">// We can also forward to a subset of fields:</span>
-    <span class="kt">Print</span> <span class="kt">Foo</span> <span class="k">via</span> <span class="k">forward</span> <span class="n">second</span>
+    <span class="kt">Print</span> <span class="kt">Foo</span> <span class="n">via</span> <span class="n">forward</span> <span class="n">second</span>
 
     <span class="c1">// And we can use manual impls</span>
-    <span class="kt">Combine</span> <span class="kt">Foo</span> <span class="k">via</span>
+    <span class="kt">Combine</span> <span class="kt">Foo</span> <span class="n">via</span>
         <span class="p">(</span><span class="o">++</span><span class="p">)</span> <span class="n">a</span> <span class="n">b</span> <span class="ow">=</span> <span class="kt">Foo</span> <span class="n">a</span><span class="o">.</span><span class="n">first</span> <span class="p">(</span><span class="n">qux</span> <span class="n">a</span> <span class="n">b</span><span class="p">)</span>
 </code></pre></div><p>Note that the mechanism to specify how to derive impls for custom traits is still experimental.
 See more on <a href="/docs/ideas#derive-without-macros">the ideas page</a>.</p>
@@ -1127,10 +1127,10 @@ before:</p>
 </code></pre></div><p>At first glance this looks fine, but there&rsquo;s a problem: we
 can implement it with any combination of <code>c</code> and <code>elem</code>:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">conflicting_impls</span> <span class="ow">=</span> <span class="k">impl</span>
-    <span class="kt">Container</span> <span class="p">(</span><span class="kt">Vec</span> <span class="kt">I32</span><span class="p">)</span> <span class="kt">I32</span> <span class="k">via</span>
+    <span class="kt">Container</span> <span class="p">(</span><span class="kt">Vec</span> <span class="kt">I32</span><span class="p">)</span> <span class="kt">I32</span> <span class="n">via</span>
         <span class="n">get</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="kt">Vec</span> <span class="kt">I32</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Maybe</span> <span class="kt">I32</span> <span class="ow">=</span> <span class="o">...</span>
 
-    <span class="kt">Container</span> <span class="p">(</span><span class="kt">Vec</span> <span class="kt">I32</span><span class="p">)</span> <span class="kt">String</span> <span class="k">via</span>
+    <span class="kt">Container</span> <span class="p">(</span><span class="kt">Vec</span> <span class="kt">I32</span><span class="p">)</span> <span class="kt">String</span> <span class="n">via</span>
         <span class="n">get</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="kt">Vec</span> <span class="kt">I32</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Maybe</span> <span class="kt">String</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><p>But we already had an impl for <code>Vec I32</code>, and defining a
 way to get another element type from it makes no sense!
@@ -1141,7 +1141,7 @@ specify that for any given type <code>c</code>, there&rsquo;s only 1 valid
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">trait</span> <span class="kt">Container</span> <span class="n">c</span> <span class="ow">-&gt;</span> <span class="n">elem</span> <span class="k">with</span>
     <span class="n">get</span><span class="o">:</span> <span class="n">c</span> <span class="ow">-&gt;</span> <span class="kt">Usz</span> <span class="ow">-&gt;</span> <span class="kt">Maybe</span> <span class="n">elem</span>
 
-<span class="nf">vec_container</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Container</span> <span class="p">(</span><span class="kt">Vec</span> <span class="n">a</span><span class="p">)</span> <span class="n">a</span> <span class="k">via</span>
+<span class="nf">vec_container</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Container</span> <span class="p">(</span><span class="kt">Vec</span> <span class="n">a</span><span class="p">)</span> <span class="n">a</span> <span class="n">via</span>
     <span class="n">get</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">i</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Maybe</span> <span class="n">a</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><p>This information is used during type inference
 so if we have e.g. <code>e = get (b: ByteString) 0</code> and there
@@ -1167,13 +1167,13 @@ impls being found, an error is given at the callsite and the
 user will have to manually specify which to use either by only
 importing one of these impls or with an explicit <code>via</code> clause
 at the callsite:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">add</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Combine</span> <span class="kt">I32</span> <span class="k">via</span> <span class="p">(</span><span class="o">++</span><span class="p">)</span> <span class="ow">=</span> <span class="p">(</span><span class="o">+</span><span class="p">)</span>
-<span class="nf">mul</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Combine</span> <span class="kt">I32</span> <span class="k">via</span> <span class="p">(</span><span class="o">++</span><span class="p">)</span> <span class="ow">=</span> <span class="p">(</span><span class="o">*</span><span class="p">)</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">add</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Combine</span> <span class="kt">I32</span> <span class="n">via</span> <span class="p">(</span><span class="o">++</span><span class="p">)</span> <span class="ow">=</span> <span class="p">(</span><span class="o">+</span><span class="p">)</span>
+<span class="nf">mul</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Combine</span> <span class="kt">I32</span> <span class="n">via</span> <span class="p">(</span><span class="o">++</span><span class="p">)</span> <span class="ow">=</span> <span class="p">(</span><span class="o">*</span><span class="p">)</span>
 
 <span class="nf">print</span> <span class="p">(</span><span class="mi">2</span> <span class="o">++</span> <span class="mi">3</span><span class="p">)</span>  <span class="c1">// Error, multiple matching impls found! `add` and `mul` are both in scope</span>
 
-<span class="nf">print</span> <span class="p">(</span><span class="mi">2</span> <span class="o">++</span> <span class="mi">3</span><span class="p">)</span> <span class="k">via</span> <span class="n">add</span>  <span class="c1">//=&gt; 5</span>
-<span class="nf">print</span> <span class="p">(</span><span class="mi">2</span> <span class="o">++</span> <span class="mi">3</span><span class="p">)</span> <span class="k">via</span> <span class="n">mul</span>  <span class="c1">//=&gt; 6</span>
+<span class="nf">print</span> <span class="p">(</span><span class="mi">2</span> <span class="o">++</span> <span class="mi">3</span><span class="p">)</span> <span class="n">via</span> <span class="n">add</span>  <span class="c1">//=&gt; 5</span>
+<span class="nf">print</span> <span class="p">(</span><span class="mi">2</span> <span class="o">++</span> <span class="mi">3</span><span class="p">)</span> <span class="n">via</span> <span class="n">mul</span>  <span class="c1">//=&gt; 6</span>
 </code></pre></div><h2 id="int-type">Int Type</h2>
 <p>Ante has quite a few <a href="#integers">integer types</a> so one question
 that gets raised is what is the type of an integer literal?
@@ -1290,12 +1290,12 @@ do <code>import Baz.Nested.*</code> since there would be conflicting names in sc
 We could import only the functions we need but if we require many functions
 from <code>Baz.Nested</code> then this may take some time. For this reason, when using
 wildcard imports, you can also specify definitions to exclude, via the <code>hiding</code> clause:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Baz</span><span class="o">.</span><span class="kt">Nested</span><span class="o">.*</span> <span class="k">hiding</span> <span class="n">get_baz</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Baz</span><span class="o">.</span><span class="kt">Nested</span><span class="o">.*</span> <span class="n">hiding</span> <span class="n">get_baz</span>
 
 <span class="c1">// No error here</span>
 <span class="nf">get_baz</span> <span class="p">()</span> <span class="ow">=</span> <span class="n">my_local_baz</span>
 </code></pre></div><p>Alternatively, you can also rename imports via <code>as</code>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Baz</span><span class="o">.</span><span class="kt">Nested</span><span class="o">.*</span> <span class="k">hiding</span> <span class="n">get_baz</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Baz</span><span class="o">.</span><span class="kt">Nested</span><span class="o">.*</span> <span class="n">hiding</span> <span class="n">get_baz</span>
 
 <span class="c1">// If we want to import everything from Baz.Nested while renaming</span>
 <span class="c1">// some of the items we need to list them separately since `as`</span>
@@ -1496,8 +1496,8 @@ we may write a function like:</p>
     <span class="k">handle</span> <span class="n">f</span> <span class="p">()</span>
     <span class="o">|</span> <span class="n">give_int</span> <span class="n">str</span> <span class="ow">-&gt;</span>
         <span class="k">if</span> <span class="n">str</span> <span class="o">==</span> <span class="s">&#34;zero&#34;</span>
-        <span class="k">then</span> <span class="k">resume</span> <span class="mi">0</span>
-        <span class="k">else</span> <span class="k">resume</span> <span class="mi">123</span>
+        <span class="k">then</span> <span class="n">resume</span> <span class="mi">0</span>
+        <span class="k">else</span> <span class="n">resume</span> <span class="mi">123</span>
 </code></pre></div><p>Finally, if we have a function <code>do_math</code> which uses the <code>GiveInt</code> effect, here&rsquo;s
 how we&rsquo;d pass it to <code>handle_give_int</code> to properly handle the effect:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-an" data-lang="an"><span class="nf">do_math</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">I32</span><span class="p">)</span> <span class="o">:</span> <span class="kt">I32</span> <span class="k">can</span> <span class="kt">GiveInt</span> <span class="ow">=</span>
@@ -1518,13 +1518,13 @@ on its right. Here is the definition of <code>with</code> in pseudocode:</p>
 </code></pre></div><p>There are also times when we want to use a handler to handle an entire block. For this,
 we can use the <code>using</code> keyword:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// try: (Unit -&gt; a can Fail) -&gt; Maybe a</span>
-<span class="k">using</span> <span class="n">try</span>
+<span class="nf">using</span> <span class="k">try</span>
 
 <span class="nf">foo</span> <span class="ow">=</span> <span class="n">failable_operation</span> <span class="p">()</span>
 <span class="nf">bar</span> <span class="ow">=</span> <span class="n">failable_operation</span> <span class="p">()</span>
 <span class="nf">foo</span> <span class="o">+</span> <span class="n">bar</span> <span class="o">*</span> <span class="mi">2</span>
 </code></pre></div><p>Which desugars to:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">try</span> <span class="k">fn</span> <span class="p">()</span> <span class="ow">-&gt;</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">try</span> <span class="k">fn</span> <span class="p">()</span> <span class="ow">-&gt;</span>
     <span class="n">foo</span> <span class="ow">=</span> <span class="n">failable_operation</span> <span class="p">()</span>
     <span class="n">bar</span> <span class="ow">=</span> <span class="n">failable_operation</span> <span class="p">()</span>
     <span class="n">foo</span> <span class="o">+</span> <span class="n">bar</span> <span class="o">*</span> <span class="mi">2</span>
@@ -1537,7 +1537,7 @@ to be defined for any effect. As an example, lets define another handler
 for <code>GiveInt</code> in addition to <code>handle_give_int</code>:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-an" data-lang="an"><span class="nf">the_int</span> <span class="p">(</span><span class="n">int</span><span class="o">:</span> <span class="kt">I32</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">GiveInt</span><span class="p">)</span> <span class="o">:</span> <span class="n">a</span> <span class="ow">=</span>
     <span class="k">handle</span> <span class="n">f</span> <span class="p">()</span>
-    <span class="o">|</span> <span class="n">give_int</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="k">resume</span> <span class="n">int</span>
+    <span class="o">|</span> <span class="n">give_int</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="n">resume</span> <span class="n">int</span>
 
 <span class="nf">do_math</span> <span class="mi">1</span> <span class="k">with</span> <span class="n">the_int</span> <span class="mi">5</span>  <span class="c1">//=&gt; 11</span>
 </code></pre></div><h3 id="matching-on-the-returned-value">Matching on the Returned Value</h3>
@@ -1546,7 +1546,7 @@ of the handled expression</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-an" data-lang="an"><span class="nf">count_giveint_calls</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">GiveInt</span><span class="p">)</span> <span class="o">:</span> <span class="kt">I32</span> <span class="ow">=</span>
     <span class="k">handle</span> <span class="n">f</span> <span class="p">()</span>
     <span class="o">|</span> <span class="k">return</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="mi">0</span>
-    <span class="o">|</span> <span class="n">give_int</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="k">resume</span> <span class="mi">0</span>
+    <span class="o">|</span> <span class="n">give_int</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">resume</span> <span class="mi">0</span>
 
 
 <span class="nf">do_math</span> <span class="mi">5</span> <span class="k">with</span> <span class="n">count_giveint_calls</span>  <span class="c1">//=&gt; 2</span>
@@ -1562,30 +1562,30 @@ to see how it expands:</p>
     <span class="n">b</span> <span class="ow">=</span> <span class="n">give_int</span> <span class="s">&#34;foo&#34;</span>
     <span class="mi">5</span> <span class="o">+</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
 <span class="o">|</span> <span class="k">return</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="mi">0</span>
-<span class="o">|</span> <span class="n">give_int</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="k">resume</span> <span class="mi">0</span>
+<span class="o">|</span> <span class="n">give_int</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">resume</span> <span class="mi">0</span>
 
 <span class="c1">// Then reduce via our give_int rule - continuing</span>
 <span class="c1">// the computation with the value 0 and adding 1 to the result</span>
 <span class="k">handle</span> <span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">a</span> <span class="ow">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">b</span> <span class="ow">=</span> <span class="n">give_int</span> <span class="s">&#34;foo&#34;</span><span class="p">;</span> <span class="mi">5</span> <span class="o">+</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>
 <span class="o">|</span> <span class="k">return</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="mi">0</span>
-<span class="o">|</span> <span class="n">give_int</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="k">resume</span> <span class="mi">0</span>
+<span class="o">|</span> <span class="n">give_int</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">resume</span> <span class="mi">0</span>
 
 <span class="c1">// Reduce via give_int again for b</span>
 <span class="k">handle</span> <span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">a</span> <span class="ow">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">b</span> <span class="ow">=</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">5</span> <span class="o">+</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">))</span>
 <span class="o">|</span> <span class="k">return</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="mi">0</span>
-<span class="o">|</span> <span class="n">give_int</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="k">resume</span> <span class="mi">0</span>
+<span class="o">|</span> <span class="n">give_int</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">resume</span> <span class="mi">0</span>
 
 <span class="c1">// Now we finish evaluating the function and would</span>
 <span class="c1">// normally get a result of 5</span>
 <span class="k">handle</span> <span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="k">return</span> <span class="mi">5</span><span class="p">))</span>
 <span class="o">|</span> <span class="k">return</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="mi">0</span>
-<span class="o">|</span> <span class="n">give_int</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="k">resume</span> <span class="mi">0</span>
+<span class="o">|</span> <span class="n">give_int</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">resume</span> <span class="mi">0</span>
 
 <span class="c1">// Since our handler matches on this return value,</span>
 <span class="c1">// we use that rule next to map it to 0</span>
 <span class="k">handle</span> <span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">0</span><span class="p">)</span>
 <span class="o">|</span> <span class="k">return</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="mi">0</span>
-<span class="o">|</span> <span class="n">give_int</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="k">resume</span> <span class="mi">0</span>
+<span class="o">|</span> <span class="n">give_int</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">resume</span> <span class="mi">0</span>
 
 <span class="c1">// Finally, 1 + 1 + 0 evaluates to 2 with no further effects</span>
 <span class="mi">2</span>
@@ -1596,7 +1596,7 @@ like <code>map</code> and <code>flatmap</code>:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-an" data-lang="an"><span class="nf">these_ints</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">GiveInt</span><span class="p">)</span> <span class="p">(</span><span class="n">ints</span><span class="o">:</span> <span class="kt">Vec</span> <span class="kt">I32</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Vec</span> <span class="n">a</span> <span class="ow">=</span>
     <span class="k">handle</span> <span class="n">f</span> <span class="p">()</span>
     <span class="o">|</span> <span class="k">return</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span>
-    <span class="o">|</span> <span class="n">give_int</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="n">flatmap</span> <span class="n">ints</span> <span class="k">resume</span>
+    <span class="o">|</span> <span class="n">give_int</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="n">flatmap</span> <span class="n">ints</span> <span class="n">resume</span>
 
 
 <span class="nf">do_math</span> <span class="mi">2</span>
@@ -1610,8 +1610,8 @@ not calling <code>resume</code>:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-an" data-lang="an"><span class="nf">interpret</span> <span class="p">(</span><span class="n">default_value</span><span class="o">:</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">GiveInt</span><span class="p">)</span> <span class="o">:</span> <span class="n">a</span> <span class="ow">=</span>
     <span class="k">import</span> <span class="kt">Random</span><span class="o">.</span><span class="n">random</span>
     <span class="k">handle</span> <span class="n">f</span> <span class="p">()</span>
-    <span class="o">|</span> <span class="n">give_int</span> <span class="s">&#34;zero&#34;</span> <span class="ow">-&gt;</span> <span class="k">resume</span> <span class="mi">0</span>
-    <span class="o">|</span> <span class="n">give_int</span> <span class="s">&#34;random&#34;</span> <span class="ow">-&gt;</span> <span class="k">resume</span> <span class="o">$</span> <span class="n">random</span> <span class="p">()</span>
+    <span class="o">|</span> <span class="n">give_int</span> <span class="s">&#34;zero&#34;</span> <span class="ow">-&gt;</span> <span class="n">resume</span> <span class="mi">0</span>
+    <span class="o">|</span> <span class="n">give_int</span> <span class="s">&#34;random&#34;</span> <span class="ow">-&gt;</span> <span class="n">resume</span> <span class="o">$</span> <span class="n">random</span> <span class="p">()</span>
     <span class="c1">// Do not resume, return the default value instead</span>
     <span class="o">|</span> <span class="n">give_int</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="n">default_value</span>
 
@@ -1630,7 +1630,7 @@ Being effects however, these are automatically propagated up the callstack:</p>
 </code></pre></div><p>Handling these effects can be done via manual <code>handle</code> expressions, or
 via the <code>try</code> and <code>catch</code> helper functions
 which convert Fails to Maybe, and Throws to Results:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">try</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Fail</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Maybe</span> <span class="n">a</span> <span class="ow">=</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">try</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Fail</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Maybe</span> <span class="n">a</span> <span class="ow">=</span>
     <span class="k">handle</span> <span class="n">f</span> <span class="p">()</span>
     <span class="o">|</span> <span class="k">return</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="kt">Some</span> <span class="n">x</span>
     <span class="o">|</span> <span class="n">fail</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="kt">None</span>
@@ -1640,8 +1640,8 @@ which convert Fails to Maybe, and Throws to Results:</p>
     <span class="o">|</span> <span class="k">return</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="kt">Ok</span> <span class="n">x</span>
     <span class="o">|</span> <span class="n">throw</span> <span class="n">e</span> <span class="ow">-&gt;</span> <span class="kt">Error</span> <span class="n">e</span>
 
-<span class="nf">print</span> <span class="p">(</span><span class="n">add_even_numbers</span> <span class="s">&#34;2&#34;</span> <span class="s">&#34;4&#34;</span> <span class="k">with</span> <span class="n">try</span><span class="p">)</span> <span class="c1">//=&gt; Some 6</span>
-<span class="nf">print</span> <span class="p">(</span><span class="n">add_even_numbers</span> <span class="s">&#34;2&#34;</span> <span class="s">&#34;5&#34;</span> <span class="k">with</span> <span class="n">try</span><span class="p">)</span> <span class="c1">//=&gt; None</span>
+<span class="nf">print</span> <span class="p">(</span><span class="n">add_even_numbers</span> <span class="s">&#34;2&#34;</span> <span class="s">&#34;4&#34;</span> <span class="k">with</span> <span class="k">try</span><span class="p">)</span> <span class="c1">//=&gt; Some 6</span>
+<span class="nf">print</span> <span class="p">(</span><span class="n">add_even_numbers</span> <span class="s">&#34;2&#34;</span> <span class="s">&#34;5&#34;</span> <span class="k">with</span> <span class="k">try</span><span class="p">)</span> <span class="c1">//=&gt; None</span>
 </code></pre></div><p>Because effects can be naturally composed, functions returning multiple
 different errors can also be naturally composed without requiring users
 to define their own error unions:</p>
@@ -1661,8 +1661,8 @@ threading stateful values through multiple functions.</p>
 
 <span class="nf">state</span> <span class="p">(</span><span class="n">current_state</span><span class="o">:</span> <span class="n">s</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Use</span> <span class="n">s</span><span class="p">)</span> <span class="o">:</span> <span class="n">a</span> <span class="ow">=</span>
     <span class="k">handle</span> <span class="n">f</span> <span class="p">()</span>
-    <span class="o">|</span> <span class="n">put</span> <span class="n">new_state</span> <span class="ow">-&gt;</span> <span class="k">resume</span> <span class="p">()</span> <span class="k">with</span> <span class="n">state</span> <span class="n">new_state</span>
-    <span class="o">|</span> <span class="n">get</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="k">resume</span> <span class="n">current_state</span> <span class="k">with</span> <span class="n">state</span> <span class="n">current_state</span>
+    <span class="o">|</span> <span class="n">put</span> <span class="n">new_state</span> <span class="ow">-&gt;</span> <span class="n">resume</span> <span class="p">()</span> <span class="k">with</span> <span class="n">state</span> <span class="n">new_state</span>
+    <span class="o">|</span> <span class="n">get</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="n">resume</span> <span class="n">current_state</span> <span class="k">with</span> <span class="n">state</span> <span class="n">current_state</span>
 
 
 <span class="k">type</span> <span class="kt">Expr</span> <span class="ow">=</span>
@@ -1717,7 +1717,7 @@ or <code>Continue</code> lets us program in a very imperative style,
 while remaining purely functional behind the scenes.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-an" data-lang="an"><span class="k">effect</span> <span class="kt">Loop</span> <span class="k">with</span>
     <span class="n">break</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span>
-    <span class="n">continue</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span>
+    <span class="k">continue</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span>
 
 <span class="nf">for</span> <span class="p">(</span><span class="n">iter</span><span class="o">:</span> <span class="n">i</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">e</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Loop</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Iterate</span> <span class="n">i</span> <span class="n">e</span> <span class="ow">=</span>
     <span class="k">match</span> <span class="n">next</span> <span class="n">iter</span>
@@ -1725,7 +1725,7 @@ while remaining purely functional behind the scenes.</p>
     <span class="o">|</span> <span class="kt">Some</span> <span class="p">(</span><span class="n">rest</span><span class="p">,</span> <span class="n">elem</span><span class="p">)</span> <span class="ow">-&gt;</span>
         <span class="k">handle</span> <span class="n">f</span> <span class="n">elem</span>
         <span class="o">|</span> <span class="n">break</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="p">()</span>
-        <span class="o">|</span> <span class="n">continue</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="n">for</span> <span class="n">rest</span> <span class="n">f</span>
+        <span class="o">|</span> <span class="k">continue</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="n">for</span> <span class="n">rest</span> <span class="n">f</span>
         <span class="c1">// If the body returns normally, we also want to continue the loop</span>
         <span class="o">|</span> <span class="k">return</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="n">for</span> <span class="n">rest</span> <span class="n">f</span>
 
@@ -1772,16 +1772,16 @@ while remaining purely functional behind the scenes.</p>
     <span class="k">handle</span> <span class="n">k</span> <span class="p">()</span>
     <span class="o">|</span> <span class="n">yield</span> <span class="n">x</span> <span class="ow">-&gt;</span>
         <span class="k">if</span> <span class="n">f</span> <span class="n">x</span> <span class="k">then</span> <span class="n">yield</span> <span class="n">x</span>
-        <span class="k">resume</span> <span class="p">()</span>
+        <span class="n">resume</span> <span class="p">()</span>
 
 <span class="nf">iter</span> <span class="p">(</span><span class="n">k</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Yield</span> <span class="n">b</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">b</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span><span class="p">)</span> <span class="o">:</span> <span class="n">a</span> <span class="ow">=</span>
     <span class="k">handle</span> <span class="n">k</span> <span class="p">()</span>
-    <span class="o">|</span> <span class="n">yield</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="k">resume</span> <span class="p">(</span><span class="n">f</span> <span class="n">x</span><span class="p">)</span>
+    <span class="o">|</span> <span class="n">yield</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">resume</span> <span class="p">(</span><span class="n">f</span> <span class="n">x</span><span class="p">)</span>
 
 <span class="nf">yield_to_list</span> <span class="p">(</span><span class="n">k</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Yield</span> <span class="n">b</span><span class="p">)</span> <span class="o">:</span> <span class="kt">List</span> <span class="n">b</span> <span class="ow">=</span>
     <span class="k">handle</span> <span class="n">k</span> <span class="p">()</span>
     <span class="o">|</span> <span class="k">return</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="kt">[]</span>
-    <span class="o">|</span> <span class="n">yield</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="kt">Cons</span> <span class="n">x</span> <span class="p">(</span><span class="k">resume</span> <span class="p">())</span>
+    <span class="o">|</span> <span class="n">yield</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="kt">Cons</span> <span class="n">x</span> <span class="p">(</span><span class="n">resume</span> <span class="p">())</span>
 
 <span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span> 
     <span class="n">odds</span> <span class="ow">=</span> <span class="n">traverse</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
@@ -1810,7 +1810,7 @@ mock them for testing.</p>
 <span class="nf">database</span> <span class="n">f</span> <span class="ow">=</span>
     <span class="n">db</span> <span class="ow">=</span> <span class="kt">Database</span><span class="o">.</span><span class="n">connect</span> <span class="s">&#34;...&#34;</span>
     <span class="n">result</span> <span class="ow">=</span> <span class="k">handle</span> <span class="n">f</span> <span class="p">()</span>
-        <span class="o">|</span> <span class="n">querydb</span> <span class="n">msg</span> <span class="ow">-&gt;</span> <span class="k">resume</span> <span class="p">(</span><span class="n">send</span> <span class="n">db</span> <span class="n">msg</span><span class="p">)</span>
+        <span class="o">|</span> <span class="n">querydb</span> <span class="n">msg</span> <span class="ow">-&gt;</span> <span class="n">resume</span> <span class="p">(</span><span class="n">send</span> <span class="n">db</span> <span class="n">msg</span><span class="p">)</span>
     <span class="n">close</span> <span class="n">db</span>
     <span class="n">result</span>
 
@@ -1858,7 +1858,7 @@ use an effect like <code>Flip</code> to decide on branches to take within the fu
 
 <span class="nf">expected_value</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">F64</span> <span class="k">can</span> <span class="kt">Flip</span><span class="p">)</span> <span class="o">:</span> <span class="kt">F64</span> <span class="ow">=</span>
     <span class="k">handle</span> <span class="n">f</span> <span class="p">()</span>
-    <span class="o">|</span> <span class="n">flip</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="k">resume</span> <span class="kc">true</span> <span class="o">+</span> <span class="k">resume</span> <span class="kc">false</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
+    <span class="o">|</span> <span class="n">flip</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="n">resume</span> <span class="kc">true</span> <span class="o">+</span> <span class="n">resume</span> <span class="kc">false</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
 
 <span class="nf">print</span> <span class="p">(</span><span class="n">expected_value</span> <span class="n">calculation</span><span class="p">)</span>  <span class="c1">//=&gt; 1.625</span>
 </code></pre></div><h3 id="parsers">Parsers</h3>
@@ -1891,7 +1891,7 @@ and parenthesized expressions. This example was adapted from
     <span class="k">handle</span> <span class="n">f</span> <span class="p">()</span>
     <span class="o">|</span> <span class="k">return</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span>
     <span class="o">|</span> <span class="n">fail</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="kt">[]</span>
-    <span class="o">|</span> <span class="n">flip</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="k">resume</span> <span class="kc">false</span> <span class="o">++</span> <span class="k">resume</span> <span class="kc">true</span>
+    <span class="o">|</span> <span class="n">flip</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="n">resume</span> <span class="kc">false</span> <span class="o">++</span> <span class="n">resume</span> <span class="kc">true</span>
 
 <span class="c1">// Return the first succeeding computation (taking the false Flip branch first)</span>
 <span class="nf">eager</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Repeat</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Maybe</span> <span class="n">a</span> <span class="ow">=</span>
@@ -1899,9 +1899,9 @@ and parenthesized expressions. This example was adapted from
     <span class="o">|</span> <span class="k">return</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="kt">Some</span> <span class="n">x</span>
     <span class="o">|</span> <span class="n">fail</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="kt">None</span>
     <span class="o">|</span> <span class="n">flip</span> <span class="p">()</span> <span class="ow">-&gt;</span>
-        <span class="k">match</span> <span class="k">resume</span> <span class="kc">false</span>
+        <span class="k">match</span> <span class="n">resume</span> <span class="kc">false</span>
         <span class="o">|</span> <span class="kt">Some</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="kt">Some</span> <span class="n">x</span>
-        <span class="o">|</span> <span class="kt">None</span> <span class="ow">-&gt;</span> <span class="k">resume</span> <span class="kc">true</span>
+        <span class="o">|</span> <span class="kt">None</span> <span class="ow">-&gt;</span> <span class="n">resume</span> <span class="kc">true</span>
 
 <span class="c1">// Handle any Parse effects (letting Repeat effects pass through)</span>
 <span class="nf">parse</span> <span class="p">(</span><span class="n">input</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Parse</span><span class="p">,</span> <span class="kt">Repeat</span><span class="p">)</span> <span class="o">:</span> <span class="n">a</span><span class="p">,</span> <span class="kt">String</span> <span class="k">can</span> <span class="kt">Repeat</span> <span class="ow">=</span>
@@ -1910,7 +1910,7 @@ and parenthesized expressions. This example was adapted from
     <span class="o">|</span> <span class="n">satisfy</span> <span class="n">p</span> <span class="ow">-&gt;</span>
         <span class="k">match</span> <span class="n">p</span> <span class="n">input</span>
         <span class="o">|</span> <span class="kt">None</span> <span class="ow">-&gt;</span> <span class="n">fail</span> <span class="p">()</span>
-        <span class="o">|</span> <span class="kt">Some</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">rest</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="k">resume</span> <span class="n">x</span> <span class="k">with</span> <span class="n">parse</span> <span class="n">rest</span>
+        <span class="o">|</span> <span class="kt">Some</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">rest</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="n">resume</span> <span class="n">x</span> <span class="k">with</span> <span class="n">parse</span> <span class="n">rest</span>
 
 <span class="c1">// These will be our parsing primitives</span>
 <span class="nf">symbol</span> <span class="p">(</span><span class="n">c</span><span class="o">:</span> <span class="kt">Char</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Char</span> <span class="k">can</span> <span class="kt">Parse</span> <span class="ow">=</span>
@@ -3511,19 +3511,6 @@ for the continuation monad (citation needed).</p>
                 
                 <div class="item same-height-row clearfix">
                     <div class="image same-height-always">
-                        <a href="https://antelang.org/blog/safe_shared_mutability/">
-                          
-                            <img src="/img/banners/antelope_bird.jpg" class="img-responsive" alt="Achieving Safe, Aliasable Mutability with Unboxed Types">
-                          
-                        </a>
-                    </div>
-                    <div class="name same-height-always">
-                        <h5><a href="https://antelang.org/blog/safe_shared_mutability/">Achieving Safe, Aliasable Mutability with Unboxed Types</a></h5>
-                    </div>
-                </div>
-                
-                <div class="item same-height-row clearfix">
-                    <div class="image same-height-always">
                         <a href="https://antelang.org/blog/second_class_references/">
                           
                             <img src="/img/banners/anteater2.jpg" class="img-responsive" alt="Avoiding Lifetime Variables">
@@ -3532,6 +3519,19 @@ for the continuation monad (citation needed).</p>
                     </div>
                     <div class="name same-height-always">
                         <h5><a href="https://antelang.org/blog/second_class_references/">Avoiding Lifetime Variables</a></h5>
+                    </div>
+                </div>
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="https://antelang.org/blog/safe_shared_mutability/">
+                          
+                            <img src="/img/banners/antelope_bird.jpg" class="img-responsive" alt="Achieving Safe, Aliasable Mutability with Unboxed Types">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/blog/safe_shared_mutability/">Achieving Safe, Aliasable Mutability with Unboxed Types</a></h5>
                     </div>
                 </div>
                 

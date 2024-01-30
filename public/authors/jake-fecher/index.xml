@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>memory management on Ante</title>
-    <link>https://antelang.org/categories/memory-management/</link>
-    <description>Recent content in memory management on Ante</description>
+    <title>Jake Fecher on Ante</title>
+    <link>https://antelang.org/authors/jake-fecher/</link>
+    <description>Recent content in Jake Fecher on Ante</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 30 Jan 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://antelang.org/categories/memory-management/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 30 Jan 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://antelang.org/authors/jake-fecher/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Avoiding Lifetime Variables</title>
       <link>https://antelang.org/blog/second_class_references/</link>

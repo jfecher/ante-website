@@ -8,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>Achieving Safe, Aliasable Mutability with Unboxed Types</title>
-<meta name="author" content="jfecher" />
+<meta name="author" content="Jake Fecher" />
 
 
 
@@ -36,7 +36,7 @@
 
 
 
-<link href="/css/custom.css" rel="stylesheet">
+<link href="/css/custom.css?1706633008" rel="stylesheet">
 
 
 
@@ -259,8 +259,10 @@
                         
                           <p class="text-muted text-uppercase mb-small text-right">
                             
+			      By <a href="/authors/jake-fecher">Jake Fecher</a>
                             
                             
+                            
                               
                               
                                   
@@ -287,7 +289,7 @@
                               
                                   
                               
-                              
+                              2024-01-29
                             
                           </p>
                         
@@ -326,8 +328,8 @@ we rightfully get an error.</p>
 <p>This is a great thing to prevent, but it is unfortunate that AxM errors are some of the most common
 errors in Rust and make the language more difficult to learn when they are run into so often. As
 someone who has been writing Rust roughly since 1.0, I think it&rsquo;s fair to say even experienced users
-run into AxM errors every now and then. Fixing these often requires excessive cloning or reworking
-an algorithm which can be tedious.</p>
+run into AxM errors every now and then. Fixing these often requires laboriously reworking an algorithm
+or - unfortunately - giving up and resorting to inserting excessive calls to <code>clone</code> in the program.</p>
 <p>Moreover, the issue with AxM is that aliasable mutability isn&rsquo;t actually always dangerous.
 Consider the following program:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">my_tuple</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span><span class="w">
@@ -392,23 +394,18 @@ This polymorphism comes in handy when returning a reference. If you passed in an
 owned reference, you&rsquo;ll get an owned one back. This would not be the case if Ante were designed to use
 reference subtyping here instead. Most importantly, this polymorphism allows most code with references
 to be written in a familiar style, ignoring the fact that <code>shared</code> or <code>own</code> exist:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">evaluate</span> <span class="p">(</span><span class="n">program</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">Ast</span><span class="p">)</span> <span class="p">(</span><span class="n">context</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="kt">Context</span><span class="p">)</span> <span class="o">:</span> <span class="kt">I32</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span>
-    <span class="k">match</span> <span class="n">program</span>
-    <span class="o">|</span> <span class="kt">Int</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">x</span>
-    <span class="o">|</span> <span class="kt">Var</span> <span class="n">name</span> <span class="ow">-&gt;</span> <span class="n">lookup</span> <span class="n">context</span> <span class="n">name</span>
-    <span class="o">|</span> <span class="kt">Add</span> <span class="n">lhs</span> <span class="n">rhs</span> <span class="ow">-&gt;</span> <span class="n">evaluate</span> <span class="n">lhs</span> <span class="n">context</span> <span class="o">+</span> <span class="n">evaluate</span> <span class="n">rhs</span> <span class="n">context</span>
-    <span class="o">|</span> <span class="kt">Let</span> <span class="n">name</span> <span class="n">expr</span> <span class="n">body</span> <span class="ow">-&gt;</span>
-        <span class="n">expr_value</span> <span class="ow">=</span> <span class="n">evaluate</span> <span class="n">expr</span> <span class="n">context</span>
-        <span class="n">define</span> <span class="n">context</span> <span class="n">name</span> <span class="n">expr_value</span>
-        <span class="n">evaluate</span> <span class="n">body</span> <span class="n">context</span>
-</code></pre></div><p>(<code>can Fail</code> here is an <a href="/docs/language/#algebraic-effects">Algebraic Effect</a>)</p>
-<p>How then, does Ante prevent holding onto references of things that may change out from under itself,
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">log_foo</span> <span class="p">(</span><span class="n">foo</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">Foo</span><span class="p">)</span> <span class="p">(</span><span class="n">context</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="kt">Context</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span>
+    <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">logging_enabled</span> <span class="k">then</span>
+        <span class="n">log</span> <span class="s">&#34;Found foo: ${foo}&#34;</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">logs</span> <span class="o">+=</span> <span class="mi">1</span>
+</code></pre></div><p>How then, does Ante prevent holding onto references of things that may change out from under itself,
 such as vector elements or union fields?</p>
 <hr>
 <h2 id="preventing-borrows-when-a-types-shape-is-not-stable">Preventing borrows when a type&rsquo;s shape is not stable</h2>
 <p>These cases are simply marked as requiring owning references:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">get</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">own</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="o">:</span> <span class="o">&amp;</span><span class="k">own</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
-</code></pre></div><p>This function signature states that in order to return a reference to a vector&rsquo;s elements,
+</code></pre></div><p>(<code>Fail</code> here is an <a href="/docs/language/#algebraic-effects">Algebraic Effect</a>)</p>
+<p>This function signature states that in order to return a reference to a vector&rsquo;s elements,
 it needs an owned, though immutable, reference to the Vec. Note that &ldquo;owned&rdquo; here still allows
 multiple immutable references. A type is only considered to be shared when there is a mutable
 reference to it and at least one other reference to it of any kind.
@@ -484,6 +481,27 @@ mutable references:</p>
 which may be mutably aliased, we are all good to go!</p>
 <p>If you ever do need interior mutability to lend out owning references, then you will still need
 to resort to a <code>RefCell t</code> or similar interior mutability type inherited from Rust.</p>
+<hr>
+<h2 id="new-user-experience">New User Experience</h2>
+<p>The last important point to consider is that of a new user to Ante or Rust. This user may be
+familiar with other programming languages but crucially is not yet aware of ownership or borrowing
+which are somewhat unique to these languages.</p>
+<p>In Rust, trying to mutably borrow an already borrowed reference is one of the more memorable errors
+for new users to make due to how easy it is to encounter and how difficult it can be to understand at first.
+A new user just experimenting with the language for the first time will likely have a hard time avoiding
+these errors until learning about borrowing. As a result, new users tend to insert excessive calls to
+<code>clone</code> and tutorials need to introduce borrowing and AxM somewhat early on.</p>
+<p>In Ante, new users also have the option of simply using shape-stable types. When defining their types
+they can define their vectors to be vectors of pointer types and their unions to have pointers for
+each variant&rsquo;s data. This will avoid any AxM errors for the rest of their program - unless they accidentally
+call <code>get</code> over <code>get_cloned</code> or similar. In that case, they will be given a type error and (hopefully)
+a helpful message suggesting to use <code>get_cloned</code> as an alternative. Tutorials can encourage this approach
+as well by using pointer types more often at first, until introducing owning references later on as
+a method of reducing boxing. Compared to the Rust approach, this approach requires a one-time change
+in data types (if not done already / copied from a tutorial), but in return new users are much less likely
+to encounter AxM related errors. Comparing the runtime costs of the two work arounds, excessive cloning has the
+potential to degrade performance considerably when using larger types, but extra boxing in collection types
+and tagged unions won&rsquo;t generally have as drastic a performance impact.</p>
 <hr>
 <h1 id="closing-notes">Closing Notes</h1>
 <p>This was my first blog post for Ante and I&rsquo;m quite excited to share it with anyone reading.
@@ -647,6 +665,31 @@ Thanks for reading and have a fantastic day!</p>
                     
                         <ul class="toc-h1">
                     
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/blog/safe_shared_mutability/#new-user-experience">
+                        <li>New User Experience</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
                     
                     
                     
@@ -698,19 +741,6 @@ Thanks for reading and have a fantastic day!</p>
                 
                 <div class="item same-height-row clearfix">
                     <div class="image same-height-always">
-                        <a href="https://antelang.org/blog/safe_shared_mutability/">
-                          
-                            <img src="/img/banners/antelope_bird.jpg" class="img-responsive" alt="Achieving Safe, Aliasable Mutability with Unboxed Types">
-                          
-                        </a>
-                    </div>
-                    <div class="name same-height-always">
-                        <h5><a href="https://antelang.org/blog/safe_shared_mutability/">Achieving Safe, Aliasable Mutability with Unboxed Types</a></h5>
-                    </div>
-                </div>
-                
-                <div class="item same-height-row clearfix">
-                    <div class="image same-height-always">
                         <a href="https://antelang.org/blog/second_class_references/">
                           
                             <img src="/img/banners/anteater2.jpg" class="img-responsive" alt="Avoiding Lifetime Variables">
@@ -719,6 +749,19 @@ Thanks for reading and have a fantastic day!</p>
                     </div>
                     <div class="name same-height-always">
                         <h5><a href="https://antelang.org/blog/second_class_references/">Avoiding Lifetime Variables</a></h5>
+                    </div>
+                </div>
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="https://antelang.org/blog/safe_shared_mutability/">
+                          
+                            <img src="/img/banners/antelope_bird.jpg" class="img-responsive" alt="Achieving Safe, Aliasable Mutability with Unboxed Types">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/blog/safe_shared_mutability/">Achieving Safe, Aliasable Mutability with Unboxed Types</a></h5>
                     </div>
                 </div>
                 
