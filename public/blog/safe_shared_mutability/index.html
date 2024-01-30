@@ -299,9 +299,9 @@ fast, memory-safe, and thread-safe.</p>
 <h1 id="background">Background</h1>
 <hr>
 <p>When writing low-level, memory-safe, and thread-safe programs, a nice feature that lets us
-achieve all of these is an ownership model. These have been used by quite a few languages,
-but the language which popularized ownership was Rust. In Rust, the compiler will check our
-code to ensure we have no dangling references and cannot access already-freed memory. For
+achieve all of these is an ownership model. Ownership models have been used by quite a few languages,
+but the language which popularized them was Rust. In Rust, the compiler will check our
+code to ensure we have no dangling references and cannot access already-freed memory (among other errors). For
 example, the next snippet is a compile-time error in rust:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">vec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="fm">vec!</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">];</span><span class="w">
 </span><span class="w"></span><span class="kd">let</span><span class="w"> </span><span class="n">first_element</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">vec</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span><span class="w">

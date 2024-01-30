@@ -15,9 +15,9 @@ fast, memory-safe, and thread-safe.
 ---
 
 When writing low-level, memory-safe, and thread-safe programs, a nice feature that lets us
-achieve all of these is an ownership model. These have been used by quite a few languages,
-but the language which popularized ownership was Rust. In Rust, the compiler will check our
-code to ensure we have no dangling references and cannot access already-freed memory. For
+achieve all of these is an ownership model. Ownership models have been used by quite a few languages,
+but the language which popularized them was Rust. In Rust, the compiler will check our
+code to ensure we have no dangling references and cannot access already-freed memory (among other errors). For
 example, the next snippet is a compile-time error in rust:
 
 ```rust
