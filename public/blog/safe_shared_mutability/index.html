@@ -36,7 +36,7 @@
 
 
 
-<link href="/css/custom.css?1706730349" rel="stylesheet">
+<link href="/css/custom.css?1706730757" rel="stylesheet">
 
 
 
@@ -498,7 +498,9 @@ Most of the key differences come in ergonomics and usability. <code>&amp;shared 
 mutable variant are able to be projected to struct fields and provide better interop
 with other reference types. This reduces the required number of conversions, enables
 tailored compiler errors, and importantly allows arbitrary owned values to use shared
-mutation without requiring moving them in and out of a <code>Cell</code>.</p>
+mutation without requiring moving them in and out of a <code>Cell</code>. This last point is an
+important distinction I think. Instead of having the ability to opt out of AxM, in
+Ante this allows us instead to opt into AxM when needed.</p>
 <hr>
 <h2 id="shared-interior-mutability">Shared Interior Mutability</h2>
 <p>The <code>Vec (Rc MyStruct)</code> suggestion in the section above does not have quite
@@ -556,8 +558,8 @@ and tagged unions won&rsquo;t generally have as drastic a performance impact.</p
 <hr>
 <h1 id="closing-notes">Closing Notes</h1>
 <p>This was my first blog post for Ante and I&rsquo;m quite excited to share it with anyone reading.
-As far as I&rsquo;m aware, when this is implemented Ante will be the first and only language with
-safe, aliasable mutability and unboxed types. If you found this at all interesting, please
+This scheme will be the first step in making a language with safe, aliasable mutability and
+unboxed types more easily usable. If you found this at all interesting, please
 consider checking out the <a href="https://github.com/jfecher/ante">github page</a> and/or joining
 <a href="https://discord.gg/NPJncGBAws">Ante&rsquo;s discord</a> to discuss the language. The compiler is always
 open to contributions but I love just discussing the language with anyone who wants to as well.

@@ -278,7 +278,9 @@ Most of the key differences come in ergonomics and usability. `&shared t` and it
 mutable variant are able to be projected to struct fields and provide better interop 
 with other reference types. This reduces the required number of conversions, enables 
 tailored compiler errors, and importantly allows arbitrary owned values to use shared 
-mutation without requiring moving them in and out of a `Cell`.
+mutation without requiring moving them in and out of a `Cell`. This last point is an
+important distinction I think. Instead of having the ability to opt out of AxM, in
+Ante this allows us instead to opt into AxM when needed.
 
 ---
 
@@ -360,8 +362,8 @@ and tagged unions won't generally have as drastic a performance impact.
 # Closing Notes
 
 This was my first blog post for Ante and I'm quite excited to share it with anyone reading.
-As far as I'm aware, when this is implemented Ante will be the first and only language with
-safe, aliasable mutability and unboxed types. If you found this at all interesting, please
+This scheme will be the first step in making a language with safe, aliasable mutability and
+unboxed types more easily usable. If you found this at all interesting, please
 consider checking out the [github page](https://github.com/jfecher/ante) and/or joining
 [Ante's discord](https://discord.gg/NPJncGBAws) to discuss the language. The compiler is always
 open to contributions but I love just discussing the language with anyone who wants to as well.
