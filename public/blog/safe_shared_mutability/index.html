@@ -36,7 +36,7 @@
 
 
 
-<link href="/css/custom.css?1706674660" rel="stylesheet">
+<link href="/css/custom.css?1706675092" rel="stylesheet">
 
 
 
@@ -481,8 +481,9 @@ checks for other <code>&amp;shared mut t</code> references is what makes this sc
 mutable references:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">as_mut</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">Mut</span> <span class="n">t</span><span class="p">)</span> <span class="o">:</span> <span class="o">&amp;</span><span class="k">shared</span> <span class="k">mut</span> <span class="n">t</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><p>Since <code>shared</code> references are already restricted to only operations safe to perform on references
-which may be mutably aliased, we are all good to go!</p>
-<p>If you ever do need interior mutability to lend out owning references, then you will still need
+which may be mutably aliased, we are all good to go! We can now use <code>Vec (Rc (Mut MyStruct))</code> for
+a safe, mutably shared vector which we can also mutate the elements within.</p>
+<p>If we ever do need interior mutability to lend out owning references, then we&rsquo;d still need
 to resort to a <code>RefCell t</code> or similar interior mutability type inherited from Rust.</p>
 <hr>
 <h2 id="new-user-experience">New User Experience</h2>

@@ -259,9 +259,10 @@ as_mut (x: &Mut t) : &shared mut t = ...
 ```
 
 Since `shared` references are already restricted to only operations safe to perform on references
-which may be mutably aliased, we are all good to go!
+which may be mutably aliased, we are all good to go! We can now use `Vec (Rc (Mut MyStruct))` for
+a safe, mutably shared vector which we can also mutate the elements within.
 
-If you ever do need interior mutability to lend out owning references, then you will still need
+If we ever do need interior mutability to lend out owning references, then we'd still need
 to resort to a `RefCell t` or similar interior mutability type inherited from Rust.
 
 ---
