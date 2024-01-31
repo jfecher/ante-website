@@ -108,14 +108,28 @@ anything vaguely practical.
 - [x] Type system recoverable on error
 
 ---
+# Ownership
+
+Ante's ownership and borrowing rules have been recently completely redesigned. They
+will take some time to implement.
+
+- [ ] Mutating owned values. This currently still uses the old `Ref t` type for a boxed,
+mutable value similar to OCaml's `t ref`.
+- [ ] Tracking moves and issuing errors when a moved value is used
+- [ ] Borrowing
+  - [ ] Basic immutable and mutable borrowing
+  - [ ] Preventing moving owned values while the borrowed reference is alive
+  - [ ] Second-class reference semantics
+  - [ ] `shared` and `own` modifiers
+  - [ ] `Mut t` type
+---
 # Other
 
-- [~] Mutability. Conflated with the `Ref` type currently rather than being its own type.
-- [ ] Lifetime inference
-  - [ ] Initial static inference (likely start with basic Tofte-Taplin)
-  - [ ] Non-stack based, more complex static inference.
-  - [ ] Runtime checks to further restrict lifetimes (e.g. move between regions)
-    - [ ] Compiler option(s) to toggle/configure runtime checks
+Algebraic effects are currently partially implemented by a branch.
+Some basic programs are working but the feature overall is still experimental 
+and causes panics in most programs. For now, only type checking of effects
+is in master.
+
 - [ ] Algebraic effects
   - [x] Type checking
   - [ ] Runtime

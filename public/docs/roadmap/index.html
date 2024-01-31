@@ -36,7 +36,7 @@
 
 
 
-<link href="/css/custom.css?1706675092" rel="stylesheet">
+<link href="/css/custom.css" rel="stylesheet">
 
 
 
@@ -392,20 +392,30 @@ anything vaguely practical.</li>
 <li><input checked="" disabled="" type="checkbox"> Type system recoverable on error</li>
 </ul>
 <hr>
+<h1 id="ownership">Ownership</h1>
+<p>Ante&rsquo;s ownership and borrowing rules have been recently completely redesigned. They
+will take some time to implement.</p>
+<ul>
+<li><input disabled="" type="checkbox"> Mutating owned values. This currently still uses the old <code>Ref t</code> type for a boxed,
+mutable value similar to OCaml&rsquo;s <code>t ref</code>.</li>
+<li><input disabled="" type="checkbox"> Tracking moves and issuing errors when a moved value is used</li>
+<li><input disabled="" type="checkbox"> Borrowing
+<ul>
+<li><input disabled="" type="checkbox"> Basic immutable and mutable borrowing</li>
+<li><input disabled="" type="checkbox"> Preventing moving owned values while the borrowed reference is alive</li>
+<li><input disabled="" type="checkbox"> Second-class reference semantics</li>
+<li><input disabled="" type="checkbox"> <code>shared</code> and <code>own</code> modifiers</li>
+<li><input disabled="" type="checkbox"> <code>Mut t</code> type</li>
+</ul>
+</li>
+</ul>
+<hr>
 <h1 id="other">Other</h1>
+<p>Algebraic effects are currently partially implemented by a branch.
+Some basic programs are working but the feature overall is still experimental
+and causes panics in most programs. For now, only type checking of effects
+is in master.</p>
 <ul>
-<li>[~] Mutability. Conflated with the <code>Ref</code> type currently rather than being its own type.</li>
-<li><input disabled="" type="checkbox"> Lifetime inference
-<ul>
-<li><input disabled="" type="checkbox"> Initial static inference (likely start with basic Tofte-Taplin)</li>
-<li><input disabled="" type="checkbox"> Non-stack based, more complex static inference.</li>
-<li><input disabled="" type="checkbox"> Runtime checks to further restrict lifetimes (e.g. move between regions)
-<ul>
-<li><input disabled="" type="checkbox"> Compiler option(s) to toggle/configure runtime checks</li>
-</ul>
-</li>
-</ul>
-</li>
 <li><input disabled="" type="checkbox"> Algebraic effects
 <ul>
 <li><input checked="" disabled="" type="checkbox"> Type checking</li>
@@ -576,6 +586,27 @@ anything vaguely practical.</li>
                     
                     <a href="/docs/roadmap/#compiler-specific">
                         <li>Compiler-specific</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                    
+                    
+                    
+                    <a href="/docs/roadmap/#ownership">
+                        <li>Ownership</li>
                     </a>
                     
                     
