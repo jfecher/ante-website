@@ -100,7 +100,12 @@ but is otherwise implemented.
 - [x] LLVM backend
 - [x] Cranelift backend
 - [ ] Compiler option to write inferred types into the file
-- [ ] Language server. There is a skeleton for a LSP client [here](https://github.com/jfecher/ante-lsp) but it is more of an experiment than
+- [~] Language server.
+  - [x] Display errors in file
+  - [ ] Go to definition
+  - [ ] Go to type
+  - [ ] Hover
+  - [ ] Rename
 anything vaguely practical.
 - [x] Unused variable warning message
 - [ ] Parser recoverable on error
@@ -110,7 +115,7 @@ anything vaguely practical.
 ---
 # Ownership
 
-Ante's ownership and borrowing rules have been recently completely redesigned. They
+Ante's ownership and borrowing rules have been completely redesigned recently. They
 will take some time to implement.
 
 - [ ] Mutating owned values. This currently still uses the old `Ref t` type for a boxed,
@@ -125,7 +130,7 @@ mutable value similar to OCaml's `t ref`.
 ---
 # Other
 
-Algebraic effects are currently partially implemented by a branch.
+Algebraic effects are currently in development in a branch.
 Some basic programs are working but the feature overall is still experimental 
 and causes panics in most programs. For now, only type checking of effects
 is in master.

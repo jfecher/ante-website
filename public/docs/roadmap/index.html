@@ -384,8 +384,16 @@ but is otherwise implemented.</li>
 <li><input checked="" disabled="" type="checkbox"> LLVM backend</li>
 <li><input checked="" disabled="" type="checkbox"> Cranelift backend</li>
 <li><input disabled="" type="checkbox"> Compiler option to write inferred types into the file</li>
-<li><input disabled="" type="checkbox"> Language server. There is a skeleton for a LSP client <a href="https://github.com/jfecher/ante-lsp">here</a> but it is more of an experiment than
+<li>[~] Language server.
+<ul>
+<li><input checked="" disabled="" type="checkbox"> Display errors in file</li>
+<li><input disabled="" type="checkbox"> Go to definition</li>
+<li><input disabled="" type="checkbox"> Go to type</li>
+<li><input disabled="" type="checkbox"> Hover</li>
+<li><input disabled="" type="checkbox"> Rename
 anything vaguely practical.</li>
+</ul>
+</li>
 <li><input checked="" disabled="" type="checkbox"> Unused variable warning message</li>
 <li><input disabled="" type="checkbox"> Parser recoverable on error</li>
 <li><input checked="" disabled="" type="checkbox"> Name resolution recoverable on error</li>
@@ -393,7 +401,7 @@ anything vaguely practical.</li>
 </ul>
 <hr>
 <h1 id="ownership">Ownership</h1>
-<p>Ante&rsquo;s ownership and borrowing rules have been recently completely redesigned. They
+<p>Ante&rsquo;s ownership and borrowing rules have been completely redesigned recently. They
 will take some time to implement.</p>
 <ul>
 <li><input disabled="" type="checkbox"> Mutating owned values. This currently still uses the old <code>Ref t</code> type for a boxed,
@@ -411,7 +419,7 @@ mutable value similar to OCaml&rsquo;s <code>t ref</code>.</li>
 </ul>
 <hr>
 <h1 id="other">Other</h1>
-<p>Algebraic effects are currently partially implemented by a branch.
+<p>Algebraic effects are currently in development in a branch.
 Some basic programs are working but the feature overall is still experimental
 and causes panics in most programs. For now, only type checking of effects
 is in master.</p>
