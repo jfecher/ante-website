@@ -295,7 +295,7 @@
                         
 
                         <div id="post-content">
-                          <p>This is part of Ante&rsquo;s goal of loosening restrictions on low-level programming while remaining
+                          <p>This is part of Ante&rsquo;s goal to loosen restrictions on low-level programming while remaining
 fast, memory-safe, and thread-safe.</p>
 <hr>
 <h1 id="background">Background</h1>
@@ -325,8 +325,8 @@ requires a mutable <code>&amp;mut Vec&lt;i32&gt;</code> reference, we got a comp
 we also had the immutably borrowed reference <code>first_elem: &amp;i32</code> in scope. Had we not printed
 <code>first_element</code> out afterward, it could be dropped earlier and the code would work, but as-is
 we rightfully get an error.</p>
-<p>This is a great thing to prevent, but it is unfortunate that AxM errors are some of the most common
-errors in Rust and make the language more difficult to learn when they are run into so often. As
+<p>This is a great thing to prevent, but it is unfortunate that AxM errors like the one above are some of the most common
+errors in Rust. These make the language more difficult to learn when they are run into so often. As
 someone who has been writing Rust roughly since 1.0, I think it&rsquo;s fair to say even experienced users
 run into AxM errors every now and then. Fixing these often requires laboriously reworking an algorithm
 or - unfortunately - giving up and resorting to inserting excessive calls to <code>clone</code> in the program.</p>
@@ -347,6 +347,12 @@ mutating the data out from under us in a non-atomic way (a la Java) is also not 
 and are quickly met with their first experiences with the borrow checker. Needless to say, new users encountering
 such an error message with such unfamiliar concepts can easily have their patience chipped away at. At
 worst, they could even decide to stop learning the language entirely.</p>
+<p>The enforcement of AxM also rules out certain design patterns entirely. For example, graphs and the observer pattern
+somewhat inherently require sharing. We can try to work around this by implementing graphs with a central
+vector of nodes and handing out indices from this vector instead of pointers. There are reasons why we may want
+to do this as well (often better cache locality), but there are also reasons why we may want to have a traditional
+graph of pointers (lending out mutable references to nodes, no longer need to go through a context to operate
+on a node, etc).</p>
 <p>All this seems like a big risk for a language when plenty of other languages get by with aliasable mutability
 just fine. For example, <a href="https://www.ponylang.io/">Pony</a> is an example of a thread-safe and memory-safe
 language with aliasable mutability. The key difference with these languages is that - unlike Rust - they
@@ -416,7 +422,7 @@ When we try to call <code>get</code> with a shared vector, we&rsquo;ll get an er
 <span class="nf">v_ref1</span> <span class="ow">=</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">v</span>
 <span class="nf">v_ref2</span> <span class="ow">=</span> <span class="o">&amp;</span><span class="n">v</span>
 
-<span class="c1">// error: Expected an owned reference, but `v_ref1` is shared</span>
+<span class="c1">// error: Expected an owned reference, but `v_ref1` is shared with `v_ref2`</span>
 <span class="nf">v_elem</span> <span class="ow">=</span> <span class="n">get</span> <span class="n">v_ref1</span> <span class="mi">3</span>
 
 <span class="nf">print</span> <span class="n">v_ref1</span>
@@ -437,7 +443,28 @@ up to when <code>v_ref2</code> is borrowed:</p>
 <span class="nf">print</span> <span class="n">v_ref2</span>
 </code></pre></div><p>Taking the reference of a tagged union&rsquo;s fields also requires an owned reference, although this
 must be built into the language.</p>
-<hr>
+<p>Another operation that would be unsafe with shared mutable references would be obtaining a reference
+through a pointer boundary:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Foo</span> <span class="ow">=</span>
+    <span class="n">ptr</span><span class="o">:</span> <span class="kt">Box</span> <span class="kt">Bar</span>
+
+<span class="c1">// If we had the following function, we could create a dangling reference:</span>
+<span class="nf">as_ref</span> <span class="p">(</span><span class="n">box</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">Box</span> <span class="n">t</span><span class="p">)</span> <span class="o">:</span> <span class="o">&amp;</span><span class="n">t</span>
+
+<span class="nf">foo</span> <span class="ow">=</span> <span class="k">mut</span> <span class="kt">Foo</span> <span class="p">(</span><span class="kt">Box</span><span class="o">.</span><span class="n">new</span> <span class="n">my_bar</span><span class="p">)</span>
+
+<span class="nf">foo_mut_ref</span> <span class="ow">=</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">foo</span>
+
+<span class="nf">bar_ref</span> <span class="ow">=</span> <span class="n">as_ref</span> <span class="p">(</span><span class="n">foo</span><span class="o">.&amp;</span><span class="n">ptr</span><span class="p">)</span>
+
+<span class="c1">// Reassign `ptr`, causing the old value to be dropped</span>
+<span class="nf">foo_mut_ref</span><span class="o">.&amp;</span><span class="n">ptr</span> <span class="o">:=</span> <span class="kt">Box</span><span class="o">.</span><span class="n">new</span> <span class="n">other_bar</span>
+
+<span class="c1">// Now bar_ref refers to a dropped value!</span>
+<span class="nf">print</span> <span class="n">bar_ref</span>
+</code></pre></div><p>For this reason, to obtain a reference past a pointer boundary like this, we need an owned reference:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">as_ref</span> <span class="p">(</span><span class="n">box</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">own</span> <span class="kt">Box</span> <span class="n">t</span><span class="p">)</span> <span class="o">:</span> <span class="o">&amp;</span><span class="k">own</span> <span class="n">t</span>
+</code></pre></div><hr>
 <h2 id="making-shared-useful">Making Shared Useful</h2>
 <p>Hold on, this is great and all, but how usable are shared references really if we can&rsquo;t do something
 as common as holding onto a vector&rsquo;s elements with them? Does this mean we can&rsquo;t use a shared vector
@@ -460,49 +487,59 @@ removing them from the Vec. It turns out however, we can do that too:</p>
 <p>As long as we don&rsquo;t return a reference to an element, the API itself is safe.
 Note that since this requires cloning each value, this will be fine for small,
 primitive types, but will be expensive for vectors with more complex element types.
-To work around this, we can have a vector of pointer types instead
-to reduce the cost of cloning: <code>Vec (Rc MyStruct)</code>. Looks like we&rsquo;ve rediscovered why languages
-like Pony, Koka, Haskell, Java, and many others box values! With this, we&rsquo;ve gone full
-circle and (I think) have achieved the best of both the unboxed and boxed worlds.</p>
+To work around this, we can instead have a vector of pointer types to reduce the
+cost of cloning: <code>Vec (Rc MyStruct)</code>.</p>
 <hr>
 <h2 id="shared-interior-mutability">Shared Interior Mutability</h2>
 <p>Eagle-eyed Rust users will note that the <code>Vec (Rc MyStruct)</code> suggestion above does not have quite
 the same semantics as an owned <code>Vec&lt;MyStruct&gt;</code> in Rust. Most notably, <code>Rc&lt;T&gt;</code> in Rust
 (and <code>Rc t</code> in Ante) prevent mutating the inner element by only handing out immutable
-references. If we want to still be able to mutate <code>MyStruct</code>, we have to resort to interior
-mutability. In Rust, this can be quite loathsome. Using a type like <code>RefCell&lt;T&gt;</code> enables us
-to mutate the inner value but also requires runtime checking to ensure AxM rules are upheld.
-This can even cause runtime panics in our code if we get this incorrect!</p>
+references. If we still want to be able to mutate <code>MyStruct</code>, we have to resort to interior
+mutability. It’s possible to implement this in Rust, but we can longer tell if the code is AxM-safe at compile
+time. We can mutate the inner value by using a type like <code>RefCell&lt;T&gt;</code>, but this defers checking AxM
+rules until runtime and panics on failure! Moreover, since <code>RefCell&lt;T&gt;</code> requires additional book-keeping
+to keep track of the references it lends out, it is not zero-cost.</p>
 <p>Ante however, provides the <code>Mut t</code> type for aliasable interior mutability. Since Ante already
-allows aliasable mutability, there are absoluately no runtime checks required and <code>Mut t</code>
+allows aliasable mutability, there are absolutely no runtime checks required. <code>Mut t</code>
 is just a wrapper struct containing only the wrapped <code>t</code>. This, along with the lack of runtime
-checks for other <code>&amp;shared mut t</code> references is what makes this scheme zero-cost.</p>
+checks for other <code>&amp;shared mut t</code> references, is what makes this scheme zero-cost.</p>
 <p>The key difference with <code>Mut t</code> which makes it safe is that it can only hand out shared
 mutable references:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">as_mut</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">Mut</span> <span class="n">t</span><span class="p">)</span> <span class="o">:</span> <span class="o">&amp;</span><span class="k">shared</span> <span class="k">mut</span> <span class="n">t</span> <span class="ow">=</span> <span class="o">...</span>
-</code></pre></div><p>Since <code>shared</code> references are already restricted to only operations safe to perform on references
-which may be mutably aliased, we are all good to go! We can now use <code>Vec (Rc (Mut MyStruct))</code> for
-a safe, mutably shared vector which we can also mutate the elements within.</p>
-<p>If we ever do need interior mutability to lend out owning references, then we&rsquo;d still need
+</code></pre></div><p>This enables us to use <code>Vec (Rc (Mut MyStruct))</code> for
+a safe, mutably shared vector that we can also mutate the elements within.</p>
+<p>If we ever do need interior mutability to lend out owned references, then we&rsquo;d still need
 to resort to a <code>RefCell t</code> or similar interior mutability type inherited from Rust.</p>
+<h3 id="traversing-pointer-types">Traversing Pointer Types</h3>
+<p>Going back to the <code>Box.as_ref</code> example:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">as_ref</span> <span class="p">(</span><span class="n">box</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">own</span> <span class="kt">Box</span> <span class="n">t</span><span class="p">)</span> <span class="o">:</span> <span class="o">&amp;</span><span class="k">own</span> <span class="n">t</span>
+</code></pre></div><p>This can seem like a fairly serious limitation but it is helpful to take a step back and consider
+when <code>Box&lt;T&gt;</code> and similar pointer types are typically used in today&rsquo;s Rust programs. In my
+experience, these are most often used to wrap recursive data types when using an enumeration.
+When using shared mutability in Ante, these cases would already require an <code>Rc t</code>
+or similar around each element to reduce the cloning costs of enumerations. Using an
+<code>Rc (Mut t)</code> would let us preserve shared mutability but would occasionally require us to
+clone the reference-counted pointer. If the cost of incrementing reference counts is a deal
+breaker (and if there is no other suitable pointer type) then an application can always decide
+to go back to <code>Box t</code> and owned mutability instead.</p>
 <hr>
 <h2 id="new-user-experience">New User Experience</h2>
-<p>The last important point to consider is that of a new user to Ante or Rust. This user may be
+<p>It is also important to consider the perspective of a new user to Ante or Rust. This user may be
 familiar with other programming languages but crucially is not yet aware of ownership or borrowing
 which are somewhat unique to these languages.</p>
 <p>In Rust, trying to mutably borrow an already borrowed reference is one of the more memorable errors
 for new users to make due to how easy it is to encounter and how difficult it can be to understand at first.
-A new user just experimenting with the language for the first time will likely have a hard time avoiding
+A new user experimenting with the language for the first time will often have a hard time avoiding
 these errors until learning about borrowing. As a result, new users tend to insert excessive calls to
 <code>clone</code> and tutorials need to introduce borrowing and AxM somewhat early on.</p>
 <p>In Ante, new users also have the option of simply using shape-stable types. When defining their types
 they can define their vectors to be vectors of pointer types and their unions to have pointers for
 each variant&rsquo;s data. This will avoid any AxM errors for the rest of their program - unless they accidentally
 call <code>get</code> over <code>get_cloned</code> or similar. In that case, they will be given a type error and (hopefully)
-a helpful message suggesting to use <code>get_cloned</code> as an alternative. Tutorials can encourage this approach
+a helpful message suggesting to use <code>get_cloned</code> as an alternative. Tutorials for Ante can encourage this approach
 as well by using pointer types more often at first, until introducing owning references later on as
-a method of reducing boxing. Compared to the Rust approach, this approach requires a one-time change
-in data types (if not done already / copied from a tutorial), but in return new users are much less likely
+a method of reducing boxing. Compared to the Rust approach, this requires a one-time change
+in data types (if not done already / copied from a tutorial), and in return new users are much less likely
 to encounter AxM related errors. Comparing the runtime costs of the two work arounds, excessive cloning has the
 potential to degrade performance considerably when using larger types, but extra boxing in collection types
 and tagged unions won&rsquo;t generally have as drastic a performance impact.</p>
@@ -653,6 +690,35 @@ Thanks for reading and have a fantastic day!</p>
                         <li>Shared Interior Mutability</li>
                     </a>
                     
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                        <ul class="toc-h3">
+                    
+                    
+                    
+                    
+                    <a href="/blog/safe_shared_mutability/#traversing-pointer-types">
+                        <li>Traversing Pointer Types</li>
+                    </a>
+                    
+                    
+                        </ul>
                     
                         </ul>
                     

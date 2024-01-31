@@ -6,7 +6,7 @@ categories = ["mutability", "thread safety", "memory management"]
 banner = "img/banners/antelope_bird.jpg"
 +++
 
-This is part of Ante's goal of loosening restrictions on low-level programming while remaining
+This is part of Ante's goal to loosen restrictions on low-level programming while remaining
 fast, memory-safe, and thread-safe.
 
 ---
@@ -45,8 +45,8 @@ we also had the immutably borrowed reference `first_elem: &i32` in scope. Had we
 `first_element` out afterward, it could be dropped earlier and the code would work, but as-is
 we rightfully get an error.
 
-This is a great thing to prevent, but it is unfortunate that AxM errors are some of the most common
-errors in Rust and make the language more difficult to learn when they are run into so often. As
+This is a great thing to prevent, but it is unfortunate that AxM errors like the one above are some of the most common
+errors in Rust. These make the language more difficult to learn when they are run into so often. As
 someone who has been writing Rust roughly since 1.0, I think it's fair to say even experienced users
 run into AxM errors every now and then. Fixing these often requires laboriously reworking an algorithm
 or - unfortunately - giving up and resorting to inserting excessive calls to `clone` in the program.
@@ -72,6 +72,13 @@ mutating the data out from under us in a non-atomic way (a la Java) is also not 
 and are quickly met with their first experiences with the borrow checker. Needless to say, new users encountering
 such an error message with such unfamiliar concepts can easily have their patience chipped away at. At
 worst, they could even decide to stop learning the language entirely.
+
+The enforcement of AxM also rules out certain design patterns entirely. For example, graphs and the observer pattern
+somewhat inherently require sharing. We can try to work around this by implementing graphs with a central
+vector of nodes and handing out indices from this vector instead of pointers. There are reasons why we may want
+to do this as well (often better cache locality), but there are also reasons why we may want to have a traditional
+graph of pointers (lending out mutable references to nodes, no longer need to go through a context to operate
+on a node, etc).
 
 All this seems like a big risk for a language when plenty of other languages get by with aliasable mutability
 just fine. For example, [Pony](https://www.ponylang.io/) is an example of a thread-safe and memory-safe
@@ -166,7 +173,7 @@ v = mut Vec.of [1, 2, 3]
 v_ref1 = &mut v
 v_ref2 = &v
 
-// error: Expected an owned reference, but `v_ref1` is shared
+// error: Expected an owned reference, but `v_ref1` is shared with `v_ref2`
 v_elem = get v_ref1 3
 
 print v_ref1
@@ -193,6 +200,35 @@ print v_ref2
 
 Taking the reference of a tagged union's fields also requires an owned reference, although this
 must be built into the language.
+
+Another operation that would be unsafe with shared mutable references would be obtaining a reference
+through a pointer boundary:
+
+```ante
+type Foo =
+    ptr: Box Bar
+
+// If we had the following function, we could create a dangling reference:
+as_ref (box: &Box t) : &t
+
+foo = mut Foo (Box.new my_bar)
+
+foo_mut_ref = &mut foo
+
+bar_ref = as_ref (foo.&ptr)
+
+// Reassign `ptr`, causing the old value to be dropped
+foo_mut_ref.&ptr := Box.new other_bar
+
+// Now bar_ref refers to a dropped value!
+print bar_ref
+```
+
+For this reason, to obtain a reference past a pointer boundary like this, we need an owned reference:
+
+```ante
+as_ref (box: &own Box t) : &own t
+```
 
 ---
 
@@ -229,10 +265,8 @@ get_cloned (v: &Vec t) (index: Usz) : t can Fail given Clone t = ...
 As long as we don't return a reference to an element, the API itself is safe.
 Note that since this requires cloning each value, this will be fine for small,
 primitive types, but will be expensive for vectors with more complex element types. 
-To work around this, we can have a vector of pointer types instead
-to reduce the cost of cloning: `Vec (Rc MyStruct)`. Looks like we've rediscovered why languages
-like Pony, Koka, Haskell, Java, and many others box values! With this, we've gone full
-circle and (I think) have achieved the best of both the unboxed and boxed worlds.
+To work around this, we can instead have a vector of pointer types to reduce the
+cost of cloning: `Vec (Rc MyStruct)`.
 
 ---
 
@@ -241,15 +275,16 @@ circle and (I think) have achieved the best of both the unboxed and boxed worlds
 Eagle-eyed Rust users will note that the `Vec (Rc MyStruct)` suggestion above does not have quite 
 the same semantics as an owned `Vec<MyStruct>` in Rust. Most notably, `Rc<T>` in Rust
 (and `Rc t` in Ante) prevent mutating the inner element by only handing out immutable
-references. If we want to still be able to mutate `MyStruct`, we have to resort to interior
-mutability. In Rust, this can be quite loathsome. Using a type like `RefCell<T>` enables us
-to mutate the inner value but also requires runtime checking to ensure AxM rules are upheld. 
-This can even cause runtime panics in our code if we get this incorrect!
+references. If we still want to be able to mutate `MyStruct`, we have to resort to interior
+mutability. It’s possible to implement this in Rust, but we can longer tell if the code is AxM-safe at compile
+time. We can mutate the inner value by using a type like `RefCell<T>`, but this defers checking AxM 
+rules until runtime and panics on failure! Moreover, since `RefCell<T>` requires additional book-keeping
+to keep track of the references it lends out, it is not zero-cost.
 
 Ante however, provides the `Mut t` type for aliasable interior mutability. Since Ante already
-allows aliasable mutability, there are absoluately no runtime checks required and `Mut t`
+allows aliasable mutability, there are absolutely no runtime checks required. `Mut t`
 is just a wrapper struct containing only the wrapped `t`. This, along with the lack of runtime
-checks for other `&shared mut t` references is what makes this scheme zero-cost.
+checks for other `&shared mut t` references, is what makes this scheme zero-cost.
 
 The key difference with `Mut t` which makes it safe is that it can only hand out shared
 mutable references:
@@ -258,24 +293,41 @@ mutable references:
 as_mut (x: &Mut t) : &shared mut t = ...
 ```
 
-Since `shared` references are already restricted to only operations safe to perform on references
-which may be mutably aliased, we are all good to go! We can now use `Vec (Rc (Mut MyStruct))` for
-a safe, mutably shared vector which we can also mutate the elements within.
+This enables us to use `Vec (Rc (Mut MyStruct))` for
+a safe, mutably shared vector that we can also mutate the elements within.
 
-If we ever do need interior mutability to lend out owning references, then we'd still need
+If we ever do need interior mutability to lend out owned references, then we'd still need
 to resort to a `RefCell t` or similar interior mutability type inherited from Rust.
+
+### Traversing Pointer Types
+
+Going back to the `Box.as_ref` example:
+
+```ante
+as_ref (box: &own Box t) : &own t
+```
+
+This can seem like a fairly serious limitation but it is helpful to take a step back and consider
+when `Box<T>` and similar pointer types are typically used in today's Rust programs. In my
+experience, these are most often used to wrap recursive data types when using an enumeration.
+When using shared mutability in Ante, these cases would already require an `Rc t`
+or similar around each element to reduce the cloning costs of enumerations. Using an
+`Rc (Mut t)` would let us preserve shared mutability but would occasionally require us to
+clone the reference-counted pointer. If the cost of incrementing reference counts is a deal
+breaker (and if there is no other suitable pointer type) then an application can always decide
+to go back to `Box t` and owned mutability instead.
 
 ---
 
 ## New User Experience
 
-The last important point to consider is that of a new user to Ante or Rust. This user may be
+It is also important to consider the perspective of a new user to Ante or Rust. This user may be
 familiar with other programming languages but crucially is not yet aware of ownership or borrowing
 which are somewhat unique to these languages.
 
 In Rust, trying to mutably borrow an already borrowed reference is one of the more memorable errors
 for new users to make due to how easy it is to encounter and how difficult it can be to understand at first.
-A new user just experimenting with the language for the first time will likely have a hard time avoiding
+A new user experimenting with the language for the first time will often have a hard time avoiding
 these errors until learning about borrowing. As a result, new users tend to insert excessive calls to 
 `clone` and tutorials need to introduce borrowing and AxM somewhat early on.
 
@@ -283,10 +335,10 @@ In Ante, new users also have the option of simply using shape-stable types. When
 they can define their vectors to be vectors of pointer types and their unions to have pointers for
 each variant's data. This will avoid any AxM errors for the rest of their program - unless they accidentally
 call `get` over `get_cloned` or similar. In that case, they will be given a type error and (hopefully)
-a helpful message suggesting to use `get_cloned` as an alternative. Tutorials can encourage this approach
+a helpful message suggesting to use `get_cloned` as an alternative. Tutorials for Ante can encourage this approach
 as well by using pointer types more often at first, until introducing owning references later on as
-a method of reducing boxing. Compared to the Rust approach, this approach requires a one-time change
-in data types (if not done already / copied from a tutorial), but in return new users are much less likely
+a method of reducing boxing. Compared to the Rust approach, this requires a one-time change
+in data types (if not done already / copied from a tutorial), and in return new users are much less likely
 to encounter AxM related errors. Comparing the runtime costs of the two work arounds, excessive cloning has the
 potential to degrade performance considerably when using larger types, but extra boxing in collection types
 and tagged unions won't generally have as drastic a performance impact.
