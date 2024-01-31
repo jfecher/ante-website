@@ -36,7 +36,7 @@
 
 
 
-<link href="/css/custom.css?1706730757" rel="stylesheet">
+<link href="/css/custom.css?1706732482" rel="stylesheet">
 
 
 
@@ -498,9 +498,9 @@ Most of the key differences come in ergonomics and usability. <code>&amp;shared 
 mutable variant are able to be projected to struct fields and provide better interop
 with other reference types. This reduces the required number of conversions, enables
 tailored compiler errors, and importantly allows arbitrary owned values to use shared
-mutation without requiring moving them in and out of a <code>Cell</code>. This last point is an
+mutation without requiring converting back and forth between a <code>Cell&lt;T&gt;</code> and <code>T</code>. This last point is an
 important distinction I think. Instead of having the ability to opt out of AxM, in
-Ante this allows us instead to opt into AxM when needed.</p>
+Ante AxM is opted into instead.</p>
 <hr>
 <h2 id="shared-interior-mutability">Shared Interior Mutability</h2>
 <p>The <code>Vec (Rc MyStruct)</code> suggestion in the section above does not have quite

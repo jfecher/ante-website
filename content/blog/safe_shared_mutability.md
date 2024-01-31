@@ -278,9 +278,9 @@ Most of the key differences come in ergonomics and usability. `&shared t` and it
 mutable variant are able to be projected to struct fields and provide better interop 
 with other reference types. This reduces the required number of conversions, enables 
 tailored compiler errors, and importantly allows arbitrary owned values to use shared 
-mutation without requiring moving them in and out of a `Cell`. This last point is an
+mutation without requiring converting back and forth between a `Cell<T>` and `T`. This last point is an
 important distinction I think. Instead of having the ability to opt out of AxM, in
-Ante this allows us instead to opt into AxM when needed.
+Ante AxM is opted into instead.
 
 ---
 
