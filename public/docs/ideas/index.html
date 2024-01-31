@@ -36,7 +36,7 @@
 
 
 
-<link href="/css/custom.css?1706640937" rel="stylesheet">
+<link href="/css/custom.css?1706674660" rel="stylesheet">
 
 
 
@@ -82,7 +82,7 @@
   <meta name="author" content="" />
 
   <meta name="keywords" content="ante, programming, language, antelang, lang">	
-  <meta name="description" content="For exploring refinement types, lifetime inference, and algebraic effects">
+  <meta name="description" content="For exploring algebraic effects, safe shared mutability, and other novel features">
 
   <meta name="generator" content="Hugo 0.89.0-DEV" />
 
@@ -684,6 +684,114 @@ at each recursive call. There are other recursion schemes including <code>ana</c
 must be weighed against the additional complexity they would add to the language. Currently the
 expected benefit of adding support for recursion schemes directly into the language seems
 too small to be worth the implementation effort, but it was still a useful avenue to explore.</p>
+<hr>
+<h1 id="refinement-types">Refinement Types</h1>
+<p>Refinement types are an additional boolean constraint on a normal type.
+For example, we may have an integer type that must be greater than 5.
+This is written as <code>x: I32 where x &gt; 5</code>. These refinements can be
+written anywhere after a type is expected, and are mostly restricted
+to numbers or &ldquo;uninterpreted functions.&rdquo; This limitation is so we can
+infer these refinements like normal types. If we instead allow any value
+to be used in refinements we would get fully-dependent types for which
+inference and basic type checking (without manual proofs) is undecidable.</p>
+<p>Refinement types can be used to ensure indexing into a vector is always valid:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">get</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span> <span class="n">where</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="n">len</span> <span class="n">a</span><span class="p">)</span> <span class="o">:</span> <span class="n">t</span> <span class="ow">=</span> <span class="o">...</span>
+
+<span class="nf">a</span> <span class="ow">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="nf">get</span> <span class="n">a</span> <span class="mi">2</span>  <span class="c1">// valid</span>
+<span class="nf">get</span> <span class="n">a</span> <span class="mi">3</span>  <span class="c1">// error: couldn&#39;t satisfy 3 &lt; len a</span>
+
+<span class="nf">n</span> <span class="ow">=</span> <span class="n">random_in</span> <span class="p">(</span><span class="mi">1</span><span class="o">..</span><span class="mi">10</span><span class="p">)</span>
+<span class="nf">get</span> <span class="n">a</span> <span class="n">n</span>  <span class="c1">// error: couldn&#39;t satisfy n &lt; len a</span>
+
+<span class="c1">// The solver is smart enough to know len a &gt; n &lt;=&gt; n &lt; len a</span>
+<span class="k">if</span> <span class="n">len</span> <span class="n">a</span> <span class="o">&gt;</span> <span class="n">n</span> <span class="k">then</span>
+    <span class="n">get</span> <span class="n">a</span> <span class="n">n</span>  <span class="c1">// valid</span>
+</code></pre></div><p>Uninterpreted functions can also be used to tag values. The following
+example uses this technique to tag vectors returned by the <code>sort</code>
+function as being sorted, then restricting the input of <code>binary_search</code>
+to only sorted vectors:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// You can name a return type for use in refinements</span>
+<span class="nf">sort</span> <span class="p">(</span><span class="n">vec</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="o">:</span> <span class="n">ret</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span> <span class="n">where</span> <span class="n">sorted</span> <span class="n">ret</span> <span class="ow">=</span> <span class="o">...</span>
+
+<span class="nf">binary_search</span> <span class="p">(</span><span class="n">vec</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span> <span class="n">where</span> <span class="n">sorted</span> <span class="n">vec</span><span class="p">)</span> <span class="p">(</span><span class="n">elem</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Maybe</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span> <span class="n">where</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="n">len</span> <span class="n">vec</span><span class="p">)</span> <span class="ow">=</span> <span class="o">...</span>
+</code></pre></div><p>Type aliases can be used to cut down on the annotations:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">SortedVec</span> <span class="n">t</span> <span class="ow">=</span> <span class="n">a</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span> <span class="n">where</span> <span class="n">sorted</span> <span class="n">a</span>
+
+<span class="kt">Index</span> <span class="n">vec</span> <span class="ow">=</span> <span class="n">x</span><span class="o">:</span><span class="kt">Usz</span> <span class="n">where</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">len</span> <span class="n">vec</span>
+
+<span class="nf">sort</span> <span class="p">(</span><span class="n">vec</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="o">:</span> <span class="kt">SortedVec</span> <span class="n">t</span> <span class="ow">=</span> <span class="o">...</span>
+
+<span class="nf">binary_search</span> <span class="p">(</span><span class="n">vec</span><span class="o">:</span> <span class="kt">SortedVec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">elem</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Maybe</span> <span class="p">(</span><span class="kt">Index</span> <span class="n">vec</span><span class="p">)</span> <span class="ow">=</span> <span class="o">...</span>
+</code></pre></div><p>Each of these refinements are would be in type system and would be checked during compile-time with the help of a SMT solver.</p>
+<hr>
+<h1 id="lifetime-inference">Lifetime Inference</h1>
+<p>Lifetime inference (originally &ldquo;region inference&rdquo;) is a technique
+that can be used to conservatively estimate the lifetime of references
+at compile time. If included into Ante, a lifetime-inferred pointer
+would need to be an owning pointer type, e.g. <code>Ref t</code>. This is because
+it has the ability to automatically extend the lifetime of its contents
+depending on how far down the call stack the compiler infers that it
+may reach.</p>
+<p>If included in the language, <code>Ref</code>s can be created with <code>new : a -&gt; Ref a</code>
+and the underlying value can be accessed with <code>deref : Ref a -&gt; a</code>. Here&rsquo;s
+a simple example:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">get_value</span> <span class="p">()</span> <span class="o">:</span> <span class="kt">Ref</span> <span class="kt">I32</span> <span class="ow">=</span>
+    <span class="n">new</span> <span class="mi">3</span>
+
+<span class="nf">value</span> <span class="ow">=</span> <span class="n">get_value</span> <span class="p">()</span>
+
+<span class="c1">// the Ref value is still valid here and</span>
+<span class="c1">// is deallocated when it goes out of scope.</span>
+<span class="nf">print</span> <span class="n">value</span>
+</code></pre></div><p>The above program would be compiled to the equivalent of destination-passing
+style in C:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="nf">get_value</span><span class="p">(</span><span class="kt">int</span><span class="o">*</span> <span class="n">three</span><span class="p">)</span> <span class="p">{</span>
+    <span class="o">*</span><span class="n">three</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">value</span><span class="p">;</span>
+    <span class="n">get_value</span><span class="p">(</span><span class="o">&amp;</span><span class="n">value</span><span class="p">);</span>
+    <span class="n">print</span><span class="p">(</span><span class="n">value</span><span class="p">);</span> <span class="c1">// print impl is omitted for brevity
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></div><p>The above program showcased we can return a <code>Ref</code> value to extend its
+lifetime. Unlike borrowing for example, we can never have a lifetime error in this
+system since the lifetime is simply extended instead.</p>
+<p>There are many tradeoffs here however between lack of runtime
+checks, compile-times, and runtime memory usage. It is possible, for example,
+to statically determine the furthest stack frame any allocation may reach
+and use that memory for the allocation (which may still be on the heap if the
+inferred region must allocate multiple values). However, in practice many of
+these objects could be deallocated far before the end of this stack frame is
+reached. This can be improved with more complex analysis (like the
+<a href="https://www.microsoft.com/en-us/research/publication/better-static-memory-management-improving-region-based-analysis-of-higher-order-languages/">AFL</a>
+or <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.388.4008&amp;rep=rep1&amp;type=pdf">imperative region management</a> schemes),
+but there are still some fundamental issues of these schemes with regard
+to collection types. The problem is since this analysis is type based, and
+all elements in a collection have their type unified, then their lifetimes
+are unified as well. Ante aims to mitigate this via move semantics and runtime
+checks. These runtime checks would be configurable since lifetime inference
+already assures memory safety, they would only serve to further tighten lifetimes
+and deallocate earlier. Their exact form is indeterminate however and further
+restricting inferred lifetimes could be an exciting part of research.</p>
+<h2 id="details">Details</h2>
+<p>Internally, lifetime inference of refs would start out by using the original Tofte-Taplin
+stack-based algorithm. This algorithm can infer references which
+can be optimized to allocate on the stack instead of the heap
+even if it needs to be allocated on a prior stack frame. The
+tradeoff for this is that, as previously mentioned, the inferred
+lifetimes tend to be imprecise. As such, <code>Ref</code>s should be avoided when
+you need more precise control over when something is deallocated.
+They would not be a complete replacement for other smart pointer types
+such as <code>Box</code> and <code>Rc</code>.
+The place where <code>Ref</code>s are typically worst is in implementing container types.
+<code>Ref</code>s are implemented using memory pools on the stack under the
+hood so any container that wants to free early or reallocate and
+free/resize memory (ie. the vast majority of containers) should use
+one of the smart pointer types to hold their elements instead.</p>
+<p>For these reasons, lifetime inference isn&rsquo;t an incredibly useful for Ante
+today so it is not included in the language.</p>
 
                         </div>
                         
@@ -1110,6 +1218,73 @@ too small to be worth the implementation effort, but it was still a useful avenu
                 
             
         
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                    
+                    
+                    
+                    <a href="/docs/ideas/#refinement-types">
+                        <li>Refinement Types</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                    
+                    
+                    
+                    <a href="/docs/ideas/#lifetime-inference">
+                        <li>Lifetime Inference</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/docs/ideas/#details">
+                        <li>Details</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
     </div>
     
 
@@ -1145,19 +1320,6 @@ too small to be worth the implementation effort, but it was still a useful avenu
             <h4>Recent posts</h4>
 
             <div class="blog-entries">
-                
-                <div class="item same-height-row clearfix">
-                    <div class="image same-height-always">
-                        <a href="https://antelang.org/blog/second_class_references/">
-                          
-                            <img src="/img/banners/anteater2.jpg" class="img-responsive" alt="Avoiding Lifetime Variables">
-                          
-                        </a>
-                    </div>
-                    <div class="name same-height-always">
-                        <h5><a href="https://antelang.org/blog/second_class_references/">Avoiding Lifetime Variables</a></h5>
-                    </div>
-                </div>
                 
                 <div class="item same-height-row clearfix">
                     <div class="image same-height-always">

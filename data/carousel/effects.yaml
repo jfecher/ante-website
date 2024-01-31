@@ -1,22 +1,18 @@
-weight: 3
+weight: 1
 title: "Algebraic Effects"
 description: >
-    <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="k">type</span> <span class="kt">Context</span> = ...
+    <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Fail</span> <span class="k">with</span>
+        fail: <span class="kt">Unit</span> -> <span class="kt">I32</span>
+        
+    safe_div (x: <span class="kt">I32</span>) (y: <span class="kt">I32</span>) : <span class="kt">I32</span> <span class="k">can</span> <span class="kt">Fail</span> =
+        <span class="k">if</span> y != <span class="m">0</span>
+        <span class="k">then</span> x / y
+        <span class="k">else</span> fail ()
 
+    <span class="c1">// Unlike exceptions, we can choose to either stop on error, or resume with a value:</span>
 
-    <span class="c1">// We don't need to manually pass around our Context, it is done for us, but is still explicit in the type</span>
+    default_value (value: <span class="kt">I32</span>) (f: <span class="kt">Unit</span> -> <span class="kt">a</span> <span class="k">can</span> <span class="kt">Fail</span>) : <span class="kt">Unit</span> =
+        <span class="k">handle</span> f ()
+        | fail () -> <span class="k">resume</span> value
 
-    my_game_loop () <span class="k">can</span> <span class="kt">Use Context</span> =
-        <span class="k">if not</span> game_ended () <span class="k">then</span>
-            update ()
-            draw ()
-            my_game_loop ()
-
-    <span class="c1">// Since 'can Use Context' is part of a function's type, it can be inferred as well</span>
-
-    game_ended () =
-        player_entities () |> all is_dead
-
-    update () <span class="k">can</span> <span class="kt">Use Context</span> =
-        ctx = get ()
-        put <| ctx <span class="k">with</span> ticks += 1</code></pre></div>
+    safe_div <span class="m">1 0</span> <span class="k">with</span> default_value <span class="m">42</span>  <span class="c1">//=> 42</span></code></pre></div>

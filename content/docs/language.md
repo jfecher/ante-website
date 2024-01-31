@@ -141,29 +141,16 @@ reading_about_variables: Bool = true
 
 ## Mutability
 
-Generally, mutability can make larger programs
-more difficult to reason about, creating more bugs and increasing the cost
-of development. However, there are algorithms that are simpler or more efficient
-when written using mutability. Being a systems language, ante takes the position
-that mutability should generally be avoided but is sometimes a necessary evil.
-
-The `Mut a` type provides a shared, mutable reference to its inner element.
-Any variable can be made mutable by shallow copying it into the `Mut` reference:
+A variable can be made mutable by adding the `mut` keyword when defining the variable:
 
 ```ante
 // Mutable variables can be created with `mut`:
-pet_name: Mut String = mut "Ember"
+pet_name = mut "Ember"
 print pet_name  //=> Ember
 
 // And can be mutated with `:=`
 pet_name := "Cinder"
 print pet_name  //=> Cinder
-
-// And can be aliased as with other variables
-alias = pet_name
-alias := "Teak"
-
-print pet_name  // => Teak
 ```
 
 Here's another example showing a function that can mutate the passed in parameter:
@@ -174,8 +161,8 @@ count_evens array counter =
         if even elem then
             counter += 1
 
-counter: Mut I32 = mut 0
-count_evens [4, 5, 6] counter
+counter = mut 0
+count_evens [4, 5, 6] (&mut counter)
 
 print counter  //=> 2
 ```
@@ -196,112 +183,6 @@ print my_pair  //=> 3, 4
 // The following two lines give an error because we never declared `bad` to be mutable
 bad = 1, 2
 bad.&first := 3
-```
-
-Mutating a parameter of a function creates a `Mutate` [effect](#algebraic-effects) to mark
-the current function as impure. This is a primitive effect that cannot be handled via a `handle` expression.
-
-```ante
-inc (counter: Mut I32) : Unit can Mutate =
-    counter += 1
-
-// Functions that only read references do not need the Mutate effect
-read_counter (counter: Mut I32) : I32 =
-    @counter
-```
-
-### Limitations
-
-To preserve safety, `Mut` cannot be transfered across a few key boundaries.
-
-Firstly, if you have a `Mut (Ref a)`, there is no way to obtain a `Mut a` without
-copying `a`. In other words, you cannot directly mutate the element held inside of an
-immutable reference.
-
-```ante
-foo: Mut (Ref I32) = mut (ref 0)
-
-// We can mutate foo to another reference:
-foo := ref 1
-
-// We can also copy the element and mutate the copy
-element = mut @foo
-element += 1
-
-// But there is no way to retrieve a `Mut I32` that will
-// alias the original foo reference.
-```
-
-If mutating a reference's element is required, `Mut` must be used
-from the start rather than the explicitly immutable `Ref` type.
-
-Additionally, while you can transfer the mutability to struct elements, you may
-not transfer to union elements. If this was allowed, then we could potentially corrupt data:
-
-```ante
-type IntOrString =
-   | I I32
-   | S String
-
-var: Mut IntOrString = mut (I 0)
-
-n: Mut I32 = match var
-    | I n -> n
-    | _ -> unreachable ()
-
-var := S "foo"
-
-// Uh-oh, we're mutating the integer but var is a String now
-n := 17
-
-// var is likely corrupted here (if this were allowed)
-print var
-```
-
-Instead of allowing this, `match` will not match on mutable references and forces
-you to dereference before a match, removing any mutability in the process:
-
-```ante
-var: Mut IntOrString = mut (I 0)
-
-// We can still create a mutable n by copying the I32 into our variable
-n: Mut I32 = mut match @var
-    | I n -> n
-    | _ -> unreachable ()
-
-var := S "foo"
-
-// Fine, we're just mutating a copy
-n := 17
-
-print var  //=> S foo
-```
-
-Similarly, we also cannot transfer mutability to elements of resizable data structures like
-vectors:
-
-```ante
-my_vec = Vec.of [1, 2, 3]
-
-// If this was possible, we could push to my_vec afterward
-// and potentially invalidate the element reference if the Vec resizes.
-//
-// invalid: Mut I32 = Vec.get_mut my_vec 0
-
-// We can retrieve a shallow copy of the element just fine
-valid: I32 = my_vec#0
-
-// If we do want mutable references to Vec elements, we must decide that
-// when we create the vector:
-mutable_elements = Vec.of [mut 0, mut 1, mut 2]
-
-first_element: Mut I32 = mutable_elements#0
-push mutable_elements 3
-
-// This mutation is fine since first_element is behind a separate, stable pointer now
-first_element := 10
-
-print mutable_elements  //=> [10, 1, 2, 3]
 ```
 
 # Functions
@@ -682,12 +563,12 @@ of parenthesis but in ante since tuples are just nested pairs you can just add a
 pairs = [(1, 2), (3, 4)]
 
 // Other languages require deconstructing with nested parenthesis:
-iter (enumerate pairs) fn (i, (one, two)) ->
+for (enumerate pairs) fn (i, (one, two)) ->
     print "Iteration $i: sum = ${one + two}"
 
 // But since `,` is just a normal operator,
 // the following version is equally valid
-iter (enumerate pairs) fn (i, one, two) ->
+for (enumerate pairs) fn (i, one, two) ->
     print "Iteration $i: sum = ${one + two}"
 ```
 
@@ -774,8 +655,8 @@ nested x = add3 1 2 (x + 3)
 ```ante
 // Given a matrix of Vec (Vec I32), output a String formatted like a csv file
 map matrix to_string
-  .map (join _ ",") // join columns with commas
-  .join "\n"        // and join rows with newlines.
+  |> map (join _ ",") // join columns with commas
+  |> join "\n"        // and join rows with newlines.
 ```
 
 ---
@@ -799,20 +680,20 @@ if should_print () then
 
 ## Loops
 
-Ante does not include traditional for or while loops since these constructs usually require mutability to be useful. Instead, ante favors recursive functions like map, fold_left, and iter (which iterates over an iterable type, much like foreach loops in most languages):
+Ante does not include traditional for or while loops since these constructs usually require mutability to be useful. Instead, ante favors recursive functions like map, fold_left, and for (which iterates over an iterable type, much like foreach loops in most languages):
 
 ```ante
-// The type of iter is:
-// iter : a -> (elem -> Unit) -> Unit given Iterator a elem
+// The type of for is:
+// for : a -> (elem -> Unit) -> Unit given Iterator a elem
 
-iter (0..10) print   // prints 0-9 inclusive
+for (0..10) print   // prints 0-9 inclusive
 
-iter (enumerate array) fn (index, elem) ->
+for (enumerate array) fn (index, elem) ->
     // do something more complex...
     print result
 ```
 
-You may notice that there is no way to break or continue out of the iter function. Moreover if you need a more complex loop that a while loop may traditionally provide in other languages, there likely isn’t an already existing iterate function that would suit your need. Other functional languages usually use helper functions with recursion to address this problem:
+You may notice that there is no way to break or continue out of the `for` function. Moreover if you need a more complex loop that a while loop may traditionally provide in other languages, there likely isn’t an already existing iterate function that would suit your need. Other functional languages usually use helper functions with recursion to address this problem:
 
 ```ante
 sum numbers =
@@ -972,62 +853,233 @@ parse_and_print_int (s: String) : Unit =
     // x: I32 = parse s
     print x
 ```
+---
+# Move Semantics
 
-## Refinement Types
-
-Refinement types are an additional boolean constraint on a normal type.
-For example, we may have an integer type that must be greater than 5.
-This is written as `x: I32 where x > 5`. These refinements can be
-written anywhere after a type is expected, and are mostly restricted
-to numbers or "uninterpreted functions." This limitation is so we can
-infer these refinements like normal types. If we instead allow any value
-to be used in refinements we would get fully-dependent types for which
-inference and basic type checking (without manual proofs) is undecidable.
-
-Refinement types can be used to ensure indexing into a vector is always valid:
+Similar to Rust, values in Ante are affine by default (may be used 0 or 1 time
+before they are dropped and deallocated). These values are called
+"owned" values, in contrast with references which are "borrowed" and may be
+used any amount of times. The only exception to owned values being used
+at most once are types which implement the `Copy` trait. This trait signals
+the type may be trivially copied each time it is referred to:
 
 ```ante
-get (a: Vec t) (index: Usz where index < len a) : t = ...
+s: String = "my string"
+x: I32 = 42
 
-a = [1, 2, 3]
-get a 2  // valid
-get a 3  // error: couldn't satisfy 3 < len a
+// We've moved `s` into `foo`, trying to access it afterwards would give a compile-time error
+foo s x
 
-n = random_in (1..10)
-get a n  // error: couldn't satisfy n < len a
-
-// The solver is smart enough to know len a > n <=> n < len a
-if len a > n then
-    get a n  // valid
+// Since I32 is a primitive type, we can still refer to `x` after it was passed into `foo`
+bar x
 ```
 
-You can also use uninterpreted functions to tag values. The following
-example uses this technique to tag vectors returned by the `sort`
-function as being sorted, then restricting the input of `binary_search`
-to only sorted vectors:
+## Borrowing
+
+Like Rust, if a value needs to be used multiple times, we can borrow references
+to it so that we can refer to the value as many times as we need.
 
 ```ante
-// You can name a return type for use in refinements
-sort (vec: Vec t) : ret: Vec t where sorted ret = ...
+s = "my string"
 
-binary_search (vec: Vec t where sorted vec) (elem: t) : Maybe (index: Usz where index < len vec) = ...
+// References can be used as many times as needed
+baz &s
+baz &s
 ```
 
-Type aliases can be used to cut down on the annotations:
+Mutable references can be borrowed from mutable values using `&mut`:
 
 ```ante
-SortedVec t = a: Vec t where sorted a
+s = mut "my string"
 
-Index vec = x:Usz where x < len vec
+// This function call may modify our string
+qux (&mut s)
 
-sort (vec: Vec t) : SortedVec t = ...
-
-binary_search (vec: SortedVec t) (elem: t) : Maybe (Index vec) = ...
+print s  //=> "???"
 ```
 
-In contrast to contracts in other languages, these refinements are in
-the type system and are thus all checked during compile-time with
-the help of a SMT solver.
+### Second-Class References
+
+Ante's references are second-class, which means they cannot be stored in other data types.
+This simplification reduces the expressivity of references compared to Rust, but
+also means lifetime variables are never required in Ante - indeed they are not
+in the language at all. Most uses of references are in parameters, these cases are unchanged:
+
+```ante
+concat_foo (foo: &Foo) : String =
+    foo.first ++ foo.second
+```
+
+Taking a reference prevents moving the underlying value before the reference is dropped:
+
+```ante
+bad (foo: Foo) =
+    // Error: Cannot move `foo` while the borrowed reference `&foo` is still alive
+    bar &foo foo
+```
+
+#### Returning References
+
+The next most common use of references is writing functions to lend references
+to avoid cloning the inner value unnecessarily. Different languages with second-class
+references approach this differently. In Hylo for example, references may only
+be returned in special "subscript" functions, which are in turn only able to be
+called within another function call, e.g. `foo(my_subscript(bar, baz), qux)`.
+
+Ante recognizes this common case and tries to be more flexible in comparison.
+Functions returning references are allowed:
+
+```ante
+get_ref (foo: &Foo) (_bar: &Bar) : &Baz =
+    foo.&baz
+```
+
+If a reference is returned from a function, none of the referenced inputs
+can be moved until the returned reference is dropped.
+
+```ante
+example2 (foo: Foo) (bar: Bar) =
+    ref = get_ref &foo &bar
+    // Error: Cannot move `foo` while `ref` is still alive
+    drop foo
+    print ref
+```
+
+Since Ante has no lifetime annotations it does not know from which
+variable the return result is borrowed from. To solve this, Ante conservatively
+ties the lifetime of the return result to the lifetime of all of the reference
+parameters to the function. In addition to not being able to move any of these
+parameters afterward, this can also have implications for whether each reference
+must be `shared` or not (see [shared mutability](#shared-mutability)). Consider the following code:
+
+```ante
+example2 (foo: Foo) (bar: &mut Bar) =
+    ref = get_ref &foo bar
+    ()
+```
+
+We get an error that `bar` must be a `shared` reference because the compiler sees
+`ref` as a reference potentially aliased to `bar`, which would make it mutably
+alaised since `bar: &mut Bar`. This is despite us being able to peek into `get_ref`
+to see it actually only ever returns a reference inside of `foo`.
+
+#### References In Generics
+
+References are allowed in generics as long as the generic is resolved to only be
+used in a parameter position. For example, given the following definitions:
+
+```ante
+type Maybe a =
+   | None
+   | Some a
+
+trait Iterator it elem with
+    iter: &mut it -> elem can Fail
+
+type Foo t =
+    function: t -> Unit
+```
+
+`Iterator t &e` and `Foo &t` would be valid instantiations, but `Maybe &t`
+would not be since the generic `a` in the `Maybe` type is not only used
+as a function parameter.
+
+#### Iteration
+
+It is worth briefly noting that one of the most common use cases where first-class
+references are required is in implementing iterators (the `Iterator` trait defined
+above is not particularly useful in practice). Ante does not require this
+at all since Ante uses generators instead, implemented via algebraic effects.
+
+#### Closures
+
+As a consequence of references being second-class, any closures closing over
+references must also be second-class in order to store these references internally.
+
+---
+
+### Shared Mutability
+
+Another difference from Rust is that Ante allows shared (aliasable) mutability.
+In addition to whether a reference is `mut`able or not, a reference can also
+be tagged whether it is `own`ed or `shared`. Additionally, if there is a mutable
+reference borrwed from a value with at least 1 other borrowed reference to the same
+value, all references are inferred to be mutably `shared`.
+
+The `own` and `shared` tags are used to prevent operations that would be unsafe
+on a shared mutable reference. A common theme of these operations is that they hand
+out references inside of a type with an unstable shape. For example, handing out
+a reference to a `Vec` element would be unsafe in a shared context since the `Vec`
+may be reallocated by another reference. To prevent this, `Vec.get` requires
+an owned reference:
+
+```ante
+// Raises Fail if the index is out of bounds
+get (v: &own Vec t) (index: Usz) : &own t can Fail
+```
+
+Other Vec functions like `push` or `pop` would still be safe to call on `shared`
+references to Vecs since they do not hand out references to elements. If we did
+need a Vec element when all we have is a `&shared Vec t`, we can still retrieve
+an element through `Vec.get_cloned`:
+
+```ante
+// Raises Fail if the index is out of bounds
+get_cloned (v: &Vec t) (index: Usz) : &t can Fail given Clone t
+```
+
+As a result, if you know you're going to be working with mutably shared Vecs
+or other container types, you may want to wrap each element in a pointer type
+to reduce the cost of cloning: `Vec (Rc t)`.
+
+### Reference Polymorphism
+
+If the `own` and `shared` modifiers are omitted from the reference type, the
+reference is considered to be polymorphic over both. Since most code will
+not care if a reference is shared or not, this gives us some much needed
+polymorphism while reducing notational burden. `Vec.get_cloned` above
+is one example of a function taking references polymorphic in whether they are owned or shared.
+
+Note that a polymorphic reference will have the capabilities of the lowest
+common denominator - a `shared` reference. If an owned value is needed a
+type error will be issued signalling the function will need to require an owned
+reference instead.
+
+### Zero Cost Internal Mutability
+
+Since mutating through an immutably borrowed reference `&t` is otherwise impossible,
+Ante provides several types for "internal mutability." `RefCell t` will be
+a familiar sight to those used to Rust, but using this type entails runtime
+checking to uphold the properties of an owned reference (either a mutable reference
+can be made or multiple immutable references, but never both at once).
+
+Ante has an additional internally mutable type `Mut t`. This type leverages
+shared references to provide zero cost interior mutability:
+
+```ante
+// Mut is just a shallow wrapper around its inner value
+type Mut t = value: t
+
+// Mut can provide as many shared mutable references at once as needed
+as_mut (x: &Mut t) : &shared mut t = ...
+```
+
+Since `shared` mutable references are already safe to use in a shared mutable
+context, `Mut t` is free to hand out as many of them as desired - all at
+zero runtime cost.
+
+If an owned reference `&own t` or `&own mut t` is ever required however,
+a different type such as `RefCell t` would still need to be used since `Mut t`
+doesn't provide the runtime tracking required to enforce this constraint.
+
+If we employ the usual workaround for shared mutable containers of using pointer
+types for the elements, we can combine this with `Mut t` to have our cake
+and eat it too. A `Vec (Rc (Mut t))` gives us a vector type that can be mutably
+shared where we can easily refer to elements by cloning them and still mutate
+the elements as well through the `Mut t` wrapper. This is essentially how
+many higher level languages make shared mutability work: by boxing each value.
+When we employ this strategy in Ante however, we don't even need to box every
+value. Just boxing container elements and union data is sufficient.
 
 ---
 # Traits
@@ -1522,93 +1574,6 @@ A
  \
   C - D2
 ```
-
----
-# Lifetime Inference
-
-To protect against common mistakes in manual memory management
-like double-frees, memory leaks, and use-after-free, ante automatically
-infers the lifetime of `Ref`s. If you're familiar with rust's
-lifetime system, this works in a similar way but is intentionaly
-less restrictive since it abandons the ownership rule of only
-allowing either a single mutable reference or multiple immutable ones.
-Also unlike rust, ante hides the lifetime parameter on references.
-Since it is inferred automatically by the compiler there is no need
-to manually mess around with them. There is a tradeoff compared to
-rust however: to accomplish this hands-off approach ante typically
-infers `Ref`s to live longer than they need to.
-
-`Ref`s can be created with `new : a -> Ref a` and the underlying
-value can be accessed with `deref : Ref a -> a`. Here's a simple
-example 
-
-```ante
-get_value () : Ref I32 =
-    three = 3
-    // This 'new' operation will copy and allocate 3
-    new three
-
-value = get_value ()
-
-// the Ref value is still valid here and
-// is deallocated when it goes out of scope.
-print value
-```
-
-The above program is compiled to the equivalent of destination-passing
-style in C:
-
-```c
-void get_value(int* three) {
-    *three = 3;
-}
-
-int main() {
-    int value;
-    get_value(&value);
-    print(value); // print impl is omitted for brevity
-}
-```
-
-The above program showcased we can return a `Ref` value to extend its
-lifetime. Unlike rust for example, we can never have a lifetime error in this
-system since the lifetime is simply extended instead.
-
-There are many tradeoffs here however between lack of runtime
-checks, compile-times, and runtime memory usage. It is possible, for example,
-to statically determine the furthest stack frame any allocation may reach
-and use that memory for the allocation (which may still be on the heap if the
-inferred region must allocate multiple values). However, in practice many of
-these objects could be deallocated far before the end of this stack frame is
-reached. This can be improved with more complex analysis (like the 
-[AFL](https://www.microsoft.com/en-us/research/publication/better-static-memory-management-improving-region-based-analysis-of-higher-order-languages/)
-or [imperative region management](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.388.4008&rep=rep1&type=pdf) schemes),
-but there are still some fundamental issues of these schemes with regard
-to collection types. The problem is since this analysis is type based, and
-all elements in a collection have their type unified, then their lifetimes
-are unified as well. Ante aims to mitigate this via move semantics and runtime
-checks. These runtime checks would be configurable since lifetime inference
-already assures memory safety, they would only serve to further tighten lifetimes
-and deallocate earlier. Their exact form is indeterminate however and further
-restricting inferred lifetimes is still an exciting part of research for ante.
-
-## Details
-
-Internally, lifetime inference of refs uses the original Tofte-Taplin
-stack-based algorithm. This algorithm can infer references which
-can be optimized to allocate on the stack instead of the heap
-even if it needs to be allocated on a prior stack frame. The
-tradeoff for this is that, as previously mentioned, the inferred
-lifetimes tend to be imprecise. As such, `Ref`s in ante are meant
-to be used for temporary unowned references like where you'd use
-`&` in rust. It is not a complete replacement for smart pointer types
-such as `Box` and `Rc` (unless you're fine with using more memory).
-The place where `Ref`s are typically worst are in implementing container types.
-`Ref`s are implemented using memory pools on the stack under the
-hood so any container that wants to free early or reallocate and
-free/resize memory (ie. the vast majority of containers) should use
-one of the smart pointer types to hold their elements instead.
-
 ---
 # Extern
 

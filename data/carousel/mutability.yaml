@@ -1,0 +1,25 @@
+weight: 2
+title: "Safe Shared Mutability"
+description: >
+    <div class="highlight-textalign-left"><pre>vec = <span class="k">mut</span> <span class="kt">Vec</span>.of [<span class="m">1</span>, <span class="m">2</span>, <span class="m">3</span>]
+
+
+    ref1 = <span class="k">&mut</span> vec
+
+    ref2 = <span class="k">&mut</span> vec
+
+
+    <span class="c1">// Ok! It is safe to call `Vec.push` with shared mutable references</span>
+
+    push ref1 <span class="m">4</span>
+
+    push ref2 <span class="m">5</span>
+
+
+    <span class="c1">// Retrieving a reference to an element wouldn't be safe since another mutable</span>
+
+    <span class="c1">// reference could reallocate the vector and cause it to be a dangling reference</span>
+
+    <span class="c1">// error: `get` requires an owned reference. Try `get_cloned` instead</span>
+
+    elem = get ref1 <span class="m">0</span></code></pre></div>

@@ -11,7 +11,7 @@ newContentEditor = "vim"
 [params]
   viewMorePostLink = "/blog/"
   mainSections = ["blog"]
-  description = "For exploring refinement types, lifetime inference, and algebraic effects"
+  description = "For exploring algebraic effects, safe shared mutability, and other novel features"
   author = "Jake Fecher"
   defaultKeywords = ["ante", "programming", "language", "antelang", "lang"]
   date_format = "2006-01-02"

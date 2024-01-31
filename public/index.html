@@ -36,7 +36,7 @@
 
 
 
-<link href="/css/custom.css?1706640937" rel="stylesheet">
+<link href="/css/custom.css?1706674660" rel="stylesheet">
 
 
 
@@ -63,7 +63,7 @@
 
 
 
-<meta property="og:updated_time" content="2024-01-30T00:00:00Z">
+<meta property="og:updated_time" content="2024-01-29T00:00:00Z">
 
 
 
@@ -82,7 +82,7 @@
   <meta name="author" content="" />
 
   <meta name="keywords" content="ante, programming, language, antelang, lang">	
-  <meta name="description" content="For exploring refinement types, lifetime inference, and algebraic effects">
+  <meta name="description" content="For exploring algebraic effects, safe shared mutability, and other novel features">
 
   <meta name="generator" content="Hugo 0.89.0-DEV" />
 
@@ -204,7 +204,7 @@
 
                     <h2>A low-level functional language</h2>
 
-                    <div class="lead" text-align="center">For exploring refinement types, lifetime inference, and algebraic effects</div>
+                    <div class="lead" text-align="center">For exploring algebraic effects, safe shared mutability, and other novel features</div>
                 </div>
             </div>
         </section>
@@ -241,71 +241,21 @@
                     
                         <div class="row">
                             <div class="col-sm-5 right">
-                                <h1>Refinement Types</h1>
-                                <div class="highlight-textalign-left"><pre><code class="language/ante" data-lang="ante"><span class="nf">dotproduct</span> (v1:<span class="kt"> Array U64</span>) (v2:<span class="kt"> Array U64</span> <span class="k">where</span> len v1 == len v2) : <span class="kt">U64</span> =
-  <span class="c1">// Sum the products of each element of both arrays</span>
-  products = map2 v1 v2 (*)
-  sum products
-
-
-<span class="nf">dotproduct</span> [<span class="m">1</span>, <span class="m">2</span>, <span class="m">3</span>] [<span class="m">4</span>, <span class="m">5</span>, <span class="m">6</span>]   <span class="c1">//=> 32</span>
-<span class="nf">dotproduct</span> [<span class="m">1</span>, <span class="m">2</span>, <span class="m">3</span>] [<span class="m">4</span>, <span class="m">5</span>]      <span class="c1">//error, failed to prove len [1, 2, 3] == len [4, 5]</span></code></pre></div>
-
-                            </div>
-                            <div class="col-sm-7">
-                                <img class="img-responsive" src="" alt="">
-                            </div>
-                        </div>
-                    
-                </div>
-                
-                <div class="item">
-                    
-                        <div class="row">
-                            <div class="col-sm-5 right">
-                                <h1>Lifetime Inference</h1>
-                                <div class="highlight-textalign-left"><pre><span class="k">type</span> <span class="kt">Person</span> = job: <span class="kt">String</span>, name: <span class="kt">Ref String</span>
-
-<span class="c1">// The data referenced via `&` should not be freed inside this function</span>
-make_person job =
-    <span class="kt">Person</span> job &<span class="s">"bob"</span>
-
-<span class="c1">// bob is only used at this scope, so it can be safely freed afterward.</span>
-bob = make_person <span class="s">"programmer"</span>
-
-<span class="c1">// unlike ownership systems, aliasing is allowed in region inference</span>
-bob_twin = bob
-assert (bob.name == bob_twin.name)</code></pre></div>
-
-                            </div>
-                            <div class="col-sm-7">
-                                <img class="img-responsive" src="" alt="">
-                            </div>
-                        </div>
-                    
-                </div>
-                
-                <div class="item">
-                    
-                        <div class="row">
-                            <div class="col-sm-5 right">
                                 <h1>Algebraic Effects</h1>
-                                <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="k">type</span> <span class="kt">Context</span> = ...
+                                <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Fail</span> <span class="k">with</span>
+    fail: <span class="kt">Unit</span> -> <span class="kt">I32</span>
+    
+safe_div (x: <span class="kt">I32</span>) (y: <span class="kt">I32</span>) : <span class="kt">I32</span> <span class="k">can</span> <span class="kt">Fail</span> =
+    <span class="k">if</span> y != <span class="m">0</span>
+    <span class="k">then</span> x / y
+    <span class="k">else</span> fail ()
 
-<span class="c1">// We don't need to manually pass around our Context, it is done for us, but is still explicit in the type</span>
-my_game_loop () <span class="k">can</span> <span class="kt">Use Context</span> =
-    <span class="k">if not</span> game_ended () <span class="k">then</span>
-        update ()
-        draw ()
-        my_game_loop ()
+<span class="c1">// Unlike exceptions, we can choose to either stop on error, or resume with a value:</span>
+default_value (value: <span class="kt">I32</span>) (f: <span class="kt">Unit</span> -> <span class="kt">a</span> <span class="k">can</span> <span class="kt">Fail</span>) : <span class="kt">Unit</span> =
+    <span class="k">handle</span> f ()
+    | fail () -> <span class="k">resume</span> value
 
-<span class="c1">// Since 'can Use Context' is part of a function's type, it can be inferred as well</span>
-game_ended () =
-    player_entities () |> all is_dead
-
-update () <span class="k">can</span> <span class="kt">Use Context</span> =
-    ctx = get ()
-    put <| ctx <span class="k">with</span> ticks += 1</code></pre></div>
+safe_div <span class="m">1 0</span> <span class="k">with</span> default_value <span class="m">42</span>  <span class="c1">//=> 42</span></code></pre></div>
 
                             </div>
                             <div class="col-sm-7">
@@ -319,23 +269,20 @@ update () <span class="k">can</span> <span class="kt">Use Context</span> =
                     
                         <div class="row">
                             <div class="col-sm-5 right">
-                                <h1>Type Inference</h1>
-                                <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="kt">Index</span> array = x:<span class="kt">Usz</span> <span class="k">where</span> x < len array
+                                <h1>Safe Shared Mutability</h1>
+                                <div class="highlight-textalign-left"><pre>vec = <span class="k">mut</span> <span class="kt">Vec</span>.of [<span class="m">1</span>, <span class="m">2</span>, <span class="m">3</span>]
 
-<span class="c1">//A collection c of elements of type e</span>
-<span class="k">trait</span> <span class="kt">Collection c</span> -> <span class="kt">e</span> <span class="k">with</span> 
-    len: <span class="kt">c</span> -> <span class="kt">Usz</span>
-    get: collection:<span class="kt">c</span> -> <span class="kt">Index</span> collection -> <span class="kt">e</span>
+ref1 = <span class="k">&mut</span> vec
+ref2 = <span class="k">&mut</span> vec
 
-<span class="k">trait</span> <span class="kt">Show t</span> <span class="k">with</span>
-    to_string: <span class="kt">t</span> -> <span class="kt">String</span>
+<span class="c1">// Ok! It is safe to call `Vec.push` with shared mutable references</span>
+push ref1 <span class="m">4</span>
+push ref2 <span class="m">5</span>
 
-<span class="c1">// Inferred type:
-// elem_to_string: collection:a -> Index collection -> String
-//    with Collection a b, Show b</span>
-elem_to_string c i =
-    get c i .to_string
-</code></pre></div>
+<span class="c1">// Retrieving a reference to an element wouldn't be safe since another mutable</span>
+<span class="c1">// reference could reallocate the vector and cause it to be a dangling reference</span>
+<span class="c1">// error: `get` requires an owned reference. Try `get_cloned` instead</span>
+elem = get ref1 <span class="m">0</span></code></pre></div>
 
                             </div>
                             <div class="col-sm-7">
@@ -362,10 +309,39 @@ map (stream: <span class="kt">Unit</span> -> <span class="kt">Unit</span> <span 
         <span class="k">resume</span> ()
 
 <span class="c1">// Stream is a helper trait to Emit all elements of a collection</span>
-parse_csv (text: <span class="kt">s</span>) -> <span class="kt">Vec</span> (<span class="kt">Vec String</span>) <span class="k">with</span> <span class="kt">Stream s String</span> =
+parse_csv (text: <span class="kt">s</span>) : <span class="kt">Vec</span> (<span class="kt">Vec String</span>) <span class="k">given</span> <span class="kt">Stream s String</span> =
     lines text |> skip <span class="m">1</span> |> map (split _ <span class="s">","</span>) |> collect
 
 csv = parse_csv (<span class="kt">File</span>.open <span class="s">"input.csv"</span>)</code></pre></div>
+
+                            </div>
+                            <div class="col-sm-7">
+                                <img class="img-responsive" src="" alt="">
+                            </div>
+                        </div>
+                    
+                </div>
+                
+                <div class="item">
+                    
+                        <div class="row">
+                            <div class="col-sm-5 right">
+                                <h1>Type Inference</h1>
+                                <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="c1">//A collection c of elements of type e</span>
+<span class="k">trait</span> <span class="kt">Collection c</span> -> <span class="kt">e</span> <span class="k">with</span> 
+    len: <span class="kt">c</span> -> <span class="kt">Usz</span>
+    get: <span class="kt">c</span> -> index:<span class="kt">Usz</span> -> <span class="kt">e</span>
+
+<span class="k">trait</span> <span class="kt">Show t</span> <span class="k">with</span> to_string: <span class="kt">t</span> -> <span class="kt">String</span>
+
+<span class="k">effect</span> <span class="kt">Print</span> <span class="k">with</span> print: <span class="kt">String</span> -> <span class="kt">Unit</span>
+
+<span class="c1">// Inferred type:
+// elem_to_string: a -> Usz -> String
+//    given Collection a b, Show b
+//    can Print</span>
+elem_to_string c i =
+    get c i |> to_string |> print</code></pre></div>
 
                             </div>
                             <div class="col-sm-7">
@@ -391,9 +367,9 @@ csv = parse_csv (<span class="kt">File</span>.open <span class="s">"input.csv"</
 
                 <div class="lead" text-align="center">
                     Ante aims to help bridge the gap between low-level languages like C++/Rust and higher
-                    level garbage-collected languages like Java, OCaml, or Haskell. Another key goal is
-                    experimentation with novel features like refinement type inference, always-incremental
-                    compilation, lifetime inference, and algebraic effects.
+                    level garbage-collected languages like Java, OCaml, or Haskell. Ante aims to make
+                    developing programs easier by allowing patterns like shared mutability which allow
+                    for more design flexibility while still remaining thread safe and memory safe.
                 </div>
             </div>
         </section>
@@ -410,13 +386,13 @@ csv = parse_csv (<span class="kt">File</span>.open <span class="s">"input.csv"</
 		
 				<div class="col-md-4">
                     <div class="box-simple">
-                        <a href="docs/language/#refinement-types">
+                        <a href="docs/language/#shared-mutability">
                             <div class="icon">
                                 <i class="fa fa-bug"></i>
                             </div>
                         </a>
-                        <h3>Refinement Types</h3>
-                        <p>Refinement types can prevent bugs like array index out of bounds errors at compile-time. They can also be inferred to cut down on the number of annotations required.</p>
+                        <h3>Safe Shared Mutability</h3>
+                        <p>Shared mutability is a common cause of bugs in other languages. In Ante, not only is it safe, it is zero-cost. The type system will prevent unsafe operations on mutably shared references at compile-time.</p>
                     </div>
                 </div>
 		
@@ -424,13 +400,13 @@ csv = parse_csv (<span class="kt">File</span>.open <span class="s">"input.csv"</
 		
 				<div class="col-md-4">
                     <div class="box-simple">
-                        <a href="docs/language/#error-handling">
+                        <a href="docs/language/#loops">
                             <div class="icon">
                                 <i class="fa fa-chevron-right"></i>
                             </div>
                         </a>
                         <h3>Expressive</h3>
-                        <p>Common patterns like error handling and looping have syntax sugar to cut down on repetitive code while keeping things explicit.</p>
+                        <p>Common patterns like looping and handling effects have syntax sugar to cut down on repetitive code while keeping things explicit.</p>
                     </div>
                 </div>
 		
@@ -486,13 +462,13 @@ csv = parse_csv (<span class="kt">File</span>.open <span class="s">"input.csv"</
 		
 				<div class="col-md-4">
                     <div class="box-simple">
-                        <a href="docs/language/#lifetime-inference">
+                        <a href="docs/language/#second-class-references">
                             <div class="icon">
                                 <i class="fa fa-trash"></i>
                             </div>
                         </a>
-                        <h3>Novel Memory Management</h3>
-                        <p>Ante plans on using lifetime inference for temporary references to help simplify memory management. The design for this isn’t finalized yet though and is subject to change, beware!</p>
+                        <h3>No Lifetime Variables</h3>
+                        <p>Ante&rsquo;s second-class references mean you never need to write another lifetime variable again.</p>
                     </div>
                 </div>
 		
@@ -560,70 +536,6 @@ csv = parse_csv (<span class="kt">File</span>.open <span class="s">"input.csv"</
 
             <div class="row">
                 
-                
-                <div class="col-md-3 col-sm-6">
-                    <div class="box-image-text blog">
-                        <div class="top">
-                            <div class="image" style="overflow:hidden">
-                                
-                                <img src="/img/banners/anteater2.jpg" class="img-responsive" alt="" >
-                                
-                            </div>
-                            <div class="bg"></div>
-                            <div class="text">
-                                <p class="buttons">
-                                    <a href="https://antelang.org/blog/second_class_references/" class="btn btn-template-transparent-primary"><i class="fas fa-link"></i> Read more</a>
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="content">
-                            <h4><a href="https://antelang.org/blog/second_class_references/">Avoiding Lifetime Variables</a></h4>
-                            <p class="author-category">
-			    
-			      By <a href="/authors/jake-fecher">Jake Fecher</a>
-                            
-                            
-                                
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                on 2024-01-30
-                            
-                            </p>
-                            
-                            <p class="intro">Introduction  (yet to be written)</p>
-                            <p class="read-more">
-                              <a href="https://antelang.org/blog/second_class_references/" class="btn btn-template-main">Continue reading</a>
-                            </p>
-                            
-                        </div>
-                    </div>
-                    
-
-                </div>
                 
                 <div class="col-md-3 col-sm-6">
                     <div class="box-image-text blog">
@@ -721,19 +633,6 @@ csv = parse_csv (<span class="kt">File</span>.open <span class="s">"input.csv"</
             <h4>Recent posts</h4>
 
             <div class="blog-entries">
-                
-                <div class="item same-height-row clearfix">
-                    <div class="image same-height-always">
-                        <a href="https://antelang.org/blog/second_class_references/">
-                          
-                            <img src="/img/banners/anteater2.jpg" class="img-responsive" alt="Avoiding Lifetime Variables">
-                          
-                        </a>
-                    </div>
-                    <div class="name same-height-always">
-                        <h5><a href="https://antelang.org/blog/second_class_references/">Avoiding Lifetime Variables</a></h5>
-                    </div>
-                </div>
                 
                 <div class="item same-height-row clearfix">
                     <div class="image same-height-always">

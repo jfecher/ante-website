@@ -6,16 +6,7 @@
     <description>Recent content in memory management on Ante</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 30 Jan 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://antelang.org/categories/memory-management/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Avoiding Lifetime Variables</title>
-      <link>https://antelang.org/blog/second_class_references/</link>
-      <pubDate>Tue, 30 Jan 2024 00:00:00 +0000</pubDate>
-      
-      <guid>https://antelang.org/blog/second_class_references/</guid>
-      <description>Introduction  (yet to be written)</description>
-    </item>
-    
+    <lastBuildDate>Mon, 29 Jan 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://antelang.org/categories/memory-management/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Achieving Safe, Aliasable Mutability with Unboxed Types</title>
       <link>https://antelang.org/blog/safe_shared_mutability/</link>

@@ -1,4 +1,4 @@
-weight: 5
+weight: 3
 title: "Generators"
 description: >
     <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="c1">// Generators are implemented via Algebraic Effects</span>
@@ -16,7 +16,7 @@ description: >
 
     <span class="c1">// Stream is a helper trait to Emit all elements of a collection</span>
 
-    parse_csv (text: <span class="kt">s</span>) -> <span class="kt">Vec</span> (<span class="kt">Vec String</span>) <span class="k">with</span> <span class="kt">Stream s String</span> =
+    parse_csv (text: <span class="kt">s</span>) : <span class="kt">Vec</span> (<span class="kt">Vec String</span>) <span class="k">given</span> <span class="kt">Stream s String</span> =
         lines text |> skip <span class="m">1</span> |> map (split _ <span class="s">","</span>) |> collect
 
     csv = parse_csv (<span class="kt">File</span>.open <span class="s">"input.csv"</span>)</code></pre></div>

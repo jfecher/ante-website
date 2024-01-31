@@ -555,3 +555,142 @@ at each recursive call. There are other recursion schemes including `ana` for un
 must be weighed against the additional complexity they would add to the language. Currently the
 expected benefit of adding support for recursion schemes directly into the language seems
 too small to be worth the implementation effort, but it was still a useful avenue to explore.
+
+---
+
+# Refinement Types
+
+Refinement types are an additional boolean constraint on a normal type.
+For example, we may have an integer type that must be greater than 5.
+This is written as `x: I32 where x > 5`. These refinements can be
+written anywhere after a type is expected, and are mostly restricted
+to numbers or "uninterpreted functions." This limitation is so we can
+infer these refinements like normal types. If we instead allow any value
+to be used in refinements we would get fully-dependent types for which
+inference and basic type checking (without manual proofs) is undecidable.
+
+Refinement types can be used to ensure indexing into a vector is always valid:
+
+```ante
+get (a: Vec t) (index: Usz where index < len a) : t = ...
+
+a = [1, 2, 3]
+get a 2  // valid
+get a 3  // error: couldn't satisfy 3 < len a
+
+n = random_in (1..10)
+get a n  // error: couldn't satisfy n < len a
+
+// The solver is smart enough to know len a > n <=> n < len a
+if len a > n then
+    get a n  // valid
+```
+
+Uninterpreted functions can also be used to tag values. The following
+example uses this technique to tag vectors returned by the `sort`
+function as being sorted, then restricting the input of `binary_search`
+to only sorted vectors:
+
+```ante
+// You can name a return type for use in refinements
+sort (vec: Vec t) : ret: Vec t where sorted ret = ...
+
+binary_search (vec: Vec t where sorted vec) (elem: t) : Maybe (index: Usz where index < len vec) = ...
+```
+
+Type aliases can be used to cut down on the annotations:
+
+```ante
+SortedVec t = a: Vec t where sorted a
+
+Index vec = x:Usz where x < len vec
+
+sort (vec: Vec t) : SortedVec t = ...
+
+binary_search (vec: SortedVec t) (elem: t) : Maybe (Index vec) = ...
+```
+
+Each of these refinements are would be in type system and would be checked during compile-time with the help of a SMT solver.
+
+---
+# Lifetime Inference
+
+Lifetime inference (originally "region inference") is a technique
+that can be used to conservatively estimate the lifetime of references
+at compile time. If included into Ante, a lifetime-inferred pointer
+would need to be an owning pointer type, e.g. `Ref t`. This is because
+it has the ability to automatically extend the lifetime of its contents
+depending on how far down the call stack the compiler infers that it
+may reach.
+
+If included in the language, `Ref`s can be created with `new : a -> Ref a`
+and the underlying value can be accessed with `deref : Ref a -> a`. Here's 
+a simple example:
+
+```ante
+get_value () : Ref I32 =
+    new 3
+
+value = get_value ()
+
+// the Ref value is still valid here and
+// is deallocated when it goes out of scope.
+print value
+```
+
+The above program would be compiled to the equivalent of destination-passing
+style in C:
+
+```c
+void get_value(int* three) {
+    *three = 3;
+}
+
+int main() {
+    int value;
+    get_value(&value);
+    print(value); // print impl is omitted for brevity
+}
+```
+
+The above program showcased we can return a `Ref` value to extend its
+lifetime. Unlike borrowing for example, we can never have a lifetime error in this
+system since the lifetime is simply extended instead.
+
+There are many tradeoffs here however between lack of runtime
+checks, compile-times, and runtime memory usage. It is possible, for example,
+to statically determine the furthest stack frame any allocation may reach
+and use that memory for the allocation (which may still be on the heap if the
+inferred region must allocate multiple values). However, in practice many of
+these objects could be deallocated far before the end of this stack frame is
+reached. This can be improved with more complex analysis (like the 
+[AFL](https://www.microsoft.com/en-us/research/publication/better-static-memory-management-improving-region-based-analysis-of-higher-order-languages/)
+or [imperative region management](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.388.4008&rep=rep1&type=pdf) schemes),
+but there are still some fundamental issues of these schemes with regard
+to collection types. The problem is since this analysis is type based, and
+all elements in a collection have their type unified, then their lifetimes
+are unified as well. Ante aims to mitigate this via move semantics and runtime
+checks. These runtime checks would be configurable since lifetime inference
+already assures memory safety, they would only serve to further tighten lifetimes
+and deallocate earlier. Their exact form is indeterminate however and further
+restricting inferred lifetimes could be an exciting part of research.
+
+## Details
+
+Internally, lifetime inference of refs would start out by using the original Tofte-Taplin
+stack-based algorithm. This algorithm can infer references which
+can be optimized to allocate on the stack instead of the heap
+even if it needs to be allocated on a prior stack frame. The
+tradeoff for this is that, as previously mentioned, the inferred
+lifetimes tend to be imprecise. As such, `Ref`s should be avoided when
+you need more precise control over when something is deallocated.
+They would not be a complete replacement for other smart pointer types
+such as `Box` and `Rc`.
+The place where `Ref`s are typically worst is in implementing container types.
+`Ref`s are implemented using memory pools on the stack under the
+hood so any container that wants to free early or reallocate and
+free/resize memory (ie. the vast majority of containers) should use
+one of the smart pointer types to hold their elements instead.
+
+For these reasons, lifetime inference isn't an incredibly useful for Ante
+today so it is not included in the language.
