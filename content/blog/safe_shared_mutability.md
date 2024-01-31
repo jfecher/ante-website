@@ -146,6 +146,10 @@ log_foo (foo: &Foo) (context: &mut Context) : Unit =
         context.logs += 1
 ```
 
+It is also important to note that any `shared` references (or polymorphic/unadorned references which
+may be shared) do not implement `Send` to be able to be sent across other threads. Since they inherently
+allow for shared mutability, this would not be safe to allow.
+
 How then, does Ante prevent holding onto references of things that may change out from under themselves,
 such as vector elements or union fields?
 
@@ -268,11 +272,19 @@ primitive types, but will be expensive for vectors with more complex element typ
 To work around this, we can instead have a vector of pointer types to reduce the
 cost of cloning: `Vec (Rc MyStruct)`.
 
+Eagle-eyed Rust users will note that `&shared mut t` is fairly similar to `Cell<T>` 
+in Rust (although a more direct comparison would be `Mut t` in the next section). 
+Most of the key differences come in ergonomics and usability. `&shared t` and its 
+mutable variant are able to be projected to struct fields and provide better interop 
+with other reference types. This reduces the required number of conversions, enables 
+tailored compiler errors, and importantly allows arbitrary owned values to use shared 
+mutation without requiring moving them in and out of a `Cell`.
+
 ---
 
 ## Shared Interior Mutability
 
-Eagle-eyed Rust users will note that the `Vec (Rc MyStruct)` suggestion above does not have quite 
+The `Vec (Rc MyStruct)` suggestion in the section above does not have quite 
 the same semantics as an owned `Vec<MyStruct>` in Rust. Most notably, `Rc<T>` in Rust
 (and `Rc t` in Ante) prevent mutating the inner element by only handing out immutable
 references. If we still want to be able to mutate `MyStruct`, we have to resort to interior

@@ -36,7 +36,7 @@
 
 
 
-<link href="/css/custom.css" rel="stylesheet">
+<link href="/css/custom.css?1706730349" rel="stylesheet">
 
 
 
@@ -404,7 +404,10 @@ to be written in a familiar style, ignoring the fact that <code>shared</code> or
     <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">logging_enabled</span> <span class="k">then</span>
         <span class="n">log</span> <span class="s">&#34;Found foo: ${foo}&#34;</span>
         <span class="n">context</span><span class="o">.</span><span class="n">logs</span> <span class="o">+=</span> <span class="mi">1</span>
-</code></pre></div><p>How then, does Ante prevent holding onto references of things that may change out from under themselves,
+</code></pre></div><p>It is also important to note that any <code>shared</code> references (or polymorphic/unadorned references which
+may be shared) do not implement <code>Send</code> to be able to be sent across other threads. Since they inherently
+allow for shared mutability, this would not be safe to allow.</p>
+<p>How then, does Ante prevent holding onto references of things that may change out from under themselves,
 such as vector elements or union fields?</p>
 <hr>
 <h2 id="preventing-borrows-when-a-types-shape-is-not-stable">Preventing borrows when a type&rsquo;s shape is not stable</h2>
@@ -489,9 +492,16 @@ Note that since this requires cloning each value, this will be fine for small,
 primitive types, but will be expensive for vectors with more complex element types.
 To work around this, we can instead have a vector of pointer types to reduce the
 cost of cloning: <code>Vec (Rc MyStruct)</code>.</p>
+<p>Eagle-eyed Rust users will note that <code>&amp;shared mut t</code> is fairly similar to <code>Cell&lt;T&gt;</code>
+in Rust (although a more direct comparison would be <code>Mut t</code> in the next section).
+Most of the key differences come in ergonomics and usability. <code>&amp;shared t</code> and its
+mutable variant are able to be projected to struct fields and provide better interop
+with other reference types. This reduces the required number of conversions, enables
+tailored compiler errors, and importantly allows arbitrary owned values to use shared
+mutation without requiring moving them in and out of a <code>Cell</code>.</p>
 <hr>
 <h2 id="shared-interior-mutability">Shared Interior Mutability</h2>
-<p>Eagle-eyed Rust users will note that the <code>Vec (Rc MyStruct)</code> suggestion above does not have quite
+<p>The <code>Vec (Rc MyStruct)</code> suggestion in the section above does not have quite
 the same semantics as an owned <code>Vec&lt;MyStruct&gt;</code> in Rust. Most notably, <code>Rc&lt;T&gt;</code> in Rust
 (and <code>Rc t</code> in Ante) prevent mutating the inner element by only handing out immutable
 references. If we still want to be able to mutate <code>MyStruct</code>, we have to resort to interior
