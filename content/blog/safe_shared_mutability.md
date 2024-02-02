@@ -275,12 +275,12 @@ cost of cloning: `Vec (Rc MyStruct)`.
 Eagle-eyed Rust users will note that `&shared mut t` is fairly similar to `Cell<T>` 
 in Rust (although a more direct comparison would be `Mut t` in the next section). 
 Most of the key differences come in ergonomics and usability. `&shared t` and its 
-mutable variant are able to be projected to struct fields and provide better interop 
-with other reference types. This reduces the required number of conversions, enables 
-tailored compiler errors, and importantly allows arbitrary owned values to use shared 
-mutation without requiring converting back and forth between a `Cell<T>` and `T`. This last point is an
-important distinction I think. Instead of having the ability to opt out of AxM, in
-Ante AxM is opted into instead.
+mutable variant are built-into the language and thus able to be projected to struct
+fields and provide better interop with other reference types. This reduces the required
+number of conversions, enables tailored compiler errors, and importantly allows arbitrary
+owned values to use shared mutation without requiring converting back and forth between
+a `Cell<T>` and `T`. This last point is an important distinction I think. Instead of
+having the ability to opt out of AxM, AxM can be opted into instead.
 
 ---
 

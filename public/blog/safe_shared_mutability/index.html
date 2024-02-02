@@ -36,7 +36,7 @@
 
 
 
-<link href="/css/custom.css?1706732482" rel="stylesheet">
+<link href="/css/custom.css" rel="stylesheet">
 
 
 
@@ -495,12 +495,12 @@ cost of cloning: <code>Vec (Rc MyStruct)</code>.</p>
 <p>Eagle-eyed Rust users will note that <code>&amp;shared mut t</code> is fairly similar to <code>Cell&lt;T&gt;</code>
 in Rust (although a more direct comparison would be <code>Mut t</code> in the next section).
 Most of the key differences come in ergonomics and usability. <code>&amp;shared t</code> and its
-mutable variant are able to be projected to struct fields and provide better interop
-with other reference types. This reduces the required number of conversions, enables
-tailored compiler errors, and importantly allows arbitrary owned values to use shared
-mutation without requiring converting back and forth between a <code>Cell&lt;T&gt;</code> and <code>T</code>. This last point is an
-important distinction I think. Instead of having the ability to opt out of AxM, in
-Ante AxM is opted into instead.</p>
+mutable variant are built-into the language and thus able to be projected to struct
+fields and provide better interop with other reference types. This reduces the required
+number of conversions, enables tailored compiler errors, and importantly allows arbitrary
+owned values to use shared mutation without requiring converting back and forth between
+a <code>Cell&lt;T&gt;</code> and <code>T</code>. This last point is an important distinction I think. Instead of
+having the ability to opt out of AxM, AxM can be opted into instead.</p>
 <hr>
 <h2 id="shared-interior-mutability">Shared Interior Mutability</h2>
 <p>The <code>Vec (Rc MyStruct)</code> suggestion in the section above does not have quite
