@@ -36,7 +36,7 @@
 
 
 
-<link href="/css/custom.css?1706985908" rel="stylesheet">
+<link href="/css/custom.css?1706992863" rel="stylesheet">
 
 
 
@@ -378,7 +378,7 @@ Can we do better?</p>
 in a language similar to Rust. That is, Ante is thread-safe, memory-safe, and uses unboxed values
 with move semantics. As a bonus, this scheme is also completely zero-cost.</p>
 <hr>
-<h1 id="a-new-approach-for-a-new-age">A New Approach for A New Age</h1>
+<h1 id="a-new-approach-for-a-new-age">A New Approach for a New Age</h1>
 <p>Ante&rsquo;s system for ensuring memory &amp; thread safety uses Rust as a foundation. Anywhere a non-reference
 value is seen, it is an owned value. Similarly, anytime <code>&amp;t</code> or <code>&amp;mut t</code> are seen, these are borrowed
 references.</p>
@@ -418,7 +418,7 @@ allow for shared mutability, this would not be safe to allow.</p>
 <p>How then, does Ante prevent holding onto references of things that may change out from under themselves,
 such as vector elements or union fields?</p>
 <hr>
-<h2 id="preventing-borrows-when-a-types-shape-is-not-stable">Preventing borrows when a type&rsquo;s shape is not stable</h2>
+<h2 id="preventing-borrows-when-a-types-shape-is-not-stable">Preventing Borrows When a Type&rsquo;s Shape Is Not Stable</h2>
 <p>These cases are simply marked as requiring owning references:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">get</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">own</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="o">:</span> <span class="o">&amp;</span><span class="k">own</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><p>(<code>Fail</code> is an <a href="/docs/language/#algebraic-effects">Algebraic Effect</a>. In this example, it is used
@@ -475,7 +475,16 @@ through a pointer boundary:</p>
 <span class="nf">print</span> <span class="n">bar_ref</span>
 </code></pre></div><p>For this reason, to obtain a reference past a pointer boundary like this, we need an owned reference:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">as_ref</span> <span class="p">(</span><span class="n">box</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">own</span> <span class="kt">Box</span> <span class="n">t</span><span class="p">)</span> <span class="o">:</span> <span class="o">&amp;</span><span class="k">own</span> <span class="n">t</span>
-</code></pre></div><hr>
+</code></pre></div><p>This can seem like a fairly serious limitation but it is helpful to take a step back and consider
+when <code>Box&lt;T&gt;</code> and similar pointer types are typically used in today&rsquo;s Rust programs. In my
+experience, these are most often used to wrap recursive data types when using an enumeration.
+When using shared mutability in Ante, these cases would already likely use an <code>Rc t</code>
+or similar around each element to reduce the cloning costs of enumerations (more on this later). Through
+<code>as_mut: &amp;own mut Rc t -&gt; &amp;shared mut t</code>, shared mutability is preserved but we would occasionally
+need to clone the reference-counted pointer to obtain the owned reference. If the cost of
+incrementing reference counts is a deal breaker (and if there is no other suitable pointer type)
+then an application can always decide to go back to <code>Box t</code> and owned mutability instead.</p>
+<hr>
 <h2 id="making-shared-useful">Making Shared Useful</h2>
 <p>Hold on, this is great and all, but how usable are shared references really if we can&rsquo;t do something
 as common as holding onto a vector&rsquo;s elements with them? Does this mean we can&rsquo;t use a shared vector
@@ -511,40 +520,69 @@ a <code>Cell&lt;T&gt;</code> and <code>T</code>. This last point is an important
 having the ability to opt out of AxM, AxM can be opted into instead.</p>
 <hr>
 <h2 id="shared-interior-mutability">Shared Interior Mutability</h2>
-<p>The <code>Vec (Rc MyStruct)</code> suggestion in the section above does not have quite
-the same semantics as an owned <code>Vec&lt;MyStruct&gt;</code> in Rust. Most notably, <code>Rc&lt;T&gt;</code> in Rust
-(and <code>Rc t</code> in Ante) prevent mutating the inner element by only handing out immutable
-references. If we still want to be able to mutate <code>MyStruct</code>, we have to resort to interior
-mutability. It’s possible to implement this in Rust, but we can longer tell if the code is AxM-safe at compile
-time. We can mutate the inner value by using a type like <code>RefCell&lt;T&gt;</code>, but this defers checking AxM
-rules until runtime and panics on failure! Moreover, since <code>RefCell&lt;T&gt;</code> requires additional book-keeping
-to keep track of the references it lends out, it is not zero-cost.</p>
-<p>Ante however, provides the <code>Mut t</code> type for aliasable interior mutability. Since Ante already
-allows aliasable mutability, there are absolutely no runtime checks required. <code>Mut t</code>
-is just a wrapper struct containing only the wrapped <code>t</code>. This, along with the lack of runtime
-checks for other <code>&amp;shared mut t</code> references, is what makes this scheme zero-cost.</p>
-<p>The key difference with <code>Mut t</code> which makes it safe is that it can only hand out shared
-mutable references:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">as_mut</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">Mut</span> <span class="n">t</span><span class="p">)</span> <span class="o">:</span> <span class="o">&amp;</span><span class="k">shared</span> <span class="k">mut</span> <span class="n">t</span> <span class="ow">=</span> <span class="o">...</span>
-</code></pre></div><p>This enables us to use <code>Vec (Rc (Mut MyStruct))</code> for
-a safe, mutably shared vector that we can also mutate the elements within.</p>
-<p>If we ever do need interior mutability to lend out owned references, then we&rsquo;d still need
-to resort to a <code>RefCell t</code> or similar interior mutability type inherited from Rust.</p>
-<h3 id="traversing-pointer-types">Traversing Pointer Types</h3>
-<p>Going back to the <code>Box.as_ref</code> example:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">as_ref</span> <span class="p">(</span><span class="n">box</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">own</span> <span class="kt">Box</span> <span class="n">t</span><span class="p">)</span> <span class="o">:</span> <span class="o">&amp;</span><span class="k">own</span> <span class="n">t</span>
-</code></pre></div><p>This can seem like a fairly serious limitation but it is helpful to take a step back and consider
-when <code>Box&lt;T&gt;</code> and similar pointer types are typically used in today&rsquo;s Rust programs. In my
-experience, these are most often used to wrap recursive data types when using an enumeration.
-When using shared mutability in Ante, these cases would already require an <code>Rc t</code>
-or similar around each element to reduce the cloning costs of enumerations. Using an
-<code>Rc (Mut t)</code> would let us preserve shared mutability but would occasionally require us to
-clone the reference-counted pointer. If the cost of incrementing reference counts is a deal
-breaker (and if there is no other suitable pointer type) then an application can always decide
-to go back to <code>Box t</code> and owned mutability instead.</p>
+<p>Since Ante includes shared mutability as a builtin, certain types which can only yield
+immutable references in Rust can be accessed mutably in Ante. For example, <code>Rc t</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">as_mut</span> <span class="p">(</span><span class="n">rc</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">own</span> <span class="k">mut</span> <span class="kt">Rc</span> <span class="n">t</span><span class="p">)</span> <span class="o">:</span> <span class="o">&amp;</span><span class="k">shared</span> <span class="k">mut</span> <span class="n">t</span> <span class="ow">=</span> <span class="o">...</span>
+</code></pre></div><p>Note that like the <code>Box t</code> example earlier, this still requires an owned reference to
+project inside the Rc. In practice this means to use this to mutate inside an Rc you&rsquo;ll
+often need to clone it first. Otherwise another shared reference to the Rc could swap
+out the <code>Rc</code> for another, potentially dropping the original while we held a reference to it.</p>
+<p>Compared to <code>Rc&lt;RefCell&lt;T&gt;&gt;</code> in Rust, a <code>Rc t</code> in Ante can lend out shared references directly
+without a wrapper type. The runtime cost is also different: <code>Rc&lt;RefCell&lt;T&gt;&gt;</code> performs reference
+counting for the outer <code>Rc</code> and the inner <code>Ref</code>s handed out by the <code>RefCell</code>. An <code>Rc t</code> in Ante
+only needs to perform the out <code>Rc</code>. Any <code>&amp;shared mut t</code> that are handed out can
+be copied/aliased freely. Moreover, <code>RefCell&lt;T&gt;</code> introduces a possible panic to the code if
+a <code>RefMut</code> is ever aliased at runtime, this is not possible with <code>&amp;shared mut</code> in Ante.</p>
+<p>If we ever do need interior mutability to lend out owned references without cloning, then we&rsquo;d
+still need to resort to a <code>RefCell t</code> or similar interior mutability type inherited from Rust.</p>
+<hr>
+<h2 id="custom-clones-are-unsafe">Custom Clones Are Unsafe</h2>
+<p>One additional change we need from Rust to enable this scheme is the ability to clone shared
+references. If we&rsquo;re working with a shared ref to a tagged union for example, we&rsquo;ll need to
+be able to Clone it to access its fields:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Shape</span> <span class="ow">=</span>
+   <span class="o">|</span> <span class="kt">Triangle</span> <span class="p">(</span><span class="n">width</span><span class="o">:</span> <span class="kt">U32</span><span class="p">)</span> <span class="p">(</span><span class="n">height</span><span class="o">:</span> <span class="kt">U32</span><span class="p">)</span>
+   <span class="o">|</span> <span class="kt">Square</span> <span class="p">(</span><span class="n">height</span><span class="o">:</span> <span class="kt">U32</span><span class="p">)</span>
+
+<span class="nf">height</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">Shape</span><span class="p">)</span> <span class="o">:</span> <span class="kt">U32</span> <span class="ow">=</span>
+    <span class="k">match</span> <span class="n">clone</span> <span class="n">s</span>
+    <span class="o">|</span> <span class="kt">Triangle</span> <span class="n">_</span> <span class="n">height</span> <span class="ow">-&gt;</span> <span class="n">height</span>
+    <span class="o">|</span> <span class="kt">Square</span> <span class="n">height</span> <span class="ow">-&gt;</span> <span class="n">height</span>
+</code></pre></div><p>But how can we implement <code>Clone Shape</code> if we can&rsquo;t access a tagged union&rsquo;s fields without cloning it first?</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="kt">Clone</span> <span class="kt">Shape</span> <span class="k">with</span>
+    <span class="n">clone</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">Shape</span><span class="p">)</span> <span class="ow">=</span>
+        <span class="k">match</span> <span class="n">s</span>  <span class="c1">// Error here</span>
+        <span class="o">|</span> <span class="kt">Triangle</span> <span class="n">w</span> <span class="n">h</span> <span class="ow">-&gt;</span> <span class="kt">Triangle</span> <span class="o">@</span><span class="n">w</span> <span class="o">@</span><span class="n">h</span>
+        <span class="o">|</span> <span class="kt">Square</span> <span class="n">h</span> <span class="ow">-&gt;</span> <span class="kt">Square</span> <span class="o">@</span><span class="n">h</span>
+</code></pre></div><p>Having a rule such as &ldquo;an impl for <code>Clone</code> can only be created via <code>derive</code>&rdquo; would be too limiting.
+Even if we banned custom <code>Clone</code> impls for shape-unstable types like unions and certain container types
+only, users would still be able to write a <code>Clone</code> impl that would violate soundness:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Foo</span> <span class="ow">=</span>
+    <span class="n">vec</span><span class="o">:</span> <span class="kt">Rc</span> <span class="p">(</span><span class="kt">Vec</span> <span class="kt">Foo</span><span class="p">)</span>
+
+<span class="k">impl</span> <span class="kt">Clone</span> <span class="kt">Foo</span> <span class="k">with</span>
+    <span class="n">clone</span> <span class="n">foo</span> <span class="ow">=</span>
+        <span class="n">vec</span> <span class="ow">=</span> <span class="k">mut</span> <span class="n">clone</span> <span class="n">foo</span><span class="o">.&amp;</span><span class="n">vec</span>
+        <span class="n">mut_vec</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">shared</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="kt">Foo</span> <span class="ow">=</span> <span class="n">as_mut</span> <span class="o">&amp;</span><span class="n">vec</span>
+
+        <span class="c1">// If this clone impl was invoked from `Clone (Vec Foo)`</span>
+        <span class="c1">// with the outer Vec being obtained from a reference into</span>
+        <span class="c1">// the same Rc shared by `Foo`, then we&#39;ve just dropped</span>
+        <span class="c1">// each element inside the Vec, including the one currently</span>
+        <span class="c1">// being cloned</span>
+        <span class="n">clear</span> <span class="n">mut_vec</span>
+
+        <span class="kt">Foo</span> <span class="n">vec</span>
+</code></pre></div><p>Unfortunately, writing a custom impl for <code>Clone</code> is inherently unsafe. For this reason, these impls
+now require the <code>unsafe</code> keyword.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">unsafe</span> <span class="k">impl</span> <span class="kt">Clone</span> <span class="kt">Foo</span> <span class="k">with</span>
+    <span class="n">clone</span> <span class="n">foo</span> <span class="ow">=</span> <span class="kt">Foo</span> <span class="p">(</span><span class="n">clone</span> <span class="n">foo</span><span class="o">.&amp;</span><span class="n">vec</span><span class="p">)</span>
+</code></pre></div><p>Thankfully, writing custom <code>Clone</code> impls is uncommon and code like this which goes out of its
+way to break it is even more rare.
+Nevertheless, it would still be nice if this case could be prevented more cleanly and made safe.</p>
 <hr>
 <h2 id="new-user-experience">New User Experience</h2>
-<p>It is also important to consider the perspective of a new user to Ante or Rust. This user may be
+<p>Finally, it is also important to consider the perspective of a new user to Ante or Rust. This user may be
 familiar with other programming languages but crucially is not yet aware of ownership or borrowing
 which are somewhat unique to these languages.</p>
 <p>In Rust, trying to mutably borrow an already borrowed reference is one of the more memorable errors
@@ -634,7 +672,7 @@ Thanks for reading and have a fantastic day!</p>
                     
                     
                     <a href="/blog/safe_shared_mutability/#a-new-approach-for-a-new-age">
-                        <li>A New Approach for A New Age</li>
+                        <li>A New Approach for a New Age</li>
                     </a>
                     
                     
@@ -657,7 +695,7 @@ Thanks for reading and have a fantastic day!</p>
                     
                     
                     <a href="/blog/safe_shared_mutability/#preventing-borrows-when-a-typeamprsquos-shape-is-not-stable">
-                        <li>Preventing borrows when a type&amp;amp;rsquo;s shape is not stable</li>
+                        <li>Preventing Borrows When a Type&amp;amp;rsquo;s Shape Is Not Stable</li>
                     </a>
                     
                     
@@ -728,17 +766,13 @@ Thanks for reading and have a fantastic day!</p>
                     
                         <ul class="toc-h2">
                     
-                        <ul class="toc-h3">
                     
                     
                     
-                    
-                    <a href="/blog/safe_shared_mutability/#traversing-pointer-types">
-                        <li>Traversing Pointer Types</li>
+                    <a href="/blog/safe_shared_mutability/#custom-clones-are-unsafe">
+                        <li>Custom Clones Are Unsafe</li>
                     </a>
                     
-                    
-                        </ul>
                     
                         </ul>
                     

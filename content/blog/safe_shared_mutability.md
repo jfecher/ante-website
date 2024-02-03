@@ -100,7 +100,7 @@ in a language similar to Rust. That is, Ante is thread-safe, memory-safe, and us
 with move semantics. As a bonus, this scheme is also completely zero-cost.
 
 --- 
-# A New Approach for A New Age
+# A New Approach for a New Age
 
 Ante's system for ensuring memory & thread safety uses Rust as a foundation. Anywhere a non-reference
 value is seen, it is an owned value. Similarly, anytime `&t` or `&mut t` are seen, these are borrowed
@@ -155,7 +155,7 @@ such as vector elements or union fields?
 
 ---
 
-## Preventing borrows when a type's shape is not stable
+## Preventing Borrows When a Type's Shape Is Not Stable
 
 These cases are simply marked as requiring owning references:
 ```ante
@@ -234,6 +234,16 @@ For this reason, to obtain a reference past a pointer boundary like this, we nee
 as_ref (box: &own Box t) : &own t
 ```
 
+This can seem like a fairly serious limitation but it is helpful to take a step back and consider
+when `Box<T>` and similar pointer types are typically used in today's Rust programs. In my
+experience, these are most often used to wrap recursive data types when using an enumeration.
+When using shared mutability in Ante, these cases would already likely use an `Rc t`
+or similar around each element to reduce the cloning costs of enumerations (more on this later). Through
+`as_mut: &own mut Rc t -> &shared mut t`, shared mutability is preserved but we would occasionally
+need to clone the reference-counted pointer to obtain the owned reference. If the cost of
+incrementing reference counts is a deal breaker (and if there is no other suitable pointer type)
+then an application can always decide to go back to `Box t` and owned mutability instead.
+
 ---
 
 ## Making Shared Useful
@@ -286,56 +296,96 @@ having the ability to opt out of AxM, AxM can be opted into instead.
 
 ## Shared Interior Mutability
 
-The `Vec (Rc MyStruct)` suggestion in the section above does not have quite 
-the same semantics as an owned `Vec<MyStruct>` in Rust. Most notably, `Rc<T>` in Rust
-(and `Rc t` in Ante) prevent mutating the inner element by only handing out immutable
-references. If we still want to be able to mutate `MyStruct`, we have to resort to interior
-mutability. It’s possible to implement this in Rust, but we can longer tell if the code is AxM-safe at compile
-time. We can mutate the inner value by using a type like `RefCell<T>`, but this defers checking AxM 
-rules until runtime and panics on failure! Moreover, since `RefCell<T>` requires additional book-keeping
-to keep track of the references it lends out, it is not zero-cost.
-
-Ante however, provides the `Mut t` type for aliasable interior mutability. Since Ante already
-allows aliasable mutability, there are absolutely no runtime checks required. `Mut t`
-is just a wrapper struct containing only the wrapped `t`. This, along with the lack of runtime
-checks for other `&shared mut t` references, is what makes this scheme zero-cost.
-
-The key difference with `Mut t` which makes it safe is that it can only hand out shared
-mutable references:
+Since Ante includes shared mutability as a builtin, certain types which can only yield
+immutable references in Rust can be accessed mutably in Ante. For example, `Rc t`:
 
 ```ante
-as_mut (x: &Mut t) : &shared mut t = ...
+as_mut (rc: &own mut Rc t) : &shared mut t = ...
 ```
 
-This enables us to use `Vec (Rc (Mut MyStruct))` for
-a safe, mutably shared vector that we can also mutate the elements within.
+Note that like the `Box t` example earlier, this still requires an owned reference to
+project inside the Rc. In practice this means to use this to mutate inside an Rc you'll
+often need to clone it first. Otherwise another shared reference to the Rc could swap
+out the `Rc` for another, potentially dropping the original while we held a reference to it.
 
-If we ever do need interior mutability to lend out owned references, then we'd still need
-to resort to a `RefCell t` or similar interior mutability type inherited from Rust.
+Compared to `Rc<RefCell<T>>` in Rust, a `Rc t` in Ante can lend out shared references directly
+without a wrapper type. The runtime cost is also different: `Rc<RefCell<T>>` performs reference
+counting for the outer `Rc` and the inner `Ref`s handed out by the `RefCell`. An `Rc t` in Ante
+only needs to perform the out `Rc`. Any `&shared mut t` that are handed out can
+be copied/aliased freely. Moreover, `RefCell<T>` introduces a possible panic to the code if
+a `RefMut` is ever aliased at runtime, this is not possible with `&shared mut` in Ante.
 
-### Traversing Pointer Types
+If we ever do need interior mutability to lend out owned references without cloning, then we'd
+still need to resort to a `RefCell t` or similar interior mutability type inherited from Rust.
 
-Going back to the `Box.as_ref` example:
+---
+## Custom Clones Are Unsafe
+
+One additional change we need from Rust to enable this scheme is the ability to clone shared
+references. If we're working with a shared ref to a tagged union for example, we'll need to
+be able to Clone it to access its fields:
 
 ```ante
-as_ref (box: &own Box t) : &own t
+type Shape =
+   | Triangle (width: U32) (height: U32)
+   | Square (height: U32)
+
+height (s: &Shape) : U32 =
+    match clone s
+    | Triangle _ height -> height
+    | Square height -> height
 ```
 
-This can seem like a fairly serious limitation but it is helpful to take a step back and consider
-when `Box<T>` and similar pointer types are typically used in today's Rust programs. In my
-experience, these are most often used to wrap recursive data types when using an enumeration.
-When using shared mutability in Ante, these cases would already require an `Rc t`
-or similar around each element to reduce the cloning costs of enumerations. Using an
-`Rc (Mut t)` would let us preserve shared mutability but would occasionally require us to
-clone the reference-counted pointer. If the cost of incrementing reference counts is a deal
-breaker (and if there is no other suitable pointer type) then an application can always decide
-to go back to `Box t` and owned mutability instead.
+But how can we implement `Clone Shape` if we can't access a tagged union's fields without cloning it first?
+
+```ante
+impl Clone Shape with
+    clone (s: &Shape) =
+        match s  // Error here
+        | Triangle w h -> Triangle @w @h
+        | Square h -> Square @h
+```
+
+Having a rule such as "an impl for `Clone` can only be created via `derive`" would be too limiting.
+Even if we banned custom `Clone` impls for shape-unstable types like unions and certain container types
+only, users would still be able to write a `Clone` impl that would violate soundness:
+
+```ante
+type Foo =
+    vec: Rc (Vec Foo)
+
+impl Clone Foo with
+    clone foo =
+        vec = mut clone foo.&vec
+        mut_vec: &shared mut Vec Foo = as_mut &vec
+
+        // If this clone impl was invoked from `Clone (Vec Foo)`
+        // with the outer Vec being obtained from a reference into
+        // the same Rc shared by `Foo`, then we've just dropped
+        // each element inside the Vec, including the one currently
+        // being cloned
+        clear mut_vec
+
+        Foo vec
+```
+
+Unfortunately, writing a custom impl for `Clone` is inherently unsafe. For this reason, these impls
+now require the `unsafe` keyword.
+
+```ante
+unsafe impl Clone Foo with
+    clone foo = Foo (clone foo.&vec)
+```
+
+Thankfully, writing custom `Clone` impls is uncommon and code like this which goes out of its
+way to break it is even more rare.
+Nevertheless, it would still be nice if this case could be prevented more cleanly and made safe.
 
 ---
 
 ## New User Experience
 
-It is also important to consider the perspective of a new user to Ante or Rust. This user may be
+Finally, it is also important to consider the perspective of a new user to Ante or Rust. This user may be
 familiar with other programming languages but crucially is not yet aware of ownership or borrowing
 which are somewhat unique to these languages.
 
