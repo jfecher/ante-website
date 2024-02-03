@@ -27,21 +27,9 @@ newContentEditor = "vim"
 
 [menu]
 
-[[menu.topbar]]
-    weight = 1
-    name = "GitHub"
-    url = "https://github.com/jfecher/ante"
-    pre = "<i class='fa fa-2x fa-github'></i>"
-    logo = "img/ante_white.svg"
-
-# Enable or disable top bar with social icons
+# Top bar with social icons
 [params.topbar]
     enable = false
-    text = """<p class="hidden-sm hidden-xs">Contact us on +420 777 555 333 or hello@universal.com.</p>
-      <p class="hidden-md hidden-lg"><a href="#" data-animate-hover="pulse"><i class="fa fa-phone"></i></a>
-      <a href="#" data-animate-hover="pulse"><i class="fa fa-envelope"></i></a>
-      </p>
-      """
 
 # Enable and disable widgets for the right sidebar
 [params.widgets]
