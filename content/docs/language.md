@@ -853,6 +853,109 @@ parse_and_print_int (s: String) : Unit =
     // x: I32 = parse s
     print x
 ```
+
+## Int Type
+
+Ante has quite a few [integer types](#integers) so one question
+that gets raised is what is the type of an integer literal?
+If we randomly choose a type like `I32` then when using all
+other integer types we'd have to constaintly annotate our
+operations with the type used which can be annoying. Imagine
+`a + 1u64` every few lines.
+
+Instead, integer literals are given the polymorphic `Int a` type:
+
+```ante
+3 : Int a // for some unknown 'a' which will later be resolved
+          // to one of I8, I16, ..., U8, U16, ... etc.
+```
+
+When we use an integer with no specific type, the integer literal
+keeps this generic type. This sometimes pops up in function signatures:
+
+```ante
+// This works with any integer type
+add1 (x: Int a) : Int a =
+    x + 1
+```
+
+If we do use it with a specific type however, then just like with
+normal generics, the generic type variable is constrained to be
+that concrete type (and the concrete type must satisfy the `Int`
+constraint - ie it must be a primitive integer or we get a compile-time error).
+
+```ante
+// Fine, we're still generic over a
+foo () : Int a =
+    0
+
+x: I32 = 1  // also fine, we constrained 1 : I32 now
+
+y = 2u16  // still fine, now we're specifying the type
+          // of the integer literal directly
+```
+
+## Float Type
+
+Like the [Int type](#int-type), there is also a polymorphic `Float a` type:
+
+```ante
+3.0  // has the type `Float a` until it is later used in an expression
+     // which forces it to be either a F32 or F64.
+```
+
+Values of the `Float a` type will default to `F64` if they are never constrained:
+
+```ante
+print 5.0  // Since we can print any float type, we arbitrarily default 5.0 to an F64
+           // making this snippet equivalent to `print (5.0 : F64)`
+```
+
+## Anonymous Struct Types
+
+If we have multiple types with the same field in scope:
+
+```ante
+type A = foo: I32
+
+type B = foo: String
+```
+
+Then we are left with the problem of deciding what the type
+of an `x.foo` expression should be:
+
+```ante
+// Does this work?
+// - If so what type do we get?
+// - If not, what is the error?
+get_foo x = x.foo
+```
+
+Ante solves this with anonymous struct types which are row-polymorphic.
+In other words, they are polymorphic over what fields are in the struct,
+which allows any struct type to be used so long as it has the required
+fields. For example, `{ x: I32 }` would be the type of any struct that
+has a field `x` of type `I32`.
+
+Using this, we can type `get_foo` as a function which takes
+any struct that has a field named `foo` of type `b`:
+
+```ante
+get_foo (x: { foo: b }) : b =
+    x.foo
+```
+
+As a more complex example, here's a function that can print anything with `debug` field
+that itself is printable and a `prefix` field that must be a string:
+
+```ante
+// Type inferred as:
+//   { prefix: String, debug: a } -> Unit given Print a
+print_debug x =
+    prefix = x.prefix ++ ": "
+    print prefix
+    print x.debug
+```
 ---
 # Move Semantics
 
@@ -1045,7 +1148,7 @@ common denominator - a `shared` reference. If an owned value is needed a
 type error will be issued signalling the function will need to require an owned
 reference instead.
 
-### Zero Cost Internal Mutability
+### Internal Mutability
 
 Since mutating through an immutably borrowed reference `&t` is otherwise impossible,
 Ante provides several types for "internal mutability." `RefCell t` will be
@@ -1053,33 +1156,33 @@ a familiar sight to those used to Rust, but using this type entails runtime
 checking to uphold the properties of an owned reference (either a mutable reference
 can be made or multiple immutable references, but never both at once).
 
-Ante has an additional internally mutable type `Mut t`. This type leverages
-shared references to provide zero cost interior mutability:
+Since Ante natively supports shared references, it is also possibly to obtain a
+shared reference directly through a shared pointer type like an `Rc t`:
 
 ```ante
-// Mut is just a shallow wrapper around its inner value
-type Mut t = value: t
-
-// Mut can provide as many shared mutable references at once as needed
-as_mut (x: &Mut t) : &shared mut t = ...
+as_mut (rc: &own mut Rc t) : &shared mut t = ...
 ```
 
-Since `shared` mutable references are already safe to use in a shared mutable
-context, `Mut t` is free to hand out as many of them as desired - all at
-zero runtime cost.
+Note that like most pointer types, we still need an owned reference of the
+pointer itself to obtain a reference to the inside. This is because otherwise,
+the value would be able to drop out from under us if another shared reference
+to the pointer swapped out the Rc struct itself for another. As a result, mutating
+an `Rc t` often requires cloning the outer Rc to ensure it isn't dropped while the
+inner references are lent out.
+
+If we wanted to create a shared mutable container where each element is also
+mutably shared, we could use a `Vec (Rc t)` with this technique. Note that the
+`Vec` itself doesn't need to be boxed since we can hand out `&shared mut` references
+from owned values already. If want to store the same `Vec` reference in other data types
+then we would need an `Rc` or other shared wrapper around the `Vec`.
+
+This is essentially how many higher level languages make shared mutability work: by boxing
+each value. When we employ this strategy in Ante however, we don't even need to box every
+value. Just boxing container elements and union data is often sufficient.
 
 If an owned reference `&own t` or `&own mut t` is ever required however,
-a different type such as `RefCell t` would still need to be used since `Mut t`
-doesn't provide the runtime tracking required to enforce this constraint.
-
-If we employ the usual workaround for shared mutable containers of using pointer
-types for the elements, we can combine this with `Mut t` to have our cake
-and eat it too. A `Vec (Rc (Mut t))` gives us a vector type that can be mutably
-shared where we can easily refer to elements by cloning them and still mutate
-the elements as well through the `Mut t` wrapper. This is essentially how
-many higher level languages make shared mutability work: by boxing each value.
-When we employ this strategy in Ante however, we don't even need to box every
-value. Just boxing container elements and union data is sufficient.
+a different type such as `RefCell t` would still need to be used to provide
+the runtime tracking required to enforce this constraint.
 
 ---
 # Traits
@@ -1280,109 +1383,6 @@ print (2 ++ 3)  // Error, multiple matching impls found! `add` and `mul` are bot
 
 print (2 ++ 3) via add  //=> 5
 print (2 ++ 3) via mul  //=> 6
-```
-
-## Int Type
-
-Ante has quite a few [integer types](#integers) so one question
-that gets raised is what is the type of an integer literal?
-If we randomly choose a type like `I32` then when using all
-other integer types we'd have to constaintly annotate our
-operations with the type used which can be annoying. Imagine
-`a + 1u64` every few lines.
-
-Instead, integer literals are given the polymorphic `Int a` type:
-
-```ante
-3 : Int a // for some unknown 'a' which will later be resolved
-          // to one of I8, I16, ..., U8, U16, ... etc.
-```
-
-When we use an integer with no specific type, the integer literal
-keeps this generic type. This sometimes pops up in function signatures:
-
-```ante
-// This works with any integer type
-add1 (x: Int a) : Int a =
-    x + 1
-```
-
-If we do use it with a specific type however, then just like with
-normal generics, the generic type variable is constrained to be
-that concrete type (and the concrete type must satisfy the `Int`
-constraint - ie it must be a primitive integer or we get a compile-time error).
-
-```ante
-// Fine, we're still generic over a
-foo () : Int a =
-    0
-
-x: I32 = 1  // also fine, we constrained 1 : I32 now
-
-y = 2u16  // still fine, now we're specifying the type
-          // of the integer literal directly
-```
-
-## Float Type
-
-Like the [Int type](#int-type), there is also a polymorphic `Float a` type:
-
-```ante
-3.0  // has the type `Float a` until it is later used in an expression
-     // which forces it to be either a F32 or F64.
-```
-
-Values of the `Float a` type will default to `F64` if they are never constrained:
-
-```ante
-print 5.0  // Since we can print any float type, we arbitrarily default 5.0 to an F64
-           // making this snippet equivalent to `print (5.0 : F64)`
-```
-
-## Anonymous Struct Types
-
-If we have multiple types with the same field in scope:
-
-```ante
-type A = foo: I32
-
-type B = foo: String
-```
-
-Then we are left with the problem of deciding what the type
-of an `x.foo` expression should be:
-
-```ante
-// Does this work?
-// - If so what type do we get?
-// - If not, what is the error?
-get_foo x = x.foo
-```
-
-Ante solves this with anonymous struct types which are row-polymorphic.
-In other words, they are polymorphic over what fields are in the struct,
-which allows any struct type to be used so long as it has the required
-fields. For example, `{ x: I32 }` would be the type of any struct that
-has a field `x` of type `I32`.
-
-Using this, we can type `get_foo` as a function which takes
-any struct that has a field named `foo` of type `b`:
-
-```ante
-get_foo (x: { foo: b }) : b =
-    x.foo
-```
-
-As a more complex example, here's a function that can print anything with `debug` field
-that itself is printable and a `prefix` field that must be a string:
-
-```ante
-// Type inferred as:
-//   { prefix: String, debug: a } -> Unit given Print a
-print_debug x =
-    prefix = x.prefix ++ ": "
-    print prefix
-    print x.debug
 ```
 
 ---
@@ -1614,13 +1614,13 @@ research languages like [Eff](https://www.eff-lang.org/) and [Koka](https://koka
 In short, algebraic effects are similar to a resumable exception, and they
 allow for non-local control flow that makes some programming styles more natural.
 Algebraic effects also serve as an alternative to monads for purely functional
-programming. Compared to monads, algebraic effects compose naturally but are very
+programming. Compared to monads, algebraic effects compose naturally but are
 slightly more restrictive.
 
 Algebraic effects can be used first by declaring the effect with the `effect` keyword,
 then by performing the effect within a function. Once this happens,
-the computation will suspend, and the program will unwind to the most recent
-effect handler (similar to unwinding to the nearest try block for exceptions).
+the computation will suspend, and the program will call the most recent
+statically-known effect handler.
 From there, the effect handler can stop the computation and return a value as
 with exceptions, or it can resume the computation and continue by calling `resume`
 with the value to resume with. The type of value needed to resume depends on
