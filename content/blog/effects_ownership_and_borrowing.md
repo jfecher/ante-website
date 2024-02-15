@@ -268,8 +268,10 @@ effect Foo with
     foo.resume: FnOnce env _
 ```
 
-Since `env` here is introduced by the function rather than the effect, each invocation
+Since `env` here is quantified over the function rather than the effect, each invocation
 of `foo` is allowed to use its own environment type.
+
+## Restricting the environment type
 
 Also note that 
 
@@ -324,7 +326,15 @@ multithread_fork (f: Unit -> a can Fork) : a =
 
 Different implementations of effects can have wildly different runtime costs.
 
-### Note on other langs, koka, etc
+For example, most languages implementing the full spectrum of algebraic effects 
+will keep track of the stack of effect handlers at runtime. When an effect call
+is made, a lookup needs to be performed then the code needs to jump to the relevant
+handler and back.
+
+Languages without algebraic effects aren't completely free from the costs of effects
+either though. Even if we restrict ourselves to just the `async` effect, we can
+see how common such an effect is throughout many languages - yet each tends to
+have its own unique implementation with its own performance characteristics.
 
 Consider Rust's `async` effect which is implented by compiling async functions
 to state machines. In this scheme, the following code is rejected:
@@ -385,8 +395,11 @@ recursive () : Unit =
 ```
 
 So theoretically no boxing is needed for recursion alone.
-Unfortunately, boxing can quickly become required when using a handler
-that does not call `resume` in a tail position. Consider:
+The performance characteristics here look quite different - but that is
+because in Ante they're largely determined by the handler that is used
+rather than the callsite of the effect. If we use a different handler
+which does not resume in a tail position, boxing will be required.
+For example:
 
 ```ante
 handle recursive ()
@@ -395,7 +408,7 @@ handle recursive ()
     print "done"
 ```
 
-Which compiles to[^3]:
+Compiles to[^3]:
 
 ```ante
 recursive k =
@@ -408,19 +421,30 @@ recursive k =
 Here we can see the inner continuation captures the outer continuation `k`.
 
 To give `k` a valid type, we'd need to box it to ensure it always has the
-same size for each recursive call. There are problems with having users manually
-box these continuations however:
+same size for each recursive call. This is similar to what we'd need to do
+in the Rust example, but there are some unique problems with requiring users manually
+box these continuations in Ante:
 
 - The continuation is added by the compiler, so it isn't clear to the user where
 they should add the boxing.
 - Whether boxing is required is dependent on the structure of the handler. We don't
 want to always add boxing since tail-resume is the more common case.
 
+We could try to get around this by marking whether a given effect must have a tail-resumptive
+handler or not, and requiring recursive functions using non-tail-resumptive handlers to
+box their continuations somehow. This would make effects much more cumbersome to use however,
+and one of Ante's goals is to be a slightly _higher_ level language than Rust. If effects are
+not simple to use then users will avoid them.
+
 For these reasons, the current plan is for the compiler to automatically insert boxing
 of closures where appropriate and infer their lifetimes via [lifetime inference](/docs/ideas/#lifetime-inference).
-Lifetime inference can be imprecise, but I think this could be a good use case of it.
-In the worst case where the lifetimes cannot be accurately inferred, we would still know
-their longest possible lifetime is that of the effect handler.[^4]
+Lifetime inference is a very interesting topic to me - it was one of Ante's original goals
+to experiment with it. When it works well it can be great since it can stack-allocate
+potentially even to prior stack frames. The downside is that the inferred lifetimes can be imprecise.
+Although, in this case, if lifetimes cannot be accurately inferred, we would still know
+their longest possible lifetime is that of the effect handler.[^4] 
+This is a topic that deserves much more detail though so I'll leave it to a future
+blog post. If you're still curious, there are some papers on it reachable from the documentation link above.
 
 
 [^1]: Note that ownership & borrowing are a recent addition to Ante and the changes in this article
@@ -429,4 +453,4 @@ are not yet reflected in the documentation!
 which is not currently implemented.
 [^3]: This output has been heavily cleaned.
 [^4]: This is because effects are implemented via delimited continuations which are evaluated at compile-time.
-Ante takes this approach from Effekt and it is detailed in [Zero-cost Effect Handlers by Staging](https://se.cs.uni-tuebingen.de/publications/schuster19zero.pdf)
+Ante takes this approach from Effekt and it is further detailed in [Zero-cost Effect Handlers by Staging](https://se.cs.uni-tuebingen.de/publications/schuster19zero.pdf)
