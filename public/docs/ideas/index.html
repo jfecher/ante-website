@@ -284,92 +284,6 @@ being considered for ante but for one reason or another are not
 included in the language already. These features are listed
 in no particular order.</p>
 <hr>
-<h1 id="derive-without-macros">Derive Without Macros</h1>
-<p>Trait deriving is an extremely useful feature for any language with traits and trait impls.
-It cuts down on so much boilerplate that I would even argue it to be necessary. Rust, for example,
-relies on implementing derives via procedural macros which are quite difficult for IDEs to handle,
-slow compile times, come with a hefty learning curve, and are required to be put in a separate crate.
-To provide a derive mechanism without these downsides, I propose a system based on GHC&rsquo;s <a href="https://wiki.haskell.org/GHC.Generics">Datatype
-Generic Programming</a> in which we can define how to derive a
-trait by specifying rules for what to do for product types, sum types, and annotated types.</p>
-<p>Here&rsquo;s an example in ante (syntax not final):</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">trait</span> <span class="kt">Hash</span> <span class="n">a</span> <span class="k">with</span>
-    <span class="n">hash</span><span class="o">:</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">U64</span>
-
-<span class="k">derive</span> <span class="kt">Hash</span> <span class="n">a</span> <span class="k">via</span> <span class="k">match</span> <span class="n">a</span>
-<span class="o">|</span> <span class="kt">Product</span> <span class="n">a</span> <span class="n">b</span> <span class="ow">-&gt;</span> <span class="n">hash_combine</span> <span class="p">(</span><span class="n">hash</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">hash</span> <span class="n">b</span><span class="p">)</span>
-<span class="o">|</span> <span class="kt">Sum</span> <span class="p">(</span><span class="kt">Left</span> <span class="n">s</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="n">hash</span> <span class="n">s</span>
-<span class="o">|</span> <span class="kt">Sum</span> <span class="p">(</span><span class="kt">Right</span> <span class="n">s</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="n">hash</span> <span class="n">s</span>
-<span class="o">|</span> <span class="kt">Field</span> <span class="n">t</span> <span class="n">_name</span> <span class="ow">-&gt;</span> <span class="n">hash</span> <span class="n">t</span>
-<span class="o">|</span> <span class="kt">Annotated</span> <span class="n">t</span> <span class="n">_anno</span> <span class="ow">-&gt;</span> <span class="n">hash</span> <span class="n">t</span>
-
-<span class="k">type</span> <span class="kt">Foo</span> <span class="ow">=</span> <span class="n">x</span><span class="o">:</span> <span class="kt">I32</span><span class="p">,</span> <span class="n">y</span><span class="o">:</span> <span class="kt">I32</span>
-
-<span class="nf">hash_foo</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Hash</span> <span class="kt">Foo</span> <span class="k">via</span> <span class="k">derive</span>
-</code></pre></div><p>These would function somewhat as type-directed rules for the compiler to generate impls
-from a given type. The exact cases we would need may push toward a different list of cases
-(e.g. a simple Product pair type won&rsquo;t enable easy differentiation of the begin and end of a
-struct&rsquo;s fields) so the final design may be more general with a bit more noise (e.g. we could
-add StartStruct and StructEnd variants which may be useful for Serialization and other traits).</p>
-<p>The above strategy with Hash simply recurses on each field of the type. This is a common enough
-usecase that we can consider even providing this as a builtin strategy to save users some trouble:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">derive</span> <span class="kt">Hash</span> <span class="n">a</span> <span class="k">via</span> <span class="k">recur</span> <span class="n">hash_combine</span>
-</code></pre></div><p>If the trait functions take more than the single <code>a</code> parameter it is unclear if an error should be
-issued or the strategy can default to passing along these parameters as-is. We could try to generalize
-the <code>with</code> clause to accept a function taking all parameters and return values as well but this starts
-to cut into its brevity and ease of use over the more general approach.</p>
-<hr>
-<h1 id="method-forwarding">Method Forwarding</h1>
-<p>Without inheritance, it can still be useful to provide easier composition via a feature like Go&rsquo;s
-<a href="https://golangbyexample.com/inheritance-go-struct/">struct embeddings</a>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">person</span> <span class="kd">struct</span> <span class="p">{</span>
-    <span class="nx">animal</span>
-    <span class="nx">job</span> <span class="kt">string</span>
-<span class="p">}</span>
-</code></pre></div><p>This will forward all methods of <code>animal</code> to work with the type <code>person</code>. Notably, this does not make
-person a subtype of animal, it only generates new wrapper functions.</p>
-<p>Implementing a similar feature for ante is more difficult since ante doesn&rsquo;t have true methods. There
-are a few paths we could explore:</p>
-<ol>
-<li>Explicit inclusion of functions into a new type:</li>
-</ol>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Create species, size, and ferocity wrapper functions around the `animal` field</span>
-<span class="o">!</span><span class="n">include</span> <span class="n">animal</span> <span class="n">species</span> <span class="n">size</span> <span class="n">ferocity</span>
-<span class="k">type</span> <span class="kt">Person</span> <span class="ow">=</span>
-    <span class="n">animal</span><span class="o">:</span> <span class="kt">Animal</span>
-    <span class="n">job</span><span class="o">:</span> <span class="kt">String</span>
-</code></pre></div><p>Since these are arbitrary functions with no <code>self</code> parameter we must decide how to translate the
-types within, say <code>Animal.species</code> to our new <code>Person.species</code> function. One approach would be
-to naively translate all references of <code>Animal</code> to <code>Person</code>, but this gets difficult for parameters
-with types like <code>Vec Animal</code> where we now must add an entire map operation. It would be simpler to
-only change parameters matching exactly the type <code>Animal</code>, but this leaves out the common usecases
-of pointer-wrapper types like <code>ref Animal</code>. We could try to only replace types <code>a</code> given <code>Deref a Animal</code>,
-but involving impl search in this makes it increasingly complex.</p>
-<p>With these complexities it may be better to have users write some boilerplate wrappers for the methods
-since the boilerplate is at least easier in ante with type inference:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">species</span> <span class="n">p</span> <span class="ow">=</span> <span class="n">species</span> <span class="n">p</span><span class="o">.</span><span class="n">animal</span>
-<span class="nf">size</span> <span class="n">p</span> <span class="ow">=</span> <span class="n">size</span> <span class="n">p</span><span class="o">.</span><span class="n">animal</span>
-<span class="nf">ferocity</span> <span class="n">p</span> <span class="ow">=</span> <span class="n">ferocity</span> <span class="n">p</span><span class="o">.</span><span class="n">animal</span>
-</code></pre></div><p>But this is a rather unsatisfactory solution.</p>
-<ol start="2">
-<li>Abandon the notion of forwarding arbitrary functions and limit it to only forward impls. This
-approach still has its own difficulties. Notably, there is no notion of a Self type for traits either,
-though it may be reasonable to manually specify which type to use for Self as the <a href="#derive-without-macros">derive without macros</a>
-and <a href="#traits-as-types">traits as types</a> proposals do. A similar effect to impl forwarding can be achieved
-with normal impl deriving for newtypes:</li>
-</ol>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">NonZeroU32</span> <span class="ow">=</span> <span class="n">x</span><span class="o">:</span> <span class="kt">U32</span>
-
-<span class="nf">derives</span> <span class="ow">=</span> <span class="k">impl</span> <span class="p">(</span><span class="kt">Add</span><span class="p">,</span> <span class="kt">Mul</span><span class="p">)</span> <span class="kt">NonZeroU32</span> <span class="k">via</span> <span class="k">derive</span>
-</code></pre></div><p>However, a generalized forwarding mechanism could be made more generic. For example, it could allow
-deriving from some (but not all) fields:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Wrapper</span> <span class="ow">=</span>
-    <span class="n">a</span><span class="o">:</span> <span class="kt">I32</span>
-    <span class="n">b</span><span class="o">:</span> <span class="kt">I32</span>
-    <span class="n">context</span><span class="o">:</span> <span class="kt">OpaqueContext</span>
-
-<span class="nf">hash_wrapper</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Hash</span> <span class="kt">Wrapper</span> <span class="k">via</span> <span class="k">forward</span> <span class="n">a</span> <span class="n">b</span>
-</code></pre></div><hr>
 <h1 id="overloading">Overloading</h1>
 <p>Given ante does not have true methods, some form of overloading could greatly help alleviate user frustration
 by allowing modules like <code>Vec</code> and <code>HashMap</code> to both be imported despite defining conflicting names like <code>empty</code>,
@@ -422,6 +336,47 @@ and impl the trait for each combination of types they want. This approach is les
 type inference and may lead to users avoiding type inference to be able to use overloading. It may
 also be a stumbling block for new programmers, though both of these proposals realistically may be.</li>
 </ol>
+<hr>
+<h1 id="compile-time-code-execution--macros">Compile-time Code Execution &amp; Macros</h1>
+<p>Compile-time code generation is a powerful feature that is often required by certain use cases.
+While it can often cause issues for language servers and error reporting, omission of any compile-time
+execution or macros can be equally or more frustrating for the use cases that do need it.</p>
+<p>A good starting place for compile-time execution and macros would be adding a <code>comptime</code> modifier
+to signify something that is run at compile-time. In addition, <code>quote</code> can be a new operator which
+quotes the code on its right hand side and returns an object of type <code>Code</code> that can be manipulated.
+Other <code>Code</code> objects can be interpolated into this via <code>$</code>. <code>comptime</code> functions which return a
+<code>Code</code> object will automatically interpolate this code into their callsite, unless the result is
+captured with a <code>comptime</code> variable.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">comptime</span> <span class="n">loop_unroll</span> <span class="p">(</span><span class="n">iterations</span><span class="o">:</span> <span class="kt">U8</span><span class="p">)</span> <span class="p">(</span><span class="n">body</span><span class="o">:</span> <span class="kt">U8</span> <span class="ow">-&gt;</span> <span class="kt">Code</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Code</span> <span class="ow">=</span>
+    <span class="k">loop</span> <span class="p">(</span><span class="n">i</span> <span class="ow">=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">-&gt;</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="n">iterations</span>
+        <span class="k">then</span> <span class="n">quote</span> <span class="p">()</span>
+        <span class="k">else</span> <span class="n">quote</span>
+            <span class="o">$</span><span class="p">(</span><span class="n">body</span> <span class="n">i</span><span class="p">)</span>
+            <span class="o">$</span><span class="p">(</span><span class="k">recur</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+
+<span class="k">comptime</span> <span class="n">pow</span> <span class="p">(</span><span class="n">base</span><span class="o">:</span> <span class="kt">Code</span><span class="p">)</span> <span class="p">(</span><span class="n">exponent</span><span class="o">:</span> <span class="kt">U8</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Code</span> <span class="ow">=</span>
+    <span class="n">quote</span>
+        <span class="n">result</span> <span class="ow">=</span> <span class="k">mut</span> <span class="mi">1</span>
+        <span class="o">$</span><span class="p">(</span><span class="n">loop_unroll</span> <span class="n">exponent</span> <span class="k">fn</span> <span class="n">_</span> <span class="ow">-&gt;</span>
+            <span class="n">quote</span> <span class="n">result</span> <span class="o">*=</span> <span class="o">$</span><span class="n">base</span><span class="p">)</span>
+        <span class="n">result</span>
+
+<span class="nf">x</span> <span class="ow">=</span> <span class="k">mut</span> <span class="mi">3</span>
+<span class="nf">incr</span> <span class="p">(</span><span class="n">quote</span> <span class="n">x</span><span class="p">)</span>
+<span class="nf">print</span> <span class="n">x</span>  <span class="c1">//=&gt; 4</span>
+
+<span class="c1">// A `macro` keyword can be considered for compile-time functions which return `Code` values.</span>
+<span class="k">macro</span> <span class="n">pow</span> <span class="n">base</span> <span class="p">(</span><span class="n">exponent</span><span class="o">:</span> <span class="kt">U8</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="n">result</span> <span class="ow">=</span> <span class="k">mut</span> <span class="mi">1</span>
+    <span class="o">$</span><span class="p">(</span><span class="n">loop_unroll</span> <span class="n">exponent</span> <span class="k">fn</span> <span class="n">_</span> <span class="ow">-&gt;</span>
+        <span class="n">quote</span> <span class="n">result</span> <span class="o">*=</span> <span class="o">$</span><span class="n">base</span><span class="p">)</span>
+    <span class="n">result</span>
+</code></pre></div><p>This could be expanded to include compile-time introspection functions on <code>Code</code> objects to retrieve
+the AST kind, type of the object, etc.</p>
+<p>Implementing this scheme would likely require a full meta-cyclical evaluator. Compile-time functions
+would be evaluated after type checking, and affected code may need to restart name resolution and
+type checking until there are no more compile-time functions to be evaluated.</p>
 <hr>
 <h1 id="allocator-effect">Allocator Effect</h1>
 <p>In low level code it can often be helpful to provide a custom allocator for a type.
@@ -563,6 +518,92 @@ a hard sell when algebraic effects must already be carefully optimized out to no
 great performance loss.</li>
 </ol>
 <hr>
+<h1 id="derive-without-macros">Derive Without Macros</h1>
+<p>Trait deriving is an extremely useful feature for any language with traits and trait impls.
+It cuts down on so much boilerplate that I would even argue it to be necessary. Rust, for example,
+relies on implementing derives via procedural macros which are quite difficult for IDEs to handle,
+slow compile times, come with a hefty learning curve, and are required to be put in a separate crate.
+To provide a derive mechanism without these downsides, I propose a system based on GHC&rsquo;s <a href="https://wiki.haskell.org/GHC.Generics">Datatype
+Generic Programming</a> in which we can define how to derive a
+trait by specifying rules for what to do for product types, sum types, and annotated types.</p>
+<p>Here&rsquo;s an example in ante (syntax not final):</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">trait</span> <span class="kt">Hash</span> <span class="n">a</span> <span class="k">with</span>
+    <span class="n">hash</span><span class="o">:</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">U64</span>
+
+<span class="k">derive</span> <span class="kt">Hash</span> <span class="n">a</span> <span class="k">via</span> <span class="k">match</span> <span class="n">a</span>
+<span class="o">|</span> <span class="kt">Product</span> <span class="n">a</span> <span class="n">b</span> <span class="ow">-&gt;</span> <span class="n">hash_combine</span> <span class="p">(</span><span class="n">hash</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">hash</span> <span class="n">b</span><span class="p">)</span>
+<span class="o">|</span> <span class="kt">Sum</span> <span class="p">(</span><span class="kt">Left</span> <span class="n">s</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="n">hash</span> <span class="n">s</span>
+<span class="o">|</span> <span class="kt">Sum</span> <span class="p">(</span><span class="kt">Right</span> <span class="n">s</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="n">hash</span> <span class="n">s</span>
+<span class="o">|</span> <span class="kt">Field</span> <span class="n">t</span> <span class="n">_name</span> <span class="ow">-&gt;</span> <span class="n">hash</span> <span class="n">t</span>
+<span class="o">|</span> <span class="kt">Annotated</span> <span class="n">t</span> <span class="n">_anno</span> <span class="ow">-&gt;</span> <span class="n">hash</span> <span class="n">t</span>
+
+<span class="k">type</span> <span class="kt">Foo</span> <span class="ow">=</span> <span class="n">x</span><span class="o">:</span> <span class="kt">I32</span><span class="p">,</span> <span class="n">y</span><span class="o">:</span> <span class="kt">I32</span>
+
+<span class="nf">hash_foo</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Hash</span> <span class="kt">Foo</span> <span class="k">via</span> <span class="k">derive</span>
+</code></pre></div><p>These would function somewhat as type-directed rules for the compiler to generate impls
+from a given type. The exact cases we would need may push toward a different list of cases
+(e.g. a simple Product pair type won&rsquo;t enable easy differentiation of the begin and end of a
+struct&rsquo;s fields) so the final design may be more general with a bit more noise (e.g. we could
+add StartStruct and StructEnd variants which may be useful for Serialization and other traits).</p>
+<p>The above strategy with Hash simply recurses on each field of the type. This is a common enough
+usecase that we can consider even providing this as a builtin strategy to save users some trouble:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">derive</span> <span class="kt">Hash</span> <span class="n">a</span> <span class="k">via</span> <span class="k">recur</span> <span class="n">hash_combine</span>
+</code></pre></div><p>If the trait functions take more than the single <code>a</code> parameter it is unclear if an error should be
+issued or the strategy can default to passing along these parameters as-is. We could try to generalize
+the <code>with</code> clause to accept a function taking all parameters and return values as well but this starts
+to cut into its brevity and ease of use over the more general approach.</p>
+<hr>
+<h1 id="method-forwarding">Method Forwarding</h1>
+<p>Without inheritance, it can still be useful to provide easier composition via a feature like Go&rsquo;s
+<a href="https://golangbyexample.com/inheritance-go-struct/">struct embeddings</a>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">person</span> <span class="kd">struct</span> <span class="p">{</span>
+    <span class="nx">animal</span>
+    <span class="nx">job</span> <span class="kt">string</span>
+<span class="p">}</span>
+</code></pre></div><p>This will forward all methods of <code>animal</code> to work with the type <code>person</code>. Notably, this does not make
+person a subtype of animal, it only generates new wrapper functions.</p>
+<p>Implementing a similar feature for ante is more difficult since ante doesn&rsquo;t have true methods. There
+are a few paths we could explore:</p>
+<ol>
+<li>Explicit inclusion of functions into a new type:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Create species, size, and ferocity wrapper functions around the `animal` field</span>
+<span class="o">!</span><span class="n">include</span> <span class="n">animal</span> <span class="n">species</span> <span class="n">size</span> <span class="n">ferocity</span>
+<span class="k">type</span> <span class="kt">Person</span> <span class="ow">=</span>
+    <span class="n">animal</span><span class="o">:</span> <span class="kt">Animal</span>
+    <span class="n">job</span><span class="o">:</span> <span class="kt">String</span>
+</code></pre></div><p>Since these are arbitrary functions with no <code>self</code> parameter we must decide how to translate the
+types within, say <code>Animal.species</code> to our new <code>Person.species</code> function. One approach would be
+to naively translate all references of <code>Animal</code> to <code>Person</code>, but this gets difficult for parameters
+with types like <code>Vec Animal</code> where we now must add an entire map operation. It would be simpler to
+only change parameters matching exactly the type <code>Animal</code>, but this leaves out the common usecases
+of pointer-wrapper types like <code>ref Animal</code>. We could try to only replace types <code>a</code> given <code>Deref a Animal</code>,
+but involving impl search in this makes it increasingly complex.</p>
+<p>With these complexities it may be better to have users write some boilerplate wrappers for the methods
+since the boilerplate is at least easier in ante with type inference:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">species</span> <span class="n">p</span> <span class="ow">=</span> <span class="n">species</span> <span class="n">p</span><span class="o">.</span><span class="n">animal</span>
+<span class="nf">size</span> <span class="n">p</span> <span class="ow">=</span> <span class="n">size</span> <span class="n">p</span><span class="o">.</span><span class="n">animal</span>
+<span class="nf">ferocity</span> <span class="n">p</span> <span class="ow">=</span> <span class="n">ferocity</span> <span class="n">p</span><span class="o">.</span><span class="n">animal</span>
+</code></pre></div><p>But this is a rather unsatisfactory solution.</p>
+<ol start="2">
+<li>Abandon the notion of forwarding arbitrary functions and limit it to only forward impls. This
+approach still has its own difficulties. Notably, there is no notion of a Self type for traits either,
+though it may be reasonable to manually specify which type to use for Self as the <a href="#derive-without-macros">derive without macros</a>
+and <a href="#traits-as-types">traits as types</a> proposals do. A similar effect to impl forwarding can be achieved
+with normal impl deriving for newtypes:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">NonZeroU32</span> <span class="ow">=</span> <span class="n">x</span><span class="o">:</span> <span class="kt">U32</span>
+
+<span class="nf">derives</span> <span class="ow">=</span> <span class="k">impl</span> <span class="p">(</span><span class="kt">Add</span><span class="p">,</span> <span class="kt">Mul</span><span class="p">)</span> <span class="kt">NonZeroU32</span> <span class="k">via</span> <span class="k">derive</span>
+</code></pre></div><p>However, a generalized forwarding mechanism could be made more generic. For example, it could allow
+deriving from some (but not all) fields:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Wrapper</span> <span class="ow">=</span>
+    <span class="n">a</span><span class="o">:</span> <span class="kt">I32</span>
+    <span class="n">b</span><span class="o">:</span> <span class="kt">I32</span>
+    <span class="n">context</span><span class="o">:</span> <span class="kt">OpaqueContext</span>
+
+<span class="nf">hash_wrapper</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Hash</span> <span class="kt">Wrapper</span> <span class="k">via</span> <span class="k">forward</span> <span class="n">a</span> <span class="n">b</span>
+</code></pre></div><hr>
 <h1 id="allocator-optimizations">Allocator Optimizations</h1>
 <p>The default allocator malloc in addition to its faster friends jemalloc and mimalloc are
 designed in such a way to make them general purpose: they must be thread-safe and they cannot
@@ -843,50 +884,29 @@ today so it is not included in the language.</p>
                     
                     
                     
-                    <a href="/docs/ideas/#derive-without-macros">
-                        <li>Derive Without Macros</li>
-                    </a>
-                    
-                    
-                        </ul>
-                    
-                
-            
-        
-            
-            
-                
-                    
-                    
-                    
-                        <ul class="toc-h1">
-                    
-                    
-                    
-                    
-                    <a href="/docs/ideas/#method-forwarding">
-                        <li>Method Forwarding</li>
-                    </a>
-                    
-                    
-                        </ul>
-                    
-                
-            
-        
-            
-            
-                
-                    
-                    
-                    
-                        <ul class="toc-h1">
-                    
-                    
-                    
-                    
                     <a href="/docs/ideas/#overloading">
                         <li>Overloading</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                    
+                    
+                    
+                    <a href="/docs/ideas/#compile-time-code-execution-ampamp-macros">
+                        <li>Compile-time Code Execution &amp;amp;amp; Macros</li>
                     </a>
                     
                     
@@ -1006,6 +1026,48 @@ today so it is not included in the language.</p>
                     
                     
                         </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                    
+                    
+                    
+                    <a href="/docs/ideas/#derive-without-macros">
+                        <li>Derive Without Macros</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                    
+                    
+                    
+                    <a href="/docs/ideas/#method-forwarding">
+                        <li>Method Forwarding</li>
+                    </a>
+                    
                     
                         </ul>
                     

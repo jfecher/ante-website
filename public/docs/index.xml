@@ -24,7 +24,7 @@ All designs in the ideas page are not implemented as their design is still non-f
       
       <guid>https://antelang.org/docs/ideas/</guid>
       <description>This page is an incomplete list of features that are currently being considered for ante but for one reason or another are not included in the language already. These features are listed in no particular order.
- Derive Without Macros Trait deriving is an extremely useful feature for any language with traits and trait impls. It cuts down on so much boilerplate that I would even argue it to be necessary.</description>
+ Overloading Given ante does not have true methods, some form of overloading could greatly help alleviate user frustration by allowing modules like Vec and HashMap to both be imported despite defining conflicting names like empty, of, insert, get, etc.</description>
     </item>
     
     <item>

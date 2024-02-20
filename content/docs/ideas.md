@@ -12,125 +12,6 @@ included in the language already. These features are listed
 in no particular order.
 
 ---
-# Derive Without Macros
-
-Trait deriving is an extremely useful feature for any language with traits and trait impls.
-It cuts down on so much boilerplate that I would even argue it to be necessary. Rust, for example,
-relies on implementing derives via procedural macros which are quite difficult for IDEs to handle,
-slow compile times, come with a hefty learning curve, and are required to be put in a separate crate.
-To provide a derive mechanism without these downsides, I propose a system based on GHC's [Datatype
-Generic Programming](https://wiki.haskell.org/GHC.Generics) in which we can define how to derive a 
-trait by specifying rules for what to do for product types, sum types, and annotated types.
-
-Here's an example in ante (syntax not final):
-
-```ante
-trait Hash a with
-    hash: a -> U64
-
-derive Hash a via match a
-| Product a b -> hash_combine (hash a) (hash b)
-| Sum (Left s) -> hash s
-| Sum (Right s) -> hash s
-| Field t _name -> hash t
-| Annotated t _anno -> hash t
-
-type Foo = x: I32, y: I32
-
-hash_foo = impl Hash Foo via derive
-```
-
-These would function somewhat as type-directed rules for the compiler to generate impls
-from a given type. The exact cases we would need may push toward a different list of cases
-(e.g. a simple Product pair type won't enable easy differentiation of the begin and end of a 
-struct's fields) so the final design may be more general with a bit more noise (e.g. we could
-add StartStruct and StructEnd variants which may be useful for Serialization and other traits).
-
-The above strategy with Hash simply recurses on each field of the type. This is a common enough
-usecase that we can consider even providing this as a builtin strategy to save users some trouble:
-
-```ante
-derive Hash a via recur hash_combine
-```
-
-If the trait functions take more than the single `a` parameter it is unclear if an error should be
-issued or the strategy can default to passing along these parameters as-is. We could try to generalize
-the `with` clause to accept a function taking all parameters and return values as well but this starts
-to cut into its brevity and ease of use over the more general approach.
-
----
-# Method Forwarding
-
-Without inheritance, it can still be useful to provide easier composition via a feature like Go's
-[struct embeddings](https://golangbyexample.com/inheritance-go-struct/):
-
-```go
-type person struct {
-    animal
-    job string
-}
-```
-
-This will forward all methods of `animal` to work with the type `person`. Notably, this does not make
-person a subtype of animal, it only generates new wrapper functions.
-
-Implementing a similar feature for ante is more difficult since ante doesn't have true methods. There
-are a few paths we could explore:
-
-1. Explicit inclusion of functions into a new type:
-
-  ```ante
-  // Create species, size, and ferocity wrapper functions around the `animal` field
-  !include animal species size ferocity
-  type Person =
-      animal: Animal
-      job: String
-  ```
-
-  Since these are arbitrary functions with no `self` parameter we must decide how to translate the
-  types within, say `Animal.species` to our new `Person.species` function. One approach would be
-  to naively translate all references of `Animal` to `Person`, but this gets difficult for parameters
-  with types like `Vec Animal` where we now must add an entire map operation. It would be simpler to
-  only change parameters matching exactly the type `Animal`, but this leaves out the common usecases
-  of pointer-wrapper types like `ref Animal`. We could try to only replace types `a` given `Deref a Animal`,
-  but involving impl search in this makes it increasingly complex.
-
-  With these complexities it may be better to have users write some boilerplate wrappers for the methods
-  since the boilerplate is at least easier in ante with type inference:
-
-  ```ante
-  species p = species p.animal
-  size p = size p.animal
-  ferocity p = ferocity p.animal
-  ```
-
-  But this is a rather unsatisfactory solution.
-
-2. Abandon the notion of forwarding arbitrary functions and limit it to only forward impls. This
-approach still has its own difficulties. Notably, there is no notion of a Self type for traits either,
-though it may be reasonable to manually specify which type to use for Self as the [derive without macros](#derive-without-macros)
-and [traits as types](#traits-as-types) proposals do. A similar effect to impl forwarding can be achieved
-with normal impl deriving for newtypes:
-
-```ante
-type NonZeroU32 = x: U32
-
-derives = impl (Add, Mul) NonZeroU32 via derive
-```
-
-However, a generalized forwarding mechanism could be made more generic. For example, it could allow
-deriving from some (but not all) fields:
-
-```ante
-type Wrapper =
-    a: I32
-    b: I32
-    context: OpaqueContext
-
-hash_wrapper = impl Hash Wrapper via forward a b
-```
-
----
 # Overloading
 
 Given ante does not have true methods, some form of overloading could greatly help alleviate user frustration
@@ -201,6 +82,55 @@ that may match in scope. If the user still wishes to allow such functionality, t
 and impl the trait for each combination of types they want. This approach is less compatible with
 type inference and may lead to users avoiding type inference to be able to use overloading. It may
 also be a stumbling block for new programmers, though both of these proposals realistically may be.
+
+---
+# Compile-time Code Execution & Macros
+
+Compile-time code generation is a powerful feature that is often required by certain use cases.
+While it can often cause issues for language servers and error reporting, omission of any compile-time
+execution or macros can be equally or more frustrating for the use cases that do need it.
+
+A good starting place for compile-time execution and macros would be adding a `comptime` modifier
+to signify something that is run at compile-time. In addition, `quote` can be a new operator which
+quotes the code on its right hand side and returns an object of type `Code` that can be manipulated.
+Other `Code` objects can be interpolated into this via `$`. `comptime` functions which return a
+`Code` object will automatically interpolate this code into their callsite, unless the result is
+captured with a `comptime` variable.
+
+```ante
+comptime loop_unroll (iterations: U8) (body: U8 -> Code) : Code =
+    loop (i = 0) ->
+        if i >= iterations
+        then quote ()
+        else quote
+            $(body i)
+            $(recur (i + 1))
+
+comptime pow (base: Code) (exponent: U8) : Code =
+    quote
+        result = mut 1
+        $(loop_unroll exponent fn _ ->
+            quote result *= $base)
+        result
+
+x = mut 3
+incr (quote x)
+print x  //=> 4
+
+// A `macro` keyword can be considered for compile-time functions which return `Code` values.
+macro pow base (exponent: U8) =
+    result = mut 1
+    $(loop_unroll exponent fn _ ->
+        quote result *= $base)
+    result
+```
+
+This could be expanded to include compile-time introspection functions on `Code` objects to retrieve
+the AST kind, type of the object, etc.
+
+Implementing this scheme would likely require a full meta-cyclical evaluator. Compile-time functions
+would be evaluated after type checking, and affected code may need to restart name resolution and
+type checking until there are no more compile-time functions to be evaluated.
 
 ---
 # Allocator Effect
@@ -380,6 +310,125 @@ At the time of writing, I'm leaning towards "no" as an answer for two reasons.
 2. Erasing effects in any way increases the difficulty of optimizing effects which would be
    a hard sell when algebraic effects must already be carefully optimized out to not incur
    great performance loss.
+
+---
+# Derive Without Macros
+
+Trait deriving is an extremely useful feature for any language with traits and trait impls.
+It cuts down on so much boilerplate that I would even argue it to be necessary. Rust, for example,
+relies on implementing derives via procedural macros which are quite difficult for IDEs to handle,
+slow compile times, come with a hefty learning curve, and are required to be put in a separate crate.
+To provide a derive mechanism without these downsides, I propose a system based on GHC's [Datatype
+Generic Programming](https://wiki.haskell.org/GHC.Generics) in which we can define how to derive a 
+trait by specifying rules for what to do for product types, sum types, and annotated types.
+
+Here's an example in ante (syntax not final):
+
+```ante
+trait Hash a with
+    hash: a -> U64
+
+derive Hash a via match a
+| Product a b -> hash_combine (hash a) (hash b)
+| Sum (Left s) -> hash s
+| Sum (Right s) -> hash s
+| Field t _name -> hash t
+| Annotated t _anno -> hash t
+
+type Foo = x: I32, y: I32
+
+hash_foo = impl Hash Foo via derive
+```
+
+These would function somewhat as type-directed rules for the compiler to generate impls
+from a given type. The exact cases we would need may push toward a different list of cases
+(e.g. a simple Product pair type won't enable easy differentiation of the begin and end of a 
+struct's fields) so the final design may be more general with a bit more noise (e.g. we could
+add StartStruct and StructEnd variants which may be useful for Serialization and other traits).
+
+The above strategy with Hash simply recurses on each field of the type. This is a common enough
+usecase that we can consider even providing this as a builtin strategy to save users some trouble:
+
+```ante
+derive Hash a via recur hash_combine
+```
+
+If the trait functions take more than the single `a` parameter it is unclear if an error should be
+issued or the strategy can default to passing along these parameters as-is. We could try to generalize
+the `with` clause to accept a function taking all parameters and return values as well but this starts
+to cut into its brevity and ease of use over the more general approach.
+
+---
+# Method Forwarding
+
+Without inheritance, it can still be useful to provide easier composition via a feature like Go's
+[struct embeddings](https://golangbyexample.com/inheritance-go-struct/):
+
+```go
+type person struct {
+    animal
+    job string
+}
+```
+
+This will forward all methods of `animal` to work with the type `person`. Notably, this does not make
+person a subtype of animal, it only generates new wrapper functions.
+
+Implementing a similar feature for ante is more difficult since ante doesn't have true methods. There
+are a few paths we could explore:
+
+1. Explicit inclusion of functions into a new type:
+
+  ```ante
+  // Create species, size, and ferocity wrapper functions around the `animal` field
+  !include animal species size ferocity
+  type Person =
+      animal: Animal
+      job: String
+  ```
+
+  Since these are arbitrary functions with no `self` parameter we must decide how to translate the
+  types within, say `Animal.species` to our new `Person.species` function. One approach would be
+  to naively translate all references of `Animal` to `Person`, but this gets difficult for parameters
+  with types like `Vec Animal` where we now must add an entire map operation. It would be simpler to
+  only change parameters matching exactly the type `Animal`, but this leaves out the common usecases
+  of pointer-wrapper types like `ref Animal`. We could try to only replace types `a` given `Deref a Animal`,
+  but involving impl search in this makes it increasingly complex.
+
+  With these complexities it may be better to have users write some boilerplate wrappers for the methods
+  since the boilerplate is at least easier in ante with type inference:
+
+  ```ante
+  species p = species p.animal
+  size p = size p.animal
+  ferocity p = ferocity p.animal
+  ```
+
+  But this is a rather unsatisfactory solution.
+
+2. Abandon the notion of forwarding arbitrary functions and limit it to only forward impls. This
+approach still has its own difficulties. Notably, there is no notion of a Self type for traits either,
+though it may be reasonable to manually specify which type to use for Self as the [derive without macros](#derive-without-macros)
+and [traits as types](#traits-as-types) proposals do. A similar effect to impl forwarding can be achieved
+with normal impl deriving for newtypes:
+
+```ante
+type NonZeroU32 = x: U32
+
+derives = impl (Add, Mul) NonZeroU32 via derive
+```
+
+However, a generalized forwarding mechanism could be made more generic. For example, it could allow
+deriving from some (but not all) fields:
+
+```ante
+type Wrapper =
+    a: I32
+    b: I32
+    context: OpaqueContext
+
+hash_wrapper = impl Hash Wrapper via forward a b
+```
 
 --- 
 # Allocator Optimizations
