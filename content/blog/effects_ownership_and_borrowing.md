@@ -1,7 +1,7 @@
 +++
 authors = ["Jake Fecher"]
 title = "Algebraic Effects, Ownership, and Borrowing"
-date = "2024-02-05"
+date = "2024-02-20"
 categories = ["effects", "thread safety", "memory management"]
 banner = "img/banners/anteater2.jpg"
 +++
@@ -10,12 +10,12 @@ banner = "img/banners/anteater2.jpg"
 
 # Introduction
 
-[Algebraic Effects](/docs/language/#algebraic-effects)[^1] are a useful abstraction
+[Algebraic Effects](/docs/language/#algebraic-effects) are a useful abstraction
 for reasoning about effectful programs by letting us leave the interpretation
 of these effects to callers. However, most existing literature discusses these
 in the context of a pure functional language with pervasive sharing of values.
 What restrictions would we need to introduce algebraic effects into a language
-with ownership and borrowing - particularly Ante?
+with ownership and borrowing - particularly Ante?[^1]
 
 ---
 
@@ -61,7 +61,7 @@ the_value (value: a) (f: Unit -> b can Read a) : b =
 
 # Borrowing
 
-Things get more complicated when we consider borrowing. Although Ante's references are
+Things get more complicated when we consider borrowing. Although Ante's references
 [do not have explicit lifetime variables](http://localhost:1313/docs/language/#second-class-references),
 we still need to ensure their lifetime is sound.
 
@@ -94,8 +94,9 @@ bad () with the_ref &my_string
 This breaks the aliasing restriction on `&own mut` in a way the compiler
 cannot verify with existing rules on tracking lifetimes.
 
-The solution to this is that the compiler needs to conservatively treat
-each reference returned from an effect as originating from the same value:
+The solution to this is that each function using the same `Read (&own mut Box String)`
+effect is considered to borrow from the same effect handler. Attempting to retrieve
+two owned, mutable references from the same handler then would be a lifetime error:
 
 ```ante
 bad () : Unit can Read (&own mut Box String) =
@@ -107,26 +108,19 @@ bad () : Unit can Read (&own mut Box String) =
     print s1
 ```
 
-Similarly, trying to obfuscate this by passing our reference into a function
-and obtaining the second reference there should also fail:
+Similarly, trying to obfuscate this by calling a function which indirectly
+returns another reference should also fail:
 
 ```ante
-bad1 () : Unit can Read (&own mut Box String) =
-    s1 = read ()
+indirect () can Read (&own mut Box String) =
+    read ()
 
-    // Error: Cannot pass `s1` as `&own mut`, it will be aliased by
-    //         the return value of the effect `can Read (&own mut Box String)` in `bad2`
-    bad2 s1
+foo () can Read (&own mut Box String) =
+    r1 = read ()
 
-// This function is fine. The compiler sees two references which must be disjoint
-bad2 (s1: &own mut Box String) : Unit can Read (&own mut Box String) =
-    s2 = read ()
-    s1 := Box.of ""
-    print s2
+    // Error: Cannot borrow from `Read` effect again with `r1` still in scope
+    r2 = indirect ()
 ```
-
-Note that this same check will occur for any effect returning a reference, not
-just ones parameterized over a reference.
 
 ## Owned Reference Parameters
 
@@ -141,8 +135,7 @@ effect Yield a with
 foo () : Unit can Yield (&own mut I32) =
     vec = mut Vec.of [1, 2]
     yield (get_mut &vec 0)
-    clear &vec
-    push &vec 3
+    vec := Vec.of [3]
     yield (get_mut &vec 0)
 
 bar () =
@@ -162,13 +155,30 @@ bar () =
 To prevent this we need to tie `y` to the variable that owns it - which is `resume`.
 This way we can still yield owned references if needed, but we cannot call `resume` until they are dropped.
 
+Conceptually, we can think of a handle expression as receiving a single `resume` object which
+is then unpacked:
+
+```ante
+handle foo ()
+| MyEffect a b ->
+    ...
+
+// Conceptually the same as:
+handle foo ()
+| MyEffect resume ->
+    a = resume.a
+    b = resume.b
+    resume = resume.continuation
+    ...
+```
+
 ---
 
 # Resume
 
 One core aspect of effects that we've glossed over so far is the `resume` function
 which resumes an effectful computation from the handler. Since `resume` refers to an
-in-progress computation, we need a way to safely encode this environment yet we
+in-progress computation, we need a way to safely encode this environment, yet we
 need to do so when defining the effect before the environment is known.
 What type should be given to `resume`?
 
@@ -198,14 +208,14 @@ handle_fork foo
 ```
 
 After resuming from the `fork` the second time, we enter the false branch.
-When doing so, `message` has already been moved, so we'd be reading an
+When doing so, `message` has already been moved, so we'd be reading from an
 already-dropped value.
 
 This is the problem the different closure types already solve. We just need
 some way to determine if `resume` should be a `Fn`, `FnMut`, or `FnOnce` since
 we cannot know this within the handler itself.
 
-One possibility is to require this in the type of `fork` itself:
+One possibility is to require this in the definition of `Fork` itself:
 
 ```ante
 effect Fork with
@@ -273,11 +283,15 @@ of `foo` is allowed to use its own environment type.
 
 ## Restricting the environment type
 
-Also note that 
+If any capabilities are required on the `resume` closure, a `given` clause can be added.
+Since most traits on closures are defined as long as they're defined on the closure environment,
+it is usually sufficient to require the trait on the closure environment alone:
 
-### Note on second-class resume
-### TODO: How do we know if `fork.resume` captures second-class references?
-### Note on Clone env
+```ante
+effect Foo with
+    foo: Unit -> Unit
+    foo.resume: FnOnce env _ given Clone env
+```
 
 ---
 
@@ -290,8 +304,7 @@ resumption in its own thread?
 effect Fork with
     fork: Unit -> Bool
 
-    // Changed to Fn so that we can alias this twice in Thread.run_all.
-    // The `env` parameter is also now explicit for foreshadowing reasons
+    // Changed to Fn so that we can alias this twice below
     fork.resume: Fn env _
 
 multithread_fork (f: Unit -> a can Fork) : a =
@@ -306,12 +319,13 @@ multithread_fork (f: Unit -> a can Fork) : a =
 ```
 
 In order to spawn a new thread to call `resume` we'd need to require
-the function is `Send`. For closures, we can do this easily by requiring
-the environment is `Send`:
+the reference to the function is `Send`. For closures, we can do this easily
+by requiring the environment is `Send`:
 
 ```ante
 effect Fork with
-    fork: Fn env (Unit -> Bool) given Send env
+    fork: Unit -> Bool
+    foo.resume: Fn env _ given Send &env
 
 multithread_fork (f: Unit -> a can Fork) : a =
     handle f ()

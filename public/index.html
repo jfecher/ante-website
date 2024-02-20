@@ -36,7 +36,7 @@
 
 
 
-<link href="/css/custom.css?1706993272" rel="stylesheet">
+<link href="/css/custom.css" rel="stylesheet">
 
 
 
@@ -63,7 +63,7 @@
 
 
 
-<meta property="og:updated_time" content="2024-01-29T00:00:00Z">
+<meta property="og:updated_time" content="2024-02-20T00:00:00Z">
 
 
 
@@ -238,7 +238,6 @@
 
         
 
-
 <section>
     <div class="home-carousel">
         <div class="dark-mask"></div>
@@ -367,7 +366,6 @@ elem_to_string c i =
         </div>
     </div>
 </section>
-
 
 
 
@@ -553,6 +551,72 @@ elem_to_string c i =
                         <div class="top">
                             <div class="image" style="overflow:hidden">
                                 
+                                <img src="/img/banners/anteater2.jpg" class="img-responsive" alt="" >
+                                
+                            </div>
+                            <div class="bg"></div>
+                            <div class="text">
+                                <p class="buttons">
+                                    <a href="https://antelang.org/blog/effects_ownership_and_borrowing/" class="btn btn-template-transparent-primary"><i class="fas fa-link"></i> Read more</a>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="content">
+                            <h4><a href="https://antelang.org/blog/effects_ownership_and_borrowing/">Algebraic Effects, Ownership, and Borrowing</a></h4>
+                            <p class="author-category">
+			    
+			      By <a href="/authors/jake-fecher">Jake Fecher</a>
+                            
+                            
+                                
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                on 2024-02-20
+                            
+                            </p>
+                            
+                            <p class="intro">Introduction Algebraic Effects are a useful abstraction for reasoning about effectful programs by letting us leave the interpretation of these effects to callers. However, most existing literature discusses these in the context of a pure functional language with pervasive sharing of values. What restrictions would we need to introduce algebraic effects into a language with ownership and borrowing - particularly Ante?1
+ Ownership Consider the following program:
+effect Read a with read : Unit -&gt; a the_value (value: a) (f: Unit -&gt; b can Read a) : b = handle f () | read () -&gt; resume value This seems like it&rsquo;d pass type checking at first glance, but we can easily construct a program that tries to use the same moved value twice:</p>
+                            <p class="read-more">
+                              <a href="https://antelang.org/blog/effects_ownership_and_borrowing/" class="btn btn-template-main">Continue reading</a>
+                            </p>
+                            
+                        </div>
+                    </div>
+                    
+
+                </div>
+                
+                <div class="col-md-3 col-sm-6">
+                    <div class="box-image-text blog">
+                        <div class="top">
+                            <div class="image" style="overflow:hidden">
+                                
                                 <img src="/img/banners/antelope_bird.jpg" class="img-responsive" alt="" >
                                 
                             </div>
@@ -644,6 +708,19 @@ elem_to_string c i =
             <h4>Recent posts</h4>
 
             <div class="blog-entries">
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="https://antelang.org/blog/effects_ownership_and_borrowing/">
+                          
+                            <img src="/img/banners/anteater2.jpg" class="img-responsive" alt="Algebraic Effects, Ownership, and Borrowing">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/blog/effects_ownership_and_borrowing/">Algebraic Effects, Ownership, and Borrowing</a></h5>
+                    </div>
+                </div>
                 
                 <div class="item same-height-row clearfix">
                     <div class="image same-height-always">

@@ -32,11 +32,9 @@ whether ante should use rust's model for chars (4 bytes), Swift's model (variabl
 - [x] Basic arithmetic, `+`, `-`, `*`, `/`, comparisons, etc.
 - [x] Pipeline operators `|>` and `<|`
 - [x] Assignment `:=`
+- [x] `.` Field access
 - [ ] `+=`, `-=`, `*=` and friends
 - [ ] `Bits` module - There are `bnot`, `band`, `bor`, and `bxor` functions in the prelude however.
-- [~] `.`
-  - [x] Field access
-  - [ ] Method calls
 
 ---
 # Functions and Control Flow
@@ -63,11 +61,6 @@ whether ante should use rust's model for chars (4 bytes), Swift's model (variabl
 - [x] Product and sum (struct and enum) type definitions
 - [ ] Type aliases
 - [x] Type annotations
-- [ ] Refinement types
-  - [ ] Named types (`foo:Foo` in type position, arbitrarily nested)
-  - [ ] Refinement inference
-  - [ ] Rectifying interactions between refinement types and numeric traits
-  - [ ] Sum-type refinements
 - [x] Traits
   - [x] Restricted Functional Dependency clause (`->`). Equivalent to associated types.
 - [x] Polymorphic `Int` and `Float` types for polymorphic integer and float literals
@@ -102,11 +95,10 @@ but is otherwise implemented.
 - [ ] Compiler option to write inferred types into the file
 - [~] Language server.
   - [x] Display errors in file
+  - [x] Hover
   - [ ] Go to definition
   - [ ] Go to type
-  - [ ] Hover
   - [ ] Rename
-anything vaguely practical.
 - [x] Unused variable warning message
 - [ ] Parser recoverable on error
 - [x] Name resolution recoverable on error

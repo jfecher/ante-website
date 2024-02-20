@@ -12,8 +12,8 @@ delve down to optimize allocation/representation of memory if desired. A
 central goal of ante however, is to not force this upon users and provide
 sane defaults where possible.
 Compared to other low-level languages, ante is safe like rust but tries
-to be easier in general, for example by avoiding the need for ownership
-semantics through lifetime inference.
+to be easier in general, for example by allowing shared mutability by
+default and avoiding the need for lifetime annotations.
 
 ---
 # Literals
@@ -800,7 +800,7 @@ Ante is a strongly, statically typed language with global type inference.
 Types are used to restrict the set of values as best as possible such that
 only valid values are representable. For example, since references in ante
 cannot be null we can instead represent possibly null references with
-`Maybe (Ref t)` which makes it explicit whether a function can accept or
+`Maybe &t` which makes it explicit whether a function can accept or
 return possibly null values.
 
 ## Type Definitions
@@ -1001,12 +1001,16 @@ qux (&mut s)
 print s  //=> "???"
 ```
 
-### Second-Class References
+### Restrictions on References
 
-Ante's references are second-class, which means they cannot be stored in other data types.
-This simplification reduces the expressivity of references compared to Rust, but
-also means lifetime variables are never required in Ante - indeed they are not
-in the language at all. Most uses of references are in parameters, these cases are unchanged:
+Compared to references in Rust, Ante's references are also bound by lifetimes, although
+this lifetime cannot be explicitly referred to by a lifetime variable. This is a tradeoff 
+which simplifies the language somewhat but means that the expressivity of references is
+also more restricted compared to Rust. Generally, references are meant to mostly be used
+as a parameter-passing method rather than stored deeply within types.
+
+When used in a parameter position, each variable of a function is assumed to have a
+possibly different lifetime:
 
 ```ante
 concat_foo (foo: &Foo) : String =
@@ -1024,7 +1028,7 @@ bad (foo: Foo) =
 #### Returning References
 
 The next most common use of references is writing functions to lend references
-to avoid cloning the inner value unnecessarily. Different languages with second-class
+to avoid cloning the inner value unnecessarily. Other languages with
 references approach this differently. In Hylo for example, references may only
 be returned in special "subscript" functions, which are in turn only able to be
 called within another function call, e.g. `foo(my_subscript(bar, baz), qux)`.
@@ -1058,46 +1062,41 @@ must be `shared` or not (see [shared mutability](#shared-mutability)). Consider 
 ```ante
 example2 (foo: Foo) (bar: &mut Bar) =
     ref = get_ref &foo bar
+    print bar
+    print ref
     ()
 ```
 
 We get an error that `bar` must be a `shared` reference because the compiler sees
 `ref` as a reference potentially aliased to `bar`, which would make it mutably
-alaised since `bar: &mut Bar`. This is despite us being able to peek into `get_ref`
+aliased since `bar: &mut Bar`. This is despite us being able to peek into `get_ref`
 to see it actually only ever returns a reference inside of `foo`.
 
-#### References In Generics
+#### Lifetime-bound Types
 
-References are allowed in generics as long as the generic is resolved to only be
-used in a parameter position. For example, given the following definitions:
+Types which capture references must themselves be bound by the same lifetime as those
+references. This is indicated using the `ref` keyword. For example, if we had a struct:
 
 ```ante
-type Maybe a =
-   | None
-   | Some a
-
-trait Iterator it elem with
-    iter: &mut it -> elem can Fail
-
-type Foo t =
-    function: t -> Unit
+type Context =
+    global_context: &GlobalContext
 ```
 
-`Iterator t &e` and `Foo &t` would be valid instantiations, but `Maybe &t`
-would not be since the generic `a` in the `Maybe` type is not only used
-as a function parameter.
+We would have to refer to this struct elsewhere as `ref Context`, which will restrict
+the lifetime of the `Context` to that of the reference it contains internally. This is
+similar to using a lifetime variable in Rust: `Context<'a>`.
 
-#### Iteration
+If a type captures multiple references, the lifetime used by `Context` is the shortest
+of all the captured lifetimes.
 
-It is worth briefly noting that one of the most common use cases where first-class
-references are required is in implementing iterators (the `Iterator` trait defined
-above is not particularly useful in practice). Ante does not require this
-at all since Ante uses generators instead, implemented via algebraic effects.
+`ref` is also often seen when using closures which capture references:
 
-#### Closures
+```ante
+x = Bar
+foo () = x
 
-As a consequence of references being second-class, any closures closing over
-references must also be second-class in order to store these references internally.
+// Type of foo is:  ref Fn Unit => &Bar
+```
 
 ---
 

@@ -36,7 +36,7 @@
 
 
 
-<link href="/css/custom.css?1706993272" rel="stylesheet">
+<link href="/css/custom.css" rel="stylesheet">
 
 
 
@@ -63,7 +63,7 @@
 
 
 
-<meta property="og:updated_time" content="2024-01-29T00:00:00Z">
+<meta property="og:updated_time" content="2024-02-20T00:00:00Z">
 
 
 
@@ -245,6 +245,80 @@
                             <div class="row">
                                 <div class="col-md-4">
                                   <div class="image">
+                                      <a href="https://antelang.org/blog/effects_ownership_and_borrowing/">
+                                          
+                                          <img src="/img/banners/anteater2.jpg" class="img-responsive" alt="">
+                                          
+                                      </a>
+                                  </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <h2><a href="https://antelang.org/blog/effects_ownership_and_borrowing/">Algebraic Effects, Ownership, and Borrowing</a></h2>
+                                    <div class="clearfix">
+                                        <p class="author-category">
+                                          
+					  By <a href="/authors/jake-fecher">Jake Fecher</a>
+                                          
+                                          
+                                          
+                                          in 
+                                          
+                                              <a href="/categories/effects">effects</a>, 
+                                              <a href="/categories/thread-safety">thread safety</a>, 
+                                              <a href="/categories/memory-management">memory management</a>
+                                          
+                                          
+
+                                        </p>
+                                        
+
+                                        
+                                        
+                                            
+                                        
+                                            
+                                        
+                                            
+                                        
+                                            
+                                        
+                                            
+                                        
+                                            
+                                        
+                                            
+                                        
+                                            
+                                        
+                                            
+                                        
+                                            
+                                        
+                                            
+                                        
+                                            
+                                        
+
+                                        <p class="date-comments">
+                                            <a href="https://antelang.org/blog/effects_ownership_and_borrowing/"><i class="far fa-calendar"></i> 2024-02-20</a>
+                                        </p>
+                                        
+                                    </div>
+                                    
+                                    <p class="intro">Introduction Algebraic Effects are a useful abstraction for reasoning about effectful programs by letting us leave the interpretation of these effects to callers. However, most existing literature discusses these in the context of a pure functional language with pervasive sharing of values. What restrictions would we need to introduce algebraic effects into a language with ownership and borrowing - particularly Ante?1
+ Ownership Consider the following program:
+effect Read a with read : Unit -&gt; a the_value (value: a) (f: Unit -&gt; b can Read a) : b = handle f () | read () -&gt; resume value This seems like it&rsquo;d pass type checking at first glance, but we can easily construct a program that tries to use the same moved value twice:</p>
+                                    <p class="read-more"><a href="https://antelang.org/blog/effects_ownership_and_borrowing/" class="btn btn-template-main">Continue reading</a>
+                                    </p>
+                                    
+                                </div>
+                            </div>
+                        </section>
+                        
+                        <section class="post">
+                            <div class="row">
+                                <div class="col-md-4">
+                                  <div class="image">
                                       <a href="https://antelang.org/blog/safe_shared_mutability/">
                                           
                                           <img src="/img/banners/antelope_bird.jpg" class="img-responsive" alt="">
@@ -377,6 +451,19 @@
             <h4>Recent posts</h4>
 
             <div class="blog-entries">
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="https://antelang.org/blog/effects_ownership_and_borrowing/">
+                          
+                            <img src="/img/banners/anteater2.jpg" class="img-responsive" alt="Algebraic Effects, Ownership, and Borrowing">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/blog/effects_ownership_and_borrowing/">Algebraic Effects, Ownership, and Borrowing</a></h5>
+                    </div>
+                </div>
                 
                 <div class="item same-height-row clearfix">
                     <div class="image same-height-always">

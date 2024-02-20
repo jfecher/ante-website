@@ -36,7 +36,7 @@
 
 
 
-<link href="/css/custom.css?1706993272" rel="stylesheet">
+<link href="/css/custom.css" rel="stylesheet">
 
 
 
@@ -303,14 +303,9 @@ whether ante should use rust&rsquo;s model for chars (4 bytes), Swift&rsquo;s mo
 <li><input checked="" disabled="" type="checkbox"> Basic arithmetic, <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, comparisons, etc.</li>
 <li><input checked="" disabled="" type="checkbox"> Pipeline operators <code>|&gt;</code> and <code>&lt;|</code></li>
 <li><input checked="" disabled="" type="checkbox"> Assignment <code>:=</code></li>
+<li><input checked="" disabled="" type="checkbox"> <code>.</code> Field access</li>
 <li><input disabled="" type="checkbox"> <code>+=</code>, <code>-=</code>, <code>*=</code> and friends</li>
 <li><input disabled="" type="checkbox"> <code>Bits</code> module - There are <code>bnot</code>, <code>band</code>, <code>bor</code>, and <code>bxor</code> functions in the prelude however.</li>
-<li>[~] <code>.</code>
-<ul>
-<li><input checked="" disabled="" type="checkbox"> Field access</li>
-<li><input disabled="" type="checkbox"> Method calls</li>
-</ul>
-</li>
 </ul>
 <hr>
 <h1 id="functions-and-control-flow">Functions and Control Flow</h1>
@@ -340,14 +335,6 @@ whether ante should use rust&rsquo;s model for chars (4 bytes), Swift&rsquo;s mo
 <li><input checked="" disabled="" type="checkbox"> Product and sum (struct and enum) type definitions</li>
 <li><input disabled="" type="checkbox"> Type aliases</li>
 <li><input checked="" disabled="" type="checkbox"> Type annotations</li>
-<li><input disabled="" type="checkbox"> Refinement types
-<ul>
-<li><input disabled="" type="checkbox"> Named types (<code>foo:Foo</code> in type position, arbitrarily nested)</li>
-<li><input disabled="" type="checkbox"> Refinement inference</li>
-<li><input disabled="" type="checkbox"> Rectifying interactions between refinement types and numeric traits</li>
-<li><input disabled="" type="checkbox"> Sum-type refinements</li>
-</ul>
-</li>
 <li><input checked="" disabled="" type="checkbox"> Traits
 <ul>
 <li><input checked="" disabled="" type="checkbox"> Restricted Functional Dependency clause (<code>-&gt;</code>). Equivalent to associated types.</li>
@@ -398,11 +385,10 @@ but is otherwise implemented.</li>
 <li>[~] Language server.
 <ul>
 <li><input checked="" disabled="" type="checkbox"> Display errors in file</li>
+<li><input checked="" disabled="" type="checkbox"> Hover</li>
 <li><input disabled="" type="checkbox"> Go to definition</li>
 <li><input disabled="" type="checkbox"> Go to type</li>
-<li><input disabled="" type="checkbox"> Hover</li>
-<li><input disabled="" type="checkbox"> Rename
-anything vaguely practical.</li>
+<li><input disabled="" type="checkbox"> Rename</li>
 </ul>
 </li>
 <li><input checked="" disabled="" type="checkbox"> Unused variable warning message</li>
@@ -690,6 +676,19 @@ is in master.</p>
             <h4>Recent posts</h4>
 
             <div class="blog-entries">
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="https://antelang.org/blog/effects_ownership_and_borrowing/">
+                          
+                            <img src="/img/banners/anteater2.jpg" class="img-responsive" alt="Algebraic Effects, Ownership, and Borrowing">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/blog/effects_ownership_and_borrowing/">Algebraic Effects, Ownership, and Borrowing</a></h5>
+                    </div>
+                </div>
                 
                 <div class="item same-height-row clearfix">
                     <div class="image same-height-always">
