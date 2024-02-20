@@ -62,7 +62,7 @@ the_value (value: a) (f: Unit -> b can Read a) : b =
 # Borrowing
 
 Things get more complicated when we consider borrowing. Although Ante's references
-[do not have explicit lifetime variables](http://localhost:1313/docs/language/#second-class-references),
+[do not have explicit lifetime variables](/docs/language/#borrowing),
 we still need to ensure their lifetime is sound.
 
 ## Returning Owning References
