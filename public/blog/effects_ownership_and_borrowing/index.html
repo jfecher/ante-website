@@ -468,6 +468,9 @@ we cannot know this within the handler itself.</p>
 
     <span class="c1">// The underscores here are because we&#39;re omitting the closure environment</span>
     <span class="c1">// type as well as the actual function type - which is derived from fork&#39;s type.</span>
+    <span class="c1">// Although the environment type can be specified if desired, the function type of resume</span>
+    <span class="c1">// must be omitted because its return type will be the handler type, which is</span>
+    <span class="c1">// not known at this point.</span>
     <span class="n">fork</span><span class="o">.</span><span class="k">resume</span><span class="o">:</span> <span class="kt">FnMut</span> <span class="n">_</span> <span class="n">_</span>
 </code></pre></div><p>Note that <code>fork</code> itself is still callable without restrictions.
 It is only <code>resume</code> that will be a <code>FnMut</code> when it is introduced.</p>
@@ -490,25 +493,31 @@ want to permit.</p>
 <p>Also note that after removing <code>drop</code>, <code>message</code> will not be dropped at the
 end of <code>foo</code>. Instead, it is part of <code>resume</code>&rsquo;s environment and will be dropped
 after the last use of <code>resume</code> in the effect handler.</p>
-<h2 id="tracking-the-environment-type">Tracking the Environment Type</h2>
-<p>The above rules give us a way of reasoning about <code>resume</code> in terms of
-<code>Fn</code>, <code>FnMut</code>, and <code>FnOnce</code>, but another aspect of these types is the environment
-type parameter that is usually hidden. Like Rust and C++, Ante uses unboxed closures,
-so knowing the environment type is necessary to determine how much space the closure
-requires. So how do we determine the environment type?</p>
-<p>Unlike returning a reference, the environment type of an effect is expected to
-change when using it throughout functions, so we cannot apply the same solution
-from returning references and unify all of these environments together. Doing so
-is technically possible but would result to every environment variable being kept
-alive until the effect is fully handled - it&rsquo;d also likely require implicit allocations
-for recursive functions.</p>
-<p>Instead, we want something where each invocation of our effect can be used with
-a different environment type:</p>
+<h2 id="environment-type-quantification">Environment Type Quantification</h2>
+<p>Most effects which give an explicit type for <code>resume</code> will either omit the
+environment type, or specify it as a type variable quantified over the function:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Foo</span> <span class="k">with</span>
     <span class="n">foo</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
     <span class="n">foo</span><span class="o">.</span><span class="k">resume</span><span class="o">:</span> <span class="kt">FnOnce</span> <span class="n">env</span> <span class="n">_</span>
-</code></pre></div><p>Since <code>env</code> here is quantified over the function rather than the effect, each invocation
-of <code>foo</code> is allowed to use its own environment type.</p>
+
+    <span class="c1">// The above means:</span>
+    <span class="c1">// foo.resume: forall env. FnOnce env _</span>
+</code></pre></div><p>This is generally desired since it allows the <code>resume</code> closure to be unboxed most
+of the time. However, what would happen if the user wrote the trait as the following:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Foo</span> <span class="n">env</span> <span class="k">with</span>
+    <span class="n">foo</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
+    <span class="n">foo</span><span class="o">.</span><span class="k">resume</span><span class="o">:</span> <span class="kt">FnOnce</span> <span class="n">env</span> <span class="n">_</span>
+</code></pre></div><p>Since each generic instance of a trait would be separate (e.g. <code>Read I32</code> versus <code>Read String</code>),
+each use of this effect with a different environment would be a separate effect:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">forced_example</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="n">foo</span> <span class="p">()</span>
+    <span class="n">y</span> <span class="ow">=</span> <span class="n">x</span>
+    <span class="n">foo</span> <span class="p">()</span>
+    <span class="n">print</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</code></pre></div><p>Above, <code>forced_example</code> would be inferred to have the effects <code>Foo Env1</code> and <code>Foo Env2</code> where
+<code>Env1</code> and <code>Env2</code> are both opaque types representing the environments. Since each of these would
+need to be handled by separate effect handlers, this technique could be used to limit an effect
+to being called at most once per handler. It remains to be seen how useful this would be however.</p>
 <h2 id="restricting-the-environment-type">Restricting the environment type</h2>
 <p>If any capabilities are required on the <code>resume</code> closure, a <code>given</code> clause can be added.
 Since most traits on closures are defined as long as they&rsquo;re defined on the closure environment,
@@ -516,7 +525,23 @@ it is usually sufficient to require the trait on the closure environment alone:<
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Foo</span> <span class="k">with</span>
     <span class="n">foo</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
     <span class="n">foo</span><span class="o">.</span><span class="k">resume</span><span class="o">:</span> <span class="kt">FnOnce</span> <span class="n">env</span> <span class="n">_</span> <span class="k">given</span> <span class="kt">Clone</span> <span class="n">env</span>
-</code></pre></div><hr>
+</code></pre></div><p>Note that since <code>resume</code> is a continuation, this environment type includes any captured variables
+across other function calls as well. So the <code>Clone</code> constraint above would also apply to
+the <code>vec</code> variable below:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">inner_fn</span> <span class="p">()</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Foo</span> <span class="ow">=</span>
+    <span class="c1">// x may be cloned</span>
+    <span class="n">x</span> <span class="ow">=</span> <span class="mi">3</span>
+    <span class="n">foo</span> <span class="p">()</span>
+    <span class="n">print</span> <span class="n">x</span>
+    
+<span class="nf">outer_fn</span> <span class="p">()</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Foo</span> <span class="ow">=</span>
+    <span class="c1">// vec may also be cloned</span>
+    <span class="n">vec</span> <span class="ow">=</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+    <span class="n">function2</span> <span class="p">()</span>
+    <span class="n">print</span> <span class="n">vec</span>
+</code></pre></div><p>Since environment types can grow quite large, it is generally recommended to avoid cloning
+<code>resume</code>. A more useful trait constraint on <code>resume</code> is covered in the next section.</p>
+<hr>
 <h1 id="multithreading">Multithreading</h1>
 <p>Going back to the <code>Fork</code> example, what would happen if we tried to run each
 resumption in its own thread?</p>
@@ -585,7 +610,7 @@ to state machines. In this scheme, the following code is rejected:</p>
 
 <span class="nf">recursive</span> <span class="p">()</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Await</span> <span class="ow">=</span>
     <span class="c1">// This doesn&#39;t quite match the semantics of the Rust example above,</span>
-    <span class="c1">// but let&#39;s us use a simpler definition for `await`</span>
+    <span class="c1">// but lets us use a simpler definition for `await`</span>
     <span class="n">await</span> <span class="p">()</span>
     <span class="n">recursive</span> <span class="p">()</span>
     <span class="n">await</span> <span class="p">()</span>
@@ -834,8 +859,8 @@ Ante takes this approach from Effekt and it is further detailed in <a href="http
                     
                     
                     
-                    <a href="/blog/effects_ownership_and_borrowing/#tracking-the-environment-type">
-                        <li>Tracking the Environment Type</li>
+                    <a href="/blog/effects_ownership_and_borrowing/#environment-type-quantification">
+                        <li>Environment Type Quantification</li>
                     </a>
                     
                     

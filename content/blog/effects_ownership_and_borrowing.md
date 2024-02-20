@@ -223,6 +223,9 @@ effect Fork with
 
     // The underscores here are because we're omitting the closure environment
     // type as well as the actual function type - which is derived from fork's type.
+    // Although the environment type can be specified if desired, the function type of resume
+    // must be omitted because its return type will be the handler type, which is
+    // not known at this point.
     fork.resume: FnMut _ _
 ```
 
@@ -254,32 +257,44 @@ Also note that after removing `drop`, `message` will not be dropped at the
 end of `foo`. Instead, it is part of `resume`'s environment and will be dropped
 after the last use of `resume` in the effect handler.
 
-## Tracking the Environment Type
+## Environment Type Quantification
 
-The above rules give us a way of reasoning about `resume` in terms of
-`Fn`, `FnMut`, and `FnOnce`, but another aspect of these types is the environment
-type parameter that is usually hidden. Like Rust and C++, Ante uses unboxed closures,
-so knowing the environment type is necessary to determine how much space the closure
-requires. So how do we determine the environment type?
-
-Unlike returning a reference, the environment type of an effect is expected to
-change when using it throughout functions, so we cannot apply the same solution
-from returning references and unify all of these environments together. Doing so
-is technically possible but would result to every environment variable being kept
-alive until the effect is fully handled - it'd also likely require implicit allocations
-for recursive functions.
-
-Instead, we want something where each invocation of our effect can be used with
-a different environment type:
+Most effects which give an explicit type for `resume` will either omit the
+environment type, or specify it as a type variable quantified over the function:
 
 ```ante
 effect Foo with
     foo: Unit -> Unit
     foo.resume: FnOnce env _
+
+    // The above means:
+    // foo.resume: forall env. FnOnce env _
 ```
 
-Since `env` here is quantified over the function rather than the effect, each invocation
-of `foo` is allowed to use its own environment type.
+This is generally desired since it allows the `resume` closure to be unboxed most
+of the time. However, what would happen if the user wrote the trait as the following:
+
+```ante
+effect Foo env with
+    foo: Unit -> Unit
+    foo.resume: FnOnce env _
+```
+
+Since each generic instance of a trait would be separate (e.g. `Read I32` versus `Read String`),
+each use of this effect with a different environment would be a separate effect:
+
+```ante
+forced_example (x: &I32) =
+    foo ()
+    y = x
+    foo ()
+    print (x, y)
+```
+
+Above, `forced_example` would be inferred to have the effects `Foo Env1` and `Foo Env2` where
+`Env1` and `Env2` are both opaque types representing the environments. Since each of these would
+need to be handled by separate effect handlers, this technique could be used to limit an effect
+to being called at most once per handler. It remains to be seen how useful this would be however.
 
 ## Restricting the environment type
 
@@ -292,6 +307,27 @@ effect Foo with
     foo: Unit -> Unit
     foo.resume: FnOnce env _ given Clone env
 ```
+
+Note that since `resume` is a continuation, this environment type includes any captured variables
+across other function calls as well. So the `Clone` constraint above would also apply to
+the `vec` variable below:
+
+```ante
+inner_fn () : Unit can Foo =
+    // x may be cloned
+    x = 3
+    foo ()
+    print x
+    
+outer_fn () : Unit can Foo =
+    // vec may also be cloned
+    vec = Vec.of [1, 2, 3]
+    function2 ()
+    print vec
+```
+
+Since environment types can grow quite large, it is generally recommended to avoid cloning
+`resume`. A more useful trait constraint on `resume` is covered in the next section.
 
 ---
 
@@ -390,7 +426,7 @@ effect Async with
 
 recursive () : Unit can Await =
     // This doesn't quite match the semantics of the Rust example above,
-    // but let's us use a simpler definition for `await`
+    // but lets us use a simpler definition for `await`
     await ()
     recursive ()
     await ()
