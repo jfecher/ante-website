@@ -127,7 +127,7 @@ print "The ${offset}th number after 3 is ${3 + offset}"
 # Variables
 
 Variables are immutable by default and can be created via `=`.
-Also note that ante is strongly, statically typed yet we do not 
+Also note that ante is strongly, statically typed yet we do not
 need to specify the types of variables.
 This is because ante has global [type inference](#type-inference).
 
@@ -201,7 +201,7 @@ foo2 = fn a b ->
 
 Since ante is impure, combining effects can trivially be done via sequencing
 two expressions which can be done by separating the expressions with a newline.
-`;` can also be used to sequence two expressions on the same line if needed. 
+`;` can also be used to sequence two expressions on the same line if needed.
 
 ```ante
 // We can specify parameter types and the
@@ -444,7 +444,7 @@ average_first_two array =
 
 Dereferencing pointers in ante is somewhat uncommon, so ante provides no pointer
 dereference operator. Instead, you can use the `deref` function in the standard library.
-If you need to access a struct field, `struct.field` in will work as expected regardless 
+If you need to access a struct field, `struct.field` in will work as expected regardless
 of whether `struct` is a struct or a pointer to a struct.
 
 ## Pipeline Operators
@@ -581,7 +581,7 @@ harder by having a helper trait so we can specialize the impl for pairs:
 trait ToStringHelper t with
     to_string_helper (x: t) -> String = cast x
 
-cast_pair_string = impl 
+cast_pair_string = impl
     Cast (Pair a b) String via
         cast pair = "(${to_string_helper pair})"
 
@@ -1004,7 +1004,7 @@ print s  //=> "???"
 ### Restrictions on References
 
 Compared to references in Rust, Ante's references are also bound by lifetimes, although
-this lifetime cannot be explicitly referred to by a lifetime variable. This is a tradeoff 
+this lifetime cannot be explicitly referred to by a lifetime variable. This is a tradeoff
 which simplifies the language somewhat but means that the expressivity of references is
 also more restricted compared to Rust. Generally, references are meant to mostly be used
 as a parameter-passing method rather than stored deeply within types.
@@ -1447,7 +1447,7 @@ We can also import only some symbols into scope:
 
 ```ante
 // This syntax was chosen so that when adding new imports
-// you only need to edit the end of the line rather than 
+// you only need to edit the end of the line rather than
 // needing to add a '{' or similar token before print_baz as well.
 import Baz.Nested.print_baz, get_baz
 
@@ -1514,7 +1514,7 @@ sum_helper n acc =
 
 In addition to modules, Ante has another unit of organization called packages.
 Each package is meant to correspond to a project where each dependency is
-also a package. 
+also a package.
 
 At the source code level, import paths are prefixed by a package name.
 For example, in `import Foo.Bar.Baz`, `Foo` is the package to search for `Bar.Baz`
@@ -2009,7 +2009,7 @@ yield_to_list (k: Unit -> a can Yield b) : List b =
     | return _ -> []
     | yield x -> Cons x (resume ())
 
-main () = 
+main () =
     odds = traverse [1, 2, 3]
         with filter is_odd
         with yield_to_list

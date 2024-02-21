@@ -533,7 +533,7 @@ the <code>vec</code> variable below:</p>
     <span class="n">x</span> <span class="ow">=</span> <span class="mi">3</span>
     <span class="n">foo</span> <span class="p">()</span>
     <span class="n">print</span> <span class="n">x</span>
-    
+
 <span class="nf">outer_fn</span> <span class="p">()</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Foo</span> <span class="ow">=</span>
     <span class="c1">// vec may also be cloned</span>
     <span class="n">vec</span> <span class="ow">=</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
@@ -634,7 +634,7 @@ For example:</p>
     <span class="n">print</span> <span class="s">&#34;done&#34;</span>
 </code></pre></div><p>Compiles to<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">recursive</span> <span class="n">k</span> <span class="ow">=</span>
-    <span class="n">recursive</span> <span class="k">fn</span> <span class="p">()</span> <span class="ow">-&gt;</span> 
+    <span class="n">recursive</span> <span class="k">fn</span> <span class="p">()</span> <span class="ow">-&gt;</span>
       <span class="n">recursive</span> <span class="n">k</span>
       <span class="n">print</span> <span class="s">&#34;done&#34;</span>
     <span class="n">print</span> <span class="s">&#34;done&#34;</span>

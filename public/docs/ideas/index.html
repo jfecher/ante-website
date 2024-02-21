@@ -311,8 +311,8 @@ There are two options here:</p>
 <ol>
 <li>We can be more flexible and generalize the constraint:</li>
 </ol>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo</span><span class="o">:</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">given</span> 
-    <span class="n">get</span><span class="o">:</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Int</span> <span class="n">b</span> <span class="ow">-&gt;</span> <span class="n">c</span><span class="p">,</span> 
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo</span><span class="o">:</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">given</span>
+    <span class="n">get</span><span class="o">:</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Int</span> <span class="n">b</span> <span class="ow">-&gt;</span> <span class="n">c</span><span class="p">,</span>
     <span class="kt">Print</span> <span class="n">c</span>
 </code></pre></div><p>In which case we end up with a kind of compile-time duck typing. Worst case scenario if we made
 a typo (<code>gett</code> instead of <code>get</code>), this could generalize our <code>gett</code> constraint instaed of issuing
@@ -337,7 +337,7 @@ type inference and may lead to users avoiding type inference to be able to use o
 also be a stumbling block for new programmers, though both of these proposals realistically may be.</li>
 </ol>
 <hr>
-<h1 id="compile-time-code-execution--macros">Compile-time Code Execution &amp; Macros</h1>
+<h1 id="compile-time-code-execution-and-macros">Compile-time Code Execution and Macros</h1>
 <p>Compile-time code generation is a powerful feature that is often required by certain use cases.
 While it can often cause issues for language servers and error reporting, omission of any compile-time
 execution or macros can be equally or more frustrating for the use cases that do need it.</p>
@@ -350,34 +350,96 @@ captured with a <code>comptime</code> variable.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">comptime</span> <span class="n">loop_unroll</span> <span class="p">(</span><span class="n">iterations</span><span class="o">:</span> <span class="kt">U8</span><span class="p">)</span> <span class="p">(</span><span class="n">body</span><span class="o">:</span> <span class="kt">U8</span> <span class="ow">-&gt;</span> <span class="kt">Code</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Code</span> <span class="ow">=</span>
     <span class="k">loop</span> <span class="p">(</span><span class="n">i</span> <span class="ow">=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">-&gt;</span>
         <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="n">iterations</span>
-        <span class="k">then</span> <span class="n">quote</span> <span class="p">()</span>
-        <span class="k">else</span> <span class="n">quote</span>
+        <span class="k">then</span> <span class="k">quote</span> <span class="p">()</span>
+        <span class="k">else</span> <span class="k">quote</span>
             <span class="o">$</span><span class="p">(</span><span class="n">body</span> <span class="n">i</span><span class="p">)</span>
             <span class="o">$</span><span class="p">(</span><span class="k">recur</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
 
 <span class="k">comptime</span> <span class="n">pow</span> <span class="p">(</span><span class="n">base</span><span class="o">:</span> <span class="kt">Code</span><span class="p">)</span> <span class="p">(</span><span class="n">exponent</span><span class="o">:</span> <span class="kt">U8</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Code</span> <span class="ow">=</span>
-    <span class="n">quote</span>
+    <span class="k">quote</span>
         <span class="n">result</span> <span class="ow">=</span> <span class="k">mut</span> <span class="mi">1</span>
         <span class="o">$</span><span class="p">(</span><span class="n">loop_unroll</span> <span class="n">exponent</span> <span class="k">fn</span> <span class="n">_</span> <span class="ow">-&gt;</span>
-            <span class="n">quote</span> <span class="n">result</span> <span class="o">*=</span> <span class="o">$</span><span class="n">base</span><span class="p">)</span>
+            <span class="k">quote</span> <span class="n">result</span> <span class="o">*=</span> <span class="o">$</span><span class="n">base</span><span class="p">)</span>
         <span class="n">result</span>
 
-<span class="nf">x</span> <span class="ow">=</span> <span class="k">mut</span> <span class="mi">3</span>
-<span class="nf">incr</span> <span class="p">(</span><span class="n">quote</span> <span class="n">x</span><span class="p">)</span>
-<span class="nf">print</span> <span class="n">x</span>  <span class="c1">//=&gt; 4</span>
+<span class="nf">x</span> <span class="ow">=</span> <span class="k">mut</span> <span class="mi">2</span>
+<span class="nf">x</span> <span class="ow">=</span> <span class="n">pow</span> <span class="p">(</span><span class="k">quote</span> <span class="n">x</span><span class="p">)</span> <span class="mi">5</span>
+<span class="nf">print</span> <span class="n">x</span>  <span class="c1">//=&gt; 32</span>
 
 <span class="c1">// A `macro` keyword can be considered for compile-time functions which return `Code` values.</span>
 <span class="k">macro</span> <span class="n">pow</span> <span class="n">base</span> <span class="p">(</span><span class="n">exponent</span><span class="o">:</span> <span class="kt">U8</span><span class="p">)</span> <span class="ow">=</span>
     <span class="n">result</span> <span class="ow">=</span> <span class="k">mut</span> <span class="mi">1</span>
     <span class="o">$</span><span class="p">(</span><span class="n">loop_unroll</span> <span class="n">exponent</span> <span class="k">fn</span> <span class="n">_</span> <span class="ow">-&gt;</span>
-        <span class="n">quote</span> <span class="n">result</span> <span class="o">*=</span> <span class="o">$</span><span class="n">base</span><span class="p">)</span>
+        <span class="k">quote</span> <span class="n">result</span> <span class="o">*=</span> <span class="o">$</span><span class="n">base</span><span class="p">)</span>
     <span class="n">result</span>
 </code></pre></div><p>This could be expanded to include compile-time introspection functions on <code>Code</code> objects to retrieve
 the AST kind, type of the object, etc.</p>
 <p>Implementing this scheme would likely require a full meta-cyclical evaluator. Compile-time functions
 would be evaluated after type checking, and affected code may need to restart name resolution and
 type checking until there are no more compile-time functions to be evaluated.</p>
-<hr>
+<p>It would also be possible to implement <code>derive</code> using this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">comptime</span> <span class="n">derive_functions</span> <span class="ow">=</span> <span class="k">mut</span> <span class="kt">HashMap</span><span class="o">.</span><span class="n">new</span> <span class="p">()</span>
+
+<span class="k">comptime</span> <span class="n">register_derive</span> <span class="p">(</span><span class="n">function</span><span class="o">:</span> <span class="kt">Code</span> <span class="ow">-&gt;</span> <span class="kt">Code</span><span class="p">)</span> <span class="p">(</span><span class="n">trait_name</span><span class="o">:</span> <span class="kt">Code</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span>
+    <span class="n">insert</span> <span class="n">derive_functions</span> <span class="n">trait_name</span> <span class="n">function</span>
+
+<span class="k">comptime</span> <span class="k">derive</span> <span class="p">(</span><span class="n">type_definition</span><span class="o">:</span> <span class="kt">Code</span><span class="p">)</span> <span class="p">(</span><span class="n">trait_name</span><span class="o">:</span> <span class="kt">Code</span><span class="p">)</span><span class="o">:</span> <span class="kt">Code</span> <span class="ow">=</span>
+    <span class="k">if</span> <span class="k">not</span> <span class="n">is_type_definition</span> <span class="n">type_definition</span> <span class="k">then</span>
+        <span class="n">error</span> <span class="s">&#34;derive can only be used on type definitions&#34;</span>
+
+    <span class="k">match</span> <span class="n">get</span> <span class="n">derive_functions</span> <span class="n">trait_name</span>
+    <span class="o">|</span> <span class="kt">Some</span> <span class="n">derive_function</span> <span class="ow">-&gt;</span>
+        <span class="n">new_impl</span> <span class="ow">=</span> <span class="n">derive_function</span> <span class="n">type_definition</span>
+        <span class="n">concat</span> <span class="n">type_definition</span> <span class="n">new_impl</span>
+    <span class="o">|</span> <span class="kt">None</span> <span class="ow">-&gt;</span>
+        <span class="n">error</span> <span class="s">&#34;No derive function registered for ${trait_name}&#34;</span>
+</code></pre></div><p>Using this, we could register a handler by:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="o">!</span><span class="n">register_derive</span> <span class="kt">Eq</span>
+<span class="nf">derive_eq</span> <span class="p">(</span><span class="n">type_definition</span><span class="o">:</span> <span class="kt">Code</span><span class="p">)</span><span class="o">:</span> <span class="kt">Code</span> <span class="ow">=</span>
+    <span class="n">arg1</span> <span class="ow">=</span> <span class="k">quote</span> <span class="n">arg1</span>
+    <span class="n">arg2</span> <span class="ow">=</span> <span class="k">quote</span> <span class="n">arg2</span>
+
+    <span class="c1">// for structs return `arg1.field1 == arg2.field1 and ... and arg1.fieldN == arg2.fieldN`</span>
+    <span class="n">body</span> <span class="ow">=</span> <span class="k">if</span> <span class="n">is_struct_definition</span> <span class="n">type_definition</span> <span class="k">then</span>
+        <span class="n">derive_eq_struct_helper</span> <span class="n">arg1</span> <span class="n">arg2</span> <span class="n">type_definition</span>
+
+    <span class="c1">// for unions return `match union | Variant1 field1 .. fieldN -&gt; case1 | Variant2 .. -&gt; case2 | ... | VariantN .. -&gt; caseN`</span>
+    <span class="c1">// where each case is a struct derivation for Eq</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="n">is_union_definition</span> <span class="n">type_definition</span> <span class="k">then</span>
+        <span class="n">variants</span> <span class="ow">=</span> <span class="n">variants_of_type</span> <span class="n">type_definition</span>
+        <span class="n">cases</span> <span class="ow">=</span> <span class="n">map</span> <span class="n">variants</span> <span class="k">fn</span> <span class="n">variant</span> <span class="ow">-&gt;</span>
+            <span class="n">derive_eq_struct_helper</span> <span class="n">arg1</span> <span class="n">arg2</span> <span class="n">variant</span>
+
+        <span class="n">into_match</span> <span class="n">variants</span> <span class="n">cases</span>
+    <span class="k">else</span>
+        <span class="n">error</span> <span class="s">&#34;derive_eq: Expected a type definition&#34;</span>
+
+    <span class="n">typename</span> <span class="ow">=</span> <span class="n">type_name</span> <span class="n">type_definition</span>
+    <span class="n">generics</span> <span class="ow">=</span> <span class="n">generics</span> <span class="n">type_definition</span>
+
+    <span class="k">quote</span> <span class="k">impl</span> <span class="kt">Eq</span> <span class="p">(</span><span class="o">$</span><span class="n">typename</span> <span class="o">$</span><span class="n">generics</span><span class="p">)</span> <span class="k">with</span>
+        <span class="n">eq</span> <span class="o">$</span><span class="n">arg1</span> <span class="o">$</span><span class="n">arg2</span> <span class="ow">=</span> <span class="o">$</span><span class="n">body</span>
+
+
+<span class="c1">/// Transforms:</span>
+<span class="c1">///   [`a`, `b`, .., `z`]</span>
+<span class="c1">/// Into:</span>
+<span class="c1">///   arg1.a == arg2.a and arg2.b == arg2.b and ... and arg1.z == arg2.z</span>
+<span class="k">comptime</span> <span class="n">derive_eq_struct_helper</span> <span class="p">(</span><span class="n">arg1</span><span class="o">:</span> <span class="kt">Code</span><span class="p">)</span> <span class="p">(</span><span class="n">arg2</span><span class="o">:</span> <span class="kt">Code</span><span class="p">)</span> <span class="p">(</span><span class="n">typ</span><span class="o">:</span> <span class="kt">Code</span><span class="p">)</span><span class="o">:</span> <span class="kt">Code</span> <span class="ow">=</span>
+    <span class="n">fields</span> <span class="ow">=</span> <span class="n">fields_of_type</span> <span class="n">typ</span>
+    <span class="n">field_names</span> <span class="ow">=</span> <span class="n">vecmap</span> <span class="n">fields</span> <span class="n">field_name</span>
+
+    <span class="n">calls</span> <span class="ow">=</span> <span class="n">map</span> <span class="n">fields</span> <span class="k">fn</span> <span class="n">field</span> <span class="ow">-&gt;</span>
+        <span class="k">quote</span> <span class="o">$</span><span class="n">arg1</span><span class="o">.$</span><span class="n">field</span> <span class="o">==</span> <span class="o">$</span><span class="n">arg2</span><span class="o">.$</span><span class="n">field</span>
+
+    <span class="n">join_with</span> <span class="n">calls</span> <span class="k">fn</span> <span class="n">call1</span> <span class="n">call2</span> <span class="ow">-&gt;</span>
+        <span class="k">quote</span> <span class="o">$</span><span class="n">call1</span> <span class="k">and</span> <span class="o">$</span><span class="n">call2</span>
+</code></pre></div><p>Which could be used as:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="o">!</span><span class="k">derive</span> <span class="kt">Eq</span>
+<span class="k">type</span> <span class="kt">MyType</span> <span class="ow">=</span>
+    <span class="n">x</span><span class="o">:</span> <span class="kt">I32</span>
+    <span class="n">y</span><span class="o">:</span> <span class="kt">U32</span>
+</code></pre></div><hr>
 <h1 id="allocator-effect">Allocator Effect</h1>
 <p>In low level code it can often be helpful to provide a custom allocator for a type.
 Languages like C++ and Rust realized the usefulness of this later on and needed to refactor types like <code>std::vector</code> and <code>std::vec::Vec</code>
@@ -905,8 +967,8 @@ today so it is not included in the language.</p>
                     
                     
                     
-                    <a href="/docs/ideas/#compile-time-code-execution-ampamp-macros">
-                        <li>Compile-time Code Execution &amp;amp;amp; Macros</li>
+                    <a href="/docs/ideas/#compile-time-code-execution-and-macros">
+                        <li>Compile-time Code Execution and Macros</li>
                     </a>
                     
                     

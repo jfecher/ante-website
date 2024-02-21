@@ -318,7 +318,7 @@ inner_fn () : Unit can Foo =
     x = 3
     foo ()
     print x
-    
+
 outer_fn () : Unit can Foo =
     // vec may also be cloned
     vec = Vec.of [1, 2, 3]
@@ -376,7 +376,7 @@ multithread_fork (f: Unit -> a can Fork) : a =
 
 Different implementations of effects can have wildly different runtime costs.
 
-For example, most languages implementing the full spectrum of algebraic effects 
+For example, most languages implementing the full spectrum of algebraic effects
 will keep track of the stack of effect handlers at runtime. When an effect call
 is made, a lookup needs to be performed then the code needs to jump to the relevant
 handler and back.
@@ -462,7 +462,7 @@ Compiles to[^3]:
 
 ```ante
 recursive k =
-    recursive fn () -> 
+    recursive fn () ->
       recursive k
       print "done"
     print "done"
@@ -492,7 +492,7 @@ Lifetime inference is a very interesting topic to me - it was one of Ante's orig
 to experiment with it. When it works well it can be great since it can stack-allocate
 potentially even to prior stack frames. The downside is that the inferred lifetimes can be imprecise.
 Although, in this case, if lifetimes cannot be accurately inferred, we would still know
-their longest possible lifetime is that of the effect handler.[^4] 
+their longest possible lifetime is that of the effect handler.[^4]
 This is a topic that deserves much more detail though so I'll leave it to a future
 blog post. If you're still curious, there are some papers on it reachable from the documentation link above.
 

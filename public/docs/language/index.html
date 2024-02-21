@@ -717,7 +717,7 @@ harder by having a helper trait so we can specialize the impl for pairs:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">trait</span> <span class="kt">ToStringHelper</span> <span class="n">t</span> <span class="k">with</span>
     <span class="n">to_string_helper</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">String</span> <span class="ow">=</span> <span class="n">cast</span> <span class="n">x</span>
 
-<span class="nf">cast_pair_string</span> <span class="ow">=</span> <span class="k">impl</span> 
+<span class="nf">cast_pair_string</span> <span class="ow">=</span> <span class="k">impl</span>
     <span class="kt">Cast</span> <span class="p">(</span><span class="kt">Pair</span> <span class="n">a</span> <span class="n">b</span><span class="p">)</span> <span class="kt">String</span> <span class="k">via</span>
         <span class="n">cast</span> <span class="n">pair</span> <span class="ow">=</span> <span class="s">&#34;(${to_string_helper pair})&#34;</span>
 
@@ -1305,7 +1305,7 @@ have:</p>
 <span class="nf">print</span> <span class="s">&#34;baz: $baz, nested_baz = $nested_baz&#34;</span>
 </code></pre></div><p>We can also import only some symbols into scope:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// This syntax was chosen so that when adding new imports</span>
-<span class="c1">// you only need to edit the end of the line rather than </span>
+<span class="c1">// you only need to edit the end of the line rather than</span>
 <span class="c1">// needing to add a &#39;{&#39; or similar token before print_baz as well.</span>
 <span class="k">import</span> <span class="kt">Baz</span><span class="o">.</span><span class="kt">Nested</span><span class="o">.</span><span class="n">print_baz</span><span class="p">,</span> <span class="n">get_baz</span>
 
@@ -1738,7 +1738,7 @@ while remaining purely functional behind the scenes.</p>
     <span class="o">|</span> <span class="k">return</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="kt">[]</span>
     <span class="o">|</span> <span class="n">yield</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="kt">Cons</span> <span class="n">x</span> <span class="p">(</span><span class="k">resume</span> <span class="p">())</span>
 
-<span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span> 
+<span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span>
     <span class="n">odds</span> <span class="ow">=</span> <span class="n">traverse</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
         <span class="k">with</span> <span class="n">filter</span> <span class="n">is_odd</span>
         <span class="k">with</span> <span class="n">yield_to_list</span>

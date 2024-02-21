@@ -67,7 +67,7 @@ println!("{first_elem}");
 We'd get a similar error if `my_tuple` was a `&mut (i32, i32)` or if `first_elem` was a mutable reference, etc.
 Why is this? The program is actually perfectly safe. No matter how `my_tuple` is mutated, its shape
 stays stable, and any inner references will not be invalidated. Another thread
-mutating the data out from under us in a non-atomic way (a la Java) is also not possible since 
+mutating the data out from under us in a non-atomic way (a la Java) is also not possible since
 `&mut` references are not `Send`-able across threads. This is the kind of code new users often try to write in Rust
 and are quickly met with their first experiences with the borrow checker. Needless to say, new users encountering
 such an error message with such unfamiliar concepts can easily have their patience chipped away at. At
@@ -99,7 +99,7 @@ In the next section, I'm going to explain my approach with Ante in allowing safe
 in a language similar to Rust. That is, Ante is thread-safe, memory-safe, and uses unboxed values
 with move semantics. As a bonus, this scheme is also completely zero-cost.
 
---- 
+---
 # A New Approach for a New Age
 
 Ante's system for ensuring memory & thread safety uses Rust as a foundation. Anywhere a non-reference
@@ -136,7 +136,7 @@ or `shared`. These polymorphic references have the capabilities of `shared` refe
 a `shared` reference is valid, an `own`ed reference would be as well.
 This polymorphism comes in handy when returning a reference. If you passed in an
 owned reference, you'll get an owned one back. This would not be the case if Ante were designed to use
-reference subtyping here instead. Most importantly, this polymorphism allows most code with references 
+reference subtyping here instead. Most importantly, this polymorphism allows most code with references
 to be written in a familiar style, ignoring the fact that `shared` or `own` exist:
 
 ```ante
@@ -278,13 +278,13 @@ get_cloned (v: &Vec t) (index: Usz) : t can Fail given Clone t = ...
 
 As long as we don't return a reference to an element, the API itself is safe.
 Note that since this requires cloning each value, this will be fine for small,
-primitive types, but will be expensive for vectors with more complex element types. 
+primitive types, but will be expensive for vectors with more complex element types.
 To work around this, we can instead have a vector of pointer types to reduce the
 cost of cloning: `Vec (Rc MyStruct)`.
 
-Eagle-eyed Rust users will note that `&shared mut t` is fairly similar to `Cell<T>` 
-in Rust (although a more direct comparison would be `Mut t` in the next section). 
-Most of the key differences come in ergonomics and usability. `&shared t` and its 
+Eagle-eyed Rust users will note that `&shared mut t` is fairly similar to `Cell<T>`
+in Rust (although a more direct comparison would be `Mut t` in the next section).
+Most of the key differences come in ergonomics and usability. `&shared t` and its
 mutable variant are built-into the language and thus able to be projected to struct
 fields and provide better interop with other reference types. This reduces the required
 number of conversions, enables tailored compiler errors, and importantly allows arbitrary
@@ -392,7 +392,7 @@ which are somewhat unique to these languages.
 In Rust, trying to mutably borrow an already borrowed reference is one of the more memorable errors
 for new users to make due to how easy it is to encounter and how difficult it can be to understand at first.
 A new user experimenting with the language for the first time will often have a hard time avoiding
-these errors until learning about borrowing. As a result, new users tend to insert excessive calls to 
+these errors until learning about borrowing. As a result, new users tend to insert excessive calls to
 `clone` and tutorials need to introduce borrowing and AxM somewhat early on.
 
 In Ante, new users also have the option of simply using shape-stable types. When defining their types

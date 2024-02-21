@@ -79,7 +79,7 @@ whether ante should use rust's model for chars (4 bytes), Swift's model (variabl
 - [x] Basic module hierarchy
 - [x] Relative roots. This refers to the ability to refer to `Vec.push` defined in `stdlib/Vec.an`
 even though there is no `Vec` module strictly in the directory you're in.
-  - [ ] Adding arbitrary new relative roots to refer to imported libraries used within a project. This will 
+  - [ ] Adding arbitrary new relative roots to refer to imported libraries used within a project. This will
 likely need to wait until a package manager is ironed out.
 - [~] Import all visible symbols from a file. This uses the syntax `import Vec` instead of `import Vec.*` currently
 but is otherwise implemented.
@@ -123,7 +123,7 @@ mutable value similar to OCaml's `t ref`.
 # Other
 
 Algebraic effects are currently in development in a branch.
-Some basic programs are working but the feature overall is still experimental 
+Some basic programs are working but the feature overall is still experimental
 and causes panics in most programs. For now, only type checking of effects
 is in master.
 
