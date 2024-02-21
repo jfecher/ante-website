@@ -215,7 +215,7 @@ This is the problem the different closure types already solve. We just need
 some way to determine if `resume` should be a `Fn`, `FnMut`, or `FnOnce` since
 we cannot know this within the handler itself.
 
-One possibility is to require this in the definition of `Fork` itself:
+One possibility is to require this in the definition of `Fork`:
 
 ```ante
 effect Fork with
@@ -229,7 +229,7 @@ effect Fork with
     fork.resume: FnMut _ _
 ```
 
-Note that `fork` itself is still callable without restrictions.
+Note that `fork` is still callable without restrictions.
 It is only `resume` that will be a `FnMut` when it is introduced.
 
 Anyways, now we'd get an error when writing `foo`:
@@ -355,8 +355,7 @@ multithread_fork (f: Unit -> a can Fork) : a =
 ```
 
 In order to spawn a new thread to call `resume` we'd need to require
-the reference to the function is `Send`. For closures, we can do this easily
-by requiring the environment is `Send`:
+a reference to the closure environment is `Send`:
 
 ```ante
 effect Fork with
@@ -374,19 +373,22 @@ multithread_fork (f: Unit -> a can Fork) : a =
 ---
 # Implementation Details and Boxing
 
-Different implementations of effects can have wildly different runtime costs.
+So far, each of the rules covered above should apply to any language with effects,
+ownership, and borrowing. Different implementations of effects can have wildly
+different runtime costs however.
 
 For example, most languages implementing the full spectrum of algebraic effects
 will keep track of the stack of effect handlers at runtime. When an effect call
 is made, a lookup needs to be performed then the code needs to jump to the relevant
-handler and back.
+handler and back. This may be done by jumping up the call stack and copying stack frames or
+by converting effectful functions to continuation passing style (CPS) - like Ante does.
 
 Languages without algebraic effects aren't completely free from the costs of effects
 either though. Even if we restrict ourselves to just the `async` effect, we can
-see how common such an effect is throughout many languages - yet each tends to
-have its own unique implementation with its own performance characteristics.
+see plenty of languages which include it - each with its own unique implementation
+and performance characteristics.
 
-Consider Rust's `async` effect which is implented by compiling async functions
+Consider Rust's `async` effect which is implemented by compiling async functions
 to state machines. In this scheme, the following code is rejected:
 
 ```rust
@@ -447,7 +449,7 @@ recursive () : Unit =
 So theoretically no boxing is needed for recursion alone.
 The performance characteristics here look quite different - but that is
 because in Ante they're largely determined by the handler that is used
-rather than the callsite of the effect. If we use a different handler
+rather than the call site of the effect. If we use a different handler
 which does not resume in a tail position, boxing will be required.
 For example:
 

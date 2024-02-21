@@ -462,7 +462,7 @@ already-dropped value.</p>
 <p>This is the problem the different closure types already solve. We just need
 some way to determine if <code>resume</code> should be a <code>Fn</code>, <code>FnMut</code>, or <code>FnOnce</code> since
 we cannot know this within the handler itself.</p>
-<p>One possibility is to require this in the definition of <code>Fork</code> itself:</p>
+<p>One possibility is to require this in the definition of <code>Fork</code>:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Fork</span> <span class="k">with</span>
     <span class="n">fork</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span>
 
@@ -472,7 +472,7 @@ we cannot know this within the handler itself.</p>
     <span class="c1">// must be omitted because its return type will be the handler type, which is</span>
     <span class="c1">// not known at this point.</span>
     <span class="n">fork</span><span class="o">.</span><span class="k">resume</span><span class="o">:</span> <span class="kt">FnMut</span> <span class="n">_</span> <span class="n">_</span>
-</code></pre></div><p>Note that <code>fork</code> itself is still callable without restrictions.
+</code></pre></div><p>Note that <code>fork</code> is still callable without restrictions.
 It is only <code>resume</code> that will be a <code>FnMut</code> when it is introduced.</p>
 <p>Anyways, now we&rsquo;d get an error when writing <code>foo</code>:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo</span> <span class="p">()</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Fork</span> <span class="ow">=</span>
@@ -561,8 +561,7 @@ resumption in its own thread?</p>
             <span class="kt">Thread</span><span class="o">.</span><span class="n">spawn</span> <span class="p">(</span><span class="k">fn</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="k">resume</span> <span class="kc">true</span><span class="p">)</span>
             <span class="kt">Thread</span><span class="o">.</span><span class="n">spawn</span> <span class="p">(</span><span class="k">fn</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="k">resume</span> <span class="kc">false</span><span class="p">)</span>
 </code></pre></div><p>In order to spawn a new thread to call <code>resume</code> we&rsquo;d need to require
-the reference to the function is <code>Send</code>. For closures, we can do this easily
-by requiring the environment is <code>Send</code>:</p>
+a reference to the closure environment is <code>Send</code>:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Fork</span> <span class="k">with</span>
     <span class="n">fork</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span>
     <span class="n">foo</span><span class="o">.</span><span class="k">resume</span><span class="o">:</span> <span class="kt">Fn</span> <span class="n">env</span> <span class="n">_</span> <span class="k">given</span> <span class="kt">Send</span> <span class="o">&amp;</span><span class="n">env</span>
@@ -575,16 +574,19 @@ by requiring the environment is <code>Send</code>:</p>
             <span class="kt">Thread</span><span class="o">.</span><span class="n">spawn</span> <span class="p">(</span><span class="k">fn</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="k">resume</span> <span class="kc">false</span><span class="p">)</span>
 </code></pre></div><hr>
 <h1 id="implementation-details-and-boxing">Implementation Details and Boxing</h1>
-<p>Different implementations of effects can have wildly different runtime costs.</p>
+<p>So far, each of the rules covered above should apply to any language with effects,
+ownership, and borrowing. Different implementations of effects can have wildly
+different runtime costs however.</p>
 <p>For example, most languages implementing the full spectrum of algebraic effects
 will keep track of the stack of effect handlers at runtime. When an effect call
 is made, a lookup needs to be performed then the code needs to jump to the relevant
-handler and back.</p>
+handler and back. This may be done by jumping up the call stack and copying stack frames or
+by converting effectful functions to continuation passing style (CPS) - like Ante does.</p>
 <p>Languages without algebraic effects aren&rsquo;t completely free from the costs of effects
 either though. Even if we restrict ourselves to just the <code>async</code> effect, we can
-see how common such an effect is throughout many languages - yet each tends to
-have its own unique implementation with its own performance characteristics.</p>
-<p>Consider Rust&rsquo;s <code>async</code> effect which is implented by compiling async functions
+see plenty of languages which include it - each with its own unique implementation
+and performance characteristics.</p>
+<p>Consider Rust&rsquo;s <code>async</code> effect which is implemented by compiling async functions
 to state machines. In this scheme, the following code is rejected:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="k">async</span><span class="w"> </span><span class="k">fn</span> <span class="nf">recursive</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span><span class="w">    </span><span class="n">recursive</span><span class="p">().</span><span class="k">await</span><span class="p">;</span><span class="w">
@@ -625,7 +627,7 @@ to state machines. In this scheme, the following code is rejected:</p>
 </code></pre></div><p>So theoretically no boxing is needed for recursion alone.
 The performance characteristics here look quite different - but that is
 because in Ante they&rsquo;re largely determined by the handler that is used
-rather than the callsite of the effect. If we use a different handler
+rather than the call site of the effect. If we use a different handler
 which does not resume in a tail position, boxing will be required.
 For example:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">handle</span> <span class="n">recursive</span> <span class="p">()</span>
