@@ -303,7 +303,7 @@ Since most traits on closures are defined as long as they're defined on the clos
 it is usually sufficient to require the trait on the closure environment alone:
 
 ```ante
-effect Foo with
+effect FooCloneEnv with
     foo: Unit -> Unit
     foo.resume: FnOnce env _ given Clone env
 ```
@@ -313,13 +313,13 @@ across other function calls as well. So the `Clone` constraint above would also 
 the `vec` variable below:
 
 ```ante
-inner_fn () : Unit can Foo =
+inner_fn () : Unit can FooCloneEnv =
     // x may be cloned
     x = 3
     foo ()
     print x
 
-outer_fn () : Unit can Foo =
+outer_fn () : Unit can FooCloneEnv =
     // vec may also be cloned
     vec = Vec.of [1, 2, 3]
     function2 ()
@@ -369,6 +369,55 @@ multithread_fork (f: Unit -> a can Fork) : a =
             Thread.spawn (fn () -> resume true)
             Thread.spawn (fn () -> resume false)
 ```
+---
+# Polymorphic Effects
+
+Ante also enables functions to be polymorphic over their effects.
+For example, the `map` function has the type:
+
+```ante
+map: Stream a -> FnMut a => b can e -> Unit can Emit b, e
+```
+
+Now, recalling the `FooCloneEnv` example from earlier:
+
+```ante
+inner_fn () : Unit can FooCloneEnv =
+    // x may be cloned
+    x = 3
+    foo ()
+    print x
+
+outer_fn () : Unit can FooCloneEnv =
+    // vec may also be cloned
+    vec = Vec.of [1, 2, 3]
+    function2 ()
+    print vec
+```
+
+This works fine, but how could we pass a function such as `outer_fn` to
+`map`? The effect variable `e` would be instantiated to `FooCloneEnv` but
+now we'd also need to know if the environment of `map` when it calls the
+passed-in function is clone-able. In the most general case, we'd need to
+be able to verify any trait from `map` and whether it can allow the function
+used to resume multiple times or not.
+
+We'd have to add these constraints to the effect variables directly:
+
+```
+map: Stream a -> FnMut a => b can e -> Unit
+    given Clone e, Send e, Fn e.resume _
+    can Emit b, e
+```
+
+This is a big hit to the usability of effects in this scheme since these constraints
+would have to be manually specified on `map` for its contents to be checked. If not
+specified, a new version of `map` would have to be written with a `Send`able environment
+or similar. This will inevitably lead to some duplication when using effects that algebraic
+effect handlers are usually meant to remove.
+
+In a later article, we'll focus on ways to simplify the usability of this scheme by
+providing sane defaults where possible.
 
 ---
 # Implementation Details and Boxing

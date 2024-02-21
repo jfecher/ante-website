@@ -522,19 +522,19 @@ to being called at most once per handler. It remains to be seen how useful this 
 <p>If any capabilities are required on the <code>resume</code> closure, a <code>given</code> clause can be added.
 Since most traits on closures are defined as long as they&rsquo;re defined on the closure environment,
 it is usually sufficient to require the trait on the closure environment alone:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Foo</span> <span class="k">with</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">FooCloneEnv</span> <span class="k">with</span>
     <span class="n">foo</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
     <span class="n">foo</span><span class="o">.</span><span class="k">resume</span><span class="o">:</span> <span class="kt">FnOnce</span> <span class="n">env</span> <span class="n">_</span> <span class="k">given</span> <span class="kt">Clone</span> <span class="n">env</span>
 </code></pre></div><p>Note that since <code>resume</code> is a continuation, this environment type includes any captured variables
 across other function calls as well. So the <code>Clone</code> constraint above would also apply to
 the <code>vec</code> variable below:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">inner_fn</span> <span class="p">()</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Foo</span> <span class="ow">=</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">inner_fn</span> <span class="p">()</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">FooCloneEnv</span> <span class="ow">=</span>
     <span class="c1">// x may be cloned</span>
     <span class="n">x</span> <span class="ow">=</span> <span class="mi">3</span>
     <span class="n">foo</span> <span class="p">()</span>
     <span class="n">print</span> <span class="n">x</span>
 
-<span class="nf">outer_fn</span> <span class="p">()</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Foo</span> <span class="ow">=</span>
+<span class="nf">outer_fn</span> <span class="p">()</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">FooCloneEnv</span> <span class="ow">=</span>
     <span class="c1">// vec may also be cloned</span>
     <span class="n">vec</span> <span class="ow">=</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
     <span class="n">function2</span> <span class="p">()</span>
@@ -573,6 +573,40 @@ a reference to the closure environment is <code>Send</code>:</p>
             <span class="kt">Thread</span><span class="o">.</span><span class="n">spawn</span> <span class="p">(</span><span class="k">fn</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="k">resume</span> <span class="kc">true</span><span class="p">)</span>
             <span class="kt">Thread</span><span class="o">.</span><span class="n">spawn</span> <span class="p">(</span><span class="k">fn</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="k">resume</span> <span class="kc">false</span><span class="p">)</span>
 </code></pre></div><hr>
+<h1 id="polymorphic-effects">Polymorphic Effects</h1>
+<p>Ante also enables functions to be polymorphic over their effects.
+For example, the <code>map</code> function has the type:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">map</span><span class="o">:</span> <span class="kt">Stream</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">FnMut</span> <span class="n">a</span> <span class="ow">=&gt;</span> <span class="n">b</span> <span class="k">can</span> <span class="n">e</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="n">b</span><span class="p">,</span> <span class="n">e</span>
+</code></pre></div><p>Now, recalling the <code>FooCloneEnv</code> example from earlier:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">inner_fn</span> <span class="p">()</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">FooCloneEnv</span> <span class="ow">=</span>
+    <span class="c1">// x may be cloned</span>
+    <span class="n">x</span> <span class="ow">=</span> <span class="mi">3</span>
+    <span class="n">foo</span> <span class="p">()</span>
+    <span class="n">print</span> <span class="n">x</span>
+
+<span class="nf">outer_fn</span> <span class="p">()</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">FooCloneEnv</span> <span class="ow">=</span>
+    <span class="c1">// vec may also be cloned</span>
+    <span class="n">vec</span> <span class="ow">=</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+    <span class="n">function2</span> <span class="p">()</span>
+    <span class="n">print</span> <span class="n">vec</span>
+</code></pre></div><p>This works fine, but how could we pass a function such as <code>outer_fn</code> to
+<code>map</code>? The effect variable <code>e</code> would be instantiated to <code>FooCloneEnv</code> but
+now we&rsquo;d also need to know if the environment of <code>map</code> when it calls the
+passed-in function is clone-able. In the most general case, we&rsquo;d need to
+be able to verify any trait from <code>map</code> and whether it can allow the function
+used to resume multiple times or not.</p>
+<p>We&rsquo;d have to add these constraints to the effect variables directly:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">map: Stream a -&gt; FnMut a =&gt; b can e -&gt; Unit
+    given Clone e, Send e, Fn e.resume _
+    can Emit b, e
+</code></pre></div><p>This is a big hit to the usability of effects in this scheme since these constraints
+would have to be manually specified on <code>map</code> for its contents to be checked. If not
+specified, a new version of <code>map</code> would have to be written with a <code>Send</code>able environment
+or similar. This will inevitably lead to some duplication when using effects that algebraic
+effect handlers are usually meant to remove.</p>
+<p>In a later article, we&rsquo;ll focus on ways to simplify the usability of this scheme by
+providing sane defaults where possible.</p>
+<hr>
 <h1 id="implementation-details-and-boxing">Implementation Details and Boxing</h1>
 <p>So far, each of the rules covered above should apply to any language with effects,
 ownership, and borrowing. Different implementations of effects can have wildly
@@ -911,6 +945,27 @@ Ante takes this approach from Effekt and it is further detailed in <a href="http
                     
                     <a href="/blog/effects_ownership_and_borrowing/#multithreading">
                         <li>Multithreading</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                    
+                    
+                    
+                    <a href="/blog/effects_ownership_and_borrowing/#polymorphic-effects">
+                        <li>Polymorphic Effects</li>
                     </a>
                     
                     
