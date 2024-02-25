@@ -116,9 +116,9 @@ mutable value similar to OCaml's `t ref`.
 - [ ] Borrowing
   - [ ] Basic immutable and mutable borrowing
   - [ ] Preventing moving owned values while the borrowed reference is alive
-  - [ ] Second-class reference semantics
-  - [ ] `shared` and `own` modifiers
-  - [ ] `Mut t` type
+  - [ ] Reference lifetimes and conversions
+  - [ ] `shared` and `owned` modifiers
+  - [ ] `ref` qualifier for types which store references
 ---
 # Other
 

@@ -1,5 +1,5 @@
 weight: 6
 name: "No Lifetime Variables"
 icon: "fa fa-trash"
-description: "Ante's second-class references mean you never need to write another lifetime variable again."
-link: "docs/language/#second-class-references"
+description: "Ante's simplified reference rules mean you never need to write another lifetime variable again."
+link: "docs/language/#borrowing"
