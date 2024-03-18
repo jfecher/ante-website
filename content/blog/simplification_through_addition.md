@@ -161,12 +161,12 @@ Instead, I'm abandoning methods altogether and allowing ad-hoc overloading of na
 // In Vec.an
 new () : Vec a = ...
 push (v: &mut Vec a) (elem: a) : Unit = ...
-get (v: &own Vec a) (index: Usz) : &own a can Fail = ...
+get (v: &owned Vec a) (index: Usz) : &owned a can Fail = ...
 
 // In HashMap.an
 new () : HashMap k v = ...
 insert (m: &mut HashMap k v) (key: k) (value: v) : Maybe v = ...
-get (m: &own HashMap k v) (key: &k) : &own v can Fail = ...
+get (m: &owned HashMap k v) (key: &k) : &owned v can Fail = ...
 
 // Foo.an
 import Vec.new push get
@@ -240,7 +240,26 @@ Importantly, there is just one language underneath.
 
 ## Switching Between Modes
 
+The `shared` mode will be enabled by default with the `owned` mode being able to be switched to
+by specifying:
 
+```ante
+owned module
+```
+
+I think most users will want to set the mode for their entire project by default which is why specifying
+this will set the mode of the current module as well as all child modules. Similarly, if the current
+module is owned due to a parent module being owned, this can be overriden via:
+
+```ante
+shared module
+```
+
+With the new shared mode being the default, Ante is essentially now an impure functional language
+built on top of a somewhat lower-level rust-like procedural language. Users of high-level languages
+like Python today often rely on libraries written in C for speed. It will be quite nice for users
+to use Ante as a high level language and directly be able to leverage libraries written in owned mode
+for a bit of extra performance.
 
 ## Recursive Unions
 
@@ -263,32 +282,80 @@ simplify expr =
     ...
 ```
 
-Nested pattern matching is something that is desired even for `owned` mode, but even
-just removing the pointer type wrapper from `Expr`'s type definition shouldn't
-be overlooked as a simplification to users. Now when defining `Expr`, every case
+Nested pattern matching is something that I'd also like for the `owned` mode eventually,
+but even just removing the pointer type wrapper from `Expr`'s type definition shouldn't
+be overlooked as a simplification to users. Now when defining `Expr` every case
 contains only business logic and is free from low-level details.
 
-If desired, we can override the default mode by specifying the mode on the type we
-want to define directly:
+## Mutability
+
+I mulled over whether shared values should be mutable by default or not but I think
+the best answer is that they are not mutable. Backing up a bit, Rust users may question
+how the `a` in `Rc a` could be mutable but due to Ante's support for [shared mutability](/blog/safe_shared_mutability),
+the operation `as_mut: &mut Rc a -> &shared mut a` is a perfectly safe one.
+
+The `Shared a` type diverges from `Rc a` a bit in that it does not provide this operation because:
+1. Although not entirely uncommon in other programming languages, having certain values have mutable
+reference semantics by default could be confusing. Mutating one value and having another change would
+be a type of spooky action at a distance behavior. Such a behavior would only happen in the shared mode
+which I think would give it an unnecessary difference compared the owned mode.
+2. Not providing this function enables the compiler to implement `Shared a` in a possibly thread-safe
+way. For example, the compiler could detect when these values are used in a multithreaded context
+and switch to atomic reference counting (see [Perceus](https://www.microsoft.com/en-us/research/uploads/prod/2020/11/perceus-tr-v4.pdf)).
+3. Users would still be able to mutate these types but would need to use an internally-mutable
+wrapper type such as `Mut t` which provides `as_mut: &Mut t -> &shared mut t`.
+    - Pointing to each `Mut t` as an example of what makes the type not thread safe is also simpler than trying
+to point to an implicit `Shared` wrapper.
+4. Even without `Mut t`, it will still be possible to mutate a shared value by checking its
+reference count and cloning if it is more than one.
+
+## Owned Types
+
+One disadvantage of shared types is that since they are shared you cannot obtain an owned,
+mutable reference to them. This isn't as common a requirement in Ante as it is in Rust. For
+example, types such as `Vec a` and `HashMap k v` are perfectly usable in a shared context:
 
 ```ante
-owned type Expr =
-   | Integer I64
-   | Variable String
-   | Let String (rhs: Rc Expr) (body: Rc Expr)
-   | Add (Rc Expr) (Rc Expr)
+// push does not require a `&owned mut Vec a`
+push (v: &mut Vec a) (elem: a) : Unit = ...
+
+pop (v: &mut Vec a) : a can Fail = ...
+
+// Indexing a Vec also does not require an owned, mutable reference
+impl Extract (&Vec a) Usz a given Copy a with
+    // Extract in Ante provides the `vec.[i]` syntax.
+    // Assigning to `vec.[i]` requires the separate Insert trait.
+    extract vec i = ...
+
+// get_mut does require an owned, mutable Vec. If Vec elements need to be
+// mutated in a shared context however, users can still use a `Vec (Mut t)`
+// and access them via `vec.[i]` since the element is presumably shared
+// and thus implements Copy.
+get_mut (v: &owned mut Vec a) (index: Usz) : &owned mut a can Fail = ...
 ```
 
-  - Recursive Unions
-  - What about mutability?
-  - What about thread safety with Rc?
-    ? No `as_mut: &mut Rc a -> &shared mut a` and either:
-      - `Shared (Mut a)`, `as_mut: &Mut a -> &shared mut a`
-        - Note on why we can't mutate rc directly
-      ? only CoW semantics: `cow_mut: &mut Rc a -> &own mut a given Clone a`
-    ? Add Pony-like permissions on `shared` types? Largest change.
-    ? `shared a` is not `Rc a`, it is a different type which does not allow
-      `as_mut: &mut Shared a -> &shared mut a`.
-      - Mutating `shared a` would only be done through copy-on-write semantics.
-  - `Imm t`
-  - `own type Foo`
+Types which do need owned, mutable references can optionally be declared with the `owned`
+keyword:
+
+```ante
+owned type Foo = ...
+```
+
+These types will never be wrapped in an implicit `Shared` wrapper in shared contexts,
+and they will still have move semantics as a result.
+
+---
+
+# Conclusion
+
+This article has been a bit all over the place, so thank you to anyone still reading.
+Programming languages are often made cumbersome through the accumulation of a thousand paper cuts
+rather than just one rock wall. For this reason, I felt the need to write about more than just
+the new `shared` mode. I also want to draw attention to the fact that while languages can
+be, and often are, made simpler through additions, this is obviously a fine line to walk
+as a designer. If the addition doesn't hold it's weight then the language has just been made more
+complex for everyone as they have to learn about more features they may encounter that aren't
+even technically required for the language to function. It is of course possible to define a
+language without any such usability features but these languages tend to be too minimal to be
+practical. I hope I've achieved a good middle ground with the features given in this article.
+It's something I'll be monitoring as Ante grows to make sure they pull their weight.
