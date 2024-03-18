@@ -7,7 +7,7 @@
 <meta name="googlebot" content="index,follow,snippet,archive">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Blogs</title>
+<title>sugar</title>
 <meta name="author" content="Jake Fecher" />
 
 
@@ -69,7 +69,7 @@
 
 <meta name="twitter:card" content="summary">
 
-<meta name="twitter:title" content="Blogs">
+<meta name="twitter:title" content="sugar">
 
 <meta name="twitter:description" content="">
 
@@ -78,7 +78,7 @@
   <meta name="robots" content="all,follow">
   <meta name="googlebot" content="index,follow,snippet,archive">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Blogs</title>
+  <title>sugar</title>
   <meta name="author" content="" />
 
   <meta name="keywords" content="ante, programming, language, antelang, lang">	
@@ -126,9 +126,9 @@
   <link rel="alternate" href="https://antelang.org/index.xml" type="application/rss+xml" title="Ante">
 
   
-  <meta property="og:title" content="Blogs" />
+  <meta property="og:title" content="sugar" />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://antelang.org/blog//" />
+  <meta property="og:url" content="https://antelang.org/categories/sugar//" />
   <meta property="og:image" content="" />
 
   </head>
@@ -147,9 +147,9 @@
         <div class="container">
             <div class="navbar-header">
                 <a class="navbar-brand home" href="https://antelang.org/">
-                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="Blogs" class="hidden-xs hidden-sm">
-                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="Blogs" class="visible-xs visible-sm">
-                    <span class="sr-only">Blogs - go to homepage</span>
+                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="sugar" class="hidden-xs hidden-sm">
+                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="sugar" class="visible-xs visible-sm">
+                    <span class="sr-only">sugar - go to homepage</span>
                 </a>
                 
 <div class="navbar-buttons">
@@ -225,7 +225,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h1>Blogs</h1>
+                <h1>sugar</h1>
             </div>
         </div>
     </div>
@@ -307,153 +307,6 @@
                                     
                                     <p class="intro">Ante&rsquo;s goal was always to be a slightly higher level language than Rust. I always imagined Ante to fill this gap in language design between higher-level garbage collected languages like Java, Python, and Haskell, and lower level non-garbage collected languages like C, C++, and Rust. I still think there&rsquo;s room there for a language which tries to manage things by default but also allows users to manually do so if needed as an optimization.</p>
                                     <p class="read-more"><a href="https://antelang.org/blog/simplification_through_addition/" class="btn btn-template-main">Continue reading</a>
-                                    </p>
-                                    
-                                </div>
-                            </div>
-                        </section>
-                        
-                        <section class="post">
-                            <div class="row">
-                                <div class="col-md-4">
-                                  <div class="image">
-                                      <a href="https://antelang.org/blog/effects_ownership_and_borrowing/">
-                                          
-                                          <img src="/img/banners/anteater2.jpg" class="img-responsive" alt="">
-                                          
-                                      </a>
-                                  </div>
-                                </div>
-                                <div class="col-md-8">
-                                    <h2><a href="https://antelang.org/blog/effects_ownership_and_borrowing/">Algebraic Effects, Ownership, and Borrowing</a></h2>
-                                    <div class="clearfix">
-                                        <p class="author-category">
-                                          
-					  By <a href="/authors/jake-fecher">Jake Fecher</a>
-                                          
-                                          
-                                          
-                                          in 
-                                          
-                                              <a href="/categories/effects">effects</a>, 
-                                              <a href="/categories/thread-safety">thread safety</a>, 
-                                              <a href="/categories/memory-management">memory management</a>
-                                          
-                                          
-
-                                        </p>
-                                        
-
-                                        
-                                        
-                                            
-                                        
-                                            
-                                        
-                                            
-                                        
-                                            
-                                        
-                                            
-                                        
-                                            
-                                        
-                                            
-                                        
-                                            
-                                        
-                                            
-                                        
-                                            
-                                        
-                                            
-                                        
-                                            
-                                        
-
-                                        <p class="date-comments">
-                                            <a href="https://antelang.org/blog/effects_ownership_and_borrowing/"><i class="far fa-calendar"></i> 2024-02-20</a>
-                                        </p>
-                                        
-                                    </div>
-                                    
-                                    <p class="intro">Introduction Algebraic Effects are a useful abstraction for reasoning about effectful programs by letting us leave the interpretation of these effects to callers. However, most existing literature discusses these in the context of a pure functional language with pervasive sharing of values. What restrictions would we need to introduce algebraic effects into a language with ownership and borrowing - particularly Ante?1
- Ownership Consider the following program:
-effect Read a with read : Unit -&gt; a the_value (value: a) (f: Unit -&gt; b can Read a) : b = handle f () | read () -&gt; resume value This seems like it&rsquo;d pass type checking at first glance, but we can easily construct a program that tries to use the same moved value twice:</p>
-                                    <p class="read-more"><a href="https://antelang.org/blog/effects_ownership_and_borrowing/" class="btn btn-template-main">Continue reading</a>
-                                    </p>
-                                    
-                                </div>
-                            </div>
-                        </section>
-                        
-                        <section class="post">
-                            <div class="row">
-                                <div class="col-md-4">
-                                  <div class="image">
-                                      <a href="https://antelang.org/blog/safe_shared_mutability/">
-                                          
-                                          <img src="/img/banners/antelope_bird.jpg" class="img-responsive" alt="">
-                                          
-                                      </a>
-                                  </div>
-                                </div>
-                                <div class="col-md-8">
-                                    <h2><a href="https://antelang.org/blog/safe_shared_mutability/">Achieving Safe, Aliasable Mutability with Unboxed Types</a></h2>
-                                    <div class="clearfix">
-                                        <p class="author-category">
-                                          
-					  By <a href="/authors/jake-fecher">Jake Fecher</a>
-                                          
-                                          
-                                          
-                                          in 
-                                          
-                                              <a href="/categories/mutability">mutability</a>, 
-                                              <a href="/categories/thread-safety">thread safety</a>, 
-                                              <a href="/categories/memory-management">memory management</a>
-                                          
-                                          
-
-                                        </p>
-                                        
-
-                                        
-                                        
-                                            
-                                        
-                                            
-                                        
-                                            
-                                        
-                                            
-                                        
-                                            
-                                        
-                                            
-                                        
-                                            
-                                        
-                                            
-                                        
-                                            
-                                        
-                                            
-                                        
-                                            
-                                        
-                                            
-                                        
-
-                                        <p class="date-comments">
-                                            <a href="https://antelang.org/blog/safe_shared_mutability/"><i class="far fa-calendar"></i> 2024-01-29</a>
-                                        </p>
-                                        
-                                    </div>
-                                    
-                                    <p class="intro">This is part of Ante&rsquo;s goal to loosen restrictions on low-level programming while remaining fast, memory-safe, and thread-safe.
- Background  When writing low-level, memory-safe, and thread-safe programs, a nice feature that lets us achieve all of these is an ownership model. Ownership models have been used by quite a few languages, but the language which popularized them was Rust. In Rust, the compiler will check our code to ensure we have no dangling references and cannot access already-freed memory (among other errors).</p>
-                                    <p class="read-more"><a href="https://antelang.org/blog/safe_shared_mutability/" class="btn btn-template-main">Continue reading</a>
                                     </p>
                                     
                                 </div>

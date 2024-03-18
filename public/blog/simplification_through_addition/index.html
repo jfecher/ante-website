@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+    <meta charset="utf-8">
+<meta name="robots" content="all,follow">
+<meta name="googlebot" content="index,follow,snippet,archive">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Simplification Through Addition</title>
+<meta name="author" content="Jake Fecher" />
+
+
+
+
+<meta name="keywords" content="ante, programming, language, antelang, lang">
+
+
+<meta name="description" content="">
+
+<meta name="generator" content="Hugo 0.89.0-DEV" />
+
+
+<link href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800' rel='stylesheet' type='text/css'>
+
+
+<link rel="stylesheet" href="//use.fontawesome.com/releases/v5.11.2/css/all.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+
+<link href="/css/animate.css" rel="stylesheet">
+
+
+
+  <link href="/css/style.red.css" rel="stylesheet" id="theme-stylesheet">
+
+
+
+<link href="/css/custom.css?1710729288" rel="stylesheet">
+
+
+
+  <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+
+
+<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon" />
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
+
+
+<link href="/css/owl.carousel.css" rel="stylesheet">
+<link href="/css/owl.theme.css" rel="stylesheet">
+
+
+<link rel="alternate" href="https://antelang.org/index.xml" type="application/rss+xml" title="Ante">
+
+
+
+
+
+
+
+
+<meta property="og:locale" content="en_us">
+<meta property="og:site_name" content="Ante">
+<meta property="og:title" content="Simplification Through Addition">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://antelang.org/blog/simplification_through_addition/" />
+<meta property="og:description" content="">
+<meta property="og:image" content="https://antelang.org/img/banners/antelope_canyon.jpg">
+<meta property="og:image:type" content="image/jpg">
+
+
+
+  <meta property="og:image:width" content="960">
+  <meta property="og:image:height" content="640">
+
+
+<meta property="og:updated_time" content="2024-03-10T00:00:00Z">
+
+  
+  
+  <meta property="article:section" content="sugar">
+  
+  
+  <meta property="article:published_time" content="2024-03-10T00:00:00Z">
+  <meta property="article:modified_time" content="2024-03-10T00:00:00Z">
+
+
+
+<meta name="twitter:card" content="summary_large_image">
+
+<meta name="twitter:title" content="Simplification Through Addition">
+
+<meta name="twitter:image" content="https://antelang.org/img/banners/antelope_canyon.jpg">
+
+<meta name="twitter:description" content="">
+
+
+      <meta charset="utf-8">
+  <meta name="robots" content="all,follow">
+  <meta name="googlebot" content="index,follow,snippet,archive">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Simplification Through Addition</title>
+  <meta name="author" content="" />
+
+  <meta name="keywords" content="ante, programming, language, antelang, lang">	
+  <meta name="description" content="For exploring algebraic effects, safe shared mutability, and other novel features">
+
+  <meta name="generator" content="Hugo 0.89.0-DEV" />
+
+  <link href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800' rel='stylesheet' type='text/css'>
+
+  
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+  
+  <link href="https://antelang.org/css/animate.css" rel="stylesheet">
+
+  
+  
+    <link href="https://antelang.org/css/style.red.css" rel="stylesheet" id="theme-stylesheet">
+  
+
+
+  
+  <link href="https://antelang.org/css/custom.css" rel="stylesheet">
+ 
+  
+  <link rel="stylesheet" href="https://antelang.org/css/syntax.css">
+
+  
+  
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  
+
+  
+  <link rel="shortcut icon" href="https://antelang.org/img/favicon.ico" type="image/x-icon" />
+  <link rel="apple-touch-icon" href="https://antelang.org/img/apple-touch-icon.png" />
+  
+
+  <link href="https://antelang.org/css/owl.carousel.css" rel="stylesheet">
+  <link href="https://antelang.org/css/owl.theme.css" rel="stylesheet">
+
+  <link rel="alternate" href="https://antelang.org/index.xml" type="application/rss+xml" title="Ante">
+
+  
+  <meta property="og:title" content="Simplification Through Addition" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://antelang.org/blog/simplification_through_addition//" />
+  <meta property="og:image" content="" />
+
+  </head>
+
+  <body>
+
+    <div id="all">
+
+        
+
+
+        
+
+    <div class="navbar navbar-default yamm" role="navigation" id="navbar">
+
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand home" href="https://antelang.org/">
+                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="Simplification Through Addition" class="hidden-xs hidden-sm">
+                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="Simplification Through Addition" class="visible-xs visible-sm">
+                    <span class="sr-only">Simplification Through Addition - go to homepage</span>
+                </a>
+                
+<div class="navbar-buttons">
+        <div class="navbar-collapse collapse" id="navigation">
+            <ul class="nav navbar-nav navbar-right">
+            
+            <li class="dropdown">
+                <a href="https://antelang.org//docs/language">Documentation</a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//docs/ideas">Ideas</a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//docs/roadmap">Roadmap</a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//blog">Blog</a>
+            </li>
+
+            <li class="dropdown">
+                <a href="https://github.com/jfecher/ante"><i class="fa fa-15x fa-github"></i></a>
+            </li>
+            <li class="dropdown">
+                <a href="https://reddit.com/r/ante"><i class="fab fa-15x fa-reddit"></i></a>
+            </li>
+            <li class="dropdown">
+                <a href="https://discord.gg/NPJncGBAws"><i class="fab fa-15x fa-discord"></i></a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//index.xml"><i class="fa fa-15x fa-rss"></i></a>
+            </li>
+
+            </ul>
+        </div>
+        <button type="button" class="navbar-toggle btn-template-main" onclick="document.getElementById('navigation').classList.toggle('collapse')">
+    <span class="sr-only">Toggle Navigation</span>
+        <i class="fa fa-align-justify"></i>
+    </button>
+</div>
+
+            </div>
+            
+
+            
+            
+
+            <div class="collapse clearfix" id="search">
+
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search">
+                        <span class="input-group-btn">
+
+                    <button type="submit" class="btn btn-template-main"><i class="fa fa-search"></i></button>
+
+                </span>
+                    </div>
+                </form>
+
+            </div>
+            
+
+        </div>
+    </div>
+    
+
+
+
+
+
+
+        <div id="heading-breadcrumbs">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Simplification Through Addition</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+        <div id="content">
+            <div class="container">
+
+                <div class="row">
+
+                    
+
+                    <div class="col-md-9" id="blog-post">
+
+                        
+                          <p class="text-muted text-uppercase mb-small text-right">
+                            
+			      By <a href="/authors/jake-fecher">Jake Fecher</a>
+                            
+                            
+                            
+                              
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                              2024-03-10
+                            
+                          </p>
+                        
+
+                        <div id="post-content">
+                          <hr>
+<p>Ante&rsquo;s goal was always to be a slightly higher level language than Rust.
+I always imagined Ante to fill this gap in language design between higher-level garbage collected
+languages like Java, Python, and Haskell, and lower level non-garbage collected languages like C,
+C++, and Rust. I still think there&rsquo;s room there for a language which tries to manage things by
+default but also allows users to manually do so if needed as an optimization. Other languages always
+have some degree of this of course - but doing so often requires using raw pointers, FFI, or generally
+sacrificing everything just to write somewhat more efficient code. I wanted this transition in Ante
+to be as easy as switching from reference-counted to non-reference-code in Rust.</p>
+<p>However, after the changes in <a href="/blog/safe_shared_mutability">the first blog post</a>, Ante is arguably
+even more complex than Rust. This is especially true once you factor in Ante&rsquo;s other features such
+as algebraic effects and <a href="/blog/effects_ownership_and_borrowing">their restrictions</a>. At the moment,
+even the language&rsquo;s tagline of being &ldquo;a safe, easy systems language&rdquo; is misleading at best.</p>
+<p>To remedy this, this blog post will focus on some additions and changes to simplify using the language.
+Yes - I did say additions to make the language simpler. This is somewhat
+oxymoronic but I believe additional features can make a language simpler to use
+if they change the way code is written such that it is easier to reason about. For example, if more complex
+specifications only appear in complex code, it&rsquo;d make more complex code easier
+to identify compared to if it were required everywhere. So I do believe introducing a second,
+simpler alternative can be simpler than only having one more cumbersome approach even if it makes
+the language itself larger.</p>
+<p>But all this has been too vague. The rest of this post will focus on some actual changes starting
+with smaller ones and building up to the largest of the bunch.</p>
+<hr>
+<h1 id="minor-items">Minor Items</h1>
+<h2 id="effect-variable-ellision">Effect Variable Ellision</h2>
+<p>The simplest change is a mere syntactic one.</p>
+<p>Effectful functions always have a <code>can E</code> as part of their type signature. This clause
+corresponds to which effects a function can perform. For example the function <code>foo</code> below
+prints out values internally and thus <code>can Print</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo</span> <span class="p">()</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Print</span> <span class="ow">=</span>
+    <span class="n">print</span> <span class="s">&#34;Hello, World!&#34;</span>
+</code></pre></div><p>What effects should a higher-order function like <code>vecmap</code> take however? Theoretically, it can
+perform any effect that the function that was passed to it can, in addition to whatever effects
+<code>vecmap</code> performs in its own body. The solution is an effect variable is used. This effect variable
+shows that whatever effects performed by <code>f</code>, we&rsquo;re going to call those <code>e</code>, and the outer <code>map</code>
+function also performs those same effects (since it calls <code>f</code> internally):</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">vecmap</span> <span class="p">(</span><span class="n">stream</span><span class="o">:</span> <span class="kt">Stream</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">FnMut</span> <span class="n">a</span> <span class="ow">=&gt;</span> <span class="n">b</span> <span class="k">can</span> <span class="n">e</span><span class="p">)</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">b</span> <span class="k">can</span> <span class="n">e</span> <span class="ow">=</span>
+    <span class="c1">// map in Ante performs a `Yield b` effect which can be</span>
+    <span class="c1">// handled by `collect` or other functions which operate on generators</span>
+    <span class="n">map</span> <span class="n">stream</span> <span class="n">f</span> <span class="k">with</span> <span class="n">collect</span>
+</code></pre></div><p>The inclusion of these effect variables adds noise whenever we use higher order functions.
+If we want to get technical, all functions should be effect polymorphic over
+the environment they&rsquo;re called in - otherwise they&rsquo;d only be callable in (for example) an
+environment with a single <code>can Print</code> effect and nothing else. In practice however,
+nearly all effectful languages lift this restriction and make the desired approach the more natural
+one.</p>
+<p>Ante will be no different here. Ante will now include the sugar where effect variables are implicitly
+added to function signatures. This means any function that only ever requires one effect variable
+(the vast majority of them) will no longer require explicit effect variables. Here&rsquo;s <code>vecmap</code> again:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">vecmap</span> <span class="p">(</span><span class="n">stream</span><span class="o">:</span> <span class="kt">Stream</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">FnMut</span> <span class="n">a</span> <span class="ow">=&gt;</span> <span class="n">b</span><span class="p">)</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">b</span> <span class="ow">=</span>
+    <span class="o">...</span>
+</code></pre></div><p>Quite a bit simpler. The main case where this would not be wanted is if a function
+takes another function as an argument but does not call it:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">forced_example</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="n">b</span> <span class="k">can</span> <span class="n">e1</span><span class="p">)</span><span class="o">:</span> <span class="kt">WrapperObj</span> <span class="k">can</span> <span class="n">e2</span> <span class="ow">=</span>
+    <span class="c1">// Return some kind of function wrapper object</span>
+    <span class="kt">WrapperObj</span> <span class="n">f</span>
+</code></pre></div><hr>
+<h2 id="auto-derives">Auto Derives</h2>
+<p>The next feature to add is to expand the amount of traits which are derived automatically for a given
+type. A good starting point would be to automatically derive <code>Debug</code>, <code>Clone</code>, <code>Eq</code>, and <code>Hash</code>.
+<code>Copy</code> is another candidate here, but I&rsquo;ve stopped just short of it since it&rsquo;d make it easier to
+introduce a breaking change just by adding a non-copyable field to a type.</p>
+<hr>
+<h2 id="trait-objects">Trait Objects</h2>
+<p>Adding trait objects in Ante is more difficult than in Rust since Ante does not arbitrarily bless
+the first argument of a trait with its own hidden generic named <code>Self</code>. A trait in Rust such as
+<code>Clone</code> generally corresponds to a trait with more more generic in Ante: <code>Clone t</code>. This actually
+helps simplify complex trait bounds but in the context
+of trait objects, it makes choosing which generic should be the actual object more difficult.
+There&rsquo;s been some <a href="/docs/ideas/#trait-objects">ideas</a> floating around for quite a while on how
+to remedy this flexibly by allowing any parameter to be the object, but I&rsquo;m just going to give
+in to practicality and arbitrarily choose the first parameter.</p>
+<p>With this, when traits are used in a type position the first parameter can be omitted and the function
+will be callable with any value that implements that trait. I&rsquo;ll also be elliding the <code>impl</code> prefix
+here based on some negative opinions I&rsquo;ve heard from non-rustaceans on it. In their view it is a somewhat
+extraneous specification since OO langs often let an interface be used directly without an additional keyword.
+One could argue the <code>impl</code> helps key in when this is happening but since the goal is to inch Ante
+more towards the higher level languages, I&rsquo;ll omit it for now.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Stream is a helper trait for using generators</span>
+<span class="k">trait</span> <span class="kt">Stream</span> <span class="n">t</span> <span class="n">elem</span> <span class="k">with</span>
+    <span class="n">stream</span><span class="o">:</span> <span class="n">t</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Yield</span> <span class="n">elem</span>
+
+<span class="nf">filter</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">Stream</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">FnMut</span> <span class="n">a</span> <span class="ow">=&gt;</span> <span class="n">bool</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Yield</span> <span class="n">a</span> <span class="ow">=</span>
+    <span class="k">handle</span> <span class="n">stream</span> <span class="n">s</span>
+    <span class="o">|</span> <span class="kt">Yield</span> <span class="n">x</span> <span class="ow">-&gt;</span>
+        <span class="k">if</span> <span class="n">f</span> <span class="n">x</span> <span class="k">then</span> <span class="n">yield</span> <span class="n">x</span>
+        <span class="k">resume</span> <span class="p">()</span>
+
+<span class="c1">// The above is equivalent to</span>
+<span class="c1">// filter (s: t) (f: a -&gt; bool): Unit</span>
+<span class="c1">//    given Stream t a</span>
+<span class="c1">//    can Yield a = ...</span>
+</code></pre></div><hr>
+<h2 id="overloading">Overloading</h2>
+<p>Now begins the more controversial section of this list.</p>
+<p>Most programmers take some form of implicit imports or overloading for granted.
+This most often comes from method calling syntax <code>foo.bar()</code> in which <code>bar</code>
+can be called despite never being imported into scope! Ante could have taken
+the easy route here as well and adopted similar semantics but all is not perfect
+in method land.</p>
+<p>The main issue with methods is that they can only resolve to
+functions defined within the type&rsquo;s class, module, package, or crate depending on
+the language. In Ante&rsquo;s case specifically, it is an ML descendant (syntax-wise at least),
+and it already has an infix function calling operator: <code>|&gt;</code>. Should Ante introduce
+another operator to do the same thing but for methods? Or should <code>|&gt;</code> be changed to
+be able to call methods as well? What if there is a name conflict between a method
+and a function in scope?</p>
+<p>Instead, I&rsquo;m abandoning methods altogether and allowing ad-hoc overloading of names:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// In Vec.an</span>
+<span class="nf">new</span> <span class="p">()</span> <span class="o">:</span> <span class="kt">Vec</span> <span class="n">a</span> <span class="ow">=</span> <span class="o">...</span>
+<span class="nf">push</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="kt">Vec</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">elem</span><span class="o">:</span> <span class="n">a</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span> <span class="o">...</span>
+<span class="nf">get</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">owned</span> <span class="kt">Vec</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="o">:</span> <span class="o">&amp;</span><span class="k">owned</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
+
+<span class="c1">// In HashMap.an</span>
+<span class="nf">new</span> <span class="p">()</span> <span class="o">:</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span> <span class="ow">=</span> <span class="o">...</span>
+<span class="nf">insert</span> <span class="p">(</span><span class="n">m</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="p">(</span><span class="n">key</span><span class="o">:</span> <span class="n">k</span><span class="p">)</span> <span class="p">(</span><span class="n">value</span><span class="o">:</span> <span class="n">v</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Maybe</span> <span class="n">v</span> <span class="ow">=</span> <span class="o">...</span>
+<span class="nf">get</span> <span class="p">(</span><span class="n">m</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">owned</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="p">(</span><span class="n">key</span><span class="o">:</span> <span class="o">&amp;</span><span class="n">k</span><span class="p">)</span> <span class="o">:</span> <span class="o">&amp;</span><span class="k">owned</span> <span class="n">v</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
+
+<span class="c1">// Foo.an</span>
+<span class="k">import</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">new</span> <span class="n">push</span> <span class="n">get</span>
+<span class="k">import</span> <span class="kt">HashMap</span><span class="o">.</span><span class="n">new</span> <span class="n">insert</span> <span class="n">get</span>  <span class="c1">// ok!</span>
+</code></pre></div><p>This will allow functions with conflicting names to be imported and an error will only
+be issued if any given call is ambiguous.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo</span> <span class="p">(</span><span class="n">vec</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">map</span><span class="o">:</span> <span class="kt">Map</span> <span class="kt">I32</span> <span class="n">v</span><span class="p">)</span> <span class="n">other</span> <span class="ow">=</span>
+    <span class="n">elem1</span> <span class="ow">=</span> <span class="n">get</span> <span class="n">vec</span> <span class="mi">0</span>  <span class="c1">// ok! Resolves to Vec.get</span>
+    <span class="n">elem2</span> <span class="ow">=</span> <span class="n">get</span> <span class="n">map</span> <span class="mi">0</span>  <span class="c1">// ok! Resolves to Map.get</span>
+
+    <span class="n">_</span> <span class="ow">=</span> <span class="n">get</span> <span class="n">other</span> <span class="mi">0</span>  <span class="c1">// error! Call is ambiguous. Do you mean Vec.get or Map.get?</span>
+</code></pre></div><p>Another advantage is that the infix function
+call syntax can be used even on functions from a third-party library without the use
+of a workaround like extension traits.</p>
+<p>Without name overloading, names like <code>get</code> would need to be renamed on import nearly
+every time they are used or otherwise not imported directly and only referred to via
+<code>Vec.get</code> or <code>M.get</code>. This is not good from a user perspective since it makes these
+names less consistent across code bases, which in turn makes the language more difficult to read.
+Library authors also can anticipate this renaming and
+instead directly choose to name the functions <code>vget</code> or <code>hmget</code> to avoid users having to do so on
+every import. Doing this though keeps the code from reading more naturally.</p>
+<p>Finally, despite the initially negative reactions I&rsquo;m sure many have to function overloading,
+it&rsquo;s worth stating again how similar it is to the implicit imports provided by method
+calls in most other languages. Notably, both share the downside of a name being potentially
+difficult to discern without knowing the object type. At least with function overloading,
+that function will still be imported at the top of a file.</p>
+<hr>
+<h1 id="shared-by-default">Shared by Default</h1>
+<p>Alright, now onto the main reason this article was written.</p>
+<p>It&rsquo;s no secret that perhaps the largest hurdle to learning Ante and Rust are their ownership
+semantics and borrowing rules. While there are other complex parts of both languages, ownership
+&amp; borrowing is something that users encounter almost immediately when trying out either language.
+Time must be devoted up front to learning these before users can move on to more intermediate code.
+Other complex features like multithreading or effect handlers do not have this problem since they
+can more easily be delayed or rearranged in a curriculum.</p>
+<p>To address this, I&rsquo;m introducing two &ldquo;modes&rdquo; into Ante:</p>
+<ul>
+<li><code>owned</code>: In the <code>owned</code> mode, values are all owned by default and move semantics apply. This
+is no different from existing Ante and Rust code.</li>
+<li><code>shared</code>: The real addition is the <code>shared</code> mode in which values are shared by default and can
+be trivially copied. The goal here is to use values as much as possible, avoid references, and
+avoid <code>clone</code>. Internally these values are effectively reference-counted by default.</li>
+</ul>
+<p>The most important point when desigining these modes for me was that they must, above
+all else, be able to cleanly interact with each other. Failure to do so would essentially split
+the language into two parts with libraries written for one mode being incompatible for an application
+using the other. This proposal avoids this very simply:</p>
+<ul>
+<li>In the <code>owned</code> mode, a shared type <code>t</code> corresponds to just <code>Shared t</code>. This is effectively a type
+alias for <code>Rc t</code> but it is kept vague by the language to allow for compiler optimizations.</li>
+<li>In the <code>shared</code> mode, an owned type <code>t</code> is displayed as an <code>owned t</code>.
+<ul>
+<li><code>owned t</code> types have movement semantics which can be useful or necessary for some
+types even in shared mode (see GC&rsquo;d languages like <a href="https://blog.janestreet.com/oxidizing-ocaml-ownership/#the-linearity-mode">OCaml introducing ownership semantics</a>).</li>
+<li>If movement semantics still aren&rsquo;t desired, users can wrap these owned types in a
+<code>Shared</code> wrapper manually.</li>
+</ul>
+</li>
+</ul>
+<p>Importantly, there is just one language underneath.</p>
+<h2 id="switching-between-modes">Switching Between Modes</h2>
+<p>The <code>shared</code> mode will be enabled by default with the <code>owned</code> mode being able to be switched to
+by specifying:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">owned</span> <span class="k">module</span>
+</code></pre></div><p>I think most users will want to set the mode for their entire project by default which is why specifying
+this will set the mode of the current module as well as all child modules. Similarly, if the current
+module is owned due to a parent module being owned, this can be overriden via:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">shared</span> <span class="k">module</span>
+</code></pre></div><p>With the new shared mode being the default, Ante is essentially now an impure functional language
+built on top of a somewhat lower-level rust-like procedural language. Users of high-level languages
+like Python today often rely on libraries written in C for speed. It will be quite nice for users
+to use Ante as a high level language and directly be able to leverage libraries written in owned mode
+for a bit of extra performance.</p>
+<h2 id="recursive-unions">Recursive Unions</h2>
+<p>Defining and operating on recursive unions is much more natural in <code>shared</code> mode:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Expr</span> <span class="ow">=</span>
+   <span class="o">|</span> <span class="kt">Integer</span> <span class="kt">I64</span>
+   <span class="o">|</span> <span class="kt">Variable</span> <span class="kt">String</span>
+   <span class="o">|</span> <span class="kt">Let</span> <span class="kt">String</span> <span class="p">(</span><span class="n">rhs</span><span class="o">:</span> <span class="kt">Expr</span><span class="p">)</span> <span class="p">(</span><span class="n">body</span><span class="o">:</span> <span class="kt">Expr</span><span class="p">)</span>
+   <span class="o">|</span> <span class="kt">Add</span> <span class="kt">Expr</span> <span class="kt">Expr</span>
+
+<span class="nf">simplify</span> <span class="n">expr</span> <span class="ow">=</span>
+    <span class="c1">// Nested matching</span>
+    <span class="k">match</span> <span class="n">expr</span>
+    <span class="o">|</span> <span class="kt">Add</span> <span class="p">(</span><span class="kt">Add</span> <span class="n">lhs</span> <span class="p">(</span><span class="kt">Integer</span> <span class="n">x</span><span class="p">))</span> <span class="p">(</span><span class="kt">Integer</span> <span class="n">y</span><span class="p">)</span> <span class="ow">-&gt;</span>
+        <span class="kt">Add</span> <span class="p">(</span><span class="n">simplify</span> <span class="n">lhs</span><span class="p">)</span> <span class="p">(</span><span class="kt">Integer</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">))</span>
+    <span class="o">|</span> <span class="kt">Add</span> <span class="p">(</span><span class="kt">Add</span> <span class="p">(</span><span class="kt">Integer</span> <span class="n">x</span><span class="p">)</span> <span class="n">rhs</span><span class="p">)</span> <span class="p">(</span><span class="kt">Integer</span> <span class="n">y</span><span class="p">)</span> <span class="ow">-&gt;</span>
+        <span class="kt">Add</span> <span class="p">(</span><span class="kt">Integer</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">))</span> <span class="p">(</span><span class="n">simplify</span> <span class="n">rhs</span><span class="p">)</span>
+    <span class="o">...</span>
+</code></pre></div><p>Nested pattern matching is something that I&rsquo;d also like for the <code>owned</code> mode eventually,
+but even just removing the pointer type wrapper from <code>Expr</code>&rsquo;s type definition shouldn&rsquo;t
+be overlooked as a simplification to users. Now when defining <code>Expr</code> every case
+contains only business logic and is free from low-level details.</p>
+<h2 id="mutability">Mutability</h2>
+<p>I mulled over whether shared values should be mutable by default or not but I think
+the best answer is that they are not mutable. Backing up a bit, Rust users may question
+how the <code>a</code> in <code>Rc a</code> could be mutable but due to Ante&rsquo;s support for <a href="/blog/safe_shared_mutability">shared mutability</a>,
+the operation <code>as_mut: &amp;mut Rc a -&gt; &amp;shared mut a</code> is a perfectly safe one.</p>
+<p>The <code>Shared a</code> type diverges from <code>Rc a</code> a bit in that it does not provide this operation because:</p>
+<ol>
+<li>Although not entirely uncommon in other programming languages, having certain values have mutable
+reference semantics by default could be confusing. Mutating one value and having another change would
+be a type of spooky action at a distance behavior. Such a behavior would only happen in the shared mode
+which I think would give it an unnecessary difference compared the owned mode.</li>
+<li>Not providing this function enables the compiler to implement <code>Shared a</code> in a possibly thread-safe
+way. For example, the compiler could detect when these values are used in a multithreaded context
+and switch to atomic reference counting (see <a href="https://www.microsoft.com/en-us/research/uploads/prod/2020/11/perceus-tr-v4.pdf">Perceus</a>).</li>
+<li>Users would still be able to mutate these types but would need to use an internally-mutable
+wrapper type such as <code>Mut t</code> which provides <code>as_mut: &amp;Mut t -&gt; &amp;shared mut t</code>.
+<ul>
+<li>Pointing to each <code>Mut t</code> as an example of what makes the type not thread safe is also simpler than trying
+to point to an implicit <code>Shared</code> wrapper.</li>
+</ul>
+</li>
+<li>Even without <code>Mut t</code>, it will still be possible to mutate a shared value by checking its
+reference count and cloning if it is more than one.</li>
+</ol>
+<h2 id="owned-types">Owned Types</h2>
+<p>One disadvantage of shared types is that since they are shared you cannot obtain an owned,
+mutable reference to them. This isn&rsquo;t as common a requirement in Ante as it is in Rust. For
+example, types such as <code>Vec a</code> and <code>HashMap k v</code> are perfectly usable in a shared context:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// push does not require a `&amp;owned mut Vec a`</span>
+<span class="nf">push</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="kt">Vec</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">elem</span><span class="o">:</span> <span class="n">a</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span> <span class="o">...</span>
+
+<span class="nf">pop</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="kt">Vec</span> <span class="n">a</span><span class="p">)</span> <span class="o">:</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
+
+<span class="c1">// Indexing a Vec also does not require an owned, mutable reference</span>
+<span class="k">impl</span> <span class="kt">Extract</span> <span class="p">(</span><span class="o">&amp;</span><span class="kt">Vec</span> <span class="n">a</span><span class="p">)</span> <span class="kt">Usz</span> <span class="n">a</span> <span class="k">given</span> <span class="kt">Copy</span> <span class="n">a</span> <span class="k">with</span>
+    <span class="c1">// Extract in Ante provides the `vec.[i]` syntax.</span>
+    <span class="c1">// Assigning to `vec.[i]` requires the separate Insert trait.</span>
+    <span class="n">extract</span> <span class="n">vec</span> <span class="n">i</span> <span class="ow">=</span> <span class="o">...</span>
+
+<span class="c1">// get_mut does require an owned, mutable Vec. If Vec elements need to be</span>
+<span class="c1">// mutated in a shared context however, users can still use a `Vec (Mut t)`</span>
+<span class="c1">// and access them via `vec.[i]` since the element is presumably shared</span>
+<span class="c1">// and thus implements Copy.</span>
+<span class="nf">get_mut</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">owned</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="o">:</span> <span class="o">&amp;</span><span class="k">owned</span> <span class="k">mut</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
+</code></pre></div><p>Types which do need owned, mutable references can optionally be declared with the <code>owned</code>
+keyword:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">owned</span> <span class="k">type</span> <span class="kt">Foo</span> <span class="ow">=</span> <span class="o">...</span>
+</code></pre></div><p>These types will never be wrapped in an implicit <code>Shared</code> wrapper in shared contexts,
+and they will still have move semantics as a result.</p>
+<hr>
+<h1 id="conclusion">Conclusion</h1>
+<p>This article has been a bit all over the place, so thank you to anyone still reading.
+Programming languages are often made cumbersome through the accumulation of a thousand paper cuts
+rather than just one rock wall. For this reason, I felt the need to write about more than just
+the new <code>shared</code> mode. I also want to draw attention to the fact that while languages can
+be, and often are, made simpler through additions, this is obviously a fine line to walk
+as a designer. If the addition doesn&rsquo;t hold it&rsquo;s weight then the language has just been made more
+complex for everyone as they have to learn about more features they may encounter that aren&rsquo;t
+even technically required for the language to function. It is of course possible to define a
+language without any such usability features but these languages tend to be too minimal to be
+practical. I hope I&rsquo;ve achieved a good middle ground with the features given in this article.
+It&rsquo;s something I&rsquo;ll be monitoring as Ante grows to make sure they pull their weight.</p>
+
+                        </div>
+                        
+                        
+
+                    </div>
+                    
+
+                    
+
+                    
+
+                    <div class="col-md-3">
+
+                        
+
+                        <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://antelang.org/"><h1>Ante</h1></a>
+    </div>
+
+    
+    
+    
+    
+    <div class="table-of-contents toc bd-callout">
+        
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                    
+                    
+                    
+                    <a href="/blog/simplification_through_addition/#minor-items">
+                        <li>Minor Items</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/blog/simplification_through_addition/#effect-variable-ellision">
+                        <li>Effect Variable Ellision</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/blog/simplification_through_addition/#auto-derives">
+                        <li>Auto Derives</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/blog/simplification_through_addition/#trait-objects">
+                        <li>Trait Objects</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/blog/simplification_through_addition/#overloading">
+                        <li>Overloading</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                    
+                    
+                    
+                    <a href="/blog/simplification_through_addition/#shared-by-default">
+                        <li>Shared by Default</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/blog/simplification_through_addition/#switching-between-modes">
+                        <li>Switching Between Modes</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/blog/simplification_through_addition/#recursive-unions">
+                        <li>Recursive Unions</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/blog/simplification_through_addition/#mutability">
+                        <li>Mutability</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/blog/simplification_through_addition/#owned-types">
+                        <li>Owned Types</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                    
+                    
+                    
+                    <a href="/blog/simplification_through_addition/#conclusion">
+                        <li>Conclusion</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                
+            
+        
+    </div>
+    
+
+
+    <p>&copy; 2024. All rights reserved. </p>
+  </div>
+</div>
+
+
+                        
+
+                    </div>
+                    
+
+                    
+
+                </div>
+                
+
+            </div>
+            
+        </div>
+        
+
+        <footer id="footer">
+    <div class="container">
+
+        
+
+        <div class="col-md-4 col-sm-6">
+
+            
+            <h4>Recent posts</h4>
+
+            <div class="blog-entries">
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="https://antelang.org/blog/simplification_through_addition/">
+                          
+                            <img src="/img/banners/antelope_canyon.jpg" class="img-responsive" alt="Simplification Through Addition">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/blog/simplification_through_addition/">Simplification Through Addition</a></h5>
+                    </div>
+                </div>
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="https://antelang.org/blog/effects_ownership_and_borrowing/">
+                          
+                            <img src="/img/banners/anteater2.jpg" class="img-responsive" alt="Algebraic Effects, Ownership, and Borrowing">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/blog/effects_ownership_and_borrowing/">Algebraic Effects, Ownership, and Borrowing</a></h5>
+                    </div>
+                </div>
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="https://antelang.org/blog/safe_shared_mutability/">
+                          
+                            <img src="/img/banners/antelope_bird.jpg" class="img-responsive" alt="Achieving Safe, Aliasable Mutability with Unboxed Types">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/blog/safe_shared_mutability/">Achieving Safe, Aliasable Mutability with Unboxed Types</a></h5>
+                    </div>
+                </div>
+                
+            </div>
+
+            <hr class="hidden-md hidden-lg">
+            
+
+        </div>
+        
+
+        
+
+    </div>
+    
+</footer>
+
+
+
+
+
+
+
+<div id="copyright">
+    <div class="container">
+        <div class="col-md-12">
+            
+            <p class="pull-right">
+              Template by <a href="https://bootstrapious.com/p/universal-business-e-commerce-template">Bootstrapious</a>.
+              
+
+              Ported to Hugo by <a href="https://github.com/devcows/hugo-universal-theme">DevCows</a>.
+            </p>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+    </div>
+    
+
+    
+<script src="//code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Counter-Up/1.0/jquery.counterup.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-parallax/1.1.3/jquery-parallax.js"></script>
+
+<script src="https://antelang.org/js/front.js"></script>
+
+
+<script src="https://antelang.org/js/owl.carousel.min.js"></script>
+
+
+  </body>
+</html>
