@@ -1,7 +1,7 @@
 +++
 authors = ["Jake Fecher"]
 title = "Simplification Through Addition"
-date = "2024-03-10"
+date = "2024-03-17"
 categories = ["sugar", "memory management", "syntax"]
 banner = "img/banners/antelope_canyon.jpg"
 +++
