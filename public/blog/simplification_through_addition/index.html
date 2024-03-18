@@ -36,7 +36,7 @@
 
 
 
-<link href="/css/custom.css?1710729332" rel="stylesheet">
+<link href="/css/custom.css?1710729532" rel="stylesheet">
 
 
 
@@ -318,7 +318,7 @@ to be as easy as switching from reference-counted to non-reference-code in Rust.
 <p>However, after the changes in <a href="/blog/safe_shared_mutability">the first blog post</a>, Ante is arguably
 even more complex than Rust. This is especially true once you factor in Ante&rsquo;s other features such
 as algebraic effects and <a href="/blog/effects_ownership_and_borrowing">their restrictions</a>. At the moment,
-even the language&rsquo;s tagline of being &ldquo;a safe, easy systems language&rdquo; is misleading at best.</p>
+even the language&rsquo;s tag line of being &ldquo;a safe, easy systems language&rdquo; is misleading at best.</p>
 <p>To remedy this, this blog post will focus on some additions and changes to simplify using the language.
 Yes - I did say additions to make the language simpler. This is somewhat
 oxymoronic but I believe additional features can make a language simpler to use
@@ -467,7 +467,7 @@ is no different from existing Ante and Rust code.</li>
 be trivially copied. The goal here is to use values as much as possible, avoid references, and
 avoid <code>clone</code>. Internally these values are effectively reference-counted by default.</li>
 </ul>
-<p>The most important point when desigining these modes for me was that they must, above
+<p>The most important point when designing these modes for me was that they must, above
 all else, be able to cleanly interact with each other. Failure to do so would essentially split
 the language into two parts with libraries written for one mode being incompatible for an application
 using the other. This proposal avoids this very simply:</p>

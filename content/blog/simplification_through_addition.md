@@ -20,7 +20,7 @@ to be as easy as switching from reference-counted to non-reference-code in Rust.
 However, after the changes in [the first blog post](/blog/safe_shared_mutability), Ante is arguably
 even more complex than Rust. This is especially true once you factor in Ante's other features such
 as algebraic effects and [their restrictions](/blog/effects_ownership_and_borrowing). At the moment,
-even the language's tagline of being "a safe, easy systems language" is misleading at best.
+even the language's tag line of being "a safe, easy systems language" is misleading at best.
 
 To remedy this, this blog post will focus on some additions and changes to simplify using the language.
 Yes - I did say additions to make the language simpler. This is somewhat
@@ -223,7 +223,7 @@ is no different from existing Ante and Rust code.
 be trivially copied. The goal here is to use values as much as possible, avoid references, and
 avoid `clone`. Internally these values are effectively reference-counted by default.
 
-The most important point when desigining these modes for me was that they must, above
+The most important point when designing these modes for me was that they must, above
 all else, be able to cleanly interact with each other. Failure to do so would essentially split
 the language into two parts with libraries written for one mode being incompatible for an application
 using the other. This proposal avoids this very simply:
