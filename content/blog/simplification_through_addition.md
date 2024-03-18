@@ -53,9 +53,9 @@ foo (): Unit can Print =
 
 What effects should a higher-order function like `vecmap` take however? Theoretically, it can
 perform any effect that the function that was passed to it can, in addition to whatever effects
-`vecmap` performs in its own body. The solution is an effect variable is used. This effect variable
-shows that whatever effects performed by `f`, we're going to call those `e`, and the outer `map`
-function also performs those same effects (since it calls `f` internally):
+`vecmap` performs in its own body. The solution is to introduce effect variables. We're going to
+name the effects performed by `f` something like `e`, and the outer `map` function will also perform
+`e` (since it calls `f` internally):
 
 ```ante
 vecmap (stream: Stream a) (f: FnMut a => b can e): Vec b can e =
@@ -104,7 +104,7 @@ introduce a breaking change just by adding a non-copyable field to a type.
 
 Adding trait objects in Ante is more difficult than in Rust since Ante does not arbitrarily bless
 the first argument of a trait with its own hidden generic named `Self`. A trait in Rust such as
-`Clone` generally corresponds to a trait with more more generic in Ante: `Clone t`. This actually
+`Clone` generally corresponds to a trait with one more generic in Ante: `Clone t`. This actually
 helps simplify complex trait bounds but in the context
 of trait objects, it makes choosing which generic should be the actual object more difficult.
 There's been some [ideas](/docs/ideas/#trait-objects) floating around for quite a while on how
@@ -123,14 +123,14 @@ more towards the higher level languages, I'll omit it for now.
 trait Stream t elem with
     stream: t -> Unit can Yield elem
 
-filter (s: Stream a) (f: FnMut a => bool): Unit can Yield a =
+filter (s: Stream a) (f: FnMut a => Bool): Unit can Yield a =
     handle stream s
     | Yield x ->
         if f x then yield x
         resume ()
 
 // The above is equivalent to
-// filter (s: t) (f: a -> bool): Unit
+// filter (s: t) (f: a -> Bool): Unit
 //    given Stream t a
 //    can Yield a = ...
 ```

@@ -36,7 +36,7 @@
 
 
 
-<link href="/css/custom.css?1710729532" rel="stylesheet">
+<link href="/css/custom.css?1710730390" rel="stylesheet">
 
 
 
@@ -340,9 +340,9 @@ prints out values internally and thus <code>can Print</code>:</p>
     <span class="n">print</span> <span class="s">&#34;Hello, World!&#34;</span>
 </code></pre></div><p>What effects should a higher-order function like <code>vecmap</code> take however? Theoretically, it can
 perform any effect that the function that was passed to it can, in addition to whatever effects
-<code>vecmap</code> performs in its own body. The solution is an effect variable is used. This effect variable
-shows that whatever effects performed by <code>f</code>, we&rsquo;re going to call those <code>e</code>, and the outer <code>map</code>
-function also performs those same effects (since it calls <code>f</code> internally):</p>
+<code>vecmap</code> performs in its own body. The solution is to introduce effect variables. We&rsquo;re going to
+name the effects performed by <code>f</code> something like <code>e</code>, and the outer <code>map</code> function will also perform
+<code>e</code> (since it calls <code>f</code> internally):</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">vecmap</span> <span class="p">(</span><span class="n">stream</span><span class="o">:</span> <span class="kt">Stream</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">FnMut</span> <span class="n">a</span> <span class="ow">=&gt;</span> <span class="n">b</span> <span class="k">can</span> <span class="n">e</span><span class="p">)</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">b</span> <span class="k">can</span> <span class="n">e</span> <span class="ow">=</span>
     <span class="c1">// map in Ante performs a `Yield b` effect which can be</span>
     <span class="c1">// handled by `collect` or other functions which operate on generators</span>
@@ -373,7 +373,7 @@ introduce a breaking change just by adding a non-copyable field to a type.</p>
 <h2 id="trait-objects">Trait Objects</h2>
 <p>Adding trait objects in Ante is more difficult than in Rust since Ante does not arbitrarily bless
 the first argument of a trait with its own hidden generic named <code>Self</code>. A trait in Rust such as
-<code>Clone</code> generally corresponds to a trait with more more generic in Ante: <code>Clone t</code>. This actually
+<code>Clone</code> generally corresponds to a trait with one more generic in Ante: <code>Clone t</code>. This actually
 helps simplify complex trait bounds but in the context
 of trait objects, it makes choosing which generic should be the actual object more difficult.
 There&rsquo;s been some <a href="/docs/ideas/#trait-objects">ideas</a> floating around for quite a while on how
@@ -389,14 +389,14 @@ more towards the higher level languages, I&rsquo;ll omit it for now.</p>
 <span class="k">trait</span> <span class="kt">Stream</span> <span class="n">t</span> <span class="n">elem</span> <span class="k">with</span>
     <span class="n">stream</span><span class="o">:</span> <span class="n">t</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Yield</span> <span class="n">elem</span>
 
-<span class="nf">filter</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">Stream</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">FnMut</span> <span class="n">a</span> <span class="ow">=&gt;</span> <span class="n">bool</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Yield</span> <span class="n">a</span> <span class="ow">=</span>
+<span class="nf">filter</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">Stream</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">FnMut</span> <span class="n">a</span> <span class="ow">=&gt;</span> <span class="kt">Bool</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Yield</span> <span class="n">a</span> <span class="ow">=</span>
     <span class="k">handle</span> <span class="n">stream</span> <span class="n">s</span>
     <span class="o">|</span> <span class="kt">Yield</span> <span class="n">x</span> <span class="ow">-&gt;</span>
         <span class="k">if</span> <span class="n">f</span> <span class="n">x</span> <span class="k">then</span> <span class="n">yield</span> <span class="n">x</span>
         <span class="k">resume</span> <span class="p">()</span>
 
 <span class="c1">// The above is equivalent to</span>
-<span class="c1">// filter (s: t) (f: a -&gt; bool): Unit</span>
+<span class="c1">// filter (s: t) (f: a -&gt; Bool): Unit</span>
 <span class="c1">//    given Stream t a</span>
 <span class="c1">//    can Yield a = ...</span>
 </code></pre></div><hr>
