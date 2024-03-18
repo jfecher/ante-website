@@ -235,6 +235,8 @@ alias for `Rc t` but it is kept vague by the language to allow for compiler opti
     types even in shared mode (see GC'd languages like [OCaml introducing ownership semantics](https://blog.janestreet.com/oxidizing-ocaml-ownership/#the-linearity-mode)).
   - If movement semantics still aren't desired, users can wrap these owned types in a
     `Shared` wrapper manually.
+  - Note that types by default are neither shared, nor owned. It depends on the context
+    they're used in. All the shared or owned modes do is change this default.
 
 Importantly, there is just one language underneath.
 

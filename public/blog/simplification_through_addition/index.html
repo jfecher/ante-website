@@ -36,7 +36,7 @@
 
 
 
-<link href="/css/custom.css?1710730390" rel="stylesheet">
+<link href="/css/custom.css?1710730933" rel="stylesheet">
 
 
 
@@ -480,6 +480,8 @@ alias for <code>Rc t</code> but it is kept vague by the language to allow for co
 types even in shared mode (see GC&rsquo;d languages like <a href="https://blog.janestreet.com/oxidizing-ocaml-ownership/#the-linearity-mode">OCaml introducing ownership semantics</a>).</li>
 <li>If movement semantics still aren&rsquo;t desired, users can wrap these owned types in a
 <code>Shared</code> wrapper manually.</li>
+<li>Note that types by default are neither shared, nor owned. It depends on the context
+they&rsquo;re used in. All the shared or owned modes do is change this default.</li>
 </ul>
 </li>
 </ul>
