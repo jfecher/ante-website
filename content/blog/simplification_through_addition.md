@@ -235,7 +235,7 @@ alias for `Rc t` but it is kept vague by the language to allow for compiler opti
     types even in shared mode (see GC'd languages like [OCaml introducing ownership semantics](https://blog.janestreet.com/oxidizing-ocaml-ownership/#the-linearity-mode)).
   - If movement semantics still aren't desired, users can wrap these owned types in a
     `Shared` wrapper manually.
-  - Note that types by default are neither shared, nor owned. It depends on the context
+  - Note that types by default are neither shared nor owned. It depends on the context
     they're used in. All the shared or owned modes do is change this default.
 
 Importantly, there is just one language underneath.
@@ -258,7 +258,7 @@ shared module
 ```
 
 With the new shared mode being the default, Ante is essentially now an impure functional language
-built on top of a somewhat lower-level rust-like procedural language. Users of high-level languages
+built on top of a somewhat lower-level rust-like procedural core. Users of high-level languages
 like Python today often rely on libraries written in C for speed. It will be quite nice for users
 to use Ante as a high level language and directly be able to leverage libraries written in owned mode
 for a bit of extra performance.
@@ -287,7 +287,7 @@ simplify expr =
 Nested pattern matching is something that I'd also like for the `owned` mode eventually,
 but even just removing the pointer type wrapper from `Expr`'s type definition shouldn't
 be overlooked as a simplification to users. Now when defining `Expr` every case
-contains only business logic and is free from low-level details.
+is free from low-level details like whether the reference is boxed or reference-counted.
 
 ## Mutability
 
@@ -300,12 +300,12 @@ The `Shared a` type diverges from `Rc a` a bit in that it does not provide this 
 1. Although not entirely uncommon in other programming languages, having certain values have mutable
 reference semantics by default could be confusing. Mutating one value and having another change would
 be a type of spooky action at a distance behavior. Such a behavior would only happen in the shared mode
-which I think would give it an unnecessary difference compared the owned mode.
+which I think would be an unnecessary and confusing difference compared the owned mode.
 2. Not providing this function enables the compiler to implement `Shared a` in a possibly thread-safe
 way. For example, the compiler could detect when these values are used in a multithreaded context
 and switch to atomic reference counting (see [Perceus](https://www.microsoft.com/en-us/research/uploads/prod/2020/11/perceus-tr-v4.pdf)).
 3. Users would still be able to mutate these types but would need to use an internally-mutable
-wrapper type such as `Mut t` which provides `as_mut: &Mut t -> &shared mut t`.
+wrapper type such as the zero-cost `Mut t` which provides `as_mut: &Mut t -> &shared mut t`.
     - Pointing to each `Mut t` as an example of what makes the type not thread safe is also simpler than trying
 to point to an implicit `Shared` wrapper.
 4. Even without `Mut t`, it will still be possible to mutate a shared value by checking its
@@ -329,10 +329,12 @@ impl Extract (&Vec a) Usz a given Copy a with
     // Assigning to `vec.[i]` requires the separate Insert trait.
     extract vec i = ...
 
-// get_mut does require an owned, mutable Vec. If Vec elements need to be
-// mutated in a shared context however, users can still use a `Vec (Mut t)`
-// and access them via `vec.[i]` since the element is presumably shared
-// and thus implements Copy.
+// get_mut does require an owned, mutable Vec to ensure the returned reference
+// is not dropped while still in use.
+// 
+// If Vec elements need to be mutated in a shared context, users can still use
+// a `Vec (Mut t)` and access elements via `vec.[i]` since `t` is presumably
+// shared and thus implements Copy.
 get_mut (v: &owned mut Vec a) (index: Usz) : &owned mut a can Fail = ...
 ```
 
@@ -352,7 +354,7 @@ and they will still have move semantics as a result.
 
 This article has been a bit all over the place, so thank you to anyone still reading.
 Programming languages are often made cumbersome through the accumulation of a thousand paper cuts
-rather than just one rock wall. For this reason, I felt the need to write about more than just
+rather than just one stone wall. For this reason, I felt the need to write about more than just
 the new `shared` mode. I also want to draw attention to the fact that while languages can
 be, and often are, made simpler through additions, this is obviously a fine line to walk
 as a designer. If the addition doesn't hold it's weight then the language has just been made more
