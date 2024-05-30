@@ -712,7 +712,7 @@ sum numbers =
     loop numbers (total = 0) ->
         match numbers
         | Nil -> total
-        | Cons x s -> recur xs (total + x)
+        | Cons x xs -> recur xs (total + x)
 ```
 
 After the loop keyword comes a list of variables/patterns which are translated into the parameters of the helper function. If these variables are already defined like numbers is above, then the value of that variable is used for the initial invocation of the helper function. Otherwise, if the variable/pattern isn’t already in scope then it must be supplied an initial value via =, as is the case with total in the above example. The body of the loop becomes the body of the recursive function, with recur standing in for the name of the function.
