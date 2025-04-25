@@ -321,6 +321,7 @@ whether ante should use rust&rsquo;s model for chars (4 bytes), Swift&rsquo;s mo
 <li><input checked="" disabled="" type="checkbox"> Completeness &amp; Redundancy checking</li>
 <li><input disabled="" type="checkbox"> &lsquo;Or&rsquo; clause in pattern matching, combining patterns via <code>|</code></li>
 <li><input disabled="" type="checkbox"> Pattern guards: <code>| pattern if expr -&gt; ...</code></li>
+<li><input disabled="" type="checkbox"> <code>is</code> keyword for matching within expressions</li>
 </ul>
 </li>
 <li><input checked="" disabled="" type="checkbox"> <code>loop</code> sugar</li>
@@ -401,14 +402,12 @@ but is otherwise implemented.</li>
 <p>Ante&rsquo;s ownership and borrowing rules have been completely redesigned recently. They
 will take some time to implement.</p>
 <ul>
-<li><input disabled="" type="checkbox"> Mutating owned values. This currently still uses the old <code>Ref t</code> type for a boxed,
-mutable value similar to OCaml&rsquo;s <code>t ref</code>.</li>
+<li><input checked="" disabled="" type="checkbox"> Mutating owned values and mutable references to values.</li>
 <li><input disabled="" type="checkbox"> Tracking moves and issuing errors when a moved value is used</li>
-<li><input disabled="" type="checkbox"> Borrowing
+<li>[~] Borrowing
 <ul>
-<li><input disabled="" type="checkbox"> Basic immutable and mutable borrowing</li>
+<li><input checked="" disabled="" type="checkbox"> Basic immutable and mutable borrowing</li>
 <li><input disabled="" type="checkbox"> Preventing moving owned values while the borrowed reference is alive</li>
-<li><input disabled="" type="checkbox"> Reference lifetimes and conversions</li>
 <li><input disabled="" type="checkbox"> <code>shared</code> and <code>owned</code> modifiers</li>
 <li><input disabled="" type="checkbox"> <code>ref</code> qualifier for types which store references</li>
 </ul>
@@ -416,27 +415,28 @@ mutable value similar to OCaml&rsquo;s <code>t ref</code>.</li>
 </ul>
 <hr>
 <h1 id="other">Other</h1>
-<p>Algebraic effects are currently in development in a branch.
-Some basic programs are working but the feature overall is still experimental
-and causes panics in most programs. For now, only type checking of effects
-is in master.</p>
 <ul>
-<li><input disabled="" type="checkbox"> Algebraic effects
+<li>[~] Algebraic effects
 <ul>
 <li><input checked="" disabled="" type="checkbox"> Type checking</li>
-<li><input disabled="" type="checkbox"> Runtime
+<li>[~] Runtime
 <ul>
-<li><input disabled="" type="checkbox"> Handlers
+<li>[~] Handlers
 <ul>
-<li><input disabled="" type="checkbox"> Matching on effects</li>
-<li><input disabled="" type="checkbox"> Matching on return values</li>
+<li><input checked="" disabled="" type="checkbox"> Handlers for a single effect</li>
+<li><input disabled="" type="checkbox"> Handlers for multiple effects</li>
+<li><input disabled="" type="checkbox"> Matching on return values
+<ul>
+<li>The <code>return _ -&gt; e</code> clause is still unimplemented but can be reasonably emulated by adding <code>; e</code> to the end of the expression being handled.</li>
 </ul>
 </li>
-<li><input disabled="" type="checkbox"> <code>resume</code>
+</ul>
+</li>
+<li><input checked="" disabled="" type="checkbox"> <code>resume</code>
 <ul>
-<li><input disabled="" type="checkbox"> Single resumptions</li>
-<li><input disabled="" type="checkbox"> Multiple resumptions</li>
-<li><input disabled="" type="checkbox"> 0 resumptions</li>
+<li><input checked="" disabled="" type="checkbox"> Single resumptions</li>
+<li><input checked="" disabled="" type="checkbox"> 0 resumptions</li>
+<li>Multiple resumptions used to be listed here but has since been removed as a desired feature. It conflicts with Ante&rsquo;s planned affine types.</li>
 </ul>
 </li>
 </ul>
@@ -645,7 +645,7 @@ is in master.</p>
     
 
 
-    <p>&copy; 2024. All rights reserved. </p>
+    <p>&copy; 2025. All rights reserved. </p>
   </div>
 </div>
 

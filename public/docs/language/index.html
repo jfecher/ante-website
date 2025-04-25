@@ -415,12 +415,9 @@ below are exactly equivalent except for their name.</p>
 
 <span class="nf">foo2</span> <span class="ow">=</span> <span class="k">fn</span> <span class="n">a</span> <span class="n">b</span> <span class="ow">-&gt;</span>
     <span class="n">print</span> <span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>
-</code></pre></div><p>Since ante is impure, combining effects can trivially be done via sequencing
-two expressions which can be done by separating the expressions with a newline.
-<code>;</code> can also be used to sequence two expressions on the same line if needed.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// We can specify parameter types and the</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// We can specify parameter types and the</span>
 <span class="c1">// function return type via `:`</span>
-<span class="nf">foo1</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="kt">U32</span><span class="p">)</span> <span class="p">(</span><span class="n">b</span><span class="o">:</span> <span class="kt">U32</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span>
+<span class="nf">bar</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="kt">U32</span><span class="p">)</span> <span class="p">(</span><span class="n">b</span><span class="o">:</span> <span class="kt">U32</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span>
     <span class="n">print</span> <span class="n">a</span>
     <span class="n">print</span> <span class="n">b</span>
     <span class="n">print</span> <span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>
@@ -867,7 +864,51 @@ body as well, we only need to indent once past the <code>match</code> instead
 of twice which saves us valuable horizontal space.</p>
 </li>
 </ol>
-<hr>
+<h2 id="is-keyword"><code>is</code> keyword</h2>
+<p>The <code>is</code> keyword can be used to pattern match within arbitrary expressions.
+The syntax for an <code>is</code> expression is <code>&lt;expr&gt; is &lt;pattern&gt;</code>. These expressions
+can be used to test an expression matches a particular case, for example:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">shared</span> <span class="k">type</span> <span class="kt">Expr</span> <span class="ow">=</span>
+   <span class="o">|</span> <span class="kt">Int</span> <span class="kt">I32</span>
+   <span class="o">|</span> <span class="kt">Var</span> <span class="kt">String</span>
+   <span class="o">|</span> <span class="kt">Add</span> <span class="kt">Expr</span> <span class="kt">Expr</span>
+
+<span class="nf">is_variable</span> <span class="p">(</span><span class="n">e</span><span class="o">:</span> <span class="kt">Expr</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="n">e</span> <span class="k">is</span> <span class="kt">Var</span> <span class="n">_</span>
+
+<span class="nf">print</span> <span class="p">(</span><span class="n">is_variable</span> <span class="p">(</span><span class="kt">Var</span> <span class="s">&#34;foo&#34;</span><span class="p">))</span> <span class="c1">//=&gt; true</span>
+<span class="nf">print</span> <span class="p">(</span><span class="n">is_variable</span> <span class="p">(</span><span class="kt">Int</span> <span class="mi">3</span><span class="p">))</span>     <span class="c1">//=&gt; false</span>
+</code></pre></div><p>If an <code>and</code> is used after the <code>is</code> expression, any variables defined in the pattern
+will be in scope of the right-hand side of the <code>and</code> expression:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">is_even_int</span> <span class="p">(</span><span class="n">e</span><span class="o">:</span> <span class="kt">Expr</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="n">e</span> <span class="k">is</span> <span class="kt">Int</span> <span class="n">x</span> <span class="k">and</span> <span class="n">even</span> <span class="n">x</span>
+</code></pre></div><p>Note that because <code>&lt;expr&gt; is &lt;pattern&gt;</code> is an expression and <code>and</code> also accepts two expressions,
+chaining matches is also possible:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">print_if_large_product</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="kt">I32</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="k">is</span> <span class="kt">Some</span> <span class="n">x2</span> <span class="k">and</span> <span class="n">y</span> <span class="k">is</span> <span class="kt">Some</span> <span class="n">y2</span> <span class="k">and</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="o">&gt;</span> <span class="mi">1000</span> <span class="k">then</span>
+        <span class="c1">// x2 and y2 are still in scope</span>
+        <span class="n">print</span> <span class="p">(</span><span class="n">x2</span> <span class="o">*</span> <span class="n">y2</span><span class="p">)</span>
+</code></pre></div><p>Additionally, as we saw above, if <code>is</code> expressions are used within an <code>if</code> condition (or match guard)
+the variables defined within the <code>is</code> expression will also be in scope of the corresponding
+<code>if</code> or <code>match</code> branch. Note that for these variables to be in scope, the <code>is</code> expression
+must be in the outermost portion of the condition such that only <code>and</code> expressions may be
+joining them. An <code>is</code> in a nested expression like <code>if e is Var a or e is Int x then ...</code> will
+not have its variables in scope of the then branch since <code>a</code> or <code>x</code> may not actually be matched.
+If this happens you&rsquo;ll get a compiler warning that <code>a</code> and <code>x</code> cannot be used (since they will
+never be in scope).</p>
+<p>With these limitations in mind, <code>is</code> can still be a very useful operator to shorten code using
+pattern matching.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">incorrect_example</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="k">if</span> <span class="k">not</span> <span class="p">(</span><span class="n">x</span> <span class="k">is</span> <span class="kt">Some</span> <span class="n">y</span><span class="p">)</span> <span class="k">and</span> <span class="n">y</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="k">then</span> <span class="c1">//error! `y` is not in scope here: (x is Some y) may not match</span>
+        <span class="o">...</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">evaluate</span> <span class="p">(</span><span class="n">e</span><span class="o">:</span> <span class="kt">Expr</span><span class="p">)</span> <span class="p">(</span><span class="n">env</span><span class="o">:</span> <span class="kt">HashMap</span> <span class="kt">String</span> <span class="kt">I32</span><span class="p">)</span><span class="o">:</span> <span class="kt">I32</span> <span class="k">can</span> <span class="kt">Error</span> <span class="ow">=</span>
+    <span class="k">match</span> <span class="n">e</span>
+    <span class="c1">// We can check if `name` is in our HashMap within this match</span>
+    <span class="o">|</span> <span class="kt">Var</span> <span class="n">name</span> <span class="k">if</span> <span class="n">lookup</span> <span class="n">env</span> <span class="n">name</span> <span class="k">is</span> <span class="kt">Some</span> <span class="n">value</span> <span class="ow">-&gt;</span> <span class="n">value</span>
+    <span class="o">|</span> <span class="kt">Var</span> <span class="n">name</span> <span class="ow">-&gt;</span> <span class="n">error</span> <span class="s">&#34;${name} is not defined&#34;</span>
+    <span class="o">|</span> <span class="kt">Int</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">x</span>
+    <span class="o">|</span> <span class="kt">Add</span> <span class="n">lhs</span> <span class="n">rhs</span> <span class="ow">-&gt;</span> <span class="n">evaluate</span> <span class="n">lhs</span> <span class="n">env</span> <span class="o">+</span> <span class="n">evaluate</span> <span class="n">rhs</span> <span class="n">env</span>
+</code></pre></div><hr>
 <h1 id="types">Types</h1>
 <p>Ante is a strongly, statically typed language with global type inference.
 Types are used to restrict the set of values as best as possible such that
@@ -945,7 +986,13 @@ constraint - ie it must be a primitive integer or we get a compile-time error).<
 </code></pre></div><p>Values of the <code>Float a</code> type will default to <code>F64</code> if they are never constrained:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">print</span> <span class="mf">5.0</span>  <span class="c1">// Since we can print any float type, we arbitrarily default 5.0 to an F64</span>
            <span class="c1">// making this snippet equivalent to `print (5.0 : F64)`</span>
-</code></pre></div><h2 id="anonymous-struct-types">Anonymous Struct Types</h2>
+</code></pre></div><h2 id="function-types">Function Types</h2>
+<p>Function types in Ante are of the form <code>arg1 - arg2 - .. - argN -&gt; return_type</code>.
+Note that functions in Ante always have at least one argument. Zero-argument functions
+are usually encoded as functions accepting a single unit value as an argument, e.g. <code>Unit -&gt; I32</code>.</p>
+<p>Function types can also have an optional effect clause at the end. More on this
+in <a href="#effects-in-function-types">Effects in Function Types</a>.</p>
+<h2 id="anonymous-struct-types">Anonymous Struct Types</h2>
 <p>If we have multiple types with the same field in scope:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">A</span> <span class="ow">=</span> <span class="n">foo</span><span class="o">:</span> <span class="kt">I32</span>
 
@@ -1461,7 +1508,56 @@ how we&rsquo;d pass it to <code>handle_give_int</code> to properly handle the ef
     <span class="n">x</span> <span class="o">+</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
 
 <span class="nf">handle_give_int</span> <span class="p">(</span><span class="k">fn</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="n">do_math</span> <span class="mi">3</span><span class="p">)</span>  <span class="c1">//=&gt; 126</span>
-</code></pre></div><h2 id="sugar-for-applying-handlers">Sugar for applying handlers</h2>
+</code></pre></div><h2 id="control-flow-1">Control-Flow</h2>
+<p>Algebraic Effects have a control-flow that is likely novel to many programmers. It is similar
+to an exception that may be resumed. We can create a new effect handler for <code>GiveInt</code> to better
+show this unique control-flow:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">debug_give_int</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">GiveInt</span><span class="p">)</span><span class="o">:</span> <span class="n">a</span> <span class="ow">=</span>
+    <span class="k">handle</span> <span class="n">f</span> <span class="p">()</span>
+    <span class="o">|</span> <span class="n">give_int</span> <span class="n">msg</span> <span class="ow">-&gt;</span>
+        <span class="n">print</span> <span class="s">&#34;give_int &#39;${msg}&#39; called!&#34;</span>
+        <span class="n">r</span> <span class="ow">=</span> <span class="k">resume</span> <span class="mi">0</span>
+        <span class="n">print</span> <span class="s">&#34;resume &#39;${msg}&#39; finished&#34;</span>
+        <span class="n">r</span>
+
+<span class="nf">foo</span> <span class="p">()</span> <span class="ow">=</span>
+    <span class="n">print</span> <span class="s">&#34;foo called!&#34;</span>
+    <span class="n">_</span> <span class="ow">=</span> <span class="n">give_int</span> <span class="s">&#34;foo a&#34;</span>
+    <span class="n">_</span> <span class="ow">=</span> <span class="n">give_int</span> <span class="s">&#34;foo b&#34;</span>
+    <span class="n">print</span> <span class="s">&#34;foo finished&#34;</span>
+
+<span class="nf">bar</span> <span class="p">()</span> <span class="ow">=</span>
+    <span class="n">print</span> <span class="s">&#34;bar called!&#34;</span>
+    <span class="n">_</span> <span class="ow">=</span> <span class="n">give_int</span> <span class="s">&#34;bar a&#34;</span>
+    <span class="n">_</span> <span class="ow">=</span> <span class="n">give_int</span> <span class="s">&#34;bar b&#34;</span>
+    <span class="n">print</span> <span class="s">&#34;bar finished&#34;</span>
+
+<span class="nf">example</span> <span class="p">()</span> <span class="ow">=</span>
+    <span class="n">foo</span> <span class="p">()</span>
+    <span class="n">bar</span> <span class="p">()</span>
+</code></pre></div><p>Now when we run <code>debug_give_int example</code> we get the following print outs:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">foo called!
+give_int &#39;foo a&#39; called!
+give_int &#39;foo b&#39; called!
+foo finished
+bar called!
+give_int &#39;bar a&#39; called!
+give_int &#39;bar b&#39; called!
+bar finished
+resume &#39;bar b&#39; finished
+resume &#39;bar a&#39; finished
+resume &#39;foo b&#39; finished
+resume &#39;foo a&#39; finished
+</code></pre></div><p>The novel control-flow is all from code after the <code>resume</code> call in the handler. If the
+handler does not have any code after <code>resume</code> (ie. it is tail-resumptive) it can actually
+be optimized into a normal function call. When performance is vital and an effect may be
+handled in a tail-resumptive way, it is possible to specify when declaring the effect that
+all handlers for it must be tail-resumptive. That way a library or application developer
+can guarantee certain performance characteristics of the effect no matter its implementation.</p>
+<p>If the above print outs are still indecipherable, see the example in
+<a href="#matching-on-the-returned-value">Matching on the Returned Value</a> for the step-by-step evaluation
+of an effect.</p>
+<h2 id="sugar-for-applying-handlers">Sugar for applying handlers</h2>
 <p>You&rsquo;ll notice <code>handle_give_int</code> expects a function, so we have to wrap <code>do_math 3</code> in a
 lambda before we pass it into our handler. Since this operation is so common, ante provides
 the <code>with</code> operator which will wrap its left argument in a lambda and pass it to the function
@@ -1484,6 +1580,55 @@ we can use the <code>using</code> keyword:</p>
     <span class="n">bar</span> <span class="ow">=</span> <span class="n">failable_operation</span> <span class="p">()</span>
     <span class="n">foo</span> <span class="o">+</span> <span class="n">bar</span> <span class="o">*</span> <span class="mi">2</span>
 </code></pre></div><p>This is often useful for error handling or early returns across function boundaries.</p>
+<h2 id="effects-in-function-types">Effects in Function Types</h2>
+<p>Function types like <code>a -&gt; b</code> can always have an optional effects clause as in
+<code>a -&gt; b can Fail</code>. This effects clause controls which effects that function is
+allowed to perform. For example, a function declared with the type <code>a -&gt; b can Print</code>
+may print out values but may never interact with the file system.</p>
+<p>You can explicitly state that a function may not perform any (unhandled) effects
+by appending <code>pure</code> after the function type, e.g. <code>a -&gt; b pure</code>. Note that this
+function may still perform effects internally, but any effects it performs must be
+handled by the function itself. Since they must be handled without performing any
+additional effects, there would be no way for the function to interact with the
+file system or perform any other side-effects (since they could not do so without
+using another unhandled effect).</p>
+<p>A function declared without an effects clause is usually pure, however
+it may also be effect-polymorphic. Effect polymorphic functions have a type variable
+in their effects clause, e.g. <code>a -&gt; b can e</code>. This is usually used so that these functions
+can call other functions which may perform effects not relevant to the original function.
+For example, consider the <code>map</code> function on arrays. It has the signature:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">map</span> <span class="p">(</span><span class="n">array</span><span class="o">:</span> <span class="kt">Array</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">a</span> <span class="ow">=&gt;</span> <span class="n">b</span> <span class="k">can</span> <span class="n">e</span><span class="p">)</span><span class="o">:</span> <span class="kt">Array</span> <span class="n">b</span> <span class="k">can</span> <span class="n">e</span> <span class="ow">=</span> <span class="o">...</span>
+</code></pre></div><p>This signature states that <code>map</code> accepts an array and a closure of type <code>a =&gt; b can e</code>
+which may perform effects <code>e</code> when called, and returns an <code>Array b</code> while performing
+the effects <code>e</code>. Note that the only way for <code>map</code> to perform the effects <code>e</code> would be
+if it calls the argument <code>f</code> that it was given. This allows us to call <code>map</code> with
+functions that <code>can Print</code> values or that <code>can Fail</code>, or <code>can Async</code>, etc., all without
+us needing to write different variants of <code>map</code> for each.</p>
+<p>Because effect polymorphism is almost always the desired behavior, Ante will default
+to being effect polymorphic if a function&rsquo;s effect clause is not specified. Specifically,
+if the function takes another function as a parameter, the outer function will automatically
+be made effect polymorphic over the parameter function&rsquo;s effects as long as the parameter
+function&rsquo;s effects were not explicitly specified. So we can rewrite <code>map</code>&rsquo;s signature as:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">map</span> <span class="p">(</span><span class="n">array</span><span class="o">:</span> <span class="kt">Array</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">a</span> <span class="ow">=&gt;</span> <span class="n">b</span><span class="p">)</span><span class="o">:</span> <span class="kt">Array</span> <span class="n">b</span> <span class="ow">=</span> <span class="o">...</span>
+</code></pre></div><p>And it would be equivalent. Note that this effect-polymorphism by default isn&rsquo;t always desired.
+In these cases, the function parameter&rsquo;s effects can be explicitly specified. This
+may be the case when spawning threads for example:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">spawn_thread</span> <span class="p">(</span><span class="n">thread</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=&gt;</span> <span class="kt">Unit</span> <span class="k">pure</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">IO</span><span class="p">,</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
+</code></pre></div><p>The above function&rsquo;s signature states that <code>spawn_thread</code> may <code>Fail</code> and perform some IO (presumably
+in the form of spawning an OS thread), while <code>thread</code> may not perform any effects itself.</p>
+<p>Another case is when a function parameter has effects that the outer function does not. Consider:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">example1</span> <span class="p">(</span><span class="n">inner1</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Fail</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span> <span class="o">...</span>
+
+<span class="nf">example2</span> <span class="p">(</span><span class="n">inner2</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="n">e</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span> <span class="o">...</span>
+</code></pre></div><p>In the case of <code>example1</code>, this type signature is similar to an effect handler which will call
+<code>inner1</code> and handle the <code>Fail</code> effect internally. Usually these functions also want to allow effect
+polymorphism, so if this was the intent we should also add a <code>can e</code> to both <code>example1</code> and <code>inner1</code>
+since Ante will only automatically default to effect polymorphism if <code>inner1</code>&rsquo;s effects weren&rsquo;t
+explicitly specified.</p>
+<p>In the case of <code>example2</code> we know <code>inner2</code> may perform some effect(s) <code>e</code> but don&rsquo;t know which effects
+exactly. Additionally, since <code>example2</code> itself doesn&rsquo;t perform <code>e</code> and can&rsquo;t handle effects unless
+they&rsquo;re known, we know <code>example2</code> can not actually call <code>inner2</code> at all. It may only pass it to other
+functions which also do not call it, or drop the value without using it.</p>
 <h2 id="more-on-handlers">More on Handlers</h2>
 <h3 id="multiple-handlers">Multiple Handlers</h3>
 <p>Unlike traits where impl search is automatic, effect handlers are
@@ -1507,7 +1652,7 @@ of the handled expression</p>
 <span class="nf">do_math</span> <span class="mi">5</span> <span class="k">with</span> <span class="n">count_giveint_calls</span>  <span class="c1">//=&gt; 2</span>
 </code></pre></div><p>This example can be confusing at first - how can we always return
 an integer representing the number of GiveInt calls if our function
-says it returns some type <code>a</code>? Lets work this out step by step
+says it returns some type <code>a</code>? Let&rsquo;s work this out step by step
 to see how it expands:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">do_math</span> <span class="mi">5</span> <span class="k">with</span> <span class="n">count_giveint_calls</span>
 
@@ -1521,26 +1666,28 @@ to see how it expands:</p>
 
 <span class="c1">// Then reduce via our give_int rule - continuing</span>
 <span class="c1">// the computation with the value 0 and adding 1 to the result</span>
-<span class="k">handle</span> <span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">a</span> <span class="ow">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">b</span> <span class="ow">=</span> <span class="n">give_int</span> <span class="s">&#34;foo&#34;</span><span class="p">;</span> <span class="mi">5</span> <span class="o">+</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>
-<span class="o">|</span> <span class="k">return</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="mi">0</span>
-<span class="o">|</span> <span class="n">give_int</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="k">resume</span> <span class="mi">0</span>
+<span class="mi">1</span> <span class="o">+</span> 
+  <span class="k">handle</span> <span class="p">(</span><span class="n">a</span> <span class="ow">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">b</span> <span class="ow">=</span> <span class="n">give_int</span> <span class="s">&#34;foo&#34;</span><span class="p">;</span> <span class="mi">5</span> <span class="o">+</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>
+  <span class="o">|</span> <span class="k">return</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="mi">0</span>
+  <span class="o">|</span> <span class="n">give_int</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="k">resume</span> <span class="mi">0</span>
 
 <span class="c1">// Reduce via give_int again for b</span>
-<span class="k">handle</span> <span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">a</span> <span class="ow">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">b</span> <span class="ow">=</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">5</span> <span class="o">+</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">))</span>
-<span class="o">|</span> <span class="k">return</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="mi">0</span>
-<span class="o">|</span> <span class="n">give_int</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="k">resume</span> <span class="mi">0</span>
+<span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span>
+       <span class="k">handle</span> <span class="p">(</span><span class="n">a</span> <span class="ow">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">b</span> <span class="ow">=</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">5</span> <span class="o">+</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>
+       <span class="o">|</span> <span class="k">return</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="mi">0</span>
+       <span class="o">|</span> <span class="n">give_int</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="k">resume</span> <span class="mi">0</span><span class="p">)</span>
 
 <span class="c1">// Now we finish evaluating the function and would</span>
 <span class="c1">// normally get a result of 5</span>
-<span class="k">handle</span> <span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="k">return</span> <span class="mi">5</span><span class="p">))</span>
-<span class="o">|</span> <span class="k">return</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="mi">0</span>
-<span class="o">|</span> <span class="n">give_int</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="k">resume</span> <span class="mi">0</span>
+<span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span>
+       <span class="k">handle</span> <span class="p">(</span><span class="k">return</span> <span class="mi">5</span><span class="p">)</span>
+       <span class="o">|</span> <span class="k">return</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="mi">0</span>
+       <span class="o">|</span> <span class="n">give_int</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="k">resume</span> <span class="mi">0</span>
 
 <span class="c1">// Since our handler matches on this return value,</span>
-<span class="c1">// we use that rule next to map it to 0</span>
-<span class="k">handle</span> <span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">0</span><span class="p">)</span>
-<span class="o">|</span> <span class="k">return</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="mi">0</span>
-<span class="o">|</span> <span class="n">give_int</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="k">resume</span> <span class="mi">0</span>
+<span class="c1">// we use that rule next to map it to 0. The handled</span>
+<span class="c1">// expression is now done evaluating, so the `handle` is finished.</span>
+<span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">0</span><span class="p">)</span>
 
 <span class="c1">// Finally, 1 + 1 + 0 evaluates to 2 with no further effects</span>
 <span class="mi">2</span>
@@ -1614,10 +1761,12 @@ threading stateful values through multiple functions.</p>
     <span class="n">get</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span>
     <span class="n">put</span><span class="o">:</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
 
-<span class="nf">state</span> <span class="p">(</span><span class="n">current_state</span><span class="o">:</span> <span class="n">s</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Use</span> <span class="n">s</span><span class="p">)</span> <span class="o">:</span> <span class="n">a</span> <span class="ow">=</span>
+<span class="nf">state</span> <span class="p">(</span><span class="k">mut</span> <span class="n">current_state</span><span class="o">:</span> <span class="n">s</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Use</span> <span class="n">s</span><span class="p">)</span> <span class="o">:</span> <span class="n">a</span> <span class="ow">=</span>
     <span class="k">handle</span> <span class="n">f</span> <span class="p">()</span>
-    <span class="o">|</span> <span class="n">put</span> <span class="n">new_state</span> <span class="ow">-&gt;</span> <span class="k">resume</span> <span class="p">()</span> <span class="k">with</span> <span class="n">state</span> <span class="n">new_state</span>
-    <span class="o">|</span> <span class="n">get</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="k">resume</span> <span class="n">current_state</span> <span class="k">with</span> <span class="n">state</span> <span class="n">current_state</span>
+    <span class="o">|</span> <span class="n">get</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="k">resume</span> <span class="n">current_state</span>
+    <span class="o">|</span> <span class="n">put</span> <span class="n">new_state</span> <span class="ow">-&gt;</span>
+        <span class="n">current_state</span> <span class="o">:=</span> <span class="n">new_state</span>
+        <span class="k">resume</span> <span class="p">()</span>
 
 
 <span class="k">type</span> <span class="kt">Expr</span> <span class="ow">=</span>
@@ -1771,7 +1920,7 @@ mock them for testing.</p>
 
 <span class="nf">ignore_db</span> <span class="n">f</span> <span class="ow">=</span>
     <span class="k">handle</span> <span class="n">f</span> <span class="p">()</span>
-    <span class="o">|</span> <span class="n">querydb</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="kt">Response</span><span class="o">.</span><span class="n">empty</span>
+    <span class="o">|</span> <span class="n">querydb</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="k">resume</span> <span class="kt">Response</span><span class="o">.</span><span class="kt">Empty</span>
 
 <span class="nf">business_logic</span> <span class="p">(</span><span class="n">should_query</span><span class="o">:</span> <span class="kt">Bool</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Print</span><span class="p">,</span> <span class="kt">QueryDatabase</span> <span class="ow">=</span>
     <span class="k">if</span> <span class="n">should_query</span> <span class="k">then</span>
@@ -1797,123 +1946,12 @@ mock them for testing.</p>
 
     <span class="n">logs</span> <span class="ow">=</span> <span class="n">business_logic</span> <span class="kc">true</span> <span class="k">with</span> <span class="n">ignore_db</span> <span class="k">with</span> <span class="n">collect_prints</span>
     <span class="n">assert</span> <span class="p">(</span><span class="k">not</span> <span class="n">is_empty</span> <span class="n">logs</span><span class="p">)</span>
-</code></pre></div><h3 id="expected-value">Expected Value</h3>
-<p>One of the more niche benefits of algebraic effects is the ability
-to compute the expected value of numerical functions which internally
-use an effect like <code>Flip</code> to decide on branches to take within the function.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Flip</span> <span class="k">with</span>
-    <span class="n">flip</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span>
-
-<span class="nf">calculation</span> <span class="p">()</span> <span class="ow">=</span>
-    <span class="k">if</span> <span class="n">flip</span> <span class="p">()</span> <span class="k">then</span>
-        <span class="n">unused</span> <span class="ow">=</span> <span class="n">flip</span> <span class="p">()</span>
-        <span class="k">if</span> <span class="n">flip</span> <span class="p">()</span> <span class="k">then</span> <span class="mf">0.5</span>
-        <span class="k">else</span> <span class="mf">4.0</span>
-    <span class="k">else</span> <span class="mf">1.0</span>
-
-<span class="nf">expected_value</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">F64</span> <span class="k">can</span> <span class="kt">Flip</span><span class="p">)</span> <span class="o">:</span> <span class="kt">F64</span> <span class="ow">=</span>
-    <span class="k">handle</span> <span class="n">f</span> <span class="p">()</span>
-    <span class="o">|</span> <span class="n">flip</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="k">resume</span> <span class="kc">true</span> <span class="o">+</span> <span class="k">resume</span> <span class="kc">false</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
-
-<span class="nf">print</span> <span class="p">(</span><span class="n">expected_value</span> <span class="n">calculation</span><span class="p">)</span>  <span class="c1">//=&gt; 1.625</span>
-</code></pre></div><h3 id="parsers">Parsers</h3>
-<p>Algebraic effects can also be used to write parser combinators.
-This parser is for a language with numbers, addition, multiplication,
-and parenthesized expressions. This example was adapted from
-<a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2016/08/algeff-tr-2016-v2.pdf">this koka paper</a>.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Repeat</span> <span class="k">with</span>
-    <span class="n">flip</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span>
-    <span class="n">fail</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span>
-
-<span class="k">effect</span> <span class="kt">Parse</span> <span class="k">with</span>
-    <span class="c1">// The parameter to Satisfy is a function which takes</span>
-    <span class="c1">// our current input and returns a pair of</span>
-    <span class="c1">// (result, rest_of_input) on success, or None on failure.</span>
-    <span class="n">satisfy</span><span class="o">:</span> <span class="p">(</span><span class="kt">String</span> <span class="ow">-&gt;</span> <span class="kt">Maybe</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="kt">String</span><span class="p">))</span> <span class="ow">-&gt;</span> <span class="n">a</span>
-
-<span class="nf">choice</span> <span class="n">p1</span> <span class="n">p2</span> <span class="ow">=</span>
-    <span class="k">if</span> <span class="n">flip</span> <span class="p">()</span> <span class="k">then</span> <span class="n">p1</span> <span class="p">()</span> <span class="k">else</span> <span class="n">p2</span> <span class="p">()</span>
-
-<span class="nf">many</span> <span class="p">(</span><span class="n">p</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Repeat</span><span class="p">)</span> <span class="o">:</span> <span class="kt">List</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Repeat</span> <span class="ow">=</span>
-    <span class="n">choice</span> <span class="p">(</span><span class="k">fn</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="n">many1</span> <span class="n">p</span><span class="p">)</span>
-           <span class="p">(</span><span class="k">fn</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="kt">Nil</span><span class="p">)</span>
-
-<span class="nf">many1</span> <span class="n">p</span> <span class="ow">=</span> <span class="kt">Cons</span> <span class="p">(</span><span class="n">p</span> <span class="p">())</span> <span class="p">(</span><span class="n">many</span> <span class="n">p</span><span class="p">)</span>
-
-
-<span class="c1">// Return all possible solutions from the given computation</span>
-<span class="nf">solutions</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Repeat</span><span class="p">)</span> <span class="o">:</span> <span class="kt">List</span> <span class="n">a</span> <span class="ow">=</span>
-    <span class="k">handle</span> <span class="n">f</span> <span class="p">()</span>
-    <span class="o">|</span> <span class="k">return</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span>
-    <span class="o">|</span> <span class="n">fail</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="kt">[]</span>
-    <span class="o">|</span> <span class="n">flip</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="k">resume</span> <span class="kc">false</span> <span class="o">++</span> <span class="k">resume</span> <span class="kc">true</span>
-
-<span class="c1">// Return the first succeeding computation (taking the false Flip branch first)</span>
-<span class="nf">eager</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Repeat</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Maybe</span> <span class="n">a</span> <span class="ow">=</span>
-    <span class="k">handle</span> <span class="n">f</span> <span class="p">()</span>
-    <span class="o">|</span> <span class="k">return</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="kt">Some</span> <span class="n">x</span>
-    <span class="o">|</span> <span class="n">fail</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="kt">None</span>
-    <span class="o">|</span> <span class="n">flip</span> <span class="p">()</span> <span class="ow">-&gt;</span>
-        <span class="k">match</span> <span class="k">resume</span> <span class="kc">false</span>
-        <span class="o">|</span> <span class="kt">Some</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="kt">Some</span> <span class="n">x</span>
-        <span class="o">|</span> <span class="kt">None</span> <span class="ow">-&gt;</span> <span class="k">resume</span> <span class="kc">true</span>
-
-<span class="c1">// Handle any Parse effects (letting Repeat effects pass through)</span>
-<span class="nf">parse</span> <span class="p">(</span><span class="n">input</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Parse</span><span class="p">,</span> <span class="kt">Repeat</span><span class="p">)</span> <span class="o">:</span> <span class="n">a</span><span class="p">,</span> <span class="kt">String</span> <span class="k">can</span> <span class="kt">Repeat</span> <span class="ow">=</span>
-    <span class="k">handle</span> <span class="n">f</span> <span class="p">()</span>
-    <span class="o">|</span> <span class="k">return</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">x</span><span class="p">,</span> <span class="n">input</span>
-    <span class="o">|</span> <span class="n">satisfy</span> <span class="n">p</span> <span class="ow">-&gt;</span>
-        <span class="k">match</span> <span class="n">p</span> <span class="n">input</span>
-        <span class="o">|</span> <span class="kt">None</span> <span class="ow">-&gt;</span> <span class="n">fail</span> <span class="p">()</span>
-        <span class="o">|</span> <span class="kt">Some</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">rest</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="k">resume</span> <span class="n">x</span> <span class="k">with</span> <span class="n">parse</span> <span class="n">rest</span>
-
-<span class="c1">// These will be our parsing primitives</span>
-<span class="nf">symbol</span> <span class="p">(</span><span class="n">c</span><span class="o">:</span> <span class="kt">Char</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Char</span> <span class="k">can</span> <span class="kt">Parse</span> <span class="ow">=</span>
-    <span class="n">satisfy</span> <span class="k">fn</span> <span class="n">input</span> <span class="ow">-&gt;</span>
-        <span class="k">match</span> <span class="n">input</span>
-        <span class="o">|</span> <span class="kt">Cons</span> <span class="n">x</span> <span class="n">rest</span> <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="n">c</span> <span class="ow">-&gt;</span> <span class="kt">Some</span> <span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">rest</span><span class="p">)</span>
-        <span class="o">|</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="kt">None</span>
-
-<span class="nf">digit</span> <span class="p">()</span> <span class="o">:</span> <span class="kt">Int</span> <span class="k">can</span> <span class="kt">Parse</span> <span class="ow">=</span>
-    <span class="n">satisfy</span> <span class="k">fn</span> <span class="n">input</span> <span class="ow">-&gt;</span>
-        <span class="k">match</span> <span class="n">input</span>
-        <span class="o">|</span> <span class="kt">Cons</span> <span class="n">d</span> <span class="n">rest</span> <span class="k">if</span> <span class="n">is_digit</span> <span class="n">d</span> <span class="ow">-&gt;</span> <span class="kt">Some</span> <span class="p">(</span><span class="n">int</span> <span class="p">(</span><span class="n">d</span> <span class="o">-</span> <span class="sc">&#39;0&#39;</span><span class="p">),</span> <span class="n">rest</span><span class="p">)</span>
-        <span class="o">|</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="kt">None</span>
-
-<span class="nf">number</span> <span class="p">()</span> <span class="ow">=</span>
-    <span class="n">many1</span> <span class="n">digit</span> <span class="o">.</span><span class="n">foldl</span> <span class="mi">0</span> <span class="k">fn</span> <span class="n">acc</span> <span class="n">d</span> <span class="ow">-&gt;</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">acc</span> <span class="o">+</span> <span class="n">d</span>
-
-<span class="c1">// Now our actual parser with begin in proper:</span>
-<span class="nf">binop</span> <span class="n">sym</span> <span class="n">op</span> <span class="n">f</span> <span class="ow">=</span>
-    <span class="n">a</span> <span class="ow">=</span> <span class="n">f</span> <span class="p">()</span>
-    <span class="n">symbol</span> <span class="n">sym</span>
-    <span class="n">b</span> <span class="ow">=</span> <span class="n">f</span> <span class="p">()</span>
-    <span class="n">op</span> <span class="n">a</span> <span class="n">b</span>
-
-<span class="nf">add</span> <span class="p">()</span> <span class="ow">=</span> <span class="n">binop</span> <span class="sc">&#39;+&#39;</span> <span class="p">(</span><span class="o">+</span><span class="p">)</span> <span class="n">term</span>
-<span class="nf">mul</span> <span class="p">()</span> <span class="ow">=</span> <span class="n">binop</span> <span class="sc">&#39;*&#39;</span> <span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="n">factor</span>
-
-<span class="nf">expr</span> <span class="p">()</span> <span class="ow">=</span> <span class="n">choice</span> <span class="n">add</span> <span class="n">term</span>
-<span class="nf">term</span> <span class="p">()</span> <span class="ow">=</span> <span class="n">choice</span> <span class="n">mul</span> <span class="n">factor</span>
-
-<span class="nf">factor</span> <span class="p">()</span> <span class="o">:</span> <span class="kt">Int</span> <span class="k">can</span> <span class="kt">Parse</span><span class="p">,</span> <span class="kt">Repeat</span> <span class="ow">=</span>
-    <span class="n">choice</span> <span class="n">number</span> <span class="k">fn</span> <span class="p">()</span> <span class="ow">-&gt;</span>
-        <span class="n">symbol</span> <span class="sc">&#39;(&#39;</span>
-        <span class="n">e</span> <span class="ow">=</span> <span class="n">expr</span> <span class="p">()</span>
-        <span class="n">symbol</span> <span class="sc">&#39;)&#39;</span>
-        <span class="n">e</span>
-
-<span class="nf">parse</span> <span class="n">expr</span> <span class="s">&#34;1+2*3&#34;</span> <span class="k">with</span> <span class="n">solutions</span>
-<span class="c1">//=&gt; [(7, &#34;&#34;), (3, &#34;*3&#34;), (1, &#34;+2*3&#34;)]</span>
-
-<span class="nf">parse</span> <span class="n">expr</span> <span class="s">&#34;1+2*3&#34;</span> <span class="k">with</span> <span class="n">eager</span>
-<span class="c1">//=&gt; Some (7, &#34;&#34;)</span>
 </code></pre></div><h3 id="others">Others</h3>
 <p>Other examples include using effects to
 implement <a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2017/05/asynceffects-msr-tr-2017-21.pdf">asynchronous functions</a>, implementing
 a clean design for <a href="https://gopiandcode.uk/logs/log-bye-bye-monads-algebraic-effects.html">handling animations in games</a>,
-and using effects to emulate any monad except
-for the continuation monad (citation needed).</p>
+and generally using effects to emulate any monad except
+for the continuation monad.</p>
 <hr>
 
                         </div>
@@ -2491,6 +2529,31 @@ for the continuation monad (citation needed).</p>
                     
                         <ul class="toc-h1">
                     
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/docs/language/#is-keyword">
+                        <li>is keyword</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
                     
                     
                     
@@ -2594,6 +2657,31 @@ for the continuation monad (citation needed).</p>
                     
                     <a href="/docs/language/#float-type">
                         <li>Float Type</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/docs/language/#function-types">
+                        <li>Function Types</li>
                     </a>
                     
                     
@@ -3150,8 +3238,58 @@ for the continuation monad (citation needed).</p>
                     
                     
                     
+                    <a href="/docs/language/#control-flow">
+                        <li>Control-Flow</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
                     <a href="/docs/language/#sugar-for-applying-handlers">
                         <li>Sugar for applying handlers</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/docs/language/#effects-in-function-types">
+                        <li>Effects in Function Types</li>
                     </a>
                     
                     
@@ -3484,64 +3622,6 @@ for the continuation monad (citation needed).</p>
                     
                     
                     
-                    <a href="/docs/language/#expected-value">
-                        <li>Expected Value</li>
-                    </a>
-                    
-                    
-                        </ul>
-                    
-                        </ul>
-                    
-                        </ul>
-                    
-                
-            
-        
-            
-            
-                
-                    
-                    
-                    
-                        <ul class="toc-h1">
-                    
-                        <ul class="toc-h2">
-                    
-                        <ul class="toc-h3">
-                    
-                    
-                    
-                    
-                    <a href="/docs/language/#parsers">
-                        <li>Parsers</li>
-                    </a>
-                    
-                    
-                        </ul>
-                    
-                        </ul>
-                    
-                        </ul>
-                    
-                
-            
-        
-            
-            
-                
-                    
-                    
-                    
-                        <ul class="toc-h1">
-                    
-                        <ul class="toc-h2">
-                    
-                        <ul class="toc-h3">
-                    
-                    
-                    
-                    
                     <a href="/docs/language/#others">
                         <li>Others</li>
                     </a>
@@ -3560,7 +3640,7 @@ for the continuation monad (citation needed).</p>
     
 
 
-    <p>&copy; 2024. All rights reserved. </p>
+    <p>&copy; 2025. All rights reserved. </p>
   </div>
 </div>
 

@@ -49,6 +49,7 @@ whether ante should use rust's model for chars (4 bytes), Swift's model (variabl
   - [x] Completeness & Redundancy checking
   - [ ] 'Or' clause in pattern matching, combining patterns via `|`
   - [ ] Pattern guards: `| pattern if expr -> ...`
+  - [ ] `is` keyword for matching within expressions
 - [x] `loop` sugar
 - [x] `Iterator` trait in prelude
 - [x] `extern`
@@ -110,31 +111,26 @@ but is otherwise implemented.
 Ante's ownership and borrowing rules have been completely redesigned recently. They
 will take some time to implement.
 
-- [ ] Mutating owned values. This currently still uses the old `Ref t` type for a boxed,
-mutable value similar to OCaml's `t ref`.
+- [x] Mutating owned values and mutable references to values.
 - [ ] Tracking moves and issuing errors when a moved value is used
-- [ ] Borrowing
-  - [ ] Basic immutable and mutable borrowing
+- [~] Borrowing
+  - [x] Basic immutable and mutable borrowing
   - [ ] Preventing moving owned values while the borrowed reference is alive
-  - [ ] Reference lifetimes and conversions
   - [ ] `shared` and `owned` modifiers
   - [ ] `ref` qualifier for types which store references
 ---
 # Other
 
-Algebraic effects are currently in development in a branch.
-Some basic programs are working but the feature overall is still experimental
-and causes panics in most programs. For now, only type checking of effects
-is in master.
-
-- [ ] Algebraic effects
+- [~] Algebraic effects
   - [x] Type checking
-  - [ ] Runtime
-    - [ ] Handlers
-      - [ ] Matching on effects
+  - [~] Runtime
+    - [~] Handlers
+      - [x] Handlers for a single effect
+      - [ ] Handlers for multiple effects
       - [ ] Matching on return values
-    - [ ] `resume`
-      - [ ] Single resumptions
-      - [ ] Multiple resumptions
-      - [ ] 0 resumptions
+        - The `return _ -> e` clause is still unimplemented but can be reasonably emulated by adding `; e` to the end of the expression being handled.
+    - [x] `resume`
+      - [x] Single resumptions
+      - [x] 0 resumptions
+      - Multiple resumptions used to be listed here but has since been removed as a desired feature. It conflicts with Ante's planned affine types.
 

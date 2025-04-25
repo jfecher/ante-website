@@ -199,14 +199,10 @@ foo2 = fn a b ->
     print (a + b)
 ```
 
-Since ante is impure, combining effects can trivially be done via sequencing
-two expressions which can be done by separating the expressions with a newline.
-`;` can also be used to sequence two expressions on the same line if needed.
-
 ```ante
 // We can specify parameter types and the
 // function return type via `:`
-foo1 (a: U32) (b: U32) : Unit =
+bar (a: U32) (b: U32) : Unit =
     print a
     print b
     print (a + b)
@@ -793,6 +789,71 @@ Note that there are a few subtle design decisions:
    body as well, we only need to indent once past the `match` instead
    of twice which saves us valuable horizontal space.
 
+## `is` keyword
+
+The `is` keyword can be used to pattern match within arbitrary expressions.
+The syntax for an `is` expression is `<expr> is <pattern>`. These expressions
+can be used to test an expression matches a particular case, for example:
+
+```ante
+shared type Expr =
+   | Int I32
+   | Var String
+   | Add Expr Expr
+
+is_variable (e: Expr) =
+    e is Var _
+
+print (is_variable (Var "foo")) //=> true
+print (is_variable (Int 3))     //=> false
+```
+
+If an `and` is used after the `is` expression, any variables defined in the pattern
+will be in scope of the right-hand side of the `and` expression:
+
+```ante
+is_even_int (e: Expr) =
+    e is Int x and even x
+```
+
+Note that because `<expr> is <pattern>` is an expression and `and` also accepts two expressions,
+chaining matches is also possible:
+
+```ante
+print_if_large_product (x: Maybe I32) (y: Maybe I32) =
+    if x is Some x2 and y is Some y2 and x * y > 1000 then
+        // x2 and y2 are still in scope
+        print (x2 * y2)
+```
+
+Additionally, as we saw above, if `is` expressions are used within an `if` condition (or match guard)
+the variables defined within the `is` expression will also be in scope of the corresponding
+`if` or `match` branch. Note that for these variables to be in scope, the `is` expression
+must be in the outermost portion of the condition such that only `and` expressions may be
+joining them. An `is` in a nested expression like `if e is Var a or e is Int x then ...` will
+not have its variables in scope of the then branch since `a` or `x` may not actually be matched.
+If this happens you'll get a compiler warning that `a` and `x` cannot be used (since they will
+never be in scope).
+
+With these limitations in mind, `is` can still be a very useful operator to shorten code using
+pattern matching.
+
+```ante
+incorrect_example (x: Maybe I32) =
+    if not (x is Some y) and y > 2 then //error! `y` is not in scope here: (x is Some y) may not match
+        ...
+```
+
+```ante
+evaluate (e: Expr) (env: HashMap String I32): I32 can Error =
+    match e
+    // We can check if `name` is in our HashMap within this match
+    | Var name if lookup env name is Some value -> value
+    | Var name -> error "${name} is not defined"
+    | Int x -> x
+    | Add lhs rhs -> evaluate lhs env + evaluate rhs env
+```
+
 ---
 # Types
 
@@ -910,6 +971,15 @@ Values of the `Float a` type will default to `F64` if they are never constrained
 print 5.0  // Since we can print any float type, we arbitrarily default 5.0 to an F64
            // making this snippet equivalent to `print (5.0 : F64)`
 ```
+
+## Function Types
+
+Function types in Ante are of the form `arg1 - arg2 - .. - argN -> return_type`.
+Note that functions in Ante always have at least one argument. Zero-argument functions
+are usually encoded as functions accepting a single unit value as an argument, e.g. `Unit -> I32`.
+
+Function types can also have an optional effect clause at the end. More on this
+in [Effects in Function Types](#effects-in-function-types).
 
 ## Anonymous Struct Types
 
@@ -1657,6 +1727,66 @@ do_math (x: I32) : I32 can GiveInt =
 handle_give_int (fn () -> do_math 3)  //=> 126
 ```
 
+## Control-Flow
+
+Algebraic Effects have a control-flow that is likely novel to many programmers. It is similar
+to an exception that may be resumed. We can create a new effect handler for `GiveInt` to better
+show this unique control-flow:
+
+```ante
+debug_give_int (f: Unit -> a can GiveInt): a =
+    handle f ()
+    | give_int msg ->
+        print "give_int '${msg}' called!"
+        r = resume 0
+        print "resume '${msg}' finished"
+        r
+
+foo () =
+    print "foo called!"
+    _ = give_int "foo a"
+    _ = give_int "foo b"
+    print "foo finished"
+
+bar () =
+    print "bar called!"
+    _ = give_int "bar a"
+    _ = give_int "bar b"
+    print "bar finished"
+
+example () =
+    foo ()
+    bar ()
+```
+
+Now when we run `debug_give_int example` we get the following print outs:
+
+```
+foo called!
+give_int 'foo a' called!
+give_int 'foo b' called!
+foo finished
+bar called!
+give_int 'bar a' called!
+give_int 'bar b' called!
+bar finished
+resume 'bar b' finished
+resume 'bar a' finished
+resume 'foo b' finished
+resume 'foo a' finished
+```
+
+The novel control-flow is all from code after the `resume` call in the handler. If the
+handler does not have any code after `resume` (ie. it is tail-resumptive) it can actually
+be optimized into a normal function call. When performance is vital and an effect may be
+handled in a tail-resumptive way, it is possible to specify when declaring the effect that
+all handlers for it must be tail-resumptive. That way a library or application developer
+can guarantee certain performance characteristics of the effect no matter its implementation.
+
+If the above print outs are still indecipherable, see the example in
+[Matching on the Returned Value](#matching-on-the-returned-value) for the step-by-step evaluation
+of an effect.
+
 ## Sugar for applying handlers
 
 You'll notice `handle_give_int` expects a function, so we have to wrap `do_math 3` in a
@@ -1698,6 +1828,78 @@ try fn () ->
 
 This is often useful for error handling or early returns across function boundaries.
 
+## Effects in Function Types
+
+Function types like `a -> b` can always have an optional effects clause as in
+`a -> b can Fail`. This effects clause controls which effects that function is
+allowed to perform. For example, a function declared with the type `a -> b can Print`
+may print out values but may never interact with the file system.
+
+You can explicitly state that a function may not perform any (unhandled) effects
+by appending `pure` after the function type, e.g. `a -> b pure`. Note that this
+function may still perform effects internally, but any effects it performs must be
+handled by the function itself. Since they must be handled without performing any
+additional effects, there would be no way for the function to interact with the
+file system or perform any other side-effects (since they could not do so without
+using another unhandled effect).
+
+A function declared without an effects clause is usually pure, however
+it may also be effect-polymorphic. Effect polymorphic functions have a type variable
+in their effects clause, e.g. `a -> b can e`. This is usually used so that these functions
+can call other functions which may perform effects not relevant to the original function.
+For example, consider the `map` function on arrays. It has the signature:
+
+```ante
+map (array: Array a) (f: a => b can e): Array b can e = ...
+```
+
+This signature states that `map` accepts an array and a closure of type `a => b can e`
+which may perform effects `e` when called, and returns an `Array b` while performing
+the effects `e`. Note that the only way for `map` to perform the effects `e` would be
+if it calls the argument `f` that it was given. This allows us to call `map` with
+functions that `can Print` values or that `can Fail`, or `can Async`, etc., all without
+us needing to write different variants of `map` for each.
+
+Because effect polymorphism is almost always the desired behavior, Ante will default
+to being effect polymorphic if a function's effect clause is not specified. Specifically,
+if the function takes another function as a parameter, the outer function will automatically
+be made effect polymorphic over the parameter function's effects as long as the parameter
+function's effects were not explicitly specified. So we can rewrite `map`'s signature as:
+
+```ante
+map (array: Array a) (f: a => b): Array b = ...
+```
+
+And it would be equivalent. Note that this effect-polymorphism by default isn't always desired.
+In these cases, the function parameter's effects can be explicitly specified. This
+may be the case when spawning threads for example:
+
+```ante
+spawn_thread (thread: Unit => Unit pure): Unit can IO, Fail = ...
+```
+
+The above function's signature states that `spawn_thread` may `Fail` and perform some IO (presumably
+in the form of spawning an OS thread), while `thread` may not perform any effects itself.
+
+Another case is when a function parameter has effects that the outer function does not. Consider:
+
+```ante
+example1 (inner1: Unit -> Unit can Fail): Unit = ...
+
+example2 (inner2: Unit -> Unit can e): Unit = ...
+```
+
+In the case of `example1`, this type signature is similar to an effect handler which will call
+`inner1` and handle the `Fail` effect internally. Usually these functions also want to allow effect
+polymorphism, so if this was the intent we should also add a `can e` to both `example1` and `inner1`
+since Ante will only automatically default to effect polymorphism if `inner1`'s effects weren't
+explicitly specified.
+
+In the case of `example2` we know `inner2` may perform some effect(s) `e` but don't know which effects
+exactly. Additionally, since `example2` itself doesn't perform `e` and can't handle effects unless
+they're known, we know `example2` can not actually call `inner2` at all. It may only pass it to other
+functions which also do not call it, or drop the value without using it.
+
 ## More on Handlers
 
 ### Multiple Handlers
@@ -1732,7 +1934,7 @@ do_math 5 with count_giveint_calls  //=> 2
 
 This example can be confusing at first - how can we always return
 an integer representing the number of GiveInt calls if our function
-says it returns some type `a`? Lets work this out step by step
+says it returns some type `a`? Let's work this out step by step
 to see how it expands:
 
 ```ante
@@ -1748,26 +1950,28 @@ handle
 
 // Then reduce via our give_int rule - continuing
 // the computation with the value 0 and adding 1 to the result
-handle 1 + (a = 0; b = give_int "foo"; 5 + a + b)
-| return x -> 0
-| give_int _ -> 1 + resume 0
+1 + 
+  handle (a = 0; b = give_int "foo"; 5 + a + b)
+  | return x -> 0
+  | give_int _ -> 1 + resume 0
 
 // Reduce via give_int again for b
-handle 1 + (1 + (a = 0; b = 0; 5 + a + b))
-| return x -> 0
-| give_int _ -> 1 + resume 0
+1 + (1 +
+       handle (a = 0; b = 0; 5 + a + b)
+       | return x -> 0
+       | give_int _ -> 1 + resume 0)
 
 // Now we finish evaluating the function and would
 // normally get a result of 5
-handle 1 + (1 + (return 5))
-| return x -> 0
-| give_int _ -> 1 + resume 0
+1 + (1 +
+       handle (return 5)
+       | return x -> 0
+       | give_int _ -> 1 + resume 0
 
 // Since our handler matches on this return value,
-// we use that rule next to map it to 0
-handle 1 + (1 + 0)
-| return x -> 0
-| give_int _ -> 1 + resume 0
+// we use that rule next to map it to 0. The handled
+// expression is now done evaluating, so the `handle` is finished.
+1 + (1 + 0)
 
 // Finally, 1 + 1 + 0 evaluates to 2 with no further effects
 2
@@ -1872,10 +2076,12 @@ effect Use a with
     get: Unit -> a
     put: a -> Unit
 
-state (current_state: s) (f: Unit -> a can Use s) : a =
+state (mut current_state: s) (f: Unit -> a can Use s) : a =
     handle f ()
-    | put new_state -> resume () with state new_state
-    | get () -> resume current_state with state current_state
+    | get () -> resume current_state
+    | put new_state ->
+        current_state := new_state
+        resume ()
 
 
 type Expr =
@@ -2047,7 +2253,7 @@ database f =
 
 ignore_db f =
     handle f ()
-    | querydb _ -> Response.empty
+    | querydb _ -> resume Response.Empty
 
 business_logic (should_query: Bool) : Unit can Print, QueryDatabase =
     if should_query then
@@ -2075,133 +2281,12 @@ test () =
     assert (not is_empty logs)
 ```
 
-### Expected Value
-
-One of the more niche benefits of algebraic effects is the ability
-to compute the expected value of numerical functions which internally
-use an effect like `Flip` to decide on branches to take within the function.
-
-```ante
-effect Flip with
-    flip: Unit -> Bool
-
-calculation () =
-    if flip () then
-        unused = flip ()
-        if flip () then 0.5
-        else 4.0
-    else 1.0
-
-expected_value (f: Unit -> F64 can Flip) : F64 =
-    handle f ()
-    | flip () -> (resume true + resume false) / 2.0
-
-print (expected_value calculation)  //=> 1.625
-```
-
-### Parsers
-
-Algebraic effects can also be used to write parser combinators.
-This parser is for a language with numbers, addition, multiplication,
-and parenthesized expressions. This example was adapted from
-[this koka paper](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/08/algeff-tr-2016-v2.pdf).
-
-```ante
-effect Repeat with
-    flip: Unit -> Bool
-    fail: Unit -> a
-
-effect Parse with
-    // The parameter to Satisfy is a function which takes
-    // our current input and returns a pair of
-    // (result, rest_of_input) on success, or None on failure.
-    satisfy: (String -> Maybe (a, String)) -> a
-
-choice p1 p2 =
-    if flip () then p1 () else p2 ()
-
-many (p: Unit -> a can Repeat) : List a can Repeat =
-    choice (fn () -> many1 p)
-           (fn () -> Nil)
-
-many1 p = Cons (p ()) (many p)
-
-
-// Return all possible solutions from the given computation
-solutions (f: Unit -> a can Repeat) : List a =
-    handle f ()
-    | return x -> [x]
-    | fail () -> []
-    | flip () -> resume false ++ resume true
-
-// Return the first succeeding computation (taking the false Flip branch first)
-eager (f: Unit -> a can Repeat) : Maybe a =
-    handle f ()
-    | return x -> Some x
-    | fail () -> None
-    | flip () ->
-        match resume false
-        | Some x -> Some x
-        | None -> resume true
-
-// Handle any Parse effects (letting Repeat effects pass through)
-parse (input: String) (f: Unit -> a can Parse, Repeat) : a, String can Repeat =
-    handle f ()
-    | return x -> x, input
-    | satisfy p ->
-        match p input
-        | None -> fail ()
-        | Some (x, rest) -> resume x with parse rest
-
-// These will be our parsing primitives
-symbol (c: Char) : Char can Parse =
-    satisfy fn input ->
-        match input
-        | Cons x rest if x == c -> Some (c, rest)
-        | _ -> None
-
-digit () : Int can Parse =
-    satisfy fn input ->
-        match input
-        | Cons d rest if is_digit d -> Some (int (d - '0'), rest)
-        | _ -> None
-
-number () =
-    many1 digit .foldl 0 fn acc d -> 10 * acc + d
-
-// Now our actual parser with begin in proper:
-binop sym op f =
-    a = f ()
-    symbol sym
-    b = f ()
-    op a b
-
-add () = binop '+' (+) term
-mul () = binop '*' (*) factor
-
-expr () = choice add term
-term () = choice mul factor
-
-factor () : Int can Parse, Repeat =
-    choice number fn () ->
-        symbol '('
-        e = expr ()
-        symbol ')'
-        e
-
-parse expr "1+2*3" with solutions
-//=> [(7, ""), (3, "*3"), (1, "+2*3")]
-
-parse expr "1+2*3" with eager
-//=> Some (7, "")
-```
-
 ### Others
 
 Other examples include using effects to
 implement [asynchronous functions](https://www.microsoft.com/en-us/research/wp-content/uploads/2017/05/asynceffects-msr-tr-2017-21.pdf), implementing
 a clean design for [handling animations in games](https://gopiandcode.uk/logs/log-bye-bye-monads-algebraic-effects.html),
-and using effects to emulate any monad except
-for the continuation monad (citation needed).
+and generally using effects to emulate any monad except
+for the continuation monad.
 
 ---
