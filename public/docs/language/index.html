@@ -1508,7 +1508,7 @@ how we&rsquo;d pass it to <code>handle_give_int</code> to properly handle the ef
     <span class="n">x</span> <span class="o">+</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
 
 <span class="nf">handle_give_int</span> <span class="p">(</span><span class="k">fn</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="n">do_math</span> <span class="mi">3</span><span class="p">)</span>  <span class="c1">//=&gt; 126</span>
-</code></pre></div><h2 id="control-flow-1">Control-Flow</h2>
+</code></pre></div><h2 id="effect-control-flow">Effect Control-Flow</h2>
 <p>Algebraic Effects have a control-flow that is likely novel to many programmers. It is similar
 to an exception that may be resumed. We can create a new effect handler for <code>GiveInt</code> to better
 show this unique control-flow:</p>
@@ -3238,8 +3238,8 @@ for the continuation monad.</p>
                     
                     
                     
-                    <a href="/docs/language/#control-flow">
-                        <li>Control-Flow</li>
+                    <a href="/docs/language/#effect-control-flow">
+                        <li>Effect Control-Flow</li>
                     </a>
                     
                     

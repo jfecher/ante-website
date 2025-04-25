@@ -1727,7 +1727,7 @@ do_math (x: I32) : I32 can GiveInt =
 handle_give_int (fn () -> do_math 3)  //=> 126
 ```
 
-## Control-Flow
+## Effect Control-Flow
 
 Algebraic Effects have a control-flow that is likely novel to many programmers. It is similar
 to an exception that may be resumed. We can create a new effect handler for `GiveInt` to better
