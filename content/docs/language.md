@@ -1979,24 +1979,14 @@ handle
 
 ### Resuming Multiple Times
 
-`resume` is a first-class function like any other, so we
-can call it multiple times, or pass it to higher-order functions
-like `map` and `flatmap`:
+In other languages with algebraic effects it may be possible to resume
+multiple times. This isn't possible in Ante unfortunately since it conflicts
+with Ante's ownership rules. In the worst case resuming multiple times would
+mean requiring a `Clone` constraint on the entire call stack!
 
-```an
-these_ints (f: Unit -> a can GiveInt) (ints: Vec I32) : Vec a =
-    handle f ()
-    | return x -> [x]
-    | give_int _ -> flatmap ints resume
-
-
-do_math 2
-    with these_ints [1, 3]  //=> [4, 6, 6, 8]
-```
-
-This handler is similar to the list monad in that it will keep
-resuming from the given function with all combinations of the given
-values, returning a Vec of all the return values when finished.
+Instead, `resume` in Ante is typed as a `once fn` which limits it to only
+being called once. The plus side of this is that it opens up more opportunities
+for implementing effects in an efficient way.
 
 ### Resuming Zero Times
 

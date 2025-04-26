@@ -1692,20 +1692,13 @@ to see how it expands:</p>
 <span class="c1">// Finally, 1 + 1 + 0 evaluates to 2 with no further effects</span>
 <span class="mi">2</span>
 </code></pre></div><h3 id="resuming-multiple-times">Resuming Multiple Times</h3>
-<p><code>resume</code> is a first-class function like any other, so we
-can call it multiple times, or pass it to higher-order functions
-like <code>map</code> and <code>flatmap</code>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-an" data-lang="an"><span class="nf">these_ints</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">GiveInt</span><span class="p">)</span> <span class="p">(</span><span class="n">ints</span><span class="o">:</span> <span class="kt">Vec</span> <span class="kt">I32</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Vec</span> <span class="n">a</span> <span class="ow">=</span>
-    <span class="k">handle</span> <span class="n">f</span> <span class="p">()</span>
-    <span class="o">|</span> <span class="k">return</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span>
-    <span class="o">|</span> <span class="n">give_int</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="n">flatmap</span> <span class="n">ints</span> <span class="k">resume</span>
-
-
-<span class="nf">do_math</span> <span class="mi">2</span>
-    <span class="k">with</span> <span class="n">these_ints</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>  <span class="c1">//=&gt; [4, 6, 6, 8]</span>
-</code></pre></div><p>This handler is similar to the list monad in that it will keep
-resuming from the given function with all combinations of the given
-values, returning a Vec of all the return values when finished.</p>
+<p>In other languages with algebraic effects it may be possible to resume
+multiple times. This isn&rsquo;t possible in Ante unfortunately since it conflicts
+with Ante&rsquo;s ownership rules. In the worst case resuming multiple times would
+mean requiring a <code>Clone</code> constraint on the entire call stack!</p>
+<p>Instead, <code>resume</code> in Ante is typed as a <code>once fn</code> which limits it to only
+being called once. The plus side of this is that it opens up more opportunities
+for implementing effects in an efficient way.</p>
 <h3 id="resuming-zero-times">Resuming Zero Times</h3>
 <p>Handlers may also choose not to resume at all, simply by
 not calling <code>resume</code>:</p>
