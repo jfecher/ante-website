@@ -222,7 +222,7 @@ even infer which traits are needed in generic function signatures.
 // Something is iterable if we can call `next` on it and
 // get either Some element and the rest of the iterator or
 // None and we finish iterating
-trait Iterator it -> elem =
+trait Iterator it -> elem with
     next: it -> Maybe (it, elem)
 
 first_equals_two it =
