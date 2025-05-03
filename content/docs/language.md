@@ -96,8 +96,8 @@ print "Hello, World!"
 
 // The String type is equivalent to the following struct:
 type String =
-    data: Ptr Char
-    len: Usz
+    c_string: Ptr Char
+    length: Usz
 
 // C-interop often requires using the `c_string` function:
 c_string (s: String) : CString = ...
@@ -282,7 +282,6 @@ than python and particularly when working the [pipeline operators](#pipeline-ope
 chain of lines ending with `\`:
 
 ```ante
-// x |> f = f x in older versions of ante
 data  \
 |> map (_ + 2) \
 |> filter (_ > 5) \
@@ -445,11 +444,11 @@ of whether `struct` is a struct or a pointer to a struct.
 
 ## Pipeline Operators
 
-The pipeline operators `.` and `$` are sugar for function application and
+The pipeline operators `|>` and `<|` are sugar for function application and
 serve to pipe the results from one function to the input of another.
 
-`x.f y` is equivalent to `f x y` and functions similar to method syntax
-`x.f(y)` in object-oriented languages. It is left-associative so `x .f y .g z`
+`x |> f y` is equivalent to `f x y` and functions similar to method syntax
+`x |> f(y)` in object-oriented languages. It is left-associative so `x |> f y |> g z`
 desugars to `g (f x y) z`. This operator is particularly useful for chaining
 iterator functions:
 
@@ -457,22 +456,22 @@ iterator functions:
 // Parse a csv's data into a matrix of integers
 parse_csv (text: String) : Vec (Vec I32) =
     lines text
-        .skip 1  // Skip the column labels line
-        .split ","
-        .map parse
-        .collect
+        |> skip 1  // Skip the column labels line
+        |> split ","
+        |> map parse!
+        |> collect
 ```
 
-In contrast to `.`, `$` is right associative and applies a function on its
-left to an argument on its right. Where `.`
-is used mostly to spread operations across multiple lines, `$` is often
+In contrast to `|>`, `<|` is right associative and applies a function on its
+left to an argument on its right. Where `|>`
+is used mostly to spread operations across multiple lines, `<|` is often
 used for getting rid of parenthesis on one line.
 
 ```ante
 print (sqrt (3 + 1))
 
 // Could also be written as:
-print $ sqrt $ 3 + 1
+print <| sqrt <| 3 + 1
 ```
 
 ## Pair Operator
@@ -581,7 +580,7 @@ cast_pair_string = impl
     Cast (Pair a b) String via
         cast pair = "(${to_string_helper pair})"
 
-    // Specialize the impl for pairs so we can recurse on the rhs
+    // Specialize the impl for pairs so we can recur on the rhs
     ToStringHelper (Pair a b) via
         to_string_helper (a, b) = "$a, ${to_string_helper b}"
 ```
@@ -1656,7 +1655,7 @@ a type. Make sure the type is accurate as the compiler
 cannot check these signatures for correctness:
 
 ```ante
-extern puts: C.String -> C.Int
+extern puts: Ptr char -> i32
 ```
 
 You can also use extern with a block of declarations:
@@ -2084,11 +2083,11 @@ Eval = Use (Map String I32)
 
 lookup (name: String) : Maybe I32 can Eval =
     map = get ()
-    map.get name
+    map |> get name
 
 define (name: String) (value: I32) : Unit can Eval =
     map = get ()
-    put (map.insert name value)
+    put (map |> insert name value)
 
 eval (expr: Expr) : I32 can Eval =
     match expr
@@ -2166,7 +2165,7 @@ loop_examples (vec: Vec I32) : Unit can Print, State I32 =
 
     // While our current integer State value is_even, loop
     while is_even fn x ->
-        put $ x + random_in (1..10)
+        put <| x + random_in (1..10)
 
     do_while fn x ->
         print "looping..."
