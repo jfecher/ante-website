@@ -1,5 +1,5 @@
 weight: 6
-name: "Novel Memory Management"
+name: "No Lifetime Variables"
 icon: "fa fa-trash"
-description: "Ante plans on using lifetime inference for temporary references to help simplify memory management. The design for this isn’t finalized yet though and is subject to change, beware!"
-link: "docs/language/#lifetime-inference"
+description: "Ante's simplified reference rules mean you never need to write another lifetime variable again."
+link: "docs/language/#borrowing"

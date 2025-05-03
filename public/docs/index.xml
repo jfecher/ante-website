@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Docs on Ante</title>
+    <link>https://antelang.org/docs/</link>
+    <description>Recent content in Docs on Ante</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 25 Jun 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://antelang.org/docs/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Roadmap</title>
+      <link>https://antelang.org/docs/roadmap/</link>
+      <pubDate>Sat, 25 Jun 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/docs/roadmap/</guid>
+      <description>This page is for an in-depth roadmap of ante to show what is currently implemented in the compiler. Note that the basic compiler passes from lexing, parsing, etc through (llvm) codegen have been implemented for quite some time so readers can assume the basic inner workings of the compiler are working.
+All designs in the ideas page are not implemented as their design is still non-final and may not be selected at all.</description>
+    </item>
+    
+    <item>
+      <title>Ideas</title>
+      <link>https://antelang.org/docs/ideas/</link>
+      <pubDate>Tue, 02 Nov 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/docs/ideas/</guid>
+      <description>This page is an incomplete list of features that are currently being considered for ante but for one reason or another are not included in the language already. These features are listed in no particular order.
+ Overloading Given ante does not have true methods, some form of overloading could greatly help alleviate user frustration by allowing modules like Vec and HashMap to both be imported despite defining conflicting names like empty, of, insert, get, etc.</description>
+    </item>
+    
+    <item>
+      <title>Language Tour</title>
+      <link>https://antelang.org/docs/language/</link>
+      <pubDate>Mon, 01 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/docs/language/</guid>
+      <description>Ante is a low-level impure functional programming language. It is low-level in the sense that types are not boxed by default and programmers can still delve down to optimize allocation/representation of memory if desired. A central goal of ante however, is to not force this upon users and provide sane defaults where possible. Compared to other low-level languages, ante is safe like rust but tries to be easier in general, for example by allowing shared mutability by default and avoiding the need for lifetime annotations.</description>
+    </item>
+    
+  </channel>
+</rss>

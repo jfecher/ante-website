@@ -9,10 +9,12 @@ defaultContentLanguage = "en"
 newContentEditor = "vim"
 
 [params]
-  description = "For exploring refinement types, lifetime inference, and algebraic effects"
-  author = "jfecher"
+  viewMorePostLink = "/blog/"
+  mainSections = ["blog"]
+  description = "For exploring algebraic effects, safe shared mutability, and other novel features"
+  author = "Jake Fecher"
   defaultKeywords = ["ante", "programming", "language", "antelang", "lang"]
-  date_format = ""
+  date_format = "2006-01-02"
   style = "red"
 # default, blue, green, marsala, pink, red, turquoise, violet
 
@@ -25,21 +27,9 @@ newContentEditor = "vim"
 
 [menu]
 
-[[menu.topbar]]
-    weight = 1
-    name = "GitHub"
-    url = "https://github.com/jfecher/ante"
-    pre = "<i class='fa fa-2x fa-github'></i>"
-    logo = "img/ante_white.svg"
-
-# Enable or disable top bar with social icons
+# Top bar with social icons
 [params.topbar]
     enable = false
-    text = """<p class="hidden-sm hidden-xs">Contact us on +420 777 555 333 or hello@universal.com.</p>
-      <p class="hidden-md hidden-lg"><a href="#" data-animate-hover="pulse"><i class="fa fa-phone"></i></a>
-      <a href="#" data-animate-hover="pulse"><i class="fa fa-envelope"></i></a>
-      </p>
-      """
 
 # Enable and disable widgets for the right sidebar
 [params.widgets]
@@ -84,6 +74,11 @@ newContentEditor = "vim"
     subtitle = ""
 
 [params.recent_posts]
-    enable = false
-    title = "From our Latin blog, apparently."
-    subtitle = "Why are you still reading?"
+    enable = true
+    title = "Recent posts"
+    subtitle = "Read the latest blog posts"
+
+[taxonomies]
+  category = "categories"
+  tag = "tags"
+  authors = "authors"

@@ -1,0 +1,22 @@
+weight: 3
+title: "Generators"
+description: >
+    <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="c1">// Generators are implemented via Algebraic Effects</span>
+
+    <span class="k">effect</span> <span class="kt">Emit elem</span> <span class="k">with</span> 
+        emit: <span class="kt">elem</span> -> <span class="kt">Unit</span>
+
+    <span class="c1">// One advantage of Generators is that they are easier to write than Iterators</span>
+
+    map (stream: <span class="kt">Unit</span> -> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit a</span>) (f: <span class="kt">a</span> -> <span class="kt">b</span>) <span class="k">can</span> <span class="kt">Emit b</span> =
+        <span class="k">handle</span> stream ()
+        | <span class="kt">Emit</span> elem -> 
+            emit (f elem)
+            <span class="k">resume</span> ()
+
+    <span class="c1">// Stream is a helper trait to Emit all elements of a collection</span>
+
+    parse_csv (text: <span class="kt">s</span>) : <span class="kt">Vec</span> (<span class="kt">Vec String</span>) <span class="k">given</span> <span class="kt">Stream s String</span> =
+        lines text |> skip <span class="m">1</span> |> map (split _ <span class="s">","</span>) |> collect
+
+    csv = parse_csv (<span class="kt">File</span>.open <span class="s">"input.csv"</span>)</code></pre></div>

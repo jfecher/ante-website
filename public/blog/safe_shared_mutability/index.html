@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+    <meta charset="utf-8">
+<meta name="robots" content="all,follow">
+<meta name="googlebot" content="index,follow,snippet,archive">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Achieving Safe, Aliasable Mutability with Unboxed Types</title>
+<meta name="author" content="Jake Fecher" />
+
+
+
+
+<meta name="keywords" content="ante, programming, language, antelang, lang">
+
+
+<meta name="description" content="">
+
+<meta name="generator" content="Hugo 0.89.0-DEV" />
+
+
+<link href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800' rel='stylesheet' type='text/css'>
+
+
+<link rel="stylesheet" href="//use.fontawesome.com/releases/v5.11.2/css/all.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+
+<link href="/css/animate.css" rel="stylesheet">
+
+
+
+  <link href="/css/style.red.css" rel="stylesheet" id="theme-stylesheet">
+
+
+
+<link href="/css/custom.css" rel="stylesheet">
+
+
+
+  <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+
+
+<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon" />
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
+
+
+<link href="/css/owl.carousel.css" rel="stylesheet">
+<link href="/css/owl.theme.css" rel="stylesheet">
+
+
+<link rel="alternate" href="https://antelang.org/index.xml" type="application/rss+xml" title="Ante">
+
+
+
+
+
+
+
+
+<meta property="og:locale" content="en_us">
+<meta property="og:site_name" content="Ante">
+<meta property="og:title" content="Achieving Safe, Aliasable Mutability with Unboxed Types">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://antelang.org/blog/safe_shared_mutability/" />
+<meta property="og:description" content="">
+<meta property="og:image" content="https://antelang.org/img/banners/antelope_bird.jpg">
+<meta property="og:image:type" content="image/jpg">
+
+
+
+  <meta property="og:image:width" content="960">
+  <meta property="og:image:height" content="640">
+
+
+<meta property="og:updated_time" content="2024-01-29T00:00:00Z">
+
+  
+  
+  <meta property="article:section" content="mutability">
+  
+  
+  <meta property="article:published_time" content="2024-01-29T00:00:00Z">
+  <meta property="article:modified_time" content="2024-01-29T00:00:00Z">
+
+
+
+<meta name="twitter:card" content="summary_large_image">
+
+<meta name="twitter:title" content="Achieving Safe, Aliasable Mutability with Unboxed Types">
+
+<meta name="twitter:image" content="https://antelang.org/img/banners/antelope_bird.jpg">
+
+<meta name="twitter:description" content="">
+
+
+      <meta charset="utf-8">
+  <meta name="robots" content="all,follow">
+  <meta name="googlebot" content="index,follow,snippet,archive">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Achieving Safe, Aliasable Mutability with Unboxed Types</title>
+  <meta name="author" content="" />
+
+  <meta name="keywords" content="ante, programming, language, antelang, lang">	
+  <meta name="description" content="For exploring algebraic effects, safe shared mutability, and other novel features">
+
+  <meta name="generator" content="Hugo 0.89.0-DEV" />
+
+  <link href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800' rel='stylesheet' type='text/css'>
+
+  
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+  
+  <link href="https://antelang.org/css/animate.css" rel="stylesheet">
+
+  
+  
+    <link href="https://antelang.org/css/style.red.css" rel="stylesheet" id="theme-stylesheet">
+  
+
+
+  
+  <link href="https://antelang.org/css/custom.css" rel="stylesheet">
+ 
+  
+  <link rel="stylesheet" href="https://antelang.org/css/syntax.css">
+
+  
+  
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  
+
+  
+  <link rel="shortcut icon" href="https://antelang.org/img/favicon.ico" type="image/x-icon" />
+  <link rel="apple-touch-icon" href="https://antelang.org/img/apple-touch-icon.png" />
+  
+
+  <link href="https://antelang.org/css/owl.carousel.css" rel="stylesheet">
+  <link href="https://antelang.org/css/owl.theme.css" rel="stylesheet">
+
+  <link rel="alternate" href="https://antelang.org/index.xml" type="application/rss+xml" title="Ante">
+
+  
+  <meta property="og:title" content="Achieving Safe, Aliasable Mutability with Unboxed Types" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://antelang.org/blog/safe_shared_mutability//" />
+  <meta property="og:image" content="" />
+
+  </head>
+
+  <body>
+
+    <div id="all">
+
+        
+
+
+        
+
+    <div class="navbar navbar-default yamm" role="navigation" id="navbar">
+
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand home" href="https://antelang.org/">
+                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="Achieving Safe, Aliasable Mutability with Unboxed Types" class="hidden-xs hidden-sm">
+                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="Achieving Safe, Aliasable Mutability with Unboxed Types" class="visible-xs visible-sm">
+                    <span class="sr-only">Achieving Safe, Aliasable Mutability with Unboxed Types - go to homepage</span>
+                </a>
+                
+<div class="navbar-buttons">
+        <div class="navbar-collapse collapse" id="navigation">
+            <ul class="nav navbar-nav navbar-right">
+            
+            <li class="dropdown">
+                <a href="https://antelang.org//docs/language">Documentation</a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//docs/ideas">Ideas</a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//docs/roadmap">Roadmap</a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//blog">Blog</a>
+            </li>
+
+            <li class="dropdown">
+                <a href="https://github.com/jfecher/ante"><i class="fa fa-15x fa-github"></i></a>
+            </li>
+            <li class="dropdown">
+                <a href="https://reddit.com/r/ante"><i class="fab fa-15x fa-reddit"></i></a>
+            </li>
+            <li class="dropdown">
+                <a href="https://discord.gg/NPJncGBAws"><i class="fab fa-15x fa-discord"></i></a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//index.xml"><i class="fa fa-15x fa-rss"></i></a>
+            </li>
+
+            </ul>
+        </div>
+        <button type="button" class="navbar-toggle btn-template-main" onclick="document.getElementById('navigation').classList.toggle('collapse')">
+    <span class="sr-only">Toggle Navigation</span>
+        <i class="fa fa-align-justify"></i>
+    </button>
+</div>
+
+            </div>
+            
+
+            
+            
+
+            <div class="collapse clearfix" id="search">
+
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search">
+                        <span class="input-group-btn">
+
+                    <button type="submit" class="btn btn-template-main"><i class="fa fa-search"></i></button>
+
+                </span>
+                    </div>
+                </form>
+
+            </div>
+            
+
+        </div>
+    </div>
+    
+
+
+
+
+
+
+        <div id="heading-breadcrumbs">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Achieving Safe, Aliasable Mutability with Unboxed Types</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+        <div id="content">
+            <div class="container">
+
+                <div class="row">
+
+                    
+
+                    <div class="col-md-9" id="blog-post">
+
+                        
+                          <p class="text-muted text-uppercase mb-small text-right">
+                            
+			      By <a href="/authors/jake-fecher">Jake Fecher</a>
+                            
+                            
+                            
+                              
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                              2024-01-29
+                            
+                          </p>
+                        
+
+                        <div id="post-content">
+                          <p>This is part of Ante&rsquo;s goal to loosen restrictions on low-level programming while remaining
+fast, memory-safe, and thread-safe.</p>
+<hr>
+<h1 id="background">Background</h1>
+<hr>
+<p>When writing low-level, memory-safe, and thread-safe programs, a nice feature that lets us
+achieve all of these is an ownership model. Ownership models have been used by quite a few languages,
+but the language which popularized them was Rust. In Rust, the compiler will check our
+code to ensure we have no dangling references and cannot access already-freed memory (among other errors). For
+example, the next snippet is a compile-time error in rust:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">vec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="fm">vec!</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">];</span><span class="w">
+</span><span class="w"></span><span class="kd">let</span><span class="w"> </span><span class="n">first_element</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">vec</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="c1">// Uh-oh, this may reallocate the Vec, making `first_element` a dangling reference!
+</span><span class="c1">// Luckily, we get a compile-time error:
+</span><span class="c1">// error[E0502]: cannot borrow `vec` as mutable because it is also borrowed as immutable
+</span><span class="c1"></span><span class="n">vec</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="fm">println!</span><span class="p">(</span><span class="s">&#34;{first_element}&#34;</span><span class="p">);</span><span class="w">
+</span></code></pre></div><p>This is great. Those familiar with Rust however, will note that this error is actually caused
+by a related feature to ownership: Rust&rsquo;s borrowing rules. It turns out that moving every object
+into and out of each function is not very convenient, so Rust also lets us create borrowed
+references to values. These references can be mutable or immutable, and their lifetimes are tied
+to that of the owned value. This particular error is prevented by Rust&rsquo;s &ldquo;Aliasibility XOR Mutability&rdquo;
+rule, which I&rsquo;ll call AxM for short. AxM in Rust states that you can have aliasable borrowed
+references, or you can have mutability, but not both. So in the example above, since <code>Vec::push</code>
+requires a mutable <code>&amp;mut Vec&lt;i32&gt;</code> reference, we got a compile-time error trying to call it since
+we also had the immutably borrowed reference <code>first_elem: &amp;i32</code> in scope. Had we not printed
+<code>first_element</code> out afterward, it could be dropped earlier and the code would work, but as-is
+we rightfully get an error.</p>
+<p>This is a great thing to prevent, but it is unfortunate that AxM errors like the one above are some of the most common
+errors in Rust. These make the language more difficult to learn when they are run into so often. As
+someone who has been writing Rust roughly since 1.0, I think it&rsquo;s fair to say even experienced users
+run into AxM errors every now and then. Fixing these often requires laboriously reworking an algorithm
+or - unfortunately - giving up and resorting to inserting excessive calls to <code>clone</code> in the program.</p>
+<p>Moreover, the issue with AxM is that aliasable mutability isn&rsquo;t actually always dangerous.
+Consider the following program:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">my_tuple</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span><span class="w">
+</span><span class="w"></span><span class="kd">let</span><span class="w"> </span><span class="n">first_elem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">my_tuple</span><span class="p">.</span><span class="mi">0</span><span class="p">;</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="c1">// error[E0506]: cannot assign to `my_tuple` because it is borrowed
+</span><span class="c1"></span><span class="n">my_tuple</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">);</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="fm">println!</span><span class="p">(</span><span class="s">&#34;{first_elem}&#34;</span><span class="p">);</span><span class="w">
+</span></code></pre></div><p>We&rsquo;d get a similar error if <code>my_tuple</code> was a <code>&amp;mut (i32, i32)</code> or if <code>first_elem</code> was a mutable reference, etc.
+Why is this? The program is actually perfectly safe. No matter how <code>my_tuple</code> is mutated, its shape
+stays stable, and any inner references will not be invalidated. Another thread
+mutating the data out from under us in a non-atomic way (a la Java) is also not possible since
+<code>&amp;mut</code> references are not <code>Send</code>-able across threads. This is the kind of code new users often try to write in Rust
+and are quickly met with their first experiences with the borrow checker. Needless to say, new users encountering
+such an error message with such unfamiliar concepts can easily have their patience chipped away at. At
+worst, they could even decide to stop learning the language entirely.</p>
+<p>The enforcement of AxM also rules out certain design patterns entirely. For example, graphs and the observer pattern
+somewhat inherently require sharing. We can try to work around this by implementing graphs with a central
+vector of nodes and handing out indices from this vector instead of pointers. There are reasons why we may want
+to do this as well (often better cache locality), but there are also reasons why we may want to have a traditional
+graph of pointers (lending out mutable references to nodes, no longer need to go through a context to operate
+on a node, etc).</p>
+<p>All this seems like a big risk for a language when plenty of other languages get by with aliasable mutability
+just fine. For example, <a href="https://www.ponylang.io/">Pony</a> is an example of a thread-safe and memory-safe
+language with aliasable mutability. The key difference with these languages is that - unlike Rust - they
+force all values to be boxed and often have a garbage collector. This means a function like <code>Vec::get</code> which
+returns an offset inside of the vector&rsquo;s storage simply isn&rsquo;t possible to write in those languages. It is as
+if each vector were a <code>Vec&lt;Rc&lt;T&gt;&gt;</code> and instead of <code>&amp;Rc&lt;T&gt;</code>, their get function returns a cloned <code>Rc&lt;T&gt;</code>. In
+reality, Pony uses a tracing garbage collector so there is no cloning going on, but I think this helps to
+illustrate the point that each element inside a Vector would itself be an owned pointer. This is why these
+languages don&rsquo;t encounter the same issue Rust has with returning a reference to an element in a aliasable
+mutable context.</p>
+<p>So other languages like Pony allow aliasable mutability but require us to box all values. Rust
+lets us unbox most values and obtain references inside objects, but has the AxM restriction.
+Can we do better?</p>
+<p>In the next section, I&rsquo;m going to explain my approach with Ante in allowing safe, aliasable mutability
+in a language similar to Rust. That is, Ante is thread-safe, memory-safe, and uses unboxed values
+with move semantics. As a bonus, this scheme is also completely zero-cost.</p>
+<hr>
+<h1 id="a-new-approach-for-a-new-age">A New Approach for a New Age</h1>
+<p>Ante&rsquo;s system for ensuring memory &amp; thread safety uses Rust as a foundation. Anywhere a non-reference
+value is seen, it is an owned value. Similarly, anytime <code>&amp;t</code> or <code>&amp;mut t</code> are seen, these are borrowed
+references.</p>
+<p>The most important change from Rust&rsquo;s system is that in addition to being tagged with whether they
+are <code>mut</code>able or not, references are also tagged with whether they are <code>own</code>ed, or whether they
+are <code>shared</code> (able to be mutably aliased). For example, when we take multiple mutable references
+to the same value, they are all inferred to be shared:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">my_tuple</span> <span class="ow">=</span> <span class="k">mut</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="nf">elem1</span> <span class="ow">=</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">my_tuple</span><span class="o">.</span><span class="mi">0</span>
+<span class="nf">also_elem1</span> <span class="ow">=</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">my_tuple</span><span class="o">.</span><span class="mi">0</span>
+
+<span class="nf">print</span> <span class="n">elem1</span>  <span class="c1">// Outputs 1</span>
+<span class="nf">print</span> <span class="n">also_elem1</span>  <span class="c1">// Outputs 1</span>
+</code></pre></div><p>The type of <code>elem1</code> and <code>also_elem1</code> here is <code>&amp;shared mut I32</code>.</p>
+<p>We can also mutate through these shared references:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">my_tuple</span> <span class="ow">=</span> <span class="k">mut</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="nf">elem1</span> <span class="ow">=</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">my_tuple</span><span class="o">.</span><span class="mi">0</span>
+<span class="nf">also_elem1</span> <span class="ow">=</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">my_tuple</span><span class="o">.</span><span class="mi">0</span>
+
+<span class="nf">also_elem1</span> <span class="o">:=</span> <span class="mi">3</span>
+
+<span class="nf">print</span> <span class="n">elem1</span>  <span class="c1">// Outputs 3</span>
+</code></pre></div><p>This is because unadorned references (<code>&amp;</code> and <code>&amp;mut</code>) are polymorphic in whether they are <code>own</code>ed
+or <code>shared</code>. These polymorphic references have the capabilities of <code>shared</code> references since anywhere
+a <code>shared</code> reference is valid, an <code>own</code>ed reference would be as well.
+This polymorphism comes in handy when returning a reference. If you passed in an
+owned reference, you&rsquo;ll get an owned one back. This would not be the case if Ante were designed to use
+reference subtyping here instead. Most importantly, this polymorphism allows most code with references
+to be written in a familiar style, ignoring the fact that <code>shared</code> or <code>own</code> exist:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">log_foo</span> <span class="p">(</span><span class="n">foo</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">Foo</span><span class="p">)</span> <span class="p">(</span><span class="n">context</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="kt">Context</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span>
+    <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">logging_enabled</span> <span class="k">then</span>
+        <span class="n">log</span> <span class="s">&#34;Found foo: ${foo}&#34;</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">logs</span> <span class="o">+=</span> <span class="mi">1</span>
+</code></pre></div><p>It is also important to note that any <code>shared</code> references (or polymorphic/unadorned references which
+may be shared) do not implement <code>Send</code> to be able to be sent across other threads. Since they inherently
+allow for shared mutability, this would not be safe to allow.</p>
+<p>How then, does Ante prevent holding onto references of things that may change out from under themselves,
+such as vector elements or union fields?</p>
+<hr>
+<h2 id="preventing-borrows-when-a-types-shape-is-not-stable">Preventing Borrows When a Type&rsquo;s Shape Is Not Stable</h2>
+<p>These cases are simply marked as requiring owning references:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">get</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">own</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="o">:</span> <span class="o">&amp;</span><span class="k">own</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
+</code></pre></div><p>(<code>Fail</code> is an <a href="/docs/language/#algebraic-effects">Algebraic Effect</a>. In this example, it is used
+to signal to the caller if the index was out of bounds)</p>
+<p>This function signature states that in order to return a reference to a vector&rsquo;s elements,
+it needs an owned, though immutable, reference to the Vec. Note that &ldquo;owned&rdquo; here still allows
+multiple immutable references. A type is only considered to be shared when there is a mutable
+reference to it and at least one other reference to it of any kind.
+When we try to call <code>get</code> with a shared vector, we&rsquo;ll get an error:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">v</span> <span class="ow">=</span> <span class="k">mut</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+
+<span class="nf">v_ref1</span> <span class="ow">=</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">v</span>
+<span class="nf">v_ref2</span> <span class="ow">=</span> <span class="o">&amp;</span><span class="n">v</span>
+
+<span class="c1">// error: Expected an owned reference, but `v_ref1` is shared with `v_ref2`</span>
+<span class="nf">v_elem</span> <span class="ow">=</span> <span class="n">get</span> <span class="n">v_ref1</span> <span class="mi">3</span>
+
+<span class="nf">print</span> <span class="n">v_ref1</span>
+<span class="nf">print</span> <span class="n">v_ref2</span>
+</code></pre></div><p>Similarly, if we try to explicitly grab an owned reference for <code>v_ref1</code>, we&rsquo;ll move the error
+up to when <code>v_ref2</code> is borrowed:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">v</span> <span class="ow">=</span> <span class="k">mut</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+
+<span class="c1">// note: Owning reference to `v` created here</span>
+<span class="nf">v_ref1</span> <span class="ow">=</span> <span class="o">&amp;</span><span class="k">own</span> <span class="k">mut</span> <span class="n">v</span>
+
+<span class="c1">// error: Cannot borrow `v`, there is already an owning reference to it</span>
+<span class="nf">v_ref2</span> <span class="ow">=</span> <span class="o">&amp;</span><span class="n">v</span>
+
+<span class="nf">v_elem</span> <span class="ow">=</span> <span class="n">get</span> <span class="n">v_ref2</span> <span class="mi">3</span>
+
+<span class="nf">print</span> <span class="n">v_ref1</span>
+<span class="nf">print</span> <span class="n">v_ref2</span>
+</code></pre></div><p>Taking the reference of a tagged union&rsquo;s fields also requires an owned reference, although this
+must be built into the language.</p>
+<p>Another operation that would be unsafe with shared mutable references would be obtaining a reference
+through a pointer boundary:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Foo</span> <span class="ow">=</span>
+    <span class="n">ptr</span><span class="o">:</span> <span class="kt">Box</span> <span class="kt">Bar</span>
+
+<span class="c1">// If we had the following function, we could create a dangling reference:</span>
+<span class="nf">as_ref</span> <span class="p">(</span><span class="n">box</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">Box</span> <span class="n">t</span><span class="p">)</span> <span class="o">:</span> <span class="o">&amp;</span><span class="n">t</span>
+
+<span class="nf">foo</span> <span class="ow">=</span> <span class="k">mut</span> <span class="kt">Foo</span> <span class="p">(</span><span class="kt">Box</span><span class="o">.</span><span class="n">new</span> <span class="n">my_bar</span><span class="p">)</span>
+
+<span class="nf">foo_mut_ref</span> <span class="ow">=</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">foo</span>
+
+<span class="nf">bar_ref</span> <span class="ow">=</span> <span class="n">as_ref</span> <span class="p">(</span><span class="n">foo</span><span class="o">.&amp;</span><span class="n">ptr</span><span class="p">)</span>
+
+<span class="c1">// Reassign `ptr`, causing the old value to be dropped</span>
+<span class="nf">foo_mut_ref</span><span class="o">.&amp;</span><span class="n">ptr</span> <span class="o">:=</span> <span class="kt">Box</span><span class="o">.</span><span class="n">new</span> <span class="n">other_bar</span>
+
+<span class="c1">// Now bar_ref refers to a dropped value!</span>
+<span class="nf">print</span> <span class="n">bar_ref</span>
+</code></pre></div><p>For this reason, to obtain a reference past a pointer boundary like this, we need an owned reference:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">as_ref</span> <span class="p">(</span><span class="n">box</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">own</span> <span class="kt">Box</span> <span class="n">t</span><span class="p">)</span> <span class="o">:</span> <span class="o">&amp;</span><span class="k">own</span> <span class="n">t</span>
+</code></pre></div><p>This can seem like a fairly serious limitation but it is helpful to take a step back and consider
+when <code>Box&lt;T&gt;</code> and similar pointer types are typically used in today&rsquo;s Rust programs. In my
+experience, these are most often used to wrap recursive data types when using an enumeration.
+When using shared mutability in Ante, these cases would already likely use an <code>Rc t</code>
+or similar around each element to reduce the cloning costs of enumerations (more on this later). Through
+<code>as_mut: &amp;own mut Rc t -&gt; &amp;shared mut t</code>, shared mutability is preserved but we would occasionally
+need to clone the reference-counted pointer to obtain the owned reference. If the cost of
+incrementing reference counts is a deal breaker (and if there is no other suitable pointer type)
+then an application can always decide to go back to <code>Box t</code> and owned mutability instead.</p>
+<hr>
+<h2 id="making-shared-useful">Making Shared Useful</h2>
+<p>Hold on, this is great and all, but how usable are shared references really if we can&rsquo;t do something
+as common as holding onto a vector&rsquo;s elements with them? Does this mean we can&rsquo;t use a shared vector
+at all?</p>
+<p>No! It turns out that even on a shape-unstable type like <code>Vec t</code>, most of its functions are still
+perfectly fine to use in a shared, mutable context. As long as we don&rsquo;t give out references to elements
+we are fine:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Reference-polymorphic, great!</span>
+<span class="nf">len</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Usz</span> <span class="ow">=</span> <span class="o">...</span>
+
+<span class="c1">// Also great!</span>
+<span class="nf">push</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">elem</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span> <span class="o">...</span>
+
+<span class="c1">// Fantastic!</span>
+<span class="nf">pop</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="o">:</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
+</code></pre></div><p>Alright, alright but that still never solved the issue of actually accessing the elements without
+removing them from the Vec. It turns out however, we can do that too:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">get_cloned</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="o">:</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="k">given</span> <span class="kt">Clone</span> <span class="n">t</span> <span class="ow">=</span> <span class="o">...</span>
+</code></pre></div><p>(<code>given Clone t</code> is Ante&rsquo;s way of writing trait constraints)</p>
+<p>As long as we don&rsquo;t return a reference to an element, the API itself is safe.
+Note that since this requires cloning each value, this will be fine for small,
+primitive types, but will be expensive for vectors with more complex element types.
+To work around this, we can instead have a vector of pointer types to reduce the
+cost of cloning: <code>Vec (Rc MyStruct)</code>.</p>
+<p>Eagle-eyed Rust users will note that <code>&amp;shared mut t</code> is fairly similar to <code>Cell&lt;T&gt;</code>
+in Rust (although a more direct comparison would be <code>Mut t</code> in the next section).
+Most of the key differences come in ergonomics and usability. <code>&amp;shared t</code> and its
+mutable variant are built-into the language and thus able to be projected to struct
+fields and provide better interop with other reference types. This reduces the required
+number of conversions, enables tailored compiler errors, and importantly allows arbitrary
+owned values to use shared mutation without requiring converting back and forth between
+a <code>Cell&lt;T&gt;</code> and <code>T</code>. This last point is an important distinction I think. Instead of
+having the ability to opt out of AxM, AxM can be opted into instead.</p>
+<hr>
+<h2 id="shared-interior-mutability">Shared Interior Mutability</h2>
+<p>Since Ante includes shared mutability as a builtin, certain types which can only yield
+immutable references in Rust can be accessed mutably in Ante. For example, <code>Rc t</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">as_mut</span> <span class="p">(</span><span class="n">rc</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">own</span> <span class="k">mut</span> <span class="kt">Rc</span> <span class="n">t</span><span class="p">)</span> <span class="o">:</span> <span class="o">&amp;</span><span class="k">shared</span> <span class="k">mut</span> <span class="n">t</span> <span class="ow">=</span> <span class="o">...</span>
+</code></pre></div><p>Note that like the <code>Box t</code> example earlier, this still requires an owned reference to
+project inside the Rc. In practice this means to use this to mutate inside an Rc you&rsquo;ll
+often need to clone it first. Otherwise another shared reference to the Rc could swap
+out the <code>Rc</code> for another, potentially dropping the original while we held a reference to it.</p>
+<p>Compared to <code>Rc&lt;RefCell&lt;T&gt;&gt;</code> in Rust, a <code>Rc t</code> in Ante can lend out shared references directly
+without a wrapper type. The runtime cost is also different: <code>Rc&lt;RefCell&lt;T&gt;&gt;</code> performs reference
+counting for the outer <code>Rc</code> and the inner <code>Ref</code>s handed out by the <code>RefCell</code>. An <code>Rc t</code> in Ante
+only needs to perform the out <code>Rc</code>. Any <code>&amp;shared mut t</code> that are handed out can
+be copied/aliased freely. Moreover, <code>RefCell&lt;T&gt;</code> introduces a possible panic to the code if
+a <code>RefMut</code> is ever aliased at runtime, this is not possible with <code>&amp;shared mut</code> in Ante.</p>
+<p>If we ever do need interior mutability to lend out owned references without cloning, then we&rsquo;d
+still need to resort to a <code>RefCell t</code> or similar interior mutability type inherited from Rust.</p>
+<hr>
+<h2 id="custom-clones-are-unsafe">Custom Clones Are Unsafe</h2>
+<p>One additional change we need from Rust to enable this scheme is the ability to clone shared
+references. If we&rsquo;re working with a shared ref to a tagged union for example, we&rsquo;ll need to
+be able to Clone it to access its fields:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Shape</span> <span class="ow">=</span>
+   <span class="o">|</span> <span class="kt">Triangle</span> <span class="p">(</span><span class="n">width</span><span class="o">:</span> <span class="kt">U32</span><span class="p">)</span> <span class="p">(</span><span class="n">height</span><span class="o">:</span> <span class="kt">U32</span><span class="p">)</span>
+   <span class="o">|</span> <span class="kt">Square</span> <span class="p">(</span><span class="n">height</span><span class="o">:</span> <span class="kt">U32</span><span class="p">)</span>
+
+<span class="nf">height</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">Shape</span><span class="p">)</span> <span class="o">:</span> <span class="kt">U32</span> <span class="ow">=</span>
+    <span class="k">match</span> <span class="n">clone</span> <span class="n">s</span>
+    <span class="o">|</span> <span class="kt">Triangle</span> <span class="n">_</span> <span class="n">height</span> <span class="ow">-&gt;</span> <span class="n">height</span>
+    <span class="o">|</span> <span class="kt">Square</span> <span class="n">height</span> <span class="ow">-&gt;</span> <span class="n">height</span>
+</code></pre></div><p>But how can we implement <code>Clone Shape</code> if we can&rsquo;t access a tagged union&rsquo;s fields without cloning it first?</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="kt">Clone</span> <span class="kt">Shape</span> <span class="k">with</span>
+    <span class="n">clone</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">Shape</span><span class="p">)</span> <span class="ow">=</span>
+        <span class="k">match</span> <span class="n">s</span>  <span class="c1">// Error here</span>
+        <span class="o">|</span> <span class="kt">Triangle</span> <span class="n">w</span> <span class="n">h</span> <span class="ow">-&gt;</span> <span class="kt">Triangle</span> <span class="o">@</span><span class="n">w</span> <span class="o">@</span><span class="n">h</span>
+        <span class="o">|</span> <span class="kt">Square</span> <span class="n">h</span> <span class="ow">-&gt;</span> <span class="kt">Square</span> <span class="o">@</span><span class="n">h</span>
+</code></pre></div><p>Having a rule such as &ldquo;an impl for <code>Clone</code> can only be created via <code>derive</code>&rdquo; would be too limiting.
+Even if we banned custom <code>Clone</code> impls for shape-unstable types like unions and certain container types
+only, users would still be able to write a <code>Clone</code> impl that would violate soundness:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Foo</span> <span class="ow">=</span>
+    <span class="n">vec</span><span class="o">:</span> <span class="kt">Rc</span> <span class="p">(</span><span class="kt">Vec</span> <span class="kt">Foo</span><span class="p">)</span>
+
+<span class="k">impl</span> <span class="kt">Clone</span> <span class="kt">Foo</span> <span class="k">with</span>
+    <span class="n">clone</span> <span class="n">foo</span> <span class="ow">=</span>
+        <span class="n">vec</span> <span class="ow">=</span> <span class="k">mut</span> <span class="n">clone</span> <span class="n">foo</span><span class="o">.&amp;</span><span class="n">vec</span>
+        <span class="n">mut_vec</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">shared</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="kt">Foo</span> <span class="ow">=</span> <span class="n">as_mut</span> <span class="o">&amp;</span><span class="n">vec</span>
+
+        <span class="c1">// If this clone impl was invoked from `Clone (Vec Foo)`</span>
+        <span class="c1">// with the outer Vec being obtained from a reference into</span>
+        <span class="c1">// the same Rc shared by `Foo`, then we&#39;ve just dropped</span>
+        <span class="c1">// each element inside the Vec, including the one currently</span>
+        <span class="c1">// being cloned</span>
+        <span class="n">clear</span> <span class="n">mut_vec</span>
+
+        <span class="kt">Foo</span> <span class="n">vec</span>
+</code></pre></div><p>Unfortunately, writing a custom impl for <code>Clone</code> is inherently unsafe. For this reason, these impls
+now require the <code>unsafe</code> keyword.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">unsafe</span> <span class="k">impl</span> <span class="kt">Clone</span> <span class="kt">Foo</span> <span class="k">with</span>
+    <span class="n">clone</span> <span class="n">foo</span> <span class="ow">=</span> <span class="kt">Foo</span> <span class="p">(</span><span class="n">clone</span> <span class="n">foo</span><span class="o">.&amp;</span><span class="n">vec</span><span class="p">)</span>
+</code></pre></div><p>Thankfully, writing custom <code>Clone</code> impls is uncommon and code like this which goes out of its
+way to break it is even more rare.
+Nevertheless, it would still be nice if this case could be prevented more cleanly and made safe.</p>
+<hr>
+<h2 id="new-user-experience">New User Experience</h2>
+<p>Finally, it is also important to consider the perspective of a new user to Ante or Rust. This user may be
+familiar with other programming languages but crucially is not yet aware of ownership or borrowing
+which are somewhat unique to these languages.</p>
+<p>In Rust, trying to mutably borrow an already borrowed reference is one of the more memorable errors
+for new users to make due to how easy it is to encounter and how difficult it can be to understand at first.
+A new user experimenting with the language for the first time will often have a hard time avoiding
+these errors until learning about borrowing. As a result, new users tend to insert excessive calls to
+<code>clone</code> and tutorials need to introduce borrowing and AxM somewhat early on.</p>
+<p>In Ante, new users also have the option of simply using shape-stable types. When defining their types
+they can define their vectors to be vectors of pointer types and their unions to have pointers for
+each variant&rsquo;s data. This will avoid any AxM errors for the rest of their program - unless they accidentally
+call <code>get</code> over <code>get_cloned</code> or similar. In that case, they will be given a type error and (hopefully)
+a helpful message suggesting to use <code>get_cloned</code> as an alternative. Tutorials for Ante can encourage this approach
+as well by using pointer types more often at first, until introducing owning references later on as
+a method of reducing boxing. Compared to the Rust approach, this requires a one-time change
+in data types (if not done already / copied from a tutorial), and in return new users are much less likely
+to encounter AxM related errors. Comparing the runtime costs of the two work arounds, excessive cloning has the
+potential to degrade performance considerably when using larger types, but extra boxing in collection types
+and tagged unions won&rsquo;t generally have as drastic a performance impact.</p>
+<hr>
+<h1 id="closing-notes">Closing Notes</h1>
+<p>This was my first blog post for Ante and I&rsquo;m quite excited to share it with anyone reading.
+This scheme will be the first step in making a language with safe, aliasable mutability and
+unboxed types more easily usable. If you found this at all interesting, please
+consider checking out the <a href="https://github.com/jfecher/ante">github page</a> and/or joining
+<a href="https://discord.gg/NPJncGBAws">Ante&rsquo;s discord</a> to discuss the language. The compiler is always
+open to contributions but I love just discussing the language with anyone who wants to as well.
+Thanks for reading and have a fantastic day!</p>
+
+                        </div>
+                        
+                        
+
+                    </div>
+                    
+
+                    
+
+                    
+
+                    <div class="col-md-3">
+
+                        
+
+                        <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://antelang.org/"><h1>Ante</h1></a>
+    </div>
+
+    
+    
+    
+    
+    <div class="table-of-contents toc bd-callout">
+        
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                    
+                    
+                    
+                    <a href="/blog/safe_shared_mutability/#background">
+                        <li>Background</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                    
+                    
+                    
+                    <a href="/blog/safe_shared_mutability/#a-new-approach-for-a-new-age">
+                        <li>A New Approach for a New Age</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/blog/safe_shared_mutability/#preventing-borrows-when-a-typeamprsquos-shape-is-not-stable">
+                        <li>Preventing Borrows When a Type&amp;amp;rsquo;s Shape Is Not Stable</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/blog/safe_shared_mutability/#making-shared-useful">
+                        <li>Making Shared Useful</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/blog/safe_shared_mutability/#shared-interior-mutability">
+                        <li>Shared Interior Mutability</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/blog/safe_shared_mutability/#custom-clones-are-unsafe">
+                        <li>Custom Clones Are Unsafe</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/blog/safe_shared_mutability/#new-user-experience">
+                        <li>New User Experience</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                    
+                    
+                    
+                    <a href="/blog/safe_shared_mutability/#closing-notes">
+                        <li>Closing Notes</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                
+            
+        
+    </div>
+    
+
+
+    <p>&copy; 2025. All rights reserved. </p>
+  </div>
+</div>
+
+
+                        
+
+                    </div>
+                    
+
+                    
+
+                </div>
+                
+
+            </div>
+            
+        </div>
+        
+
+        <footer id="footer">
+    <div class="container">
+
+        
+
+        <div class="col-md-4 col-sm-6">
+
+            
+            <h4>Recent posts</h4>
+
+            <div class="blog-entries">
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="https://antelang.org/blog/simplification_through_addition/">
+                          
+                            <img src="/img/banners/antelope_canyon.jpg" class="img-responsive" alt="Simplification Through Addition">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/blog/simplification_through_addition/">Simplification Through Addition</a></h5>
+                    </div>
+                </div>
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="https://antelang.org/blog/effects_ownership_and_borrowing/">
+                          
+                            <img src="/img/banners/anteater2.jpg" class="img-responsive" alt="Algebraic Effects, Ownership, and Borrowing">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/blog/effects_ownership_and_borrowing/">Algebraic Effects, Ownership, and Borrowing</a></h5>
+                    </div>
+                </div>
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="https://antelang.org/blog/safe_shared_mutability/">
+                          
+                            <img src="/img/banners/antelope_bird.jpg" class="img-responsive" alt="Achieving Safe, Aliasable Mutability with Unboxed Types">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/blog/safe_shared_mutability/">Achieving Safe, Aliasable Mutability with Unboxed Types</a></h5>
+                    </div>
+                </div>
+                
+            </div>
+
+            <hr class="hidden-md hidden-lg">
+            
+
+        </div>
+        
+
+        
+
+    </div>
+    
+</footer>
+
+
+
+
+
+
+
+<div id="copyright">
+    <div class="container">
+        <div class="col-md-12">
+            
+            <p class="pull-right">
+              Template by <a href="https://bootstrapious.com/p/universal-business-e-commerce-template">Bootstrapious</a>.
+              
+
+              Ported to Hugo by <a href="https://github.com/devcows/hugo-universal-theme">DevCows</a>.
+            </p>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+    </div>
+    
+
+    
+<script src="//code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Counter-Up/1.0/jquery.counterup.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-parallax/1.1.3/jquery-parallax.js"></script>
+
+<script src="https://antelang.org/js/front.js"></script>
+
+
+<script src="https://antelang.org/js/owl.carousel.min.js"></script>
+
+
+  </body>
+</html>

@@ -12,19 +12,19 @@ delve down to optimize allocation/representation of memory if desired. A
 central goal of ante however, is to not force this upon users and provide
 sane defaults where possible.
 Compared to other low-level languages, ante is safe like rust but tries
-to be easier in general, for example by avoiding the need for ownership
-semantics through lifetime inference.
+to be easier in general, for example by allowing shared mutability by
+default and avoiding the need for lifetime annotations.
 
 ---
 # Literals
 
 ## Integers
 
-Integer literals can be of any signed integer type (i8, i16,
-i32, i64, isz) or any unsigned integer type (u8, u16, u32, u64, usz) but by
-default integer literals are [polymorphic](#int-trait). Integers come in
+Integer literals can be of any signed integer type (I8, I16,
+I32, I64, Isz) or any unsigned integer type (U8, U16, U32, U64, Usz) but by
+default integer literals are [polymorphic](#int-type). Integers come in
 different sizes given by the number in their type that specifies
-how many bits they take up. `isz` and `usz` are the signed and unsigned
+how many bits they take up. `Isz` and `Usz` are the signed and unsigned
 integer types respectively of the same size as a pointer.
 
 ```ante
@@ -43,28 +43,30 @@ integer types respectively of the same size as a pointer.
 ## Floats
 
 Floats in ante conform to the IEEE 754 standard for floating-point arithmetic
-and come in two varieties: `f32` and `f64` for 32-bit floats and 64-bit
+and come in two varieties: `F32` and `F64` for 32-bit floats and 64-bit
 floats respectively. Floats have a similar syntax to integers, but with
 a `.` separating the decimal digits.
 
 ```ante
-// Float literals aren't polymorphic - they are of type f64
 3.0 + 4.5 / 1.5
 
-// 32-bit floats can be created with the f32 suffix
+// 32-bit floats can be created with the F32 suffix
 3.0f32
 ```
 
+Like integers, floating-point literals are also [polymorphic](#float-type).
+If no type is specified they will default to `F64`.
+
 ## Booleans
 
-Ante also has boolean literals which are of the `bool` type and can be either
+Ante also has boolean literals which are of the `Bool` type and can be either
 `true` or `false`.
 
 ## Characters
 
 Characters in ante are a single, 32-bit [Unicode scalar value](http://www.unicode.org/glossary/#unicode_scalar_value).
-Note that since `string`s are UTF-8, multiple characters are packed into strings and if
-the string contains only ASCII characters, it's size in memory is 1 byte per character in the string.
+Note that since `String`s are UTF-8, multiple characters are packed into strings and if
+the string contains only ASCII characters, its size in memory is 1 byte per character in the string.
 
 ```ante
 print 'H'
@@ -79,7 +81,7 @@ Character escapes can also be used to represent characters not on a traditional 
 '\t' // tab
 '\0' // null character
 
-'\xFFFF' // an arbitrary UTF-8 scalar value given by the
+'\xFFFF' // an arbitrary Unicode scalar value given by the
          // number 'FFFF' in hex
 ```
 
@@ -92,15 +94,16 @@ If desired, C-style null-terminated strings can be obtained by calling the `c_st
 ```ante
 print "Hello, World!"
 
-// The string type is equivalent to the following struct:
-type string =
-    c_string: Ptr char
-    length: usz
+// The String type is equivalent to the following struct:
+type String =
+    c_string: Ptr Char
+    length: Usz
 
-// C-interop often requires accessing the `c_string` field:
+// C-interop often requires using the `c_string` function:
+c_string (s: String) : CString = ...
 
-extern puts : Ptr char -> i32
-puts "Hello, C!".c_string
+extern puts : CString -> I32
+puts (c_string "Hello, C!")
 ```
 
 ## String Interpolation
@@ -124,9 +127,8 @@ print "The ${offset}th number after 3 is ${3 + offset}"
 # Variables
 
 Variables are immutable by default and can be created via `=`.
-Mutable variables are created via `= mut` and can be mutated
-via the assignment operator `:=`. Also note that ante is strongly,
-statically typed yet we do not need to specify the types of variables.
+Also note that ante is strongly, statically typed yet we do not
+need to specify the types of variables.
 This is because ante has global [type inference](#type-inference).
 
 ```ante
@@ -134,25 +136,56 @@ n = 3 * 4
 name = "Alice"
 
 // We can optionally specify a variable's type with `:`
-reading_about_variables: bool = true
+reading_about_variables: Bool = true
+```
 
-// Mutable variables are created with `mut` and mutated with `:=`
+## Mutability
+
+A variable can be made mutable by adding the `mut` keyword when defining the variable:
+
+```ante
+// Mutable variables can be created with `mut`:
 pet_name = mut "Ember"
 print pet_name  //=> Ember
 
+// And can be mutated with `:=`
 pet_name := "Cinder"
 print pet_name  //=> Cinder
 ```
 
-## A brief note on mutability
+Here's another example showing a function that can mutate the passed in parameter:
 
-Generally, mutability can make larger programs
-more difficult to reason about, creating more bugs and increasing the cost
-of development. However, there are algorithms that are simpler or more efficient
-when written using mutability. Being a systems language, ante takes the position
-that mutability should generally be avoided but is sometimes a necessary evil.
+```ante
+count_evens array counter =
+    for array fn elem ->
+        if even elem then
+            counter += 1
 
-## Functions
+counter = mut 0
+count_evens [4, 5, 6] (&mut counter)
+
+print counter  //=> 2
+```
+
+If you have a mutable struct, you can also transfer this mutability to its
+fields to mutate them directly. This can be done via the `.&` operator to retrieve
+a reference to a field:
+
+```ante
+my_pair = mut (1, 2)
+my_pair.&first := 3
+
+field_ref = my_pair.&second
+field_ref := 4
+
+print my_pair  //=> 3, 4
+
+// The following two lines give an error because we never declared `bad` to be mutable
+bad = 1, 2
+bad.&first := 3
+```
+
+# Functions
 
 Functions in ante are also defined via `=` and are just syntactic
 sugar for assigning a lambda for a variable. That is, `foo1` and `foo2`
@@ -166,14 +199,10 @@ foo2 = fn a b ->
     print (a + b)
 ```
 
-Since ante is impure, combining effects can trivially be done via sequencing
-two expressions which can be done by separating the expressions with a newline.
-`;` can also be used to sequence two expressions on the same line if needed. 
-
 ```ante
-// We can specify parameter types via `:`
-// and the function's return type via `->`
-foo1 (a: u32) (b: u32) -> unit =
+// We can specify parameter types and the
+// function return type via `:`
+bar (a: U32) (b: U32) : Unit =
     print a
     print b
     print (a + b)
@@ -193,7 +222,7 @@ even infer which traits are needed in generic function signatures.
 // Something is iterable if we can call `next` on it and
 // get either Some element and the rest of the iterator or
 // None and we finish iterating
-trait Iterator it -> elem =
+trait Iterator it -> elem with
     next: it -> Maybe (it, elem)
 
 first_equals_two it =
@@ -202,8 +231,8 @@ first_equals_two it =
     | _ -> false
 ```
 We never gave any type for `first_equals_two` yet ante infers its type for us as
-`a -> bool with Iterator a i32` - that is a function that returns a `bool` and takes
-a generic parameter of type `a` which must be an iterator producing elements of type `i32`.
+`a -> Bool given Iterator a I32` - that is a function that returns a `Bool` and takes
+a generic parameter of type `a` which must be an iterator producing elements of type `I32`.
 
 ---
 # Significant Whitespace
@@ -256,7 +285,7 @@ chain of lines ending with `\`:
 data  \
 |> map (_ + 2) \
 |> filter (_ > 5) \
-|> max!
+|> max
 
 a = 3 + 2 *  \
     5 + 4    \
@@ -307,15 +336,12 @@ with the new rule:
 data
 |> map (_ + 2)  // error here, |> has no lhs! We must continue the line by indenting it
 |> filter (_ > 5)
-|> max!
+|> max
 
-// Newer versions of ante use . instead which helps break old habits
-// and encourage indenting. It also reads slightly better when used
-// for shorter function calls. Compare `vec |> push 4` with `vec.push 4`.
 // Here's the fixed, indented version
 map data (_ + 2)
-    .filter (_ > 5)
-    .max!
+    |> filter (_ > 5)
+    |> max
 
 // The other examples work as expected
 a = 3 + 2 *
@@ -413,7 +439,7 @@ average_first_two array =
 
 Dereferencing pointers in ante is somewhat uncommon, so ante provides no pointer
 dereference operator. Instead, you can use the `deref` function in the standard library.
-If you need to access a stuct field, `struct.field` in will work as expected regardless 
+If you need to access a struct field, `struct.field` in will work as expected regardless
 of whether `struct` is a struct or a pointer to a struct.
 
 ## Pipeline Operators
@@ -428,7 +454,7 @@ iterator functions:
 
 ```ante
 // Parse a csv's data into a matrix of integers
-parse_csv (text: string) -> Vec (Vec i32) =
+parse_csv (text: String) : Vec (Vec I32) =
     lines text
         |> skip 1  // Skip the column labels line
         |> split ","
@@ -452,8 +478,8 @@ print <| sqrt <| 3 + 1
 
 Ante does not have tuples, instead it provides a right-associative pair
 operator `,` to construct a value of the pair type. We can use it like
-`1, 2, 3` to construct a value of type `i32, i32, i32`
-which in turn is just sugar for `Pair i32 (Pair i32 i32)`.
+`1, 2, 3` to construct a value of type `I32, I32, I32`
+which in turn is just sugar for `Pair I32 (Pair I32 I32)`.
 
 Compared to tuples, pairs are:
 
@@ -473,7 +499,7 @@ With tuples we must [create a different impl for every possible tuple size](http
 with pairs on the other hand the simple implementation works for all sizes:
 
 ```ante
-cast_pair_string = impl
+cast_pair_string = impl Cast (Pair a b) String via
     cast (a, b) = "$a, $b"
 ```
 
@@ -488,7 +514,7 @@ to extract a `List a, List (b, c)` for us. This means if we wanted, we may imple
 
 ```ante
 // given we have unzip : List (a, b) -> List a, List b
-unzip3 (list: List (a, b, c)) -> List a, List b, List c =
+unzip3 (list: List (a, b, c)) : List a, List b, List c =
         as, bcs = unzip list
         bs, cs = unzip bcs
         as, bs, cs
@@ -532,12 +558,12 @@ of parenthesis but in ante since tuples are just nested pairs you can just add a
 pairs = [(1, 2), (3, 4)]
 
 // Other languages require deconstructing with nested parenthesis:
-iter (enumerate pairs) fn (i, (one, two)) ->
+for (enumerate pairs) fn (i, (one, two)) ->
     print "Iteration $i: sum = ${one + two}"
 
 // But since `,` is just a normal operator,
 // the following version is equally valid
-iter (enumerate pairs) fn (i, one, two) ->
+for (enumerate pairs) fn (i, one, two) ->
     print "Iteration $i: sum = ${one + two}"
 ```
 
@@ -547,125 +573,19 @@ If we wanted to surround our nested pairs with parenthesis we have to work a bit
 harder by having a helper trait so we can specialize the impl for pairs:
 
 ```ante
-cast_pair_string = impl
-    cast pair = "(${to_string_helper pair})"
-
 trait ToStringHelper t with
-    to_string_helper (x: t) -> string = cast x
+    to_string_helper (x: t) -> String = cast x
 
-// Specialize the impl for pairs so we can recurse on the rhs
-pair_to_string_helper = impl
-    to_string_helper (a, b) = "$a, ${to_string_helper b}"
+cast_pair_string = impl
+    Cast (Pair a b) String via
+        cast pair = "(${to_string_helper pair})"
+
+    // Specialize the impl for pairs so we can recur on the rhs
+    ToStringHelper (Pair a b) via
+        to_string_helper (a, b) = "$a, ${to_string_helper b}"
 ```
 
 And these two functions will cover all possible lengths of nested pairs.
-
-## Error Handling
-
-Since ante does not have exceptions, the natural approach for error handling
-is using the `Maybe` and `Result` types. To avoid the boilerplate of manually
-matching on these types to propagate up errors, ante provides the `?` operator.
-By default, an expression `foo ?` is equivalent to:
-
-```ante
-match cast foo : Result t e
-| Ok x -> x
-| Err e -> return error e
-```
-
-which uses the `try` trait:
-
-```ante
-trait Try t -> ok err with
-    with Cast t (Result ok err)
-    error: err -> t
-```
-
-Here's an example function that handles some optional values,
-written with and without the `?` operator:
-
-```ante
-add_even_numbers1 (a: string) (b: string) -> Maybe u64 =
-    n1 = match parse a
-        | Ok n -> n
-        | Err e -> return None
-
-    n2 = match parse b
-        | Ok n -> n
-        | Err e -> return None
-
-    if n1 % 2 == 0 and n2 % 2 == 0 then
-        Some (n1 + n2)
-    else
-        None
-
-add_even_numbers2 (a: string) (b: string) -> Maybe u64 =
-    n1 = parse a ?
-    n2 = parse b ?
-
-    if n1 % 2 == 0 and n2 % 2 == 0 then
-        Some (n1 + n2)
-    else
-        None
-```
-
-By default `?` will return early in the current function. Sometimes,
-we may want to only "return" to an intermediate point where we can
-better handle the error. This is where `try` comes in - any `?`s
-on its right hand side will "return" to the innermost try expression
-rather than the function as a whole. Here's an example:
-
-```ante
-add_optionals_or_default (a: Maybe i32) (b: Maybe i32) (default: i32) -> i32 =
-    result = try a? + b?
-    result.unwrap_or default
-```
-
-## Unwrap Operator
-
-In addition to `?`, ante has another error-handling operator `!`. Where
-`?` forwards up an error, `!` unwraps the error, asserting at runtime that
-the error is impossible and panicing if it occurs. Unlike the
-`unwrap` function however - `!` operates on another function as its argument.
-It takes a function on its lhs that returns a value that implements `Try` and
-returns a function taking the same arguments but returning only the non-error
-value. It is similar to the function in pseudocode below:
-
-```ante
-(!) (f: Args -> t) -> (Args -> ok) with Try t ok err =
-    fn args ->
-        match cast (f args)
-        | Ok val -> val
-        | Err e -> panic "Tried to unwrap error value $e"
-```
-
-While many operations can conceptually fail, in practice `unwrap` tends to
-be used a fair amount since there are still situations we do not expect to
-fail. For these situations `!` is quite useful since it still functions as
-a visual indication something can fail but also obscures our business logic
-less than `unwrap`s do. Here's an example:
-
-```ante
-find_least_cost_neighbor graph =
-    get_root graph
-        |> unwrap
-        |> get_neighbors
-        |> min_by fn node -> unwrap (node_cost node)
-        |> unwrap
-
-// Compared to:
-find_least_cost_neighbor graph =
-    get_root! graph
-        |> get_neighbors
-        |> min_by! node_cost!
-```
-
-Note that while `!` can conceptually be used for all errors, in practice
-it is not a good idea to do so. If you do not know or want to assert an
-error is impossible, then it is a better idea to propagate up the error
-via `?` to a callsite that knows more. Resultingly, library code rarely
-uses `!` and application code tends to use it more often,
-but usually still less than `?`.
 
 ---
 # Lambdas
@@ -728,7 +648,7 @@ nested x = add3 1 2 (x + 3)
 
 `_` really shines when using higher order functions and iterators:
 ```ante
-// Given a matrix of Vec (Vec i32), output a string formatted like a csv file
+// Given a matrix of Vec (Vec I32), output a String formatted like a csv file
 map matrix to_string
   |> map (join _ ",") // join columns with commas
   |> join "\n"        // and join rows with newlines.
@@ -755,20 +675,20 @@ if should_print () then
 
 ## Loops
 
-Ante does not include traditional for or while loops since these constructs usually require mutability to be useful. Instead, ante favors recursive functions like map, fold_left, and iter (which iterates over an iterable type, much like foreach loops in most languages):
+Ante does not include traditional for or while loops since these constructs usually require mutability to be useful. Instead, ante favors recursive functions like map, fold_left, and for (which iterates over an iterable type, much like foreach loops in most languages):
 
 ```ante
-// The type of iter is:
-// iter : a -> (elem -> unit) -> unit with Iterator a elem
+// The type of for is:
+// for : a -> (elem -> Unit) -> Unit given Iterator a elem
 
-iter (0..10) print   // prints 0-9 inclusive
+for (0..10) print   // prints 0-9 inclusive
 
-iter (enumerate array) fn (index, elem) ->
+for (enumerate array) fn (index, elem) ->
     // do something more complex...
     print result
 ```
 
-You may notice that there is no way to break or continue out of the iter function. Moreover if you need a more complex loop that a while loop may traditionally provide in other languages, there likely isn’t an already existing iterate function that would suit your need. Other functional languages usually use helper functions with recursion to address this problem:
+You may notice that there is no way to break or continue out of the `for` function. Moreover if you need a more complex loop that a while loop may traditionally provide in other languages, there likely isn’t an already existing iterate function that would suit your need. Other functional languages usually use helper functions with recursion to address this problem:
 
 ```ante
 sum numbers =
@@ -787,7 +707,7 @@ sum numbers =
     loop numbers (total = 0) ->
         match numbers
         | Nil -> total
-        | Cons x s -> recur xs (total + x)
+        | Cons x xs -> recur xs (total + x)
 ```
 
 After the loop keyword comes a list of variables/patterns which are translated into the parameters of the helper function. If these variables are already defined like numbers is above, then the value of that variable is used for the initial invocation of the helper function. Otherwise, if the variable/pattern isn’t already in scope then it must be supplied an initial value via =, as is the case with total in the above example. The body of the loop becomes the body of the recursive function, with recur standing in for the name of the function.
@@ -809,7 +729,7 @@ list<unsigned int> get_digits(unsigned int x) {
 This can be translated into ante as the following loop:
 
 ```ante
-get_digits (x: u32) -> List u32 =
+get_digits (x: U32) : List U32 =
     loop x (digits = Nil) ->
         if x == 0 then return digits
         last_digit = x % 10
@@ -846,8 +766,8 @@ we expect:
 
 ```ante
 type IntOrString =
-   | Int i32
-   | String string
+   | Int I32
+   | String String
 
 match Int 7
 | Int 3 -> print "Found 3!"
@@ -868,6 +788,71 @@ Note that there are a few subtle design decisions:
    body as well, we only need to indent once past the `match` instead
    of twice which saves us valuable horizontal space.
 
+## `is` keyword
+
+The `is` keyword can be used to pattern match within arbitrary expressions.
+The syntax for an `is` expression is `<expr> is <pattern>`. These expressions
+can be used to test an expression matches a particular case, for example:
+
+```ante
+shared type Expr =
+   | Int I32
+   | Var String
+   | Add Expr Expr
+
+is_variable (e: Expr) =
+    e is Var _
+
+print (is_variable (Var "foo")) //=> true
+print (is_variable (Int 3))     //=> false
+```
+
+If an `and` is used after the `is` expression, any variables defined in the pattern
+will be in scope of the right-hand side of the `and` expression:
+
+```ante
+is_even_int (e: Expr) =
+    e is Int x and even x
+```
+
+Note that because `<expr> is <pattern>` is an expression and `and` also accepts two expressions,
+chaining matches is also possible:
+
+```ante
+print_if_large_product (x: Maybe I32) (y: Maybe I32) =
+    if x is Some x2 and y is Some y2 and x * y > 1000 then
+        // x2 and y2 are still in scope
+        print (x2 * y2)
+```
+
+Additionally, as we saw above, if `is` expressions are used within an `if` condition (or match guard)
+the variables defined within the `is` expression will also be in scope of the corresponding
+`if` or `match` branch. Note that for these variables to be in scope, the `is` expression
+must be in the outermost portion of the condition such that only `and` expressions may be
+joining them. An `is` in a nested expression like `if e is Var a or e is Int x then ...` will
+not have its variables in scope of the then branch since `a` or `x` may not actually be matched.
+If this happens you'll get a compiler warning that `a` and `x` cannot be used (since they will
+never be in scope).
+
+With these limitations in mind, `is` can still be a very useful operator to shorten code using
+pattern matching.
+
+```ante
+incorrect_example (x: Maybe I32) =
+    if not (x is Some y) and y > 2 then //error! `y` is not in scope here: (x is Some y) may not match
+        ...
+```
+
+```ante
+evaluate (e: Expr) (env: HashMap String I32): I32 can Error =
+    match e
+    // We can check if `name` is in our HashMap within this match
+    | Var name if lookup env name is Some value -> value
+    | Var name -> error "${name} is not defined"
+    | Int x -> x
+    | Add lhs rhs -> evaluate lhs env + evaluate rhs env
+```
+
 ---
 # Types
 
@@ -875,7 +860,7 @@ Ante is a strongly, statically typed language with global type inference.
 Types are used to restrict the set of values as best as possible such that
 only valid values are representable. For example, since references in ante
 cannot be null we can instead represent possibly null references with
-`Maybe (ref t)` which makes it explicit whether a function can accept or
+`Maybe &t` which makes it explicit whether a function can accept or
 return possibly null values.
 
 ## Type Definitions
@@ -888,12 +873,12 @@ You can define struct types with commas separating each field or
 newlines if the type spans multiple lines:
 
 ```ante
-type Person = name: string, age: u8
+type Person = name: String, age: U8
 
 type Vec a =
     data: Ptr [a]
-    len: usz
-    capacity: usz
+    len: Usz
+    capacity: Usz
 ```
 
 Tagged unions can be defined with `|`s separating each variant.
@@ -922,68 +907,350 @@ Both operations are generic so we'll need to specify what type we should
 parse out of the string:
 
 ```ante
-parse_and_print_int (s: string) -> unit =
-    x = parse s : i32
+parse_and_print_int (s: String) : Unit =
+    x = parse s : I32
     // alternatively we could do
-    // x: i32 = parse s
+    // x: I32 = parse s
     print x
 ```
 
-## Refinement Types
+## Int Type
 
-Refinement types are an additional boolean constraint on a normal type.
-For example, we may have an integer type that must be greater than 5.
-This is written as `x: i32 where x > 5`. These refinements can be
-written anywhere after a type is expected, and are mostly restricted
-to numbers or "uninterpreted functions." This limitation is so we can
-infer these refinements like normal types. If we instead allow any value
-to be used in refinements we would get fully-dependent types for which
-inference and basic type checking (without manual proofs) is undecidable.
+Ante has quite a few [integer types](#integers) so one question
+that gets raised is what is the type of an integer literal?
+If we randomly choose a type like `I32` then when using all
+other integer types we'd have to constaintly annotate our
+operations with the type used which can be annoying. Imagine
+`a + 1u64` every few lines.
 
-Refinement types can be used to ensure indexing into a vector is always valid:
+Instead, integer literals are given the polymorphic `Int a` type:
 
 ```ante
-get (a: Vec t) (index: usz where index < len a) -> t = ...
-
-a = [1, 2, 3]
-get a 2  // valid
-get a 3  // error: couldn't satisfy 3 < len a
-
-n = random_in (1..10)
-get a n  // error: couldn't satisfy n < len a
-
-// The solver is smart enough to know len a > n <=> n < len a
-if len a > n then
-    get a n  // valid
+3 : Int a // for some unknown 'a' which will later be resolved
+          // to one of I8, I16, ..., U8, U16, ... etc.
 ```
 
-You can also use uninterpreted functions to tag values. The following
-example uses this technique to tag vectors returned by the `sort`
-function as being sorted, then restricting the input of `binary_search`
-to only sorted vectors:
+When we use an integer with no specific type, the integer literal
+keeps this generic type. This sometimes pops up in function signatures:
 
 ```ante
-// You can name a return type for use in refinements
-sort (vec: Vec t) -> ret: Vec t where sorted ret = ...
-
-binary_search (vec: Vec t where sorted vec) (elem: t) -> Maybe (index: usz where index < len vec) = ...
+// This works with any integer type
+add1 (x: Int a) : Int a =
+    x + 1
 ```
 
-Type aliases can be used to cut down on the annotations:
+If we do use it with a specific type however, then just like with
+normal generics, the generic type variable is constrained to be
+that concrete type (and the concrete type must satisfy the `Int`
+constraint - ie it must be a primitive integer or we get a compile-time error).
 
 ```ante
-SortedVec t = a: Vec t where sorted a
+// Fine, we're still generic over a
+foo () : Int a =
+    0
 
-Index vec = x:usz where x < len vec
+x: I32 = 1  // also fine, we constrained 1 : I32 now
 
-sort (vec: Vec t) -> SortedVec t = ...
-
-binary_search (vec: SortedVec t) (elem: t) -> Maybe (Index vec) = ...
+y = 2u16  // still fine, now we're specifying the type
+          // of the integer literal directly
 ```
 
-In contrast to contracts in other languages, these refinements are in
-the type system and are thus all checked during compile-time with
-the help of a SMT solver.
+## Float Type
+
+Like the [Int type](#int-type), there is also a polymorphic `Float a` type:
+
+```ante
+3.0  // has the type `Float a` until it is later used in an expression
+     // which forces it to be either a F32 or F64.
+```
+
+Values of the `Float a` type will default to `F64` if they are never constrained:
+
+```ante
+print 5.0  // Since we can print any float type, we arbitrarily default 5.0 to an F64
+           // making this snippet equivalent to `print (5.0 : F64)`
+```
+
+## Function Types
+
+Function types in Ante are of the form `arg1 - arg2 - .. - argN -> return_type`.
+Note that functions in Ante always have at least one argument. Zero-argument functions
+are usually encoded as functions accepting a single unit value as an argument, e.g. `Unit -> I32`.
+
+Function types can also have an optional effect clause at the end. More on this
+in [Effects in Function Types](#effects-in-function-types).
+
+## Anonymous Struct Types
+
+If we have multiple types with the same field in scope:
+
+```ante
+type A = foo: I32
+
+type B = foo: String
+```
+
+Then we are left with the problem of deciding what the type
+of an `x.foo` expression should be:
+
+```ante
+// Does this work?
+// - If so what type do we get?
+// - If not, what is the error?
+get_foo x = x.foo
+```
+
+Ante solves this with anonymous struct types which are row-polymorphic.
+In other words, they are polymorphic over what fields are in the struct,
+which allows any struct type to be used so long as it has the required
+fields. For example, `{ x: I32 }` would be the type of any struct that
+has a field `x` of type `I32`.
+
+Using this, we can type `get_foo` as a function which takes
+any struct that has a field named `foo` of type `b`:
+
+```ante
+get_foo (x: { foo: b }) : b =
+    x.foo
+```
+
+As a more complex example, here's a function that can print anything with `debug` field
+that itself is printable and a `prefix` field that must be a string:
+
+```ante
+// Type inferred as:
+//   { prefix: String, debug: a } -> Unit given Print a
+print_debug x =
+    prefix = x.prefix ++ ": "
+    print prefix
+    print x.debug
+```
+---
+# Move Semantics
+
+Similar to Rust, values in Ante are affine by default (may be used 0 or 1 time
+before they are dropped and deallocated). These values are called
+"owned" values, in contrast with references which are "borrowed" and may be
+used any amount of times. The only exception to owned values being used
+at most once are types which implement the `Copy` trait. This trait signals
+the type may be trivially copied each time it is referred to:
+
+```ante
+s: String = "my string"
+x: I32 = 42
+
+// We've moved `s` into `foo`, trying to access it afterwards would give a compile-time error
+foo s x
+
+// Since I32 is a primitive type, we can still refer to `x` after it was passed into `foo`
+bar x
+```
+
+## Borrowing
+
+Like Rust, if a value needs to be used multiple times, we can borrow references
+to it so that we can refer to the value as many times as we need.
+
+```ante
+s = "my string"
+
+// References can be used as many times as needed
+baz &s
+baz &s
+```
+
+Mutable references can be borrowed from mutable values using `&mut`:
+
+```ante
+s = mut "my string"
+
+// This function call may modify our string
+qux (&mut s)
+
+print s  //=> "???"
+```
+
+### Restrictions on References
+
+Compared to references in Rust, Ante's references are also bound by lifetimes, although
+this lifetime cannot be explicitly referred to by a lifetime variable. This is a tradeoff
+which simplifies the language somewhat but means that the expressivity of references is
+also more restricted compared to Rust. Generally, references are meant to mostly be used
+as a parameter-passing method rather than stored deeply within types.
+
+When used in a parameter position, each variable of a function is assumed to have a
+possibly different lifetime:
+
+```ante
+concat_foo (foo: &Foo) : String =
+    foo.first ++ foo.second
+```
+
+Taking a reference prevents moving the underlying value before the reference is dropped:
+
+```ante
+bad (foo: Foo) =
+    // Error: Cannot move `foo` while the borrowed reference `&foo` is still alive
+    bar &foo foo
+```
+
+#### Returning References
+
+The next most common use of references is writing functions to lend references
+to avoid cloning the inner value unnecessarily. Other languages with
+references approach this differently. In Hylo for example, references may only
+be returned in special "subscript" functions, which are in turn only able to be
+called within another function call, e.g. `foo(my_subscript(bar, baz), qux)`.
+
+Ante recognizes this common case and tries to be more flexible in comparison.
+Functions returning references are allowed:
+
+```ante
+get_ref (foo: &Foo) (_bar: &Bar) : &Baz =
+    foo.&baz
+```
+
+If a reference is returned from a function, none of the referenced inputs
+can be moved until the returned reference is dropped.
+
+```ante
+example2 (foo: Foo) (bar: Bar) =
+    ref = get_ref &foo &bar
+    // Error: Cannot move `foo` while `ref` is still alive
+    drop foo
+    print ref
+```
+
+Since Ante has no lifetime annotations it does not know from which
+variable the return result is borrowed from. To solve this, Ante conservatively
+ties the lifetime of the return result to the lifetime of all of the reference
+parameters to the function. In addition to not being able to move any of these
+parameters afterward, this can also have implications for whether each reference
+must be `shared` or not (see [shared mutability](#shared-mutability)). Consider the following code:
+
+```ante
+example2 (foo: Foo) (bar: &mut Bar) =
+    ref = get_ref &foo bar
+    print bar
+    print ref
+    ()
+```
+
+We get an error that `bar` must be a `shared` reference because the compiler sees
+`ref` as a reference potentially aliased to `bar`, which would make it mutably
+aliased since `bar: &mut Bar`. This is despite us being able to peek into `get_ref`
+to see it actually only ever returns a reference inside of `foo`.
+
+#### Lifetime-bound Types
+
+Types which capture references must themselves be bound by the same lifetime as those
+references. This is indicated using the `ref` keyword. For example, if we had a struct:
+
+```ante
+type Context =
+    global_context: &GlobalContext
+```
+
+We would have to refer to this struct elsewhere as `ref Context`, which will restrict
+the lifetime of the `Context` to that of the reference it contains internally. This is
+similar to using a lifetime variable in Rust: `Context<'a>`.
+
+If a type captures multiple references, the lifetime used by `Context` is the shortest
+of all the captured lifetimes.
+
+`ref` is also often seen when using closures which capture references:
+
+```ante
+x = Bar
+foo () = x
+
+// Type of foo is:  ref Fn Unit => &Bar
+```
+
+---
+
+### Shared Mutability
+
+Another difference from Rust is that Ante allows shared (aliasable) mutability.
+In addition to whether a reference is `mut`able or not, a reference can also
+be tagged whether it is `own`ed or `shared`. Additionally, if there is a mutable
+reference borrwed from a value with at least 1 other borrowed reference to the same
+value, all references are inferred to be mutably `shared`.
+
+The `own` and `shared` tags are used to prevent operations that would be unsafe
+on a shared mutable reference. A common theme of these operations is that they hand
+out references inside of a type with an unstable shape. For example, handing out
+a reference to a `Vec` element would be unsafe in a shared context since the `Vec`
+may be reallocated by another reference. To prevent this, `Vec.get` requires
+an owned reference:
+
+```ante
+// Raises Fail if the index is out of bounds
+get (v: &own Vec t) (index: Usz) : &own t can Fail
+```
+
+Other Vec functions like `push` or `pop` would still be safe to call on `shared`
+references to Vecs since they do not hand out references to elements. If we did
+need a Vec element when all we have is a `&shared Vec t`, we can still retrieve
+an element through `Vec.get_cloned`:
+
+```ante
+// Raises Fail if the index is out of bounds
+get_cloned (v: &Vec t) (index: Usz) : &t can Fail given Clone t
+```
+
+As a result, if you know you're going to be working with mutably shared Vecs
+or other container types, you may want to wrap each element in a pointer type
+to reduce the cost of cloning: `Vec (Rc t)`.
+
+### Reference Polymorphism
+
+If the `own` and `shared` modifiers are omitted from the reference type, the
+reference is considered to be polymorphic over both. Since most code will
+not care if a reference is shared or not, this gives us some much needed
+polymorphism while reducing notational burden. `Vec.get_cloned` above
+is one example of a function taking references polymorphic in whether they are owned or shared.
+
+Note that a polymorphic reference will have the capabilities of the lowest
+common denominator - a `shared` reference. If an owned value is needed a
+type error will be issued signalling the function will need to require an owned
+reference instead.
+
+### Internal Mutability
+
+Since mutating through an immutably borrowed reference `&t` is otherwise impossible,
+Ante provides several types for "internal mutability." `RefCell t` will be
+a familiar sight to those used to Rust, but using this type entails runtime
+checking to uphold the properties of an owned reference (either a mutable reference
+can be made or multiple immutable references, but never both at once).
+
+Since Ante natively supports shared references, it is also possibly to obtain a
+shared reference directly through a shared pointer type like an `Rc t`:
+
+```ante
+as_mut (rc: &own mut Rc t) : &shared mut t = ...
+```
+
+Note that like most pointer types, we still need an owned reference of the
+pointer itself to obtain a reference to the inside. This is because otherwise,
+the value would be able to drop out from under us if another shared reference
+to the pointer swapped out the Rc struct itself for another. As a result, mutating
+an `Rc t` often requires cloning the outer Rc to ensure it isn't dropped while the
+inner references are lent out.
+
+If we wanted to create a shared mutable container where each element is also
+mutably shared, we could use a `Vec (Rc t)` with this technique. Note that the
+`Vec` itself doesn't need to be boxed since we can hand out `&shared mut` references
+from owned values already. If want to store the same `Vec` reference in other data types
+then we would need an `Rc` or other shared wrapper around the `Vec`.
+
+This is essentially how many higher level languages make shared mutability work: by boxing
+each value. When we employ this strategy in Ante however, we don't even need to box every
+value. Just boxing container elements and union data is often sufficient.
+
+If an owned reference `&own t` or `&own mut t` is ever required however,
+a different type such as `RefCell t` would still need to be used to provide
+the runtime tracking required to enforce this constraint.
 
 ---
 # Traits
@@ -995,20 +1262,20 @@ is done via traits. You can define a trait as follows:
 
 ```ante
 trait Stringify t with
-    stringify: t -> string
+    stringify: t -> String
 ```
 
-Here we say `stringify` is a function that take in a `t` and returns a `string`.
-With this, we can write another function that can abstract over all `t`'s that
+Here we say `stringify` is a function that takes a value of type `t` and returns a
+`String`. With this, we can write another function that abstracts over all `t`'s that
 can be converted to strings:
 
 ```ante
-stringify_print (x: t) -> unit with Stringify t =
+stringify_print (x: t) : Unit given Stringify t =
     print (stringify x)
 ```
 
 Just like types and algebraic effects, we can leave out all our traits
-in the `with` clauses and they can still be inferred.
+in the `given` clauses and they can still be inferred.
 
 Traits can also define relations over multiple types. For example,
 we may want to be more general than the `Stringify` cast above -
@@ -1021,8 +1288,8 @@ first to the second:
 trait Cast a b with
     cast: a -> b
 
-// We can cast to a string using
-cast 3 : string
+// We can cast to a String using
+cast 3 : String
 ```
 
 ## Impls
@@ -1032,14 +1299,14 @@ we'll have to `impl`ement the trait for the types we want
 to use it with. This can be done with `impl` blocks:
 
 ```ante
-stringify_bool = impl
+stringify_bool = impl Stringify Bool via
     stringify b =
         if b then "true"
         else "false"
 ```
 
 Then, when we call a function like `print_to_string` which
-requires `ToString t` we can pass in a `bool` and the
+requires `Stringify t` we can pass in a `Bool` and the
 compiler will automatically find the `stringify_bool` impl
 in scope and use that:
 
@@ -1047,12 +1314,54 @@ in scope and use that:
 print_to_string true  //=> outputs true
 ```
 
-Note that because `impl`s are named, we can also manually specify
-which one to use if there are ever multiple conflicting ones in scope.
+## Named Impls
+
+In contrast to other languages with traits or typeclasses, all impls
+are named in ante. This enables impls to be imported or hidden from
+scope in the same manner as any other construct: by name.
 
 ```ante
-print_to_string true with stringify_bool
+import Foo.hash_bar, std_impls hiding eq_foo
 ```
+
+This also enables the ability to specify which impl to use via the `via`
+keyword if there are ever multiple conflicting impls in scope.
+
+```ante
+empty = impl Stringify a via stringify _ = ""
+
+print_to_string true via stringify_bool
+```
+
+Having multiple conflicting impls anywhere in a codebase is often an error
+in other languages, necessitating extensive use of the newtype pattern
+for otherwise unnecessary wrapper types and boilerplate. Ante does not
+enforce global [coherence](#coherence), instead opting for this name-based
+approach to disambiguate where necessary.
+
+As a final example, note that names don't have to be given to individual impls,
+we can also group impls together to reduce the notational burden of needing to
+name each individual impl. Note that becaues impls are disambiguated by name,
+we should avoid including multiple impls for the same trait in the same named group
+so that we can disambiguate between them if needed.
+
+```ante
+type Foo = first: Bar, second: Baz
+
+foo_impls = impl
+    // We can impl multiple traits via the same method:
+    (Hash, Eq, Cmp) Foo via derive
+
+    // We can also forward to a subset of fields:
+    Print Foo via forward second
+
+    // And we can use manual impls
+    Combine Foo via
+        (++) a b = Foo a.first (qux a b)
+```
+
+Note that the mechanism to specify how to derive impls for custom traits is still experimental.
+See more on [the ideas page](/docs/ideas#derive-without-macros).
 
 ## Functional Dependencies
 
@@ -1067,7 +1376,7 @@ To illustrate the need for such a construct, lets say we wanted
 to abstract over a vector's `get` function:
 
 ```ante
-get (vector: Vec t) (index: usz) -> Maybe t = ...
+get (vector: Vec t) (index: Usz) : Maybe t = ...
 ```
 
 We want to be able to use this with any container type, but how?
@@ -1076,23 +1385,22 @@ before:
 
 ```ante
 trait Container c elem with
-    get: c -> usz -> Maybe elem
+    get: c -> Usz -> Maybe elem
 ```
 
 At first glance this looks fine, but there's a problem: we
 can implement it with any combination of `c` and `elem`:
 
 ```ante
-// Implements Container (Vec i32) i32
-intvec_container = impl
-    get (v: Vec i32) (index: usz) -> Maybe i32 = ...
+conflicting_impls = impl
+    Container (Vec I32) I32 via
+        get (v: Vec I32) (index: Usz) : Maybe I32 = ...
 
-// Implements Container (Vec i32) string
-intvec_container_that_somehow_holds_strings = impl
-    get (v: Vec i32) (index: usz) -> Maybe string = ...
+    Container (Vec I32) String via
+        get (v: Vec I32) (index: Usz) : Maybe String = ...
 ```
 
-But we already had an impl for `Vec i32`, and defining a
+But we already had an impl for `Vec I32`, and defining a
 way to get another element type from it makes no sense!
 This is what associated types or ante's restricted functional
 dependencies solve. We can modify our Container trait to
@@ -1101,27 +1409,27 @@ specify that for any given type `c`, there's only 1 valid
 
 ```ante
 trait Container c -> elem with
-    get: c -> usz -> Maybe elem
+    get: c -> Usz -> Maybe elem
 
-vec_container = impl
-    get (v: Vec a) (i: usz) -> Maybe a = ...
+vec_container = impl Container (Vec a) a via
+    get (v: Vec a) (i: Usz) : Maybe a = ...
 ```
 
 This information is used during type inference
 so if we have e.g. `e = get (b: ByteString) 0` and there
-is an impl for `Container ByteString u8` in scope then we also
-know that `e : u8`.
+is an impl for `Container ByteString U8` in scope then we also
+know that `e : U8`.
 
 Note that using a functional dependency in a trait signature
 looks a lot like separating the return type from the arguments
-of a function (both use `->`). This was intentional; a good
+of a function. This was intentional; a good
 rule of thumb on when to use functional dependencies is if
 the type in question only appears as a return type for the
 function defined by the trait. For the `Container` example
 above, `elem` is indeed only used in the return type of `get`.
 The most notable exception to this rule is the `Cast` trait
 defined earlier in which it is useful to have two impls
-`Cast i32 string` and `Cast i32 f64` to cast integers
+`Cast I32 String` and `Cast I32 F64` to cast integers
 to strings and to floats respectively.
 
 ## Coherence
@@ -1132,118 +1440,23 @@ impls for types outside of the modules the type or trait were
 declared in. If there are ever conflicts with multiple valid
 impls being found, an error is given at the callsite and the
 user will have to manually specify which to use either by only
-importing one of these impls or with an explicit `with` clause
+importing one of these impls or with an explicit `via` clause
 at the callsite:
 
-```
-add = impl
-    (++) (x: i32) (y: i32) = x + y
-
-mul = impl
-    (++) (x: i32) (y: i32) = x * y
+```ante
+add = impl Combine I32 via (++) = (+)
+mul = impl Combine I32 via (++) = (*)
 
 print (2 ++ 3)  // Error, multiple matching impls found! `add` and `mul` are both in scope
 
-print (2 ++ 3) with add  //=> 5
-print (2 ++ 3) with mul  //=> 6
-```
-
-## Int Trait
-
-Ante has quite a few [integer types](#integers) so one question
-that gets raised is what is the type of an integer literal?
-If we randomly choose a type like `i32` then when using all
-other integer types we'd have to constaintly annotate our
-operations with the type used which can be annoying. Imagine
-`a + 1u64` every few lines.
-
-Instead, integer literals are polymorphic over the `Int` trait:
-
-```ante
-trait Int a with
-    // no operations, this trait is built into
-    // the compiler and is used somewhat like a typetag
-```
-
-When we use an integer with no specific type, the integer literal
-keeps its generic type. This sometimes pops up in function signatures:
-
-```ante
-// This works with any integer type
-add1 (x: a) -> a with Int a =
-    x + 1
-```
-
-If we do use it with a specific type however, then just like with
-normal generics, the generic type variable is constrained to be
-that concrete type (and the concrete type must satisfy the `Int`
-constraint - ie it must be a primitive integer or we get a compile-time error).
-
-```ante
-// Fine, we're still generic over a
-foo () -> a with Int a =
-    0
-
-x: i32 = 1  // also fine, we constrained 1 : i32 now
-
-y = 2u16  // still fine, now we're specifying the type
-          // of the integer literal directly
-```
-
-## Member Access Traits
-
-If we have multiple types with the same field in scope:
-
-```ante
-type A = foo: i32
-
-type B = foo: string
-```
-
-Then we are left with the problem of deciding what the type
-of the `x.foo` expression should be:
-
-```ante
-// Does this work?
-// - If so what type do we get?
-// - If not, what is the error?
-get_foo x = x.foo
-```
-
-Ante solves this with member access traits. Whenever ante
-sees an expression like `x.foo` it makes a new trait like
-the following pseudocode:
-
-```ante
-trait .foo struct -> field with
-    (.foo) : struct -> field
-```
-
-Now we can type `get_foo` as a function which takes
-any value of type `a` that has a field named `foo` of type `b`:
-
-```ante
-get_foo (x: a) -> b with .foo a b =
-    x.foo
-```
-
-Since member access traits are just traits generated by the
-compiler under the hood, we get all the benefits of traits as
-well, including composability of multiple traits and trait inference.
-Here's a function that can print anything with `debug` field
-that itself is printable and a `prefix` field that must be a string:
-
-```ante
-print_debug x =
-    prefix = x.prefix ++ ": "
-    print prefix
-    print x.debug
+print (2 ++ 3) via add  //=> 5
+print (2 ++ 3) via mul  //=> 6
 ```
 
 ---
 # Modules
 
-Ante's module system files a simple, hierarchical structure
+Ante's module system follows a simple, hierarchical structure
 based on the file system. Given the following file system:
 
 ```
@@ -1275,7 +1488,7 @@ separate parent modules so there is no name conflict.
 
 ## Imports
 
-Importing all symbols within a module into scope can be
+Importing symbols within a module into scope can be
 done with an `import` expression. Lets say
 we were using the module hierarchy given in the
 [section above](#modules). In our `Baz.Nested` file we
@@ -1293,7 +1506,7 @@ get_baz () = "baz"
 To use these definitions from `Foo` we can import them:
 
 ```ante
-import Baz.Nested
+import Baz.Nested.*
 
 baz = get_baz ()
 print "baz: $baz, nested_baz = $nested_baz"
@@ -1302,101 +1515,133 @@ print "baz: $baz, nested_baz = $nested_baz"
 We can also import only some symbols into scope:
 
 ```ante
-import Baz.Nested.(print_baz, get_baz)
+// This syntax was chosen so that when adding new imports
+// you only need to edit the end of the line rather than
+// needing to add a '{' or similar token before print_baz as well.
+import Baz.Nested.print_baz, get_baz
 
 print (get_baz ())
 print_baz ()
 ```
 
-You'll note that `import`s are not qualified by default,
-this may change in the future.
+Now, lets say we are in module Bar and want to import `Baz.Nested`
+but we already have a function named `get_baz` in scope. We cannot
+do `import Baz.Nested.*` since there would be conflicting names in scope.
+We could import only the functions we need but if we require many functions
+from `Baz.Nested` then this may take some time. For this reason, when using
+wildcard imports, you can also specify definitions to exclude, via the `hiding` clause:
+
+```ante
+import Baz.Nested.* hiding get_baz
+
+// No error here
+get_baz () = my_local_baz
+```
+
+Alternatively, you can also rename imports via `as`:
+
+```ante
+import Baz.Nested.* hiding get_baz
+
+// If we want to import everything from Baz.Nested while renaming
+// some of the items we need to list them separately since `as`
+// doesn't work with * imports:
+import Baz.Nested.get_baz as other_get_baz
+
+import Foo.a as foo_a, b, c, d as foo_d
+
+// No error here
+get_baz () = my_local_baz
+```
+
+## Exports and Visibility
+
+All names defined at global scope are by default visible to the entire
+package but not to any external packages. Items can optionally be exported
+across package boundaries by adding each name to an `export` list at the top
+of the module.
+
+```ante
+// fib and sum will be exported as library functions
+export fib, sum
+
+fib n = fib_helper n 0 1
+
+fib_helper n a b =
+    if n <= 0 then a
+    else fib_helper (n - 1) b (a + b)
+
+sum n = sum_helper n 0
+
+sum_helper n acc =
+    if n <= 0 then acc
+    else sum_helper (n - 1) (acc + n)
+```
 
 ---
-# Lifetime Inference
+# Packages
 
-To protect against common mistakes in manual memory management
-like double-frees, memory leaks, and use-after-free, ante automatically
-infers the lifetime of `ref`s. If you're familiar with rust's
-lifetime system, this works in a similar way but is intentionaly
-less restrictive since it abandons the ownership rule of only
-allowing either a single mutable reference or multiple immutable ones.
-Also unlike rust, ante hides the lifetime parameter on references.
-Since it is inferred automatically by the compiler there is no need
-to manually mess around with them. There is a tradeoff compared to
-rust however: to accomplish this hands-off approach ante typically
-infers `ref`s to live longer than they need to.
+In addition to modules, Ante has another unit of organization called packages.
+Each package is meant to correspond to a project where each dependency is
+also a package.
 
-`ref`s can be created with `new : a -> ref a` and the underlying
-value can be accessed with `deref : ref a -> a`. Here's a simple
-example 
+At the source code level, import paths are prefixed by a package name.
+For example, in `import Foo.Bar.Baz`, `Foo` is the package to search for `Bar.Baz`
+within. For new programs in an otherwise empty directory, the only packages
+visible will be the current package, using the current directory's name,
+and the `Std` package containing the standard library.
 
-```ante
-get_value () -> ref i32 =
-    three = 3
-    // This & operation will copy and allocate 3
-    &three
+Packages are not required to all be in the same directory as the current project.
+Instead, the compiler searches for packages in a few directories by default:
 
-value = get_value ()
+- `.` for the current package
+- `/path/to/stdlib` for the stdlib
+- `./deps` for dependencies of the current package
 
-// the ref value is still valid here and
-// is deallocated when it goes out of scope.
-print value
+These directories to search for packages in are called the "relative roots" and can
+be configured via compiler flags. The advantages of this design are as follows:
+
+- An internet connection is never required to build a project
+- This design is flexible and compatible with a package manager, although it does not require one
+- Git repositories or other local projects can be cloned into the `deps` directory to quickly add local dependencies
+- Dependencies aren't required to be registered with a package repository just to be used at the language level
+- A package manager is free to configure the relative roots itself so that users never need to touch
+  the `deps` directory or relative roots if they use a package manager
+- Versioning is left to the package manager
+- Multiple projects sharing the same dependencies can be accomplished by simple symlinks
+- Diamond dependencies are naturally allowed
+
+## Diamond Dependencies
+
+Diamond dependencies occur when two dependencies of a project both depend on the same
+dependency, e.g. package `A` has dependencies `B` and `C` which both depend on `D`.
+
+```
+  B
+ / \
+A   D
+ \ /
+  C
 ```
 
-The above program is compiled to the equivalent of destination-passing
-style in C:
+This is a valid configuration, and whether or not the `D` that is shared by `B` and `C`
+is the same `D` is determined by the absolute file path to `D`. If the file path is the
+same, the package is the same and its types are thus interchangeable. This can be done
+automatically - for example by a package manager recognizing both `B` and `C` require `D`
+and providing the same `D` to both by configuring the compiler's relative roots or using symlinks.
 
-```c
-void get_value(int* three) {
-    *three = 3;
-}
+Similarly, if `B` and `C` require different versions of `D`, these will naturally be
+located at separate filepaths and treated as different packages. So `B` would require `D1`
+and `C` would require `D2`. The result would be the following valid package graph, and
+types from `D1` would be incompatible with types from `D2` (and vice-versa).
 
-int main() {
-    int value;
-    get_value(&value);
-    print(value); // print impl is omitted for brevity
-}
 ```
-
-The above program showcased we can return a `ref` value to extend its
-lifetime. Perhaps a more standard operation is to just use them as
-temporary references:
-
-```ante
-type VeryLarge = ...
-
-some_operation (x: ref VeryLarge) (n: i32) -> Result i32 string
-    ... // do things with x
-    Ok n
-
-verylarge: VeryLarge = ...
-
-some_operation &verylarge 2
+  B - D1
+ /
+A
+ \
+  C - D2
 ```
-
-Unlike C++-references the lifetime inference system will ensure
-this reference never outlives the value (since the lifetime will
-automatically be lengthened), and compared to Rust, you will never
-get an error that the lifetime was too short since it is always
-inferred to be long enough.
-
-## Details
-
-Internally, lifetime inference of refs uses the original Tofte-Taplin
-stack-based algorithm. This algorithm can infer references which
-can be optimized to allocate on the stack instead of the heap
-even if it needs to be allocated on a prior stack frame. The
-tradeoff for this is that, as previously mentioned, the inferred
-lifetimes tend to be imprecise. As such, `ref`s in ante are meant
-to be used for temporary unowned references like where you'd use
-`&` in rust. It is not a complete replacement for smart pointer types
-such as `Box` and `Rc` (unless you're fine with using more memory).
-The place where `ref`s are typically worst are in implementing container types.
-`ref`s are implemented using memory pools on the stack under the
-hood so any container that wants to free early or reallocate and
-free/resize memory (ie. the vast majority of containers) should use
-one of the smart pointer types to hold their elements instead.
-
 ---
 # Extern
 
@@ -1417,9 +1662,9 @@ You can also use extern with a block of declarations:
 
 ```ante
 extern
-    exit: i32 -> never_returns
-    malloc: usz -> Ptr a
-    free: Ptr a -> i32
+    exit: C.Int -> never_returns
+    malloc: Usz -> Ptr a
+    printf: C.String -> ... -> C.Int
 ```
 
 Note that you can also use varargs (`...`) in these declarations
@@ -1437,13 +1682,13 @@ research languages like [Eff](https://www.eff-lang.org/) and [Koka](https://koka
 In short, algebraic effects are similar to a resumable exception, and they
 allow for non-local control flow that makes some programming styles more natural.
 Algebraic effects also serve as an alternative to monads for purely functional
-programming. Compared to monads, algebraic effects compose naturally but are very
+programming. Compared to monads, algebraic effects compose naturally but are
 slightly more restrictive.
 
 Algebraic effects can be used first by declaring the effect with the `effect` keyword,
 then by performing the effect within a function. Once this happens,
-the computation will suspend, and the program will unwind to the most recent
-effect handler (similar to unwinding to the nearest try block for exceptions).
+the computation will suspend, and the program will call the most recent
+statically-known effect handler.
 From there, the effect handler can stop the computation and return a value as
 with exceptions, or it can resume the computation and continue by calling `resume`
 with the value to resume with. The type of value needed to resume depends on
@@ -1451,17 +1696,17 @@ the return type of the effect. For example, if our effect is:
 
 ```an
 effect GiveInt with
-    give_int: string -> i32
+    give_int: String -> I32
 ```
 
-Then we will have to call `resume` with an `i32` to continue the original computation.
+Then we will have to call `resume` with an `I32` to continue the original computation.
 
 In an effect handler, we can match on any effects performed within the matched
 expression. For example, if we want to write a handler for the `GiveInt` effect above,
 we may write a function like:
 
 ```an
-handle_give_int (f: unit -> a with GiveInt) -> a =
+handle_give_int (f: Unit -> a can GiveInt) : a =
     handle f ()
     | give_int str ->
         if str == "zero"
@@ -1473,7 +1718,7 @@ Finally, if we have a function `do_math` which uses the `GiveInt` effect, here's
 how we'd pass it to `handle_give_int` to properly handle the effect:
 
 ```an
-do_math (x: i32) -> i32 with GiveInt =
+do_math (x: I32) : I32 can GiveInt =
     a = give_int "zero"
     b = give_int "foo"
     x + a + b
@@ -1481,9 +1726,71 @@ do_math (x: i32) -> i32 with GiveInt =
 handle_give_int (fn () -> do_math 3)  //=> 126
 ```
 
+## Effect Control-Flow
+
+Algebraic Effects have a control-flow that is likely novel to many programmers. It is similar
+to an exception that may be resumed. We can create a new effect handler for `GiveInt` to better
+show this unique control-flow:
+
+```ante
+debug_give_int (f: Unit -> a can GiveInt): a =
+    handle f ()
+    | give_int msg ->
+        print "give_int '${msg}' called!"
+        r = resume 0
+        print "resume '${msg}' finished"
+        r
+
+foo () =
+    print "foo called!"
+    _ = give_int "foo a"
+    _ = give_int "foo b"
+    print "foo finished"
+
+bar () =
+    print "bar called!"
+    _ = give_int "bar a"
+    _ = give_int "bar b"
+    print "bar finished"
+
+example () =
+    foo ()
+    bar ()
+```
+
+Now when we run `debug_give_int example` we get the following print outs:
+
+```
+foo called!
+give_int 'foo a' called!
+give_int 'foo b' called!
+foo finished
+bar called!
+give_int 'bar a' called!
+give_int 'bar b' called!
+bar finished
+resume 'bar b' finished
+resume 'bar a' finished
+resume 'foo b' finished
+resume 'foo a' finished
+```
+
+The novel control-flow is all from code after the `resume` call in the handler. If the
+handler does not have any code after `resume` (ie. it is tail-resumptive) it can actually
+be optimized into a normal function call. When performance is vital and an effect may be
+handled in a tail-resumptive way, it is possible to specify when declaring the effect that
+all handlers for it must be tail-resumptive. That way a library or application developer
+can guarantee certain performance characteristics of the effect no matter its implementation.
+
+If the above print outs are still indecipherable, see the example in
+[Matching on the Returned Value](#matching-on-the-returned-value) for the step-by-step evaluation
+of an effect.
+
+## Sugar for applying handlers
+
 You'll notice `handle_give_int` expects a function, so we have to wrap `do_math 3` in a
 lambda before we pass it into our handler. Since this operation is so common, ante provides
-the `with` operator which will wrap it's left argument in a lambda and pass it to the function
+the `with` operator which will wrap its left argument in a lambda and pass it to the function
 on its right. Here is the definition of `with` in pseudocode:
 
 ```ante
@@ -1493,9 +1800,104 @@ a with b
 
 With this we can rewrite the last line as:
 
-```an
+```ante
 do_math 3 with handle_give_int
 ```
+
+There are also times when we want to use a handler to handle an entire block. For this,
+we can use the `using` keyword:
+
+```ante
+// try: (Unit -> a can Fail) -> Maybe a
+using try
+
+foo = failable_operation ()
+bar = failable_operation ()
+foo + bar * 2
+```
+
+Which desugars to:
+
+```ante
+try fn () ->
+    foo = failable_operation ()
+    bar = failable_operation ()
+    foo + bar * 2
+```
+
+This is often useful for error handling or early returns across function boundaries.
+
+## Effects in Function Types
+
+Function types like `a -> b` can always have an optional effects clause as in
+`a -> b can Fail`. This effects clause controls which effects that function is
+allowed to perform. For example, a function declared with the type `a -> b can Print`
+may print out values but may never interact with the file system.
+
+You can explicitly state that a function may not perform any (unhandled) effects
+by appending `pure` after the function type, e.g. `a -> b pure`. Note that this
+function may still perform effects internally, but any effects it performs must be
+handled by the function itself. Since they must be handled without performing any
+additional effects, there would be no way for the function to interact with the
+file system or perform any other side-effects (since they could not do so without
+using another unhandled effect).
+
+A function declared without an effects clause is usually pure, however
+it may also be effect-polymorphic. Effect polymorphic functions have a type variable
+in their effects clause, e.g. `a -> b can e`. This is usually used so that these functions
+can call other functions which may perform effects not relevant to the original function.
+For example, consider the `map` function on arrays. It has the signature:
+
+```ante
+map (array: Array a) (f: a => b can e): Array b can e = ...
+```
+
+This signature states that `map` accepts an array and a closure of type `a => b can e`
+which may perform effects `e` when called, and returns an `Array b` while performing
+the effects `e`. Note that the only way for `map` to perform the effects `e` would be
+if it calls the argument `f` that it was given. This allows us to call `map` with
+functions that `can Print` values or that `can Fail`, or `can Async`, etc., all without
+us needing to write different variants of `map` for each.
+
+Because effect polymorphism is almost always the desired behavior, Ante will default
+to being effect polymorphic if a function's effect clause is not specified. Specifically,
+if the function takes another function as a parameter, the outer function will automatically
+be made effect polymorphic over the parameter function's effects as long as the parameter
+function's effects were not explicitly specified. So we can rewrite `map`'s signature as:
+
+```ante
+map (array: Array a) (f: a => b): Array b = ...
+```
+
+And it would be equivalent. Note that this effect-polymorphism by default isn't always desired.
+In these cases, the function parameter's effects can be explicitly specified. This
+may be the case when spawning threads for example:
+
+```ante
+spawn_thread (thread: Unit => Unit pure): Unit can IO, Fail = ...
+```
+
+The above function's signature states that `spawn_thread` may `Fail` and perform some IO (presumably
+in the form of spawning an OS thread), while `thread` may not perform any effects itself.
+
+Another case is when a function parameter has effects that the outer function does not. Consider:
+
+```ante
+example1 (inner1: Unit -> Unit can Fail): Unit = ...
+
+example2 (inner2: Unit -> Unit can e): Unit = ...
+```
+
+In the case of `example1`, this type signature is similar to an effect handler which will call
+`inner1` and handle the `Fail` effect internally. Usually these functions also want to allow effect
+polymorphism, so if this was the intent we should also add a `can e` to both `example1` and `inner1`
+since Ante will only automatically default to effect polymorphism if `inner1`'s effects weren't
+explicitly specified.
+
+In the case of `example2` we know `inner2` may perform some effect(s) `e` but don't know which effects
+exactly. Additionally, since `example2` itself doesn't perform `e` and can't handle effects unless
+they're known, we know `example2` can not actually call `inner2` at all. It may only pass it to other
+functions which also do not call it, or drop the value without using it.
 
 ## More on Handlers
 
@@ -1507,7 +1909,7 @@ to be defined for any effect. As an example, lets define another handler
 for `GiveInt` in addition to `handle_give_int`:
 
 ```an
-the_int (int: i32) (f: unit -> a with GiveInt) -> a =
+the_int (int: I32) (f: Unit -> a can GiveInt) : a =
     handle f ()
     | give_int _ -> resume int
 
@@ -1520,7 +1922,7 @@ Handle expressions can also match on the return value
 of the handled expression
 
 ```an
-count_giveint_calls (f: unit -> a with GiveInt) -> i32 =
+count_giveint_calls (f: Unit -> a can GiveInt) : I32 =
     handle f ()
     | return x -> 0
     | give_int _ -> 1 + resume 0
@@ -1531,7 +1933,7 @@ do_math 5 with count_giveint_calls  //=> 2
 
 This example can be confusing at first - how can we always return
 an integer representing the number of GiveInt calls if our function
-says it returns some type `a`? Lets work this out step by step
+says it returns some type `a`? Let's work this out step by step
 to see how it expands:
 
 ```ante
@@ -1547,26 +1949,28 @@ handle
 
 // Then reduce via our give_int rule - continuing
 // the computation with the value 0 and adding 1 to the result
-handle 1 + (a = 0; b = give_int "foo"; 5 + a + b)
-| return x -> 0
-| give_int _ -> 1 + resume 0
+1 + 
+  handle (a = 0; b = give_int "foo"; 5 + a + b)
+  | return x -> 0
+  | give_int _ -> 1 + resume 0
 
 // Reduce via give_int again for b
-handle 1 + (1 + (a = 0; b = 0; 5 + a + b))
-| return x -> 0
-| give_int _ -> 1 + resume 0
+1 + (1 +
+       handle (a = 0; b = 0; 5 + a + b)
+       | return x -> 0
+       | give_int _ -> 1 + resume 0)
 
 // Now we finish evaluating the function and would
 // normally get a result of 5
-handle 1 + (1 + (return 5))
-| return x -> 0
-| give_int _ -> 1 + resume 0
+1 + (1 +
+       handle (return 5)
+       | return x -> 0
+       | give_int _ -> 1 + resume 0
 
 // Since our handler matches on this return value,
-// we use that rule next to map it to 0
-handle 1 + (1 + 0)
-| return x -> 0
-| give_int _ -> 1 + resume 0
+// we use that rule next to map it to 0. The handled
+// expression is now done evaluating, so the `handle` is finished.
+1 + (1 + 0)
 
 // Finally, 1 + 1 + 0 evaluates to 2 with no further effects
 2
@@ -1574,24 +1978,14 @@ handle 1 + (1 + 0)
 
 ### Resuming Multiple Times
 
-`resume` is a first-class function like any other, so we
-can call it multiple times, or pass it to higher-order functions
-like `map` and `flatmap`:
+In other languages with algebraic effects it may be possible to resume
+multiple times. This isn't possible in Ante unfortunately since it conflicts
+with Ante's ownership rules. In the worst case resuming multiple times would
+mean requiring a `Clone` constraint on the entire call stack!
 
-```an
-these_ints (f: unit -> a with GiveInt) (ints: Vec i32) -> Vec a =
-    handle f ()
-    | return x -> [x]
-    | give_int _ -> flatmap ints resume
-
-
-do_math 2
-    with these_ints [1, 3]  //=> [4, 6, 6, 8]
-```
-
-This handler is similar to the list monad in that it will keep
-resuming from the given function with all combinations of the given
-values, returning a Vec of all the return values when finished.
+Instead, `resume` in Ante is typed as a `once fn` which limits it to only
+being called once. The plus side of this is that it opens up more opportunities
+for implementing effects in an efficient way.
 
 ### Resuming Zero Times
 
@@ -1599,7 +1993,7 @@ Handlers may also choose not to resume at all, simply by
 not calling `resume`:
 
 ```an
-interpret (default_value: a) (f: unit -> a with GiveInt) -> a =
+interpret (default_value: a) (f: Unit -> a can GiveInt) : a =
     import Random.random
     handle f ()
     | give_int "zero" -> resume 0
@@ -1608,6 +2002,52 @@ interpret (default_value: a) (f: unit -> a with GiveInt) -> a =
     | give_int _ -> default_value
 
 do_math 7 with interpret 42  //=> 42
+```
+
+## Error Handling
+
+Ante primarily uses the `Fail` and `Throw e` effects for error handling.
+These roughly correspond to `Maybe t` and `Result t e` respectively.
+Being effects however, these are automatically propagated up the callstack:
+
+```ante
+add_even_numbers (a: String) (b: String) : U64 can Fail =
+    n1 = parse a
+    n2 = parse b // parse: String -> U64 can Fail
+
+    if n1 % 2 == 0 and n2 % 2 == 0
+    then n1 + n2
+    else fail ()
+```
+
+Handling these effects can be done via manual `handle` expressions, or
+via the `try` and `catch` helper functions
+which convert Fails to Maybe, and Throws to Results:
+
+```ante
+try (f: Unit -> a can Fail) : Maybe a =
+    handle f ()
+    | return x -> Some x
+    | fail () -> None
+
+catch (f: Unit -> a can Throw e) : Result a e =
+    handle f ()
+    | return x -> Ok x
+    | throw e -> Error e
+
+print (add_even_numbers "2" "4" with try) //=> Some 6
+print (add_even_numbers "2" "5" with try) //=> None
+```
+
+Because effects can be naturally composed, functions returning multiple
+different errors can also be naturally composed without requiring users
+to define their own error unions:
+
+```ante
+foo () can Throw FileError, Throw ParseError, Throw BarError =
+    f = File.open "foo.txt"
+    contents = parse (read f)
+    bar contents
 ```
 
 ## Useful Effects
@@ -1621,33 +2061,35 @@ Algebraic Effects can be used to emulate mutable state - automatically
 threading stateful values through multiple functions.
 
 ```ante
-effect State a with
-    get: unit -> a
-    put: a -> unit
+effect Use a with
+    get: Unit -> a
+    put: a -> Unit
 
-state (current_state: s) (f: unit -> a with State s) -> a =
+state (mut current_state: s) (f: Unit -> a can Use s) : a =
     handle f ()
-    | put new_state -> resume () with state new_state
-    | get () -> resume current_state with state current_state
+    | get () -> resume current_state
+    | put new_state ->
+        current_state := new_state
+        resume ()
 
 
 type Expr =
-   | Int i32
-   | Var string
+   | Int I32
+   | Var String
    | Add Expr Expr
-   | Let string (rhs: Expr) (body: Expr)
+   | Let String (rhs: Expr) (body: Expr)
 
-Eval = State (Map string i32)
+Eval = Use (Map String I32)
 
-lookup (name: string) -> Maybe i32 with Eval =
+lookup (name: String) : Maybe I32 can Eval =
     map = get ()
     map |> get name
 
-define (name: string) (value: i32) -> unit with Eval =
+define (name: String) (value: I32) : Unit can Eval =
     map = get ()
     put (map |> insert name value)
 
-eval (expr: Expr) -> i32 with Eval =
+eval (expr: Expr) : I32 can Eval =
     match expr
     | Int x -> x
     | Var s -> lookup s .or_error "$s not defined"
@@ -1675,10 +2117,10 @@ whether a function requires such a context or not can be inferred,
 removing a context from a function no longer requires manually removing
 function arguments from every call site of that function. We gain all
 this while still keeping the use of a context explicit in the function's
-signature. We know any function marked `with Eval` will
+signature. We know any function marked `can Eval` will
 make use of this context and potentially modify it. If we wanted to
 separate these two notions, we could split `Get` and `Put` into different
-effects instead of including them both in a `State` effect
+effects instead of including them both in a `Use` effect
 
 This example also highlights we can use type aliases for effect types.
 
@@ -1690,10 +2132,10 @@ while remaining purely functional behind the scenes.
 
 ```an
 effect Loop with
-    break: unit -> a
-    continue: unit -> a
+    break: Unit -> a
+    continue: Unit -> a
 
-for (iter: i) (f: e -> unit with Loop) -> unit with Iterate i e =
+for (iter: i) (f: e -> Unit can Loop) : Unit can Iterate i e =
     match next iter
     | None -> ()
     | Some (rest, elem) ->
@@ -1703,16 +2145,16 @@ for (iter: i) (f: e -> unit with Loop) -> unit with Iterate i e =
         // If the body returns normally, we also want to continue the loop
         | return _ -> for rest f
 
-while (cond: a -> bool) (body: a -> unit) -> unit with State a =
+while (cond: a -> Bool) (body: a -> Unit) : Unit can State a =
     if cond (get ()) then
         body (get ())
         while cond body
 
-do_while (body: a -> bool) -> unit with State a =
+do_while (body: a -> Bool) : Unit can State a =
     if body (get ()) then do_while body
 
 // Loop until we eventually find a prime number through sheer luck
-loop_examples (vec: Vec i32) -> unit with Print, State i32 =
+loop_examples (vec: Vec I32) : Unit can Print, State I32 =
     for vec fn elem ->
         largest = get ()
         if largest > 100 then
@@ -1730,7 +2172,7 @@ loop_examples (vec: Vec i32) -> unit with Print, State i32 =
         put (x + 2)
         not is_prime (x + 2)
 
-find_random_prime (vec: Vec i32) -> i32 with Print =
+find_random_prime (vec: Vec I32) : I32 can Print =
     loop_examples vec with final_state 0
 ```
 
@@ -1740,29 +2182,29 @@ The yield effect provides a way to implement generators.
 
 ```ante
 effect Yield a with
-    yield: unit -> a
+    yield: Unit -> a
 
-traverse (xs: List Int) -> unit with Yield Int =
+traverse (xs: List Int) : Unit can Yield Int =
     match xs
     | Cons x xs -> yield x; traverse xs
     | None -> ()
 
-filter (k: unit -> a with Yield b) (f: b -> bool) -> a with Yield b =
+filter (k: Unit -> a can Yield b) (f: b -> Bool) : a can Yield b =
     handle k ()
     | yield x ->
         if f x then yield x
         resume ()
 
-iter (k: unit -> a with Yield b) (f: b -> unit) -> a =
+iter (k: Unit -> a can Yield b) (f: b -> Unit) : a =
     handle k ()
     | yield x -> resume (f x)
 
-yield_to_list (k: unit -> a with Yield b) -> List b =
+yield_to_list (k: Unit -> a can Yield b) : List b =
     handle k ()
     | return _ -> []
     | yield x -> Cons x (resume ())
 
-main () = 
+main () =
     odds = traverse [1, 2, 3]
         with filter is_odd
         with yield_to_list
@@ -1786,10 +2228,10 @@ mock them for testing.
 
 ```an
 effect Print with
-    print: string -> unit
+    print: String -> Unit
 
 effect QueryDatabase with
-    querydb: string -> Response
+    querydb: String -> Response
 
 database f =
     db = Database.connect "..."
@@ -1800,9 +2242,9 @@ database f =
 
 ignore_db f =
     handle f ()
-    | querydb _ -> Response.empty
+    | querydb _ -> resume Response.Empty
 
-business_logic (should_query: bool) -> unit with Print, QueryDatabase =
+business_logic (should_query: Bool) : Unit can Print, QueryDatabase =
     if should_query then
         print "querying..."
         response = querydb "SELECT column FROM table"
@@ -1812,7 +2254,7 @@ business_logic (should_query: bool) -> unit with Print, QueryDatabase =
         print "did not query"
 
 // Print effect handling is builtin, let ante handle it
-main () with Print =
+main () can Print =
     business_logic true with database
 
 // Mock our business function. Use a different handler for
@@ -1828,133 +2270,12 @@ test () =
     assert (not is_empty logs)
 ```
 
-### Expected Value
-
-One of the more niche benefits of algebraic effects is the ability
-to compute the expected value of numerical functions which internally
-use an effect like `Flip` to decide on branches to take within the function.
-
-```ante
-effect Flip with
-    flip: unit -> bool
-
-calculation () =
-    if flip () then
-        unused = flip ()
-        if flip () then 0.5
-        else 4.0
-    else 1.0
-
-expected_value (f: unit -> f64 with Flip) -> f64 =
-    handle f ()
-    | flip () -> (resume true + resume false) / 2.0
-
-print (expected_value calculation)  //=> 1.625
-```
-
-### Parsers
-
-Algebraic effects can also be used to write parser combinators.
-This parser is for a language with numbers, addition, multiplication,
-and parenthesized expressions. This example was adapted from
-[this koka paper](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/08/algeff-tr-2016-v2.pdf).
-
-```ante
-effect Repeat with
-    flip: unit -> bool
-    fail: unit -> a
-
-effect Parse with
-    // The parameter to Satisfy is a function which takes
-    // our current input and returns a pair of
-    // (result, rest_of_input) on success, or None on failure.
-    satisfy: (string -> Maybe (a, string)) -> a
-
-choice p1 p2 =
-    if flip () then p1 () else p2 ()
-
-many (p: unit -> a with Repeat) -> List a with Repeat =
-    choice (fn () -> many1 p)
-           (fn () -> Nil)
-
-many1 p = Cons (p ()) (many p)
-
-
-// Return all possible solutions from the given computation
-solutions (f: unit -> a with Repeat) -> List a =
-    handle f ()
-    | return x -> [x]
-    | fail () -> []
-    | flip () -> resume false ++ resume true
-
-// Return the first succeeding computation (taking the false Flip branch first)
-eager (f: unit -> a with Repeat) -> Maybe a =
-    handle f ()
-    | return x -> Some x
-    | fail () -> None
-    | flip () ->
-        match resume false
-        | Some x -> Some x
-        | None -> resume true
-
-// Handle any Parse effects (letting Repeat effects pass through)
-parse (input: string) (f: unit -> a with Parse, Repeat) -> a, string with Repeat =
-    handle f ()
-    | return x -> x, input
-    | satisfy p ->
-        match p input
-        | None -> fail ()
-        | Some (x, rest) -> resume x with parse rest
-
-// These will be our parsing primitives
-symbol (c: char) -> char with Parse =
-    satisfy fn input ->
-        match input
-        | Cons x rest if x == c -> Some (c, rest)
-        | _ -> None
-
-digit () -> Int with Parse =
-    satisfy fn input ->
-        match input
-        | Cons d rest if is_digit d -> Some (int (d - '0'), rest)
-        | _ -> None
-
-number () =
-    many1 digit .foldl 0 fn acc d -> 10 * acc + d
-
-// Now our actual parser with begin in proper:
-binop sym op f =
-    a = f ()
-    symbol sym
-    b = f ()
-    op a b
-
-add () = binop '+' (+) term
-mul () = binop '*' (*) factor
-
-expr () = choice add term
-term () = choice mul factor
-
-factor () -> Int with Parse, Repeat =
-    choice number fn () ->
-        symbol '('
-        e = expr ()
-        symbol ')'
-        e
-
-parse expr "1+2*3" with solutions
-//=> [(7, ""), (3, "*3"), (1, "+2*3")]
-
-parse expr "1+2*3" with eager
-//=> Some (7, "")
-```
-
 ### Others
 
 Other examples include using effects to
 implement [asynchronous functions](https://www.microsoft.com/en-us/research/wp-content/uploads/2017/05/asynceffects-msr-tr-2017-21.pdf), implementing
 a clean design for [handling animations in games](https://gopiandcode.uk/logs/log-bye-bye-monads-algebraic-effects.html),
-and using effects to emulate any monad except
-for the continuation monad (citation needed).
+and generally using effects to emulate any monad except
+for the continuation monad.
 
 ---

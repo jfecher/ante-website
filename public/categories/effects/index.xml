@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>effects on Ante</title>
+    <link>https://antelang.org/categories/effects/</link>
+    <description>Recent content in effects on Ante</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 20 Feb 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://antelang.org/categories/effects/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Algebraic Effects, Ownership, and Borrowing</title>
+      <link>https://antelang.org/blog/effects_ownership_and_borrowing/</link>
+      <pubDate>Tue, 20 Feb 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/blog/effects_ownership_and_borrowing/</guid>
+      <description>Introduction Algebraic Effects are a useful abstraction for reasoning about effectful programs by letting us leave the interpretation of these effects to callers. However, most existing literature discusses these in the context of a pure functional language with pervasive sharing of values. What restrictions would we need to introduce algebraic effects into a language with ownership and borrowing - particularly Ante?1
+ Ownership Consider the following program:
+effect Read a with read : Unit -&amp;gt; a the_value (value: a) (f: Unit -&amp;gt; b can Read a) : b = handle f () | read () -&amp;gt; resume value This seems like it&amp;rsquo;d pass type checking at first glance, but we can easily construct a program that tries to use the same moved value twice:</description>
+    </item>
+    
+  </channel>
+</rss>
