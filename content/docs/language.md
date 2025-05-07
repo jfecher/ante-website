@@ -1728,11 +1728,11 @@ Diamond dependencies occur when two dependencies of a project both depend on the
 dependency, e.g. package `A` has dependencies `B` and `C` which both depend on `D`.
 
 ```
-  B
+  A
  / \
-A   D
+B   C
  \ /
-  C
+  D
 ```
 
 This is a valid configuration, and whether or not the `D` that is shared by `B` and `C`
@@ -1747,11 +1747,11 @@ and `C` would require `D2`. The result would be the following valid package grap
 types from `D1` would be incompatible with types from `D2` (and vice-versa).
 
 ```
-  B - D1
- /
-A
- \
-  C - D2
+  A
+ / \
+B   C
+|   |
+D1  D2
 ```
 ---
 # Extern
@@ -1766,7 +1766,7 @@ a type. Make sure the type is accurate as the compiler
 cannot check these signatures for correctness:
 
 ```ante
-extern puts: Ptr char -> i32
+extern puts: C.String -> C.Int
 ```
 
 You can also use extern with a block of declarations:
@@ -1780,9 +1780,9 @@ extern
 
 Note that you can also use varargs (`...`) in these declarations
 and it will work as expected. There is currently no equivalent
-to an untagged C union in ante so using any FFI that requires
+to an untagged C union in Ante so using any FFI that requires
 passing in unions will require putting them behind pointers
-in ante.
+in Ante.
 
 ---
 # Algebraic Effects
