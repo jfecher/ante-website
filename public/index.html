@@ -36,7 +36,7 @@
 
 
 
-<link href="/css/custom.css" rel="stylesheet">
+<link href="/css/custom.css?1746584696" rel="stylesheet">
 
 
 
@@ -238,6 +238,7 @@
 
         
 
+
 <section>
     <div class="home-carousel">
         <div class="dark-mask"></div>
@@ -251,21 +252,51 @@
                     
                         <div class="row">
                             <div class="col-sm-5 right">
+                                <h1>Opt-out Move Semantics</h1>
+                                <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante">move_value x = ()
+
+<span class="c1">// Most types are not shared and use move semantics by default</span>
+vec = <span class="kt">Vec</span>.of [<span class="m">1</span>, <span class="m">2</span>, <span class="m">3</span>]
+move_value vec  <span class="c1">// ok!</span>
+move_value vec  <span class="c1">// error! Vec already moved</span>
+
+<span class="c1">// But shared types can be defined which enable cleaner code and a gentler learning curve.</span>
+<span class="k">shared type</span> <span class="kt">Expr</span> =
+    | <span class="kt">Int I32</span>
+    | <span class="kt">Var</span> (name: <span class="kt">String</span>)
+    | <span class="kt">Add Expr Expr</span> <span class="c1">// No explicit boxing since `Expr` is shared</span>
+
+foo = <span class="kt">Expr</span>.<span class="kt">Var</span> <span class="s">"foo"</span>
+move_value foo  <span class="c1">// ok!</span>
+move_value foo  <span class="c1">// ok!</span></code></pre></div>
+
+                            </div>
+                            <div class="col-sm-7">
+                                <img class="img-responsive" src="" alt="">
+                            </div>
+                        </div>
+                    
+                </div>
+                
+                <div class="item">
+                    
+                        <div class="row">
+                            <div class="col-sm-5 right">
                                 <h1>Algebraic Effects</h1>
-                                <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Fail</span> <span class="k">with</span>
-    fail: <span class="kt">Unit</span> -> <span class="kt">I32</span>
-    
-safe_div (x: <span class="kt">I32</span>) (y: <span class="kt">I32</span>) : <span class="kt">I32</span> <span class="k">can</span> <span class="kt">Fail</span> =
-    <span class="k">if</span> y != <span class="m">0</span>
-    <span class="k">then</span> x / y
-    <span class="k">else</span> fail ()
+                                <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="c1">// Effects are trivial to combine</span>
+<span class="kt">Interpret</span> = <span class="k">can</span> <span class="kt">Use InterpreterState</span>, <span class="kt">Fail</span>
 
-<span class="c1">// Unlike exceptions, we can choose to either stop on error, or resume with a value:</span>
-default_value (value: <span class="kt">I32</span>) (f: <span class="kt">Unit</span> -> <span class="kt">a</span> <span class="k">can</span> <span class="kt">Fail</span>) : <span class="kt">Unit</span> =
-    <span class="k">handle</span> f ()
-    | fail () -> <span class="k">resume</span> value
+<span class="c1">// One use is to thread state automatically, while keeping it explicit in the type signature</span>
+eval (expr: <span class="kt">Expr</span>): <span class="kt">I32</span> <span class="k">can</span> <span class="kt">Interpret</span> =
+    <span class="k">match</span> expr
+    | <span class="kt">Int</span> x -> x
+    | <span class="kt">Var</span> name -> lookup name
+    | <span class="kt">Add</span> lhs rhs -> eval lhs + eval rhs  <span class="c1">// No explicit state threading</span>
 
-safe_div <span class="m">1 0</span> <span class="k">with</span> default_value <span class="m">42</span>  <span class="c1">//=> 42</span></code></pre></div>
+<span class="c1">// Convert thrown effect to optional value</span>
+lookup (name: <span class="kt">String</span>): <span class="kt">I32</span> <span class="k">can</span> <span class="kt">Interpret</span> =
+    state = get () : <span class="kt">InterpreterState</span>
+    state.environment.lookup name |>.unwrap  <span class="c1">// `unwrap` throws a `Fail` effect instead of panicking</span></code></pre></div>
 
                             </div>
                             <div class="col-sm-7">
@@ -280,19 +311,19 @@ safe_div <span class="m">1 0</span> <span class="k">with</span> default_value <s
                         <div class="row">
                             <div class="col-sm-5 right">
                                 <h1>Safe Shared Mutability</h1>
-                                <div class="highlight-textalign-left"><pre>vec = <span class="k">mut</span> <span class="kt">Vec</span>.of [<span class="m">1</span>, <span class="m">2</span>, <span class="m">3</span>]
+                                <div class="highlight-textalign-left"><pre><span class="k">mut</span> vec = <span class="kt">Vec</span>.of [<span class="m">1</span>, <span class="m">2</span>, <span class="m">3</span>]
 
-ref1 = <span class="k">&mut</span> vec
-ref2 = <span class="k">&mut</span> vec
+ref1 = <span class="k">!</span>vec  <span class="c1">// `!` is used for mutable references, `&` for immutable</span>
+ref2 = <span class="k">!</span>vec
 
 <span class="c1">// Ok! It is safe to call `Vec.push` with shared mutable references</span>
-push ref1 <span class="m">4</span>
-push ref2 <span class="m">5</span>
+ref1.push <span class="m">4</span>
+ref2.push <span class="m">5</span>
 
 <span class="c1">// Retrieving a reference to an element wouldn't be safe since another mutable</span>
 <span class="c1">// reference could reallocate the vector and cause it to be a dangling reference</span>
 <span class="c1">// error: `get` requires an owned reference. Try `get_cloned` instead</span>
-elem = get ref1 <span class="m">0</span></code></pre></div>
+elem = ref1.get <span class="m">0</span></code></pre></div>
 
                             </div>
                             <div class="col-sm-7">
@@ -337,7 +368,7 @@ csv = parse_csv (<span class="kt">File</span>.open <span class="s">"input.csv"</
                         <div class="row">
                             <div class="col-sm-5 right">
                                 <h1>Type Inference</h1>
-                                <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="c1">//A collection c of elements of type e</span>
+                                <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="c1">// A collection c of elements of type e</span>
 <span class="k">trait</span> <span class="kt">Collection c</span> -> <span class="kt">e</span> <span class="k">with</span> 
     len: <span class="kt">c</span> -> <span class="kt">Usz</span>
     get: <span class="kt">c</span> -> index:<span class="kt">Usz</span> -> <span class="kt">e</span>
@@ -366,6 +397,7 @@ elem_to_string c i =
         </div>
     </div>
 </section>
+
 
 
 

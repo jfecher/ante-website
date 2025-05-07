@@ -100,9 +100,9 @@ type String =
     length: Usz
 
 // C-interop often requires using the `c_string` function:
-c_string (s: String) : CString = ...
+c_string (s: String) : C.String = ...
 
-extern puts : CString -> I32
+extern puts : C.String -> I32
 puts (c_string "Hello, C!")
 ```
 
@@ -145,7 +145,7 @@ A variable can be made mutable by adding the `mut` keyword when defining the var
 
 ```ante
 // Mutable variables can be created with `mut`:
-pet_name = mut "Ember"
+mut pet_name = "Ember"
 print pet_name  //=> Ember
 
 // And can be mutated with `:=`
@@ -153,7 +153,7 @@ pet_name := "Cinder"
 print pet_name  //=> Cinder
 ```
 
-Here's another example showing a function that can mutate the passed in parameter:
+Here's another example showing a function that can mutate the passed in parameter using a mutable reference (`!`):
 
 ```ante
 count_evens array counter =
@@ -161,33 +161,40 @@ count_evens array counter =
         if even elem then
             counter += 1
 
-counter = mut 0
-count_evens [4, 5, 6] (&mut counter)
+mut counter = 0
+count_evens [4, 5, 6] !counter
 
 print counter  //=> 2
 ```
 
 If you have a mutable struct, you can also transfer this mutability to its
-fields to mutate them directly. This can be done via the `.&` operator to retrieve
-a reference to a field:
+fields to mutate them directly. This can be done via the `.!` operator to retrieve
+a reference to a field. Similarly, `.&` can be used to retrieve an immutable
+reference to a field:
 
 ```ante
-my_pair = mut (1, 2)
-my_pair.&first := 3
+mut my_pair = 1, 2
+my_pair.first := 3
 
-field_ref = my_pair.&second
+field_ref = my_pair.!second
 field_ref := 4
 
 print my_pair  //=> 3, 4
 
 // The following two lines give an error because we never declared `bad` to be mutable
 bad = 1, 2
-bad.&first := 3
+bad.first := 3
 ```
+
+Sidenote: other languages with temporary references tend to use `&foo.bar` for retrieving
+a reference to a field. This is odd though since conceptually `foo.bar` alone often dereferences
+the field so `&(foo.bar)` appears to dereference the field than magically recovers the reference.
+Ante uses a single operator `.&` to yield a field offset instead. This also tends to require
+fewer parentheses when used with ML-style function call syntax.
 
 # Functions
 
-Functions in ante are also defined via `=` and are just syntactic
+Functions in Ante are also defined via `=` and are just syntactic
 sugar for assigning a lambda for a variable. That is, `foo1` and `foo2`
 below are exactly equivalent except for their name.
 
@@ -199,13 +206,66 @@ foo2 = fn a b ->
     print (a + b)
 ```
 
+Functions can have their parameter types and return types specified via `:`
+
 ```ante
-// We can specify parameter types and the
-// function return type via `:`
 bar (a: U32) (b: U32) : Unit =
     print a
     print b
     print (a + b)
+```
+
+As a shorthand for defining multiple parameters of the same type, the parameters
+can share the same type annotation by grouping them together:
+
+```ante
+bar (a b: U32) : Unit =
+    print a
+    print b
+    print (a + b)
+```
+
+### Module Namespacing
+
+By default functions are placed in the current module. Optionally, functions may also
+be placed in a child module by prefixing the function's name with the module name.
+For example:
+
+```ante
+Foo.bar (a b: U32): Unit =
+    print "I am defined in Foo now"
+```
+
+### Methods
+
+Module namespacing is also how methods are defined. In Ante the `.` operator can be used
+for method calls as well as field accesses. When used for method calls, the function name
+will be searched for in the module with the same full path as the type of the first argument.
+
+Note that you can only add methods to types defined in your current project. Methods cannot
+be added to any types defined in dependencies.
+
+When defining a method, the `self` variable can be used as an argument which is implicitly
+of the same type as the module name. If there is no such type (e.g. it is just a normal module),
+an error will be given. Like other parameters, `self` on its own will use move semantics. It
+can also be borrowed either mutably or immutably by writing `!self` or `&self`.
+
+For example, the standard library defines the `Vec` type for a mutable vector and defines
+methods on it like so:
+
+```ante
+type Vec a = ... // implementation omitted
+
+Vec.new () = ...
+
+// The `a` here is the same `a` from `Vec a`.
+Vec.push !self (elem: a) = ...
+
+// Call the methods. This can be done without explicitly importing `Vec.new` or `Vec.push`:
+mut vec = Vec.new ()
+vec.push "called"
+vec.push "a"
+vec.push "method!"
 ```
 
 ---
@@ -233,6 +293,32 @@ first_equals_two it =
 We never gave any type for `first_equals_two` yet ante infers its type for us as
 `a -> Bool given Iterator a I32` - that is a function that returns a `Bool` and takes
 a generic parameter of type `a` which must be an iterator producing elements of type `I32`.
+
+### Type Inference in Idiomatic Code
+
+Note that while global type inference is possible, it is not idiomatic to have large
+code bases omitting types on every function. Generally speaking, the larger the code base,
+the more important it is to have clear type signatures for globally visible functions to
+improve type errors in the case types change. Given it is preferred to have explicit type
+signatures for functions, one may wonder why offer type inference on them at all? There
+are a few reasons for this.
+
+1. When contributing to a new or existing code base a developer often adds a couple functions at a time.
+The intended work-flow of Ante is to omit the types of these functions,
+and when the programmer is satisfied, they can have the compiler write in the
+inferred function types itself after a successful compilation. This way the programmer does less
+unnecessary work but still gets explicit types in the end. They are also still free to write explicit
+types for any particularly difficult functions they need before then to help with type errors.
+
+2. For smaller scripts it can be nice to write code without types. A type error affecting the inferred
+types of other functions is less of an issue when you only have a handful of them and don't intend to write more.
+
+3. Even in larger code bases, inferred types on functions can still be useful in some rare cases like
+particularly trivial helper functions, or trait impl methods where the trait always dictates the function
+type anyway.
+
+4. In a teaching scenario, it can be useful to have the flexibility to defer teaching about types a little.
+They should likely still be taught early but any bit of lowering the initial shock value for students new to programming can help.
 
 ---
 # Significant Whitespace
@@ -278,7 +364,7 @@ Ante's original solution was more of a band-aid. It followed the python example 
 lines with `\` at the end of a line which would tell the lexer not to issue a newline token.
 There was also a similar rule for elliding newlines while we were inside `()` or `[]` pairs.
 This solution was quite annoying in practice however. Ante is much more expression-oriented
-than python and particularly when working the [pipeline operators](#pipeline-operators) we would end up with a long
+than python and particularly when working with the [pipeline operators](#pipeline-operators) we would end up with a long
 chain of lines ending with `\`:
 
 ```ante
@@ -422,25 +508,39 @@ are no bitwise operators. Instead there are functions in the
 ## Subscript Operator
 
 The subscript operator for retrieving elements out of a collection
-is spelled `a#i` in ante. The more common `a[i]` syntax would be
-ambiguous with a function call to a function `a` taking a single
+is spelled `a.[i]` in Ante. The more common spelling of `a[i]`
+would be ambiguous with a function call to a function `a` taking a single
 argument that is a collection with 1 element `i`.
-
-`#` has a higher precedence than all other binary operators. The following
-example shows how to average the first and second elements in an array for
-example:
 
 ```ante
 average_first_two array =
-    (array#0 + array#1) / 2
+    (array.[0] + array.[1]) / 2
 ```
 
-## No Dereference Operator
+Additionally, references to elements can be retrieved using a syntax similar
+to field offset syntax:
 
-Dereferencing pointers in ante is somewhat uncommon, so ante provides no pointer
-dereference operator. Instead, you can use the `deref` function in the standard library.
-If you need to access a struct field, `struct.field` in will work as expected regardless
-of whether `struct` is a struct or a pointer to a struct.
+```ante
+print my_array.&[0]
+
+mutate my_array.![1]
+```
+
+Note that `.[]`, `.&[]`, and `.![]` all have precedences high enough to be
+used in function calls.
+
+## Dereference Operator
+
+Dereferencing references in ante can be done with the `@` operator.
+`@` is used over the more common `*` since it is unambiguous what it refers to,
+plays nicely with ML-style function call syntax, and gives the helpful mnemonic
+"get the value _at_ the reference".
+
+Note that dereferencing a value via `@` requires the value implement `Copy`.
+Types which are expensive to copy implement `Clone` instead.
+
+If you need to access a struct field, `struct.field` will automatically dereference
+`struct` as many times as needed to access its field.
 
 ## Pipeline Operators
 
@@ -474,6 +574,17 @@ print (sqrt (3 + 1))
 print <| sqrt <| 3 + 1
 ```
 
+### Pipelines and Methods
+
+Note that method calls can still be used with the pipeline operators.
+Method calls also work stand-alone (e.g. `.push 3` is short for `_.push 3`)
+as long as the expected object type can be figured out by the environment.
+So one can write code such as:
+
+```ante
+Vec.of [1, 2, 3] |> .split_first  // (1, &[2, 3])
+```
+
 ## Pair Operator
 
 Ante does not have tuples, instead it provides a right-associative pair
@@ -504,20 +615,20 @@ cast_pair_string = impl Cast (Pair a b) String via
 ```
 
 3. Just as efficient: both pairs and tuples have roughly the same representation
-in memory (the exact same if you discount allignment differences).
+in memory (the exact same if you discount allignment differences and reordering of fields).
 
 4. More composable: having the right-associative `,` operator means we can
 easily combine pairs or add an element if needed. For example, if we had a function
 `unzip : List (a, b) -> List a, List b`, we could use `unzip` even on a `List (a, b, c)`
 to extract a `List a, List (b, c)` for us. This means if we wanted, we may implement
-`unzip3` using `unzip` (though this would likely be inefficient):
+`unzip3` using `unzip` (though this would require two traversals instead of one):
 
 ```ante
 // given we have unzip : List (a, b) -> List a, List b
 unzip3 (list: List (a, b, c)) : List a, List b, List c =
-        as, bcs = unzip list
-        bs, cs = unzip bcs
-        as, bs, cs
+    as, bcs = unzip list
+    bs, cs = unzip bcs
+    as, bs, cs
 ```
 
 - Another place this shows up in is when deconstructing pair values.
@@ -573,7 +684,7 @@ If we wanted to surround our nested pairs with parenthesis we have to work a bit
 harder by having a helper trait so we can specialize the impl for pairs:
 
 ```ante
-trait ToStringHelper t with
+trait ToStringHelper t given Cast t String with
     to_string_helper (x: t) -> String = cast x
 
 cast_pair_string = impl
@@ -788,9 +899,9 @@ Note that there are a few subtle design decisions:
    body as well, we only need to indent once past the `match` instead
    of twice which saves us valuable horizontal space.
 
-## `is` keyword
+## `is` Operator
 
-The `is` keyword can be used to pattern match within arbitrary expressions.
+The `is` operator can be used to pattern match within arbitrary expressions.
 The syntax for an `is` expression is `<expr> is <pattern>`. These expressions
 can be used to test an expression matches a particular case, for example:
 
@@ -1059,13 +1170,13 @@ baz &s
 baz &s
 ```
 
-Mutable references can be borrowed from mutable values using `&mut`:
+Mutable references can be borrowed from mutable values using `!`:
 
 ```ante
-s = mut "my string"
+mut s = "my string"
 
 // This function call may modify our string
-qux (&mut s)
+qux !s
 
 print s  //=> "???"
 ```
@@ -1129,7 +1240,7 @@ parameters afterward, this can also have implications for whether each reference
 must be `shared` or not (see [shared mutability](#shared-mutability)). Consider the following code:
 
 ```ante
-example2 (foo: Foo) (bar: &mut Bar) =
+example2 (foo: Foo) (bar: !Bar) =
     ref = get_ref &foo bar
     print bar
     print ref
@@ -1138,7 +1249,7 @@ example2 (foo: Foo) (bar: &mut Bar) =
 
 We get an error that `bar` must be a `shared` reference because the compiler sees
 `ref` as a reference potentially aliased to `bar`, which would make it mutably
-aliased since `bar: &mut Bar`. This is despite us being able to peek into `get_ref`
+aliased since `bar: !Bar`. This is despite us being able to peek into `get_ref`
 to see it actually only ever returns a reference inside of `foo`.
 
 #### Lifetime-bound Types

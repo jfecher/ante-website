@@ -1,4 +1,4 @@
-weight: 3
+weight: 4
 title: "Generators"
 description: >
     <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="c1">// Generators are implemented via Algebraic Effects</span>

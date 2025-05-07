@@ -1,0 +1,27 @@
+weight: 1
+title: "Opt-out Move Semantics"
+description: >
+    <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante">move_value x = ()
+
+
+    <span class="c1">// Most types are not shared and use move semantics by default</span>
+
+    vec = <span class="kt">Vec</span>.of [<span class="m">1</span>, <span class="m">2</span>, <span class="m">3</span>]
+
+    move_value vec  <span class="c1">// ok!</span>
+    
+    move_value vec  <span class="c1">// error! Vec already moved</span>
+
+
+    <span class="c1">// But shared types can be defined which enable cleaner code and a gentler learning curve.</span>
+
+    <span class="k">shared type</span> <span class="kt">Expr</span> =
+        | <span class="kt">Int I32</span>
+        | <span class="kt">Var</span> (name: <span class="kt">String</span>)
+        | <span class="kt">Add Expr Expr</span> <span class="c1">// No explicit boxing since `Expr` is shared</span>
+
+    foo = <span class="kt">Expr</span>.<span class="kt">Var</span> <span class="s">"foo"</span>
+
+    move_value foo  <span class="c1">// ok!</span>
+
+    move_value foo  <span class="c1">// ok!</span></code></pre></div>
