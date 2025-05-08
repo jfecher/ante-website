@@ -871,6 +871,55 @@ match foo
 | None -> ...
 ```
 
+Note that in Ante variables must be lower case while type constructors are
+uppercase. This carries over to match expressions where each uppercase word
+is a tag to match on while each lowercase word is a variable to bind. This reduces
+the common error in other languages of misspelling a tag value and accidentally
+creating a new variable binding and match-all pattern in doing so.
+
+If a variable binding is created but otherwise unused it will issue an unused
+warning unless its name starts with an underscore:
+
+```ante
+match foo
+| Some bar -> () // warning: `bar` is unused
+| None
+
+match foo
+| Some _bar -> () // ok!
+| None
+```
+
+If a type has many fields to match on but several are unneeded, they can be omitted
+with `..`:
+
+```ante
+type MyStruct =
+    foo: I32
+    bar: I32
+    baz: I32
+    qux: I32
+
+match MyStruct 1 2 3 4
+| MyStruct .. -> print "This struct is indeed a struct"
+
+// `..` also works for a subset of fields:
+match MyStruct 1 2 3 4
+| MyStruct my_foo my_bar .. -> print "foo = $my_foo, bar = $my_bar"
+```
+
+As seen above, structs are matched using positional argument order similar to how they are constructed.
+They may also be matched by field name using the same `with` syntax for named struct field construction:
+
+```ante
+match MyStruct 1 2 3 4
+| MyStruct with bar, qux, .. -> print "bar = $bar, qux = $qux"
+
+// Fields can be renamed:
+match MyStruct 1 2 3 4
+| MyStruct with bar = bar2, .. -> print "bar = $bar2"
+```
+
 In addition to the usual suspects (tagged-unions, structs, pairs), we can
 also include literals and guards in our patterns and it will work as
 we expect:
@@ -992,6 +1041,8 @@ type Vec a =
     capacity: Usz
 ```
 
+### Tagged Unions
+
 Tagged unions can be defined with `|`s separating each variant.
 The `|` before the first variant is mandatory. Ante currently has
 no support for untagged C unions.
@@ -1005,6 +1056,111 @@ type Result t e =
    | Ok t
    | Err e
 ```
+
+#### Repeated Union Fields
+
+Many tagged unions include one or more of the same fields between all variants. Often this leads
+to refactoring the tagged union into two types: the tagged union and a wrapper struct.
+This hampers readability though, and makes matching on these types more cumbersome,
+particularly hurting nested matches which now have to go through an additional struct.
+
+```ante
+shared type ExprInner =
+    | Int I32
+    | Var String
+    | Add Expr Expr
+
+type Expr =
+    inner: ExprInner
+    location: Location
+
+simplify (expr: Expr): Expr =
+    match expr.inner
+    | Int x -> Int x
+    | Var s -> Var s
+    | Add (Expr (Int 0) _lhs_loc) rhs -> rhs
+    | Add lhs (Expr (Int 0) _rhs_loc) -> lhs
+    | Add lhs rhs -> Add (simplify lhs) (simplify rhs)
+```
+
+This pattern can be improved with the `with` keyword which will include a given list of fields
+in all union variants, eliminating the need for a wrapper struct.
+These extra fields are placed at the end of each variant's list of fields.
+
+```ante
+shared type Expr =
+    | Int I32
+    | Var String
+    | Add Expr Expr
+    with location: Location
+
+simplify (expr: Expr): Expr =
+    match expr
+    | Int x -> Int x
+    | Var s -> Var s
+    | Add (Int 0 _lhs_loc) rhs -> rhs
+    | Add lhs (Int 0 _rhs_loc) -> lhs
+    | Add lhs rhs -> Add (simplify lhs) (simplify rhs)
+```
+
+`_lhs_loc` and `_rhs_loc` were written explicitly here to show where they would go, but if
+these fields are unneeded in a pattern match they can also be excluded with `..` which will
+automatically fill in an remaining fields in a pattern:
+
+```
+simplify (expr: Expr): Expr =
+    match expr
+    | Int x -> Int x
+    | Var s -> Var s
+    | Add (Int 0..) rhs -> rhs
+    | Add lhs (Int 0..) -> lhs
+    | Add lhs rhs -> Add (simplify lhs) (simplify rhs)
+```
+
+Because these extra fields are included on every variant, they can also be accessed on the
+tagged union itself as if it were a struct type:
+
+```ante
+Expr.file (e: Expr): File =
+    // No need to match on each variant
+    e.location.file
+```
+
+#### Variant Types
+
+Each variant of a tagged union is also defined as its own struct type. These types
+can be accessed in the namespace of the tagged union:
+
+```ante
+type Shape =
+   | Circle (radius: U32)
+   | Square (length: U32)
+
+area_circle (circle: Shape.Circle): U32 =
+    radius = F64 circle.radius
+    result = F64.pi * radius * radius
+    result.truncate ()  // round towards 0
+
+// Variant types can also have methods
+Shape.Square.area self: U32 =
+    self.length * self.length
+```
+
+Normally when matching on tagged unions, you will need to match on each field of
+each variant. To get a value of the variant type instead need to collect all fields
+to a single variable using `..`:
+
+```ante
+Shape.area self: U32 =
+    match self
+    | Circle ..c -> area_circle c
+    | Square ..s -> s.area ()
+```
+
+This feature is not often useful in smaller types but can be useful in larger types
+to break up code. For example, functions just matching on each variant of a tagged union
+like `Shape.area` above can be derived such that users need only to implement the methods
+for each individual variant like `Shape.Square.area`, `Shape.Circle.area`, etc.
 
 ## Type Annotations
 
@@ -1137,7 +1293,7 @@ print_debug x =
     print x.debug
 ```
 ---
-# Move Semantics
+# Ownership
 
 Similar to Rust, values in Ante are affine by default (may be used 0 or 1 time
 before they are dropped and deallocated). These values are called
@@ -1422,6 +1578,11 @@ value. Just boxing container elements and union data is often sufficient.
 If an owned reference `&own t` or `&own mut t` is ever required however,
 a different type such as `RefCell t` would still need to be used to provide
 the runtime tracking required to enforce this constraint.
+
+## Thread Safety
+
+Ante uses the familiar `Send` and `Sync` traits from Rust for safe concurrency. It does
+not innovate here but continues with the safe, tried and true model.
 
 ---
 # Traits

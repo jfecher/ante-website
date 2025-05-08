@@ -34,6 +34,7 @@ whether ante should use rust's model for chars (4 bytes), Swift's model (variabl
 - [x] Assignment `:=`
 - [x] `.` Field access
 - [ ] `+=`, `-=`, `*=` and friends
+- [ ] `is` operator for pattern matching without `match`
 - [ ] `Bits` module - There are `bnot`, `band`, `bor`, and `bxor` functions in the prelude however.
 
 ---
@@ -87,6 +88,8 @@ but is otherwise implemented.
 - [~] Importing only select symbols from a module. This uses `import Vec.foo bar` currently instead of `import Vec.foo, bar`
 - [ ] Renaming imports
 - [ ] Hiding imports
+- [ ] Exports
+  - All top-level values are publically exported currently
 
 ---
 # Compiler-specific
@@ -123,6 +126,7 @@ will take some time to implement.
 
 - [~] Algebraic effects
   - [x] Type checking
+    - Type checking for effects is considered implemented but there are bugs particularly when inferring effects.
   - [~] Runtime
     - [~] Handlers
       - [x] Handlers for a single effect
@@ -132,5 +136,3 @@ will take some time to implement.
     - [x] `resume`
       - [x] Single resumptions
       - [x] 0 resumptions
-      - Multiple resumptions used to be listed here but has since been removed as a desired feature. It conflicts with Ante's planned affine types.
-

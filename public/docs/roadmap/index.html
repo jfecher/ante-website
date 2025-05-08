@@ -36,7 +36,7 @@
 
 
 
-<link href="/css/custom.css" rel="stylesheet">
+<link href="/css/custom.css?1746725731" rel="stylesheet">
 
 
 
@@ -157,7 +157,7 @@
             <ul class="nav navbar-nav navbar-right">
             
             <li class="dropdown">
-                <a href="https://antelang.org//docs/language">Documentation</a>
+                <a href="https://antelang.org//docs/language">Tour</a>
             </li>
             <li class="dropdown">
                 <a href="https://antelang.org//docs/ideas">Ideas</a>
@@ -305,6 +305,7 @@ whether ante should use rust&rsquo;s model for chars (4 bytes), Swift&rsquo;s mo
 <li><input checked="" disabled="" type="checkbox"> Assignment <code>:=</code></li>
 <li><input checked="" disabled="" type="checkbox"> <code>.</code> Field access</li>
 <li><input disabled="" type="checkbox"> <code>+=</code>, <code>-=</code>, <code>*=</code> and friends</li>
+<li><input disabled="" type="checkbox"> <code>is</code> operator for pattern matching without <code>match</code></li>
 <li><input disabled="" type="checkbox"> <code>Bits</code> module - There are <code>bnot</code>, <code>band</code>, <code>bor</code>, and <code>bxor</code> functions in the prelude however.</li>
 </ul>
 <hr>
@@ -376,6 +377,11 @@ but is otherwise implemented.</li>
 <li>[~] Importing only select symbols from a module. This uses <code>import Vec.foo bar</code> currently instead of <code>import Vec.foo, bar</code></li>
 <li><input disabled="" type="checkbox"> Renaming imports</li>
 <li><input disabled="" type="checkbox"> Hiding imports</li>
+<li><input disabled="" type="checkbox"> Exports
+<ul>
+<li>All top-level values are publically exported currently</li>
+</ul>
+</li>
 </ul>
 <hr>
 <h1 id="compiler-specific">Compiler-specific</h1>
@@ -418,7 +424,11 @@ will take some time to implement.</p>
 <ul>
 <li>[~] Algebraic effects
 <ul>
-<li><input checked="" disabled="" type="checkbox"> Type checking</li>
+<li><input checked="" disabled="" type="checkbox"> Type checking
+<ul>
+<li>Type checking for effects is considered implemented but there are bugs particularly when inferring effects.</li>
+</ul>
+</li>
 <li>[~] Runtime
 <ul>
 <li>[~] Handlers
@@ -436,7 +446,6 @@ will take some time to implement.</p>
 <ul>
 <li><input checked="" disabled="" type="checkbox"> Single resumptions</li>
 <li><input checked="" disabled="" type="checkbox"> 0 resumptions</li>
-<li>Multiple resumptions used to be listed here but has since been removed as a desired feature. It conflicts with Ante&rsquo;s planned affine types.</li>
 </ul>
 </li>
 </ul>
