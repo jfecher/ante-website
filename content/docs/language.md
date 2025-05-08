@@ -1226,10 +1226,10 @@ can be moved until the returned reference is dropped.
 
 ```ante
 example2 (foo: Foo) (bar: Bar) =
-    ref = get_ref &foo &bar
-    // Error: Cannot move `foo` while `ref` is still alive
+    r = get_ref &foo &bar
+    // Error: Cannot move `foo` while `r` is still alive
     drop foo
-    print ref
+    print r
 ```
 
 Since Ante has no lifetime annotations it does not know from which
@@ -1241,14 +1241,14 @@ must be `shared` or not (see [shared mutability](#shared-mutability)). Consider 
 
 ```ante
 example2 (foo: Foo) (bar: !Bar) =
-    ref = get_ref &foo bar
+    r = get_ref &foo bar
     print bar
-    print ref
+    print r
     ()
 ```
 
 We get an error that `bar` must be a `shared` reference because the compiler sees
-`ref` as a reference potentially aliased to `bar`, which would make it mutably
+`r` as a reference potentially aliased to `bar`, which would make it mutably
 aliased since `bar: !Bar`. This is despite us being able to peek into `get_ref`
 to see it actually only ever returns a reference inside of `foo`.
 
@@ -1288,6 +1288,16 @@ be tagged whether it is `own`ed or `shared`. Additionally, if there is a mutable
 reference borrwed from a value with at least 1 other borrowed reference to the same
 value, all references are inferred to be mutably `shared`.
 
+```ante
+message = "Hello"
+ref1: !shared String = !message
+ref2: !shared String = !message
+
+@ref1 := "${message}, WorZd!"  // "Hello, WorZd!"
+ref2.replace "Z" "l"
+print ref2                     // "Hello, World!"
+```
+
 The `own` and `shared` tags are used to prevent operations that would be unsafe
 on a shared mutable reference. A common theme of these operations is that they hand
 out references inside of a type with an unstable shape. For example, handing out
@@ -1311,8 +1321,58 @@ get_cloned (v: &Vec t) (index: Usz) : &t can Fail given Clone t
 ```
 
 As a result, if you know you're going to be working with mutably shared Vecs
-or other container types, you may want to wrap each element in a pointer type
-to reduce the cost of cloning: `Vec (Rc t)`.
+or other container types, and your element type is expensive to clone, you may
+want to wrap each element in a pointer type to reduce the cost of cloning: `Vec (Rc t)`.
+
+#### Shared Types
+
+Shared types (not to be confused with shared references) are a way to opt-out of
+ownership rules for a type by allowing it to be mutably stored by default in the
+context of a single-thread. These types can be declared via `shared type` and also
+do not require explicit boxing (they are always boxed):
+
+```ante
+shared type Expr =
+    | Int I32
+    | Var String
+    | Add Expr Expr  // No explicit boxing required
+
+my_expr = Add (Int 3) (Var "foo")
+```
+
+You can think of these types as always being wrapped in a reference-counted pointer. They are
+meant to be used when efficiency is less of a concern over code clarity. For example when
+gradually transitioning new users to use ownership rules it can be helpful if they have to worry
+about it for fewer types - even if they still need to handle it for built-in types like `Vec a`.
+These are also useful in cases when types need to be recursively boxed (like `Expr` above) anyway,
+or patterns where shared mutability is inherently necessary like the observer pattern.
+
+Taking the reference of a field of a `shared` type will always yield a `shared` reference back
+(similar to a `Rc t`) since the `shared` type may be cloned and shared elsewhere.
+
+```
+expr = Int 3
+
+// Even immutable references into shared types are always shared
+my_ref: &shared Expr = &expr
+```
+
+Since taking the reference of a tagged-union's field requires an `own`ed reference (tagged-unions do
+not have stable shapes since they may be mutated to a different union variant), when matching on
+`shared` types, it is more useful to match without taking the reference first since fields will
+be automatically copied:
+
+```ante
+eval1 (e: Expr) =
+    match &e  // Error, cannot match on a tagged-union under a `shared` reference
+    | Int x -> x
+    ...
+
+eval2 (e: Expr) =
+    match e  // Ok
+    | Int x -> x
+    ...
+```
 
 ### Reference Polymorphism
 
@@ -2108,7 +2168,7 @@ interpret (default_value: a) (f: Unit -> a can GiveInt) : a =
     import Random.random
     handle f ()
     | give_int "zero" -> resume 0
-    | give_int "random" -> resume $ random ()
+    | give_int "random" -> resume (random ())
     // Do not resume, return the default value instead
     | give_int _ -> default_value
 
@@ -2184,7 +2244,7 @@ state (mut current_state: s) (f: Unit -> a can Use s) : a =
         resume ()
 
 
-type Expr =
+shared type Expr =
    | Int I32
    | Var String
    | Add Expr Expr
@@ -2194,11 +2254,11 @@ Eval = Use (Map String I32)
 
 lookup (name: String) : Maybe I32 can Eval =
     map = get ()
-    map |> get name
+    map.get name
 
 define (name: String) (value: I32) : Unit can Eval =
     map = get ()
-    put (map |> insert name value)
+    put (map.insert name value)
 
 eval (expr: Expr) : I32 can Eval =
     match expr

@@ -1162,10 +1162,10 @@ Functions returning references are allowed:</p>
 </code></pre></div><p>If a reference is returned from a function, none of the referenced inputs
 can be moved until the returned reference is dropped.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">example2</span> <span class="p">(</span><span class="n">foo</span><span class="o">:</span> <span class="kt">Foo</span><span class="p">)</span> <span class="p">(</span><span class="n">bar</span><span class="o">:</span> <span class="kt">Bar</span><span class="p">)</span> <span class="ow">=</span>
-    <span class="kt">ref</span> <span class="ow">=</span> <span class="n">get_ref</span> <span class="o">&amp;</span><span class="n">foo</span> <span class="o">&amp;</span><span class="n">bar</span>
-    <span class="c1">// Error: Cannot move `foo` while `ref` is still alive</span>
+    <span class="n">r</span> <span class="ow">=</span> <span class="n">get_ref</span> <span class="o">&amp;</span><span class="n">foo</span> <span class="o">&amp;</span><span class="n">bar</span>
+    <span class="c1">// Error: Cannot move `foo` while `r` is still alive</span>
     <span class="n">drop</span> <span class="n">foo</span>
-    <span class="n">print</span> <span class="kt">ref</span>
+    <span class="n">print</span> <span class="n">r</span>
 </code></pre></div><p>Since Ante has no lifetime annotations it does not know from which
 variable the return result is borrowed from. To solve this, Ante conservatively
 ties the lifetime of the return result to the lifetime of all of the reference
@@ -1173,12 +1173,12 @@ parameters to the function. In addition to not being able to move any of these
 parameters afterward, this can also have implications for whether each reference
 must be <code>shared</code> or not (see <a href="#shared-mutability">shared mutability</a>). Consider the following code:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">example2</span> <span class="p">(</span><span class="n">foo</span><span class="o">:</span> <span class="kt">Foo</span><span class="p">)</span> <span class="p">(</span><span class="n">bar</span><span class="o">:</span> <span class="o">!</span><span class="kt">Bar</span><span class="p">)</span> <span class="ow">=</span>
-    <span class="kt">ref</span> <span class="ow">=</span> <span class="n">get_ref</span> <span class="o">&amp;</span><span class="n">foo</span> <span class="n">bar</span>
+    <span class="n">r</span> <span class="ow">=</span> <span class="n">get_ref</span> <span class="o">&amp;</span><span class="n">foo</span> <span class="n">bar</span>
     <span class="n">print</span> <span class="n">bar</span>
-    <span class="n">print</span> <span class="kt">ref</span>
+    <span class="n">print</span> <span class="n">r</span>
     <span class="p">()</span>
 </code></pre></div><p>We get an error that <code>bar</code> must be a <code>shared</code> reference because the compiler sees
-<code>ref</code> as a reference potentially aliased to <code>bar</code>, which would make it mutably
+<code>r</code> as a reference potentially aliased to <code>bar</code>, which would make it mutably
 aliased since <code>bar: !Bar</code>. This is despite us being able to peek into <code>get_ref</code>
 to see it actually only ever returns a reference inside of <code>foo</code>.</p>
 <h4 id="lifetime-bound-types">Lifetime-bound Types</h4>
@@ -1203,7 +1203,14 @@ In addition to whether a reference is <code>mut</code>able or not, a reference c
 be tagged whether it is <code>own</code>ed or <code>shared</code>. Additionally, if there is a mutable
 reference borrwed from a value with at least 1 other borrowed reference to the same
 value, all references are inferred to be mutably <code>shared</code>.</p>
-<p>The <code>own</code> and <code>shared</code> tags are used to prevent operations that would be unsafe
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">message</span> <span class="ow">=</span> <span class="s">&#34;Hello&#34;</span>
+<span class="nf">ref1</span><span class="o">:</span> <span class="o">!</span><span class="k">shared</span> <span class="kt">String</span> <span class="ow">=</span> <span class="o">!</span><span class="n">message</span>
+<span class="nf">ref2</span><span class="o">:</span> <span class="o">!</span><span class="k">shared</span> <span class="kt">String</span> <span class="ow">=</span> <span class="o">!</span><span class="n">message</span>
+
+<span class="o">@</span><span class="n">ref1</span> <span class="o">:=</span> <span class="s">&#34;${message}, WorZd!&#34;</span>  <span class="c1">// &#34;Hello, WorZd!&#34;</span>
+<span class="nf">ref2</span><span class="o">.</span><span class="n">replace</span> <span class="s">&#34;Z&#34;</span> <span class="s">&#34;l&#34;</span>
+<span class="nf">print</span> <span class="n">ref2</span>                     <span class="c1">// &#34;Hello, World!&#34;</span>
+</code></pre></div><p>The <code>own</code> and <code>shared</code> tags are used to prevent operations that would be unsafe
 on a shared mutable reference. A common theme of these operations is that they hand
 out references inside of a type with an unstable shape. For example, handing out
 a reference to a <code>Vec</code> element would be unsafe in a shared context since the <code>Vec</code>
@@ -1218,9 +1225,45 @@ an element through <code>Vec.get_cloned</code>:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Raises Fail if the index is out of bounds</span>
 <span class="nf">get_cloned</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="o">:</span> <span class="o">&amp;</span><span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="k">given</span> <span class="kt">Clone</span> <span class="n">t</span>
 </code></pre></div><p>As a result, if you know you&rsquo;re going to be working with mutably shared Vecs
-or other container types, you may want to wrap each element in a pointer type
-to reduce the cost of cloning: <code>Vec (Rc t)</code>.</p>
-<h3 id="reference-polymorphism">Reference Polymorphism</h3>
+or other container types, and your element type is expensive to clone, you may
+want to wrap each element in a pointer type to reduce the cost of cloning: <code>Vec (Rc t)</code>.</p>
+<h4 id="shared-types">Shared Types</h4>
+<p>Shared types (not to be confused with shared references) are a way to opt-out of
+ownership rules for a type by allowing it to be mutably stored by default in the
+context of a single-thread. These types can be declared via <code>shared type</code> and also
+do not require explicit boxing (they are always boxed):</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">shared</span> <span class="k">type</span> <span class="kt">Expr</span> <span class="ow">=</span>
+    <span class="o">|</span> <span class="kt">Int</span> <span class="kt">I32</span>
+    <span class="o">|</span> <span class="kt">Var</span> <span class="kt">String</span>
+    <span class="o">|</span> <span class="kt">Add</span> <span class="kt">Expr</span> <span class="kt">Expr</span>  <span class="c1">// No explicit boxing required</span>
+
+<span class="nf">my_expr</span> <span class="ow">=</span> <span class="kt">Add</span> <span class="p">(</span><span class="kt">Int</span> <span class="mi">3</span><span class="p">)</span> <span class="p">(</span><span class="kt">Var</span> <span class="s">&#34;foo&#34;</span><span class="p">)</span>
+</code></pre></div><p>You can think of these types as always being wrapped in a reference-counted pointer. They are
+meant to be used when efficiency is less of a concern over code clarity. For example when
+gradually transitioning new users to use ownership rules it can be helpful if they have to worry
+about it for fewer types - even if they still need to handle it for built-in types like <code>Vec a</code>.
+These are also useful in cases when types need to be recursively boxed (like <code>Expr</code> above) anyway,
+or patterns where shared mutability is inherently necessary like the observer pattern.</p>
+<p>Taking the reference of a field of a <code>shared</code> type will always yield a <code>shared</code> reference back
+(similar to a <code>Rc t</code>) since the <code>shared</code> type may be cloned and shared elsewhere.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">expr = Int 3
+
+// Even immutable references into shared types are always shared
+my_ref: &amp;shared Expr = &amp;expr
+</code></pre></div><p>Since taking the reference of a tagged-union&rsquo;s field requires an <code>own</code>ed reference (tagged-unions do
+not have stable shapes since they may be mutated to a different union variant), when matching on
+<code>shared</code> types, it is more useful to match without taking the reference first since fields will
+be automatically copied:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">eval1</span> <span class="p">(</span><span class="n">e</span><span class="o">:</span> <span class="kt">Expr</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="k">match</span> <span class="o">&amp;</span><span class="n">e</span>  <span class="c1">// Error, cannot match on a tagged-union under a `shared` reference</span>
+    <span class="o">|</span> <span class="kt">Int</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">x</span>
+    <span class="o">...</span>
+
+<span class="nf">eval2</span> <span class="p">(</span><span class="n">e</span><span class="o">:</span> <span class="kt">Expr</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="k">match</span> <span class="n">e</span>  <span class="c1">// Ok</span>
+    <span class="o">|</span> <span class="kt">Int</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">x</span>
+    <span class="o">...</span>
+</code></pre></div><h3 id="reference-polymorphism">Reference Polymorphism</h3>
 <p>If the <code>own</code> and <code>shared</code> modifiers are omitted from the reference type, the
 reference is considered to be polymorphic over both. Since most code will
 not care if a reference is shared or not, this gives us some much needed
@@ -1790,7 +1833,7 @@ not calling <code>resume</code>:</p>
     <span class="k">import</span> <span class="kt">Random</span><span class="o">.</span><span class="n">random</span>
     <span class="k">handle</span> <span class="n">f</span> <span class="p">()</span>
     <span class="o">|</span> <span class="n">give_int</span> <span class="s">&#34;zero&#34;</span> <span class="ow">-&gt;</span> <span class="k">resume</span> <span class="mi">0</span>
-    <span class="o">|</span> <span class="n">give_int</span> <span class="s">&#34;random&#34;</span> <span class="ow">-&gt;</span> <span class="k">resume</span> <span class="o">$</span> <span class="n">random</span> <span class="p">()</span>
+    <span class="o">|</span> <span class="n">give_int</span> <span class="s">&#34;random&#34;</span> <span class="ow">-&gt;</span> <span class="k">resume</span> <span class="p">(</span><span class="n">random</span> <span class="p">())</span>
     <span class="c1">// Do not resume, return the default value instead</span>
     <span class="o">|</span> <span class="n">give_int</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="n">default_value</span>
 
@@ -1846,7 +1889,7 @@ threading stateful values through multiple functions.</p>
         <span class="k">resume</span> <span class="p">()</span>
 
 
-<span class="k">type</span> <span class="kt">Expr</span> <span class="ow">=</span>
+<span class="k">shared</span> <span class="k">type</span> <span class="kt">Expr</span> <span class="ow">=</span>
    <span class="o">|</span> <span class="kt">Int</span> <span class="kt">I32</span>
    <span class="o">|</span> <span class="kt">Var</span> <span class="kt">String</span>
    <span class="o">|</span> <span class="kt">Add</span> <span class="kt">Expr</span> <span class="kt">Expr</span>
@@ -1856,11 +1899,11 @@ threading stateful values through multiple functions.</p>
 
 <span class="nf">lookup</span> <span class="p">(</span><span class="n">name</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Maybe</span> <span class="kt">I32</span> <span class="k">can</span> <span class="kt">Eval</span> <span class="ow">=</span>
     <span class="n">map</span> <span class="ow">=</span> <span class="n">get</span> <span class="p">()</span>
-    <span class="n">map</span> <span class="o">|&gt;</span> <span class="n">get</span> <span class="n">name</span>
+    <span class="n">map</span><span class="o">.</span><span class="n">get</span> <span class="n">name</span>
 
 <span class="nf">define</span> <span class="p">(</span><span class="n">name</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">(</span><span class="n">value</span><span class="o">:</span> <span class="kt">I32</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Eval</span> <span class="ow">=</span>
     <span class="n">map</span> <span class="ow">=</span> <span class="n">get</span> <span class="p">()</span>
-    <span class="n">put</span> <span class="p">(</span><span class="n">map</span> <span class="o">|&gt;</span> <span class="n">insert</span> <span class="n">name</span> <span class="n">value</span><span class="p">)</span>
+    <span class="n">put</span> <span class="p">(</span><span class="n">map</span><span class="o">.</span><span class="n">insert</span> <span class="n">name</span> <span class="n">value</span><span class="p">)</span>
 
 <span class="nf">eval</span> <span class="p">(</span><span class="n">expr</span><span class="o">:</span> <span class="kt">Expr</span><span class="p">)</span> <span class="o">:</span> <span class="kt">I32</span> <span class="k">can</span> <span class="kt">Eval</span> <span class="ow">=</span>
     <span class="k">match</span> <span class="n">expr</span>
@@ -3070,6 +3113,39 @@ for the continuation monad.</p>
                         <li>Shared Mutability</li>
                     </a>
                     
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                        <ul class="toc-h3">
+                    
+                        <ul class="toc-h4">
+                    
+                    
+                    
+                    
+                    <a href="/docs/language/#shared-types">
+                        <li>Shared Types</li>
+                    </a>
+                    
+                    
+                        </ul>
                     
                         </ul>
                     
