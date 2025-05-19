@@ -36,7 +36,7 @@
 
 
 
-<link href="/css/custom.css?1746725731" rel="stylesheet">
+<link href="/css/custom.css?1747684548" rel="stylesheet">
 
 
 
@@ -352,10 +352,9 @@ whether ante should use rust&rsquo;s model for chars (4 bytes), Swift&rsquo;s mo
 <li><input disabled="" type="checkbox"> Allow users to specify these in type annotations. They are currently only inferred.</li>
 </ul>
 </li>
-<li>[~] Trait impls
+<li><input checked="" disabled="" type="checkbox"> Trait impls
 <ul>
 <li><input checked="" disabled="" type="checkbox"> Given clause</li>
-<li><input disabled="" type="checkbox"> Named impls</li>
 <li><input checked="" disabled="" type="checkbox"> Impl search</li>
 <li><input checked="" disabled="" type="checkbox"> Static dispatch of traits</li>
 </ul>
@@ -406,10 +405,16 @@ but is otherwise implemented.</li>
 <hr>
 <h1 id="ownership">Ownership</h1>
 <p>Ante&rsquo;s ownership and borrowing rules have been completely redesigned recently. They
-will take some time to implement.</p>
+will take some time to implement. This is currently the largest more or less completely
+unimplemented item.</p>
 <ul>
 <li><input checked="" disabled="" type="checkbox"> Mutating owned values and mutable references to values.</li>
 <li><input disabled="" type="checkbox"> Tracking moves and issuing errors when a moved value is used</li>
+<li><input disabled="" type="checkbox"> <code>Drop</code>
+<ul>
+<li><input disabled="" type="checkbox"> <code>Drop</code>-unwinding for uncalled <code>resume</code>s when handling effects.</li>
+</ul>
+</li>
 <li>[~] Borrowing
 <ul>
 <li><input checked="" disabled="" type="checkbox"> Basic immutable and mutable borrowing</li>
@@ -420,24 +425,22 @@ will take some time to implement.</p>
 </li>
 </ul>
 <hr>
-<h1 id="other">Other</h1>
-<ul>
-<li>[~] Algebraic effects
+<h1 id="algebraic-effects">Algebraic Effects</h1>
 <ul>
 <li><input checked="" disabled="" type="checkbox"> Type checking
 <ul>
-<li>Type checking for effects is considered implemented but there are bugs particularly when inferring effects.</li>
+<li>Type checking for effects is considered implemented but higher-order effectful functions are not as general as they should be.</li>
 </ul>
 </li>
-<li>[~] Runtime
+<li><input checked="" disabled="" type="checkbox"> Runtime
 <ul>
-<li>[~] Handlers
+<li><input checked="" disabled="" type="checkbox"> Handlers
 <ul>
 <li><input checked="" disabled="" type="checkbox"> Handlers for a single effect</li>
-<li><input disabled="" type="checkbox"> Handlers for multiple effects</li>
-<li><input disabled="" type="checkbox"> Matching on return values
+<li><input checked="" disabled="" type="checkbox"> Handlers for multiple effects</li>
+<li><input disabled="" type="checkbox"> <code>return _ -&gt; e</code> clause
 <ul>
-<li>The <code>return _ -&gt; e</code> clause is still unimplemented but can be reasonably emulated by adding <code>; e</code> to the end of the expression being handled.</li>
+<li>This is unimplemented but can be emulated by sequencing the handled expression with <code>e</code></li>
 </ul>
 </li>
 </ul>
@@ -445,7 +448,9 @@ will take some time to implement.</p>
 <li><input checked="" disabled="" type="checkbox"> <code>resume</code>
 <ul>
 <li><input checked="" disabled="" type="checkbox"> Single resumptions</li>
-<li><input checked="" disabled="" type="checkbox"> 0 resumptions</li>
+<li><input checked="" disabled="" type="checkbox"> 0 resumptions
+<ul>
+<li>Implemented except for the related <code>Drop</code>-unwinding ownership feature</li>
 </ul>
 </li>
 </ul>
@@ -640,8 +645,8 @@ will take some time to implement.</p>
                     
                     
                     
-                    <a href="/docs/roadmap/#other">
-                        <li>Other</li>
+                    <a href="/docs/roadmap/#algebraic-effects">
+                        <li>Algebraic Effects</li>
                     </a>
                     
                     

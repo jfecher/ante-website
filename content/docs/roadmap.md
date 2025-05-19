@@ -69,9 +69,8 @@ whether ante should use rust's model for chars (4 bytes), Swift's model (variabl
   - [x] Defaulting to `I32` and `F64`
 - [~] Row polymorphic struct types. Implemented internally, except for:
   - [ ] Allow users to specify these in type annotations. They are currently only inferred.
-- [~] Trait impls
+- [x] Trait impls
   - [x] Given clause
-  - [ ] Named impls
   - [x] Impl search
   - [x] Static dispatch of traits
 
@@ -112,27 +111,30 @@ but is otherwise implemented.
 # Ownership
 
 Ante's ownership and borrowing rules have been completely redesigned recently. They
-will take some time to implement.
+will take some time to implement. This is currently the largest more or less completely
+unimplemented item.
 
 - [x] Mutating owned values and mutable references to values.
 - [ ] Tracking moves and issuing errors when a moved value is used
+- [ ] `Drop`
+  - [ ] `Drop`-unwinding for uncalled `resume`s when handling effects.
 - [~] Borrowing
   - [x] Basic immutable and mutable borrowing
   - [ ] Preventing moving owned values while the borrowed reference is alive
   - [ ] `shared` and `owned` modifiers
   - [ ] `ref` qualifier for types which store references
 ---
-# Other
+# Algebraic Effects
 
-- [~] Algebraic effects
-  - [x] Type checking
-    - Type checking for effects is considered implemented but there are bugs particularly when inferring effects.
-  - [~] Runtime
-    - [~] Handlers
-      - [x] Handlers for a single effect
-      - [ ] Handlers for multiple effects
-      - [ ] Matching on return values
-        - The `return _ -> e` clause is still unimplemented but can be reasonably emulated by adding `; e` to the end of the expression being handled.
-    - [x] `resume`
-      - [x] Single resumptions
-      - [x] 0 resumptions
+- [x] Type checking
+  - Type checking for effects is considered implemented but higher-order effectful functions are not as general as they should be.
+- [x] Runtime
+  - [x] Handlers
+    - [x] Handlers for a single effect
+    - [x] Handlers for multiple effects
+    - [ ] `return _ -> e` clause
+      - This is unimplemented but can be emulated by sequencing the handled expression with `e`
+  - [x] `resume`
+    - [x] Single resumptions
+    - [x] 0 resumptions
+      - Implemented except for the related `Drop`-unwinding ownership feature
