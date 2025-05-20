@@ -36,7 +36,7 @@
 
 
 
-<link href="/css/custom.css" rel="stylesheet">
+<link href="/css/custom.css?1747684548" rel="stylesheet">
 
 
 
@@ -183,7 +183,7 @@
             <ul class="nav navbar-nav navbar-right">
             
             <li class="dropdown">
-                <a href="https://antelang.org//docs/language">Documentation</a>
+                <a href="https://antelang.org//docs/language">Tour</a>
             </li>
             <li class="dropdown">
                 <a href="https://antelang.org//docs/ideas">Ideas</a>
@@ -360,9 +360,9 @@ we still need to ensure their lifetime is sound.</p>
     <span class="c1">// And now we&#39;re printing a dangling reference</span>
     <span class="n">print</span> <span class="n">s2_inner_ref</span>
 
-<span class="nf">the_ref</span> <span class="p">(</span><span class="kt">ref</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">own</span> <span class="k">mut</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Read</span> <span class="p">(</span><span class="o">&amp;</span><span class="k">own</span> <span class="k">mut</span> <span class="n">t</span><span class="p">))</span> <span class="o">:</span> <span class="n">a</span> <span class="ow">=</span>
+<span class="nf">the_ref</span> <span class="p">(</span><span class="n">ref</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">own</span> <span class="k">mut</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Read</span> <span class="p">(</span><span class="o">&amp;</span><span class="k">own</span> <span class="k">mut</span> <span class="n">t</span><span class="p">))</span> <span class="o">:</span> <span class="n">a</span> <span class="ow">=</span>
     <span class="k">handle</span> <span class="n">f</span> <span class="p">()</span>
-    <span class="o">|</span> <span class="n">read</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="k">resume</span> <span class="kt">ref</span>
+    <span class="o">|</span> <span class="n">read</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="k">resume</span> <span class="n">ref</span>
 
 <span class="nf">my_string</span> <span class="ow">=</span> <span class="k">mut</span> <span class="kt">Box</span><span class="o">.</span><span class="n">of</span> <span class="s">&#34;bar&#34;</span>
 <span class="nf">bad</span> <span class="p">()</span> <span class="k">with</span> <span class="n">the_ref</span> <span class="o">&amp;</span><span class="n">my_string</span>

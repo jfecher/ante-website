@@ -36,7 +36,7 @@
 
 
 
-<link href="/css/custom.css" rel="stylesheet">
+<link href="/css/custom.css?1747684548" rel="stylesheet">
 
 
 
@@ -157,7 +157,7 @@
             <ul class="nav navbar-nav navbar-right">
             
             <li class="dropdown">
-                <a href="https://antelang.org//docs/language">Documentation</a>
+                <a href="https://antelang.org//docs/language">Tour</a>
             </li>
             <li class="dropdown">
                 <a href="https://antelang.org//docs/ideas">Ideas</a>
@@ -729,7 +729,7 @@ Lets compare the task of converting a tuple to a string with doing the same for 
 With tuples we must <a href="https://hackage.haskell.org/package/base-4.14.1.0/docs/src/GHC.Show.html#line-268">create a different impl for every possible tuple size</a>.
 with pairs on the other hand the simple implementation works for all sizes:</li>
 </ol>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">cast_pair_string</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Cast</span> <span class="p">(</span><span class="kt">Pair</span> <span class="n">a</span> <span class="n">b</span><span class="p">)</span> <span class="kt">String</span> <span class="k">via</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">cast_pair_string</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Cast</span> <span class="p">(</span><span class="kt">Pair</span> <span class="n">a</span> <span class="n">b</span><span class="p">)</span> <span class="kt">String</span> <span class="n">via</span>
     <span class="n">cast</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="ow">=</span> <span class="s">&#34;$a, $b&#34;</span>
 </code></pre></div><ol start="3">
 <li>
@@ -746,9 +746,9 @@ to extract a <code>List a, List (b, c)</code> for us. This means if we wanted, w
 </ol>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// given we have unzip : List (a, b) -&gt; List a, List b</span>
 <span class="nf">unzip3</span> <span class="p">(</span><span class="n">list</span><span class="o">:</span> <span class="kt">List</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">))</span> <span class="o">:</span> <span class="kt">List</span> <span class="n">a</span><span class="p">,</span> <span class="kt">List</span> <span class="n">b</span><span class="p">,</span> <span class="kt">List</span> <span class="n">c</span> <span class="ow">=</span>
-    <span class="n">as</span><span class="p">,</span> <span class="n">bcs</span> <span class="ow">=</span> <span class="n">unzip</span> <span class="n">list</span>
+    <span class="k">as</span><span class="p">,</span> <span class="n">bcs</span> <span class="ow">=</span> <span class="n">unzip</span> <span class="n">list</span>
     <span class="n">bs</span><span class="p">,</span> <span class="n">cs</span> <span class="ow">=</span> <span class="n">unzip</span> <span class="n">bcs</span>
-    <span class="n">as</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="n">cs</span>
+    <span class="k">as</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="n">cs</span>
 </code></pre></div><ul>
 <li>
 <p>Another place this shows up in is when deconstructing pair values.
@@ -799,11 +799,11 @@ harder by having a helper trait so we can specialize the impl for pairs:</p>
     <span class="n">to_string_helper</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">String</span> <span class="ow">=</span> <span class="n">cast</span> <span class="n">x</span>
 
 <span class="nf">cast_pair_string</span> <span class="ow">=</span> <span class="k">impl</span>
-    <span class="kt">Cast</span> <span class="p">(</span><span class="kt">Pair</span> <span class="n">a</span> <span class="n">b</span><span class="p">)</span> <span class="kt">String</span> <span class="k">via</span>
+    <span class="kt">Cast</span> <span class="p">(</span><span class="kt">Pair</span> <span class="n">a</span> <span class="n">b</span><span class="p">)</span> <span class="kt">String</span> <span class="n">via</span>
         <span class="n">cast</span> <span class="n">pair</span> <span class="ow">=</span> <span class="s">&#34;(${to_string_helper pair})&#34;</span>
 
     <span class="c1">// Specialize the impl for pairs so we can recur on the rhs</span>
-    <span class="kt">ToStringHelper</span> <span class="p">(</span><span class="kt">Pair</span> <span class="n">a</span> <span class="n">b</span><span class="p">)</span> <span class="k">via</span>
+    <span class="kt">ToStringHelper</span> <span class="p">(</span><span class="kt">Pair</span> <span class="n">a</span> <span class="n">b</span><span class="p">)</span> <span class="n">via</span>
         <span class="n">to_string_helper</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="ow">=</span> <span class="s">&#34;$a, ${to_string_helper b}&#34;</span>
 </code></pre></div><p>And these two functions will cover all possible lengths of nested pairs.</p>
 <hr>
@@ -921,6 +921,42 @@ or include one that is redundant and will never be matched.</p>
 <span class="k">match</span> <span class="n">foo</span>
 <span class="o">|</span> <span class="kt">Some</span> <span class="p">(</span><span class="kt">Some</span> <span class="n">bar</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="o">...</span>
 <span class="o">|</span> <span class="kt">None</span> <span class="ow">-&gt;</span> <span class="o">...</span>
+</code></pre></div><p>Note that in Ante variables must be lower case while type constructors are
+uppercase. This carries over to match expressions where each uppercase word
+is a tag to match on while each lowercase word is a variable to bind. This reduces
+the common error in other languages of misspelling a tag value and accidentally
+creating a new variable binding and match-all pattern in doing so.</p>
+<p>If a variable binding is created but otherwise unused it will issue an unused
+warning unless its name starts with an underscore:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">match</span> <span class="n">foo</span>
+<span class="o">|</span> <span class="kt">Some</span> <span class="n">bar</span> <span class="ow">-&gt;</span> <span class="p">()</span> <span class="c1">// warning: `bar` is unused</span>
+<span class="o">|</span> <span class="kt">None</span>
+
+<span class="k">match</span> <span class="n">foo</span>
+<span class="o">|</span> <span class="kt">Some</span> <span class="n">_bar</span> <span class="ow">-&gt;</span> <span class="p">()</span> <span class="c1">// ok!</span>
+<span class="o">|</span> <span class="kt">None</span>
+</code></pre></div><p>If a type has many fields to match on but several are unneeded, they can be omitted
+with <code>..</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">MyStruct</span> <span class="ow">=</span>
+    <span class="n">foo</span><span class="o">:</span> <span class="kt">I32</span>
+    <span class="n">bar</span><span class="o">:</span> <span class="kt">I32</span>
+    <span class="n">baz</span><span class="o">:</span> <span class="kt">I32</span>
+    <span class="n">qux</span><span class="o">:</span> <span class="kt">I32</span>
+
+<span class="k">match</span> <span class="kt">MyStruct</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span>
+<span class="o">|</span> <span class="kt">MyStruct</span> <span class="o">..</span> <span class="ow">-&gt;</span> <span class="n">print</span> <span class="s">&#34;This struct is indeed a struct&#34;</span>
+
+<span class="c1">// `..` also works for a subset of fields:</span>
+<span class="k">match</span> <span class="kt">MyStruct</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span>
+<span class="o">|</span> <span class="kt">MyStruct</span> <span class="n">my_foo</span> <span class="n">my_bar</span> <span class="o">..</span> <span class="ow">-&gt;</span> <span class="n">print</span> <span class="s">&#34;foo = $my_foo, bar = $my_bar&#34;</span>
+</code></pre></div><p>As seen above, structs are matched using positional argument order similar to how they are constructed.
+They may also be matched by field name using the same <code>with</code> syntax for named struct field construction:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">match</span> <span class="kt">MyStruct</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span>
+<span class="o">|</span> <span class="kt">MyStruct</span> <span class="k">with</span> <span class="n">bar</span><span class="p">,</span> <span class="n">qux</span><span class="p">,</span> <span class="o">..</span> <span class="ow">-&gt;</span> <span class="n">print</span> <span class="s">&#34;bar = $bar, qux = $qux&#34;</span>
+
+<span class="c1">// Fields can be renamed:</span>
+<span class="k">match</span> <span class="kt">MyStruct</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span>
+<span class="o">|</span> <span class="kt">MyStruct</span> <span class="k">with</span> <span class="n">bar</span> <span class="ow">=</span> <span class="n">bar2</span><span class="p">,</span> <span class="o">..</span> <span class="ow">-&gt;</span> <span class="n">print</span> <span class="s">&#34;bar = $bar2&#34;</span>
 </code></pre></div><p>In addition to the usual suspects (tagged-unions, structs, pairs), we can
 also include literals and guards in our patterns and it will work as
 we expect:</p>
@@ -958,18 +994,18 @@ can be used to test an expression matches a particular case, for example:</p>
    <span class="o">|</span> <span class="kt">Add</span> <span class="kt">Expr</span> <span class="kt">Expr</span>
 
 <span class="nf">is_variable</span> <span class="p">(</span><span class="n">e</span><span class="o">:</span> <span class="kt">Expr</span><span class="p">)</span> <span class="ow">=</span>
-    <span class="n">e</span> <span class="k">is</span> <span class="kt">Var</span> <span class="n">_</span>
+    <span class="n">e</span> <span class="n">is</span> <span class="kt">Var</span> <span class="n">_</span>
 
 <span class="nf">print</span> <span class="p">(</span><span class="n">is_variable</span> <span class="p">(</span><span class="kt">Var</span> <span class="s">&#34;foo&#34;</span><span class="p">))</span> <span class="c1">//=&gt; true</span>
 <span class="nf">print</span> <span class="p">(</span><span class="n">is_variable</span> <span class="p">(</span><span class="kt">Int</span> <span class="mi">3</span><span class="p">))</span>     <span class="c1">//=&gt; false</span>
 </code></pre></div><p>If an <code>and</code> is used after the <code>is</code> expression, any variables defined in the pattern
 will be in scope of the right-hand side of the <code>and</code> expression:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">is_even_int</span> <span class="p">(</span><span class="n">e</span><span class="o">:</span> <span class="kt">Expr</span><span class="p">)</span> <span class="ow">=</span>
-    <span class="n">e</span> <span class="k">is</span> <span class="kt">Int</span> <span class="n">x</span> <span class="k">and</span> <span class="n">even</span> <span class="n">x</span>
+    <span class="n">e</span> <span class="n">is</span> <span class="kt">Int</span> <span class="n">x</span> <span class="k">and</span> <span class="n">even</span> <span class="n">x</span>
 </code></pre></div><p>Note that because <code>&lt;expr&gt; is &lt;pattern&gt;</code> is an expression and <code>and</code> also accepts two expressions,
 chaining matches is also possible:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">print_if_large_product</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="kt">I32</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
-    <span class="k">if</span> <span class="n">x</span> <span class="k">is</span> <span class="kt">Some</span> <span class="n">x2</span> <span class="k">and</span> <span class="n">y</span> <span class="k">is</span> <span class="kt">Some</span> <span class="n">y2</span> <span class="k">and</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="o">&gt;</span> <span class="mi">1000</span> <span class="k">then</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="n">is</span> <span class="kt">Some</span> <span class="n">x2</span> <span class="k">and</span> <span class="n">y</span> <span class="n">is</span> <span class="kt">Some</span> <span class="n">y2</span> <span class="k">and</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="o">&gt;</span> <span class="mi">1000</span> <span class="k">then</span>
         <span class="c1">// x2 and y2 are still in scope</span>
         <span class="n">print</span> <span class="p">(</span><span class="n">x2</span> <span class="o">*</span> <span class="n">y2</span><span class="p">)</span>
 </code></pre></div><p>Additionally, as we saw above, if <code>is</code> expressions are used within an <code>if</code> condition (or match guard)
@@ -983,12 +1019,12 @@ never be in scope).</p>
 <p>With these limitations in mind, <code>is</code> can still be a very useful operator to shorten code using
 pattern matching.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">incorrect_example</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
-    <span class="k">if</span> <span class="k">not</span> <span class="p">(</span><span class="n">x</span> <span class="k">is</span> <span class="kt">Some</span> <span class="n">y</span><span class="p">)</span> <span class="k">and</span> <span class="n">y</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="k">then</span> <span class="c1">//error! `y` is not in scope here: (x is Some y) may not match</span>
+    <span class="k">if</span> <span class="k">not</span> <span class="p">(</span><span class="n">x</span> <span class="n">is</span> <span class="kt">Some</span> <span class="n">y</span><span class="p">)</span> <span class="k">and</span> <span class="n">y</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="k">then</span> <span class="c1">//error! `y` is not in scope here: (x is Some y) may not match</span>
         <span class="o">...</span>
 </code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">evaluate</span> <span class="p">(</span><span class="n">e</span><span class="o">:</span> <span class="kt">Expr</span><span class="p">)</span> <span class="p">(</span><span class="n">env</span><span class="o">:</span> <span class="kt">HashMap</span> <span class="kt">String</span> <span class="kt">I32</span><span class="p">)</span><span class="o">:</span> <span class="kt">I32</span> <span class="k">can</span> <span class="kt">Error</span> <span class="ow">=</span>
     <span class="k">match</span> <span class="n">e</span>
     <span class="c1">// We can check if `name` is in our HashMap within this match</span>
-    <span class="o">|</span> <span class="kt">Var</span> <span class="n">name</span> <span class="k">if</span> <span class="n">lookup</span> <span class="n">env</span> <span class="n">name</span> <span class="k">is</span> <span class="kt">Some</span> <span class="n">value</span> <span class="ow">-&gt;</span> <span class="n">value</span>
+    <span class="o">|</span> <span class="kt">Var</span> <span class="n">name</span> <span class="k">if</span> <span class="n">lookup</span> <span class="n">env</span> <span class="n">name</span> <span class="n">is</span> <span class="kt">Some</span> <span class="n">value</span> <span class="ow">-&gt;</span> <span class="n">value</span>
     <span class="o">|</span> <span class="kt">Var</span> <span class="n">name</span> <span class="ow">-&gt;</span> <span class="n">error</span> <span class="s">&#34;${name} is not defined&#34;</span>
     <span class="o">|</span> <span class="kt">Int</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">x</span>
     <span class="o">|</span> <span class="kt">Add</span> <span class="n">lhs</span> <span class="n">rhs</span> <span class="ow">-&gt;</span> <span class="n">evaluate</span> <span class="n">lhs</span> <span class="n">env</span> <span class="o">+</span> <span class="n">evaluate</span> <span class="n">rhs</span> <span class="n">env</span>
@@ -1012,7 +1048,8 @@ newlines if the type spans multiple lines:</p>
     <span class="n">data</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span>
     <span class="n">len</span><span class="o">:</span> <span class="kt">Usz</span>
     <span class="n">capacity</span><span class="o">:</span> <span class="kt">Usz</span>
-</code></pre></div><p>Tagged unions can be defined with <code>|</code>s separating each variant.
+</code></pre></div><h3 id="tagged-unions">Tagged Unions</h3>
+<p>Tagged unions can be defined with <code>|</code>s separating each variant.
 The <code>|</code> before the first variant is mandatory. Ante currently has
 no support for untagged C unions.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Maybe</span> <span class="n">t</span> <span class="ow">=</span>
@@ -1022,7 +1059,85 @@ no support for untagged C unions.</p>
 <span class="k">type</span> <span class="kt">Result</span> <span class="n">t</span> <span class="n">e</span> <span class="ow">=</span>
    <span class="o">|</span> <span class="kt">Ok</span> <span class="n">t</span>
    <span class="o">|</span> <span class="kt">Err</span> <span class="n">e</span>
-</code></pre></div><h2 id="type-annotations">Type Annotations</h2>
+</code></pre></div><h4 id="repeated-union-fields">Repeated Union Fields</h4>
+<p>Many tagged unions include one or more of the same fields between all variants. Often this leads
+to refactoring the tagged union into two types: the tagged union and a wrapper struct.
+This hampers readability though, and makes matching on these types more cumbersome,
+particularly hurting nested matches which now have to go through an additional struct.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">shared</span> <span class="k">type</span> <span class="kt">ExprInner</span> <span class="ow">=</span>
+    <span class="o">|</span> <span class="kt">Int</span> <span class="kt">I32</span>
+    <span class="o">|</span> <span class="kt">Var</span> <span class="kt">String</span>
+    <span class="o">|</span> <span class="kt">Add</span> <span class="kt">Expr</span> <span class="kt">Expr</span>
+
+<span class="k">type</span> <span class="kt">Expr</span> <span class="ow">=</span>
+    <span class="n">inner</span><span class="o">:</span> <span class="kt">ExprInner</span>
+    <span class="n">location</span><span class="o">:</span> <span class="kt">Location</span>
+
+<span class="nf">simplify</span> <span class="p">(</span><span class="n">expr</span><span class="o">:</span> <span class="kt">Expr</span><span class="p">)</span><span class="o">:</span> <span class="kt">Expr</span> <span class="ow">=</span>
+    <span class="k">match</span> <span class="n">expr</span><span class="o">.</span><span class="n">inner</span>
+    <span class="o">|</span> <span class="kt">Int</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="kt">Int</span> <span class="n">x</span>
+    <span class="o">|</span> <span class="kt">Var</span> <span class="n">s</span> <span class="ow">-&gt;</span> <span class="kt">Var</span> <span class="n">s</span>
+    <span class="o">|</span> <span class="kt">Add</span> <span class="p">(</span><span class="kt">Expr</span> <span class="p">(</span><span class="kt">Int</span> <span class="mi">0</span><span class="p">)</span> <span class="n">_lhs_loc</span><span class="p">)</span> <span class="n">rhs</span> <span class="ow">-&gt;</span> <span class="n">rhs</span>
+    <span class="o">|</span> <span class="kt">Add</span> <span class="n">lhs</span> <span class="p">(</span><span class="kt">Expr</span> <span class="p">(</span><span class="kt">Int</span> <span class="mi">0</span><span class="p">)</span> <span class="n">_rhs_loc</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="n">lhs</span>
+    <span class="o">|</span> <span class="kt">Add</span> <span class="n">lhs</span> <span class="n">rhs</span> <span class="ow">-&gt;</span> <span class="kt">Add</span> <span class="p">(</span><span class="n">simplify</span> <span class="n">lhs</span><span class="p">)</span> <span class="p">(</span><span class="n">simplify</span> <span class="n">rhs</span><span class="p">)</span>
+</code></pre></div><p>This pattern can be improved with the <code>with</code> keyword which will include a given list of fields
+in all union variants, eliminating the need for a wrapper struct.
+These extra fields are placed at the end of each variant&rsquo;s list of fields.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">shared</span> <span class="k">type</span> <span class="kt">Expr</span> <span class="ow">=</span>
+    <span class="o">|</span> <span class="kt">Int</span> <span class="kt">I32</span>
+    <span class="o">|</span> <span class="kt">Var</span> <span class="kt">String</span>
+    <span class="o">|</span> <span class="kt">Add</span> <span class="kt">Expr</span> <span class="kt">Expr</span>
+    <span class="k">with</span> <span class="n">location</span><span class="o">:</span> <span class="kt">Location</span>
+
+<span class="nf">simplify</span> <span class="p">(</span><span class="n">expr</span><span class="o">:</span> <span class="kt">Expr</span><span class="p">)</span><span class="o">:</span> <span class="kt">Expr</span> <span class="ow">=</span>
+    <span class="k">match</span> <span class="n">expr</span>
+    <span class="o">|</span> <span class="kt">Int</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="kt">Int</span> <span class="n">x</span>
+    <span class="o">|</span> <span class="kt">Var</span> <span class="n">s</span> <span class="ow">-&gt;</span> <span class="kt">Var</span> <span class="n">s</span>
+    <span class="o">|</span> <span class="kt">Add</span> <span class="p">(</span><span class="kt">Int</span> <span class="mi">0</span> <span class="n">_lhs_loc</span><span class="p">)</span> <span class="n">rhs</span> <span class="ow">-&gt;</span> <span class="n">rhs</span>
+    <span class="o">|</span> <span class="kt">Add</span> <span class="n">lhs</span> <span class="p">(</span><span class="kt">Int</span> <span class="mi">0</span> <span class="n">_rhs_loc</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="n">lhs</span>
+    <span class="o">|</span> <span class="kt">Add</span> <span class="n">lhs</span> <span class="n">rhs</span> <span class="ow">-&gt;</span> <span class="kt">Add</span> <span class="p">(</span><span class="n">simplify</span> <span class="n">lhs</span><span class="p">)</span> <span class="p">(</span><span class="n">simplify</span> <span class="n">rhs</span><span class="p">)</span>
+</code></pre></div><p><code>_lhs_loc</code> and <code>_rhs_loc</code> were written explicitly here to show where they would go, but if
+these fields are unneeded in a pattern match they can also be excluded with <code>..</code> which will
+automatically fill in an remaining fields in a pattern:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">simplify (expr: Expr): Expr =
+    match expr
+    | Int x -&gt; Int x
+    | Var s -&gt; Var s
+    | Add (Int 0..) rhs -&gt; rhs
+    | Add lhs (Int 0..) -&gt; lhs
+    | Add lhs rhs -&gt; Add (simplify lhs) (simplify rhs)
+</code></pre></div><p>Because these extra fields are included on every variant, they can also be accessed on the
+tagged union itself as if it were a struct type:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Expr</span><span class="o">.</span><span class="n">file</span> <span class="p">(</span><span class="n">e</span><span class="o">:</span> <span class="kt">Expr</span><span class="p">)</span><span class="o">:</span> <span class="kt">File</span> <span class="ow">=</span>
+    <span class="c1">// No need to match on each variant</span>
+    <span class="n">e</span><span class="o">.</span><span class="n">location</span><span class="o">.</span><span class="n">file</span>
+</code></pre></div><h4 id="variant-types">Variant Types</h4>
+<p>Each variant of a tagged union is also defined as its own struct type. These types
+can be accessed in the namespace of the tagged union:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Shape</span> <span class="ow">=</span>
+   <span class="o">|</span> <span class="kt">Circle</span> <span class="p">(</span><span class="n">radius</span><span class="o">:</span> <span class="kt">U32</span><span class="p">)</span>
+   <span class="o">|</span> <span class="kt">Square</span> <span class="p">(</span><span class="n">length</span><span class="o">:</span> <span class="kt">U32</span><span class="p">)</span>
+
+<span class="nf">area_circle</span> <span class="p">(</span><span class="n">circle</span><span class="o">:</span> <span class="kt">Shape</span><span class="o">.</span><span class="kt">Circle</span><span class="p">)</span><span class="o">:</span> <span class="kt">U32</span> <span class="ow">=</span>
+    <span class="n">radius</span> <span class="ow">=</span> <span class="kt">F64</span> <span class="n">circle</span><span class="o">.</span><span class="n">radius</span>
+    <span class="n">result</span> <span class="ow">=</span> <span class="kt">F64</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">radius</span> <span class="o">*</span> <span class="n">radius</span>
+    <span class="n">result</span><span class="o">.</span><span class="n">truncate</span> <span class="p">()</span>  <span class="c1">// round towards 0</span>
+
+<span class="c1">// Variant types can also have methods</span>
+<span class="kt">Shape</span><span class="o">.</span><span class="kt">Square</span><span class="o">.</span><span class="n">area</span> <span class="n">self</span><span class="o">:</span> <span class="kt">U32</span> <span class="ow">=</span>
+    <span class="n">self</span><span class="o">.</span><span class="n">length</span> <span class="o">*</span> <span class="n">self</span><span class="o">.</span><span class="n">length</span>
+</code></pre></div><p>Normally when matching on tagged unions, you will need to match on each field of
+each variant. To get a value of the variant type instead need to collect all fields
+to a single variable using <code>..</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Shape</span><span class="o">.</span><span class="n">area</span> <span class="n">self</span><span class="o">:</span> <span class="kt">U32</span> <span class="ow">=</span>
+    <span class="k">match</span> <span class="n">self</span>
+    <span class="o">|</span> <span class="kt">Circle</span> <span class="o">..</span><span class="n">c</span> <span class="ow">-&gt;</span> <span class="n">area_circle</span> <span class="n">c</span>
+    <span class="o">|</span> <span class="kt">Square</span> <span class="o">..</span><span class="n">s</span> <span class="ow">-&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">area</span> <span class="p">()</span>
+</code></pre></div><p>This feature is not often useful in smaller types but can be useful in larger types
+to break up code. For example, functions just matching on each variant of a tagged union
+like <code>Shape.area</code> above can be derived such that users need only to implement the methods
+for each individual variant like <code>Shape.Square.area</code>, <code>Shape.Circle.area</code>, etc.</p>
+<h2 id="type-annotations">Type Annotations</h2>
 <p>Even with global type inference, there are still situations where
 types need to be manually specified. For these cases, the <code>x : t</code>
 type annotation syntax can be used. This is valid anywhere an expression
@@ -1105,7 +1220,7 @@ that itself is printable and a <code>prefix</code> field that must be a string:<
     <span class="n">print</span> <span class="n">prefix</span>
     <span class="n">print</span> <span class="n">x</span><span class="o">.</span><span class="n">debug</span>
 </code></pre></div><hr>
-<h1 id="move-semantics">Move Semantics</h1>
+<h1 id="ownership">Ownership</h1>
 <p>Similar to Rust, values in Ante are affine by default (may be used 0 or 1 time
 before they are dropped and deallocated). These values are called
 &ldquo;owned&rdquo; values, in contrast with references which are &ldquo;borrowed&rdquo; and may be
@@ -1299,6 +1414,9 @@ value. Just boxing container elements and union data is often sufficient.</p>
 <p>If an owned reference <code>&amp;own t</code> or <code>&amp;own mut t</code> is ever required however,
 a different type such as <code>RefCell t</code> would still need to be used to provide
 the runtime tracking required to enforce this constraint.</p>
+<h2 id="thread-safety">Thread Safety</h2>
+<p>Ante uses the familiar <code>Send</code> and <code>Sync</code> traits from Rust for safe concurrency. It does
+not innovate here but continues with the safe, tried and true model.</p>
 <hr>
 <h1 id="traits">Traits</h1>
 <p>While unrestricted generic functions are useful, often we don&rsquo;t want
@@ -1329,7 +1447,7 @@ first to the second:</p>
 <p>To use functions like <code>stringify</code> or <code>stringify_print</code> above,
 we&rsquo;ll have to <code>impl</code>ement the trait for the types we want
 to use it with. This can be done with <code>impl</code> blocks:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">stringify_bool</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Stringify</span> <span class="kt">Bool</span> <span class="k">via</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">stringify_bool</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Stringify</span> <span class="kt">Bool</span> <span class="n">via</span>
     <span class="n">stringify</span> <span class="n">b</span> <span class="ow">=</span>
         <span class="k">if</span> <span class="n">b</span> <span class="k">then</span> <span class="s">&#34;true&#34;</span>
         <span class="k">else</span> <span class="s">&#34;false&#34;</span>
@@ -1345,9 +1463,9 @@ scope in the same manner as any other construct: by name.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Foo</span><span class="o">.</span><span class="n">hash_bar</span><span class="p">,</span> <span class="n">std_impls</span> <span class="k">hiding</span> <span class="n">eq_foo</span>
 </code></pre></div><p>This also enables the ability to specify which impl to use via the <code>via</code>
 keyword if there are ever multiple conflicting impls in scope.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">empty</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Stringify</span> <span class="n">a</span> <span class="k">via</span> <span class="n">stringify</span> <span class="n">_</span> <span class="ow">=</span> <span class="s">&#34;&#34;</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">empty</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Stringify</span> <span class="n">a</span> <span class="n">via</span> <span class="n">stringify</span> <span class="n">_</span> <span class="ow">=</span> <span class="s">&#34;&#34;</span>
 
-<span class="nf">print_to_string</span> <span class="kc">true</span> <span class="k">via</span> <span class="n">stringify_bool</span>
+<span class="nf">print_to_string</span> <span class="kc">true</span> <span class="n">via</span> <span class="n">stringify_bool</span>
 </code></pre></div><p>Having multiple conflicting impls anywhere in a codebase is often an error
 in other languages, necessitating extensive use of the newtype pattern
 for otherwise unnecessary wrapper types and boilerplate. Ante does not
@@ -1362,13 +1480,13 @@ so that we can disambiguate between them if needed.</p>
 
 <span class="nf">foo_impls</span> <span class="ow">=</span> <span class="k">impl</span>
     <span class="c1">// We can impl multiple traits via the same method:</span>
-    <span class="p">(</span><span class="kt">Hash</span><span class="p">,</span> <span class="kt">Eq</span><span class="p">,</span> <span class="kt">Cmp</span><span class="p">)</span> <span class="kt">Foo</span> <span class="k">via</span> <span class="k">derive</span>
+    <span class="p">(</span><span class="kt">Hash</span><span class="p">,</span> <span class="kt">Eq</span><span class="p">,</span> <span class="kt">Cmp</span><span class="p">)</span> <span class="kt">Foo</span> <span class="n">via</span> <span class="n">derive</span>
 
     <span class="c1">// We can also forward to a subset of fields:</span>
-    <span class="kt">Print</span> <span class="kt">Foo</span> <span class="k">via</span> <span class="k">forward</span> <span class="n">second</span>
+    <span class="kt">Print</span> <span class="kt">Foo</span> <span class="n">via</span> <span class="n">forward</span> <span class="n">second</span>
 
     <span class="c1">// And we can use manual impls</span>
-    <span class="kt">Combine</span> <span class="kt">Foo</span> <span class="k">via</span>
+    <span class="kt">Combine</span> <span class="kt">Foo</span> <span class="n">via</span>
         <span class="p">(</span><span class="o">++</span><span class="p">)</span> <span class="n">a</span> <span class="n">b</span> <span class="ow">=</span> <span class="kt">Foo</span> <span class="n">a</span><span class="o">.</span><span class="n">first</span> <span class="p">(</span><span class="n">qux</span> <span class="n">a</span> <span class="n">b</span><span class="p">)</span>
 </code></pre></div><p>Note that the mechanism to specify how to derive impls for custom traits is still experimental.
 See more on <a href="/docs/ideas#derive-without-macros">the ideas page</a>.</p>
@@ -1390,10 +1508,10 @@ before:</p>
 </code></pre></div><p>At first glance this looks fine, but there&rsquo;s a problem: we
 can implement it with any combination of <code>c</code> and <code>elem</code>:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">conflicting_impls</span> <span class="ow">=</span> <span class="k">impl</span>
-    <span class="kt">Container</span> <span class="p">(</span><span class="kt">Vec</span> <span class="kt">I32</span><span class="p">)</span> <span class="kt">I32</span> <span class="k">via</span>
+    <span class="kt">Container</span> <span class="p">(</span><span class="kt">Vec</span> <span class="kt">I32</span><span class="p">)</span> <span class="kt">I32</span> <span class="n">via</span>
         <span class="n">get</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="kt">Vec</span> <span class="kt">I32</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Maybe</span> <span class="kt">I32</span> <span class="ow">=</span> <span class="o">...</span>
 
-    <span class="kt">Container</span> <span class="p">(</span><span class="kt">Vec</span> <span class="kt">I32</span><span class="p">)</span> <span class="kt">String</span> <span class="k">via</span>
+    <span class="kt">Container</span> <span class="p">(</span><span class="kt">Vec</span> <span class="kt">I32</span><span class="p">)</span> <span class="kt">String</span> <span class="n">via</span>
         <span class="n">get</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="kt">Vec</span> <span class="kt">I32</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Maybe</span> <span class="kt">String</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><p>But we already had an impl for <code>Vec I32</code>, and defining a
 way to get another element type from it makes no sense!
@@ -1404,7 +1522,7 @@ specify that for any given type <code>c</code>, there&rsquo;s only 1 valid
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">trait</span> <span class="kt">Container</span> <span class="n">c</span> <span class="ow">-&gt;</span> <span class="n">elem</span> <span class="k">with</span>
     <span class="n">get</span><span class="o">:</span> <span class="n">c</span> <span class="ow">-&gt;</span> <span class="kt">Usz</span> <span class="ow">-&gt;</span> <span class="kt">Maybe</span> <span class="n">elem</span>
 
-<span class="nf">vec_container</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Container</span> <span class="p">(</span><span class="kt">Vec</span> <span class="n">a</span><span class="p">)</span> <span class="n">a</span> <span class="k">via</span>
+<span class="nf">vec_container</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Container</span> <span class="p">(</span><span class="kt">Vec</span> <span class="n">a</span><span class="p">)</span> <span class="n">a</span> <span class="n">via</span>
     <span class="n">get</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">i</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Maybe</span> <span class="n">a</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><p>This information is used during type inference
 so if we have e.g. <code>e = get (b: ByteString) 0</code> and there
@@ -1430,13 +1548,13 @@ impls being found, an error is given at the callsite and the
 user will have to manually specify which to use either by only
 importing one of these impls or with an explicit <code>via</code> clause
 at the callsite:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">add</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Combine</span> <span class="kt">I32</span> <span class="k">via</span> <span class="p">(</span><span class="o">++</span><span class="p">)</span> <span class="ow">=</span> <span class="p">(</span><span class="o">+</span><span class="p">)</span>
-<span class="nf">mul</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Combine</span> <span class="kt">I32</span> <span class="k">via</span> <span class="p">(</span><span class="o">++</span><span class="p">)</span> <span class="ow">=</span> <span class="p">(</span><span class="o">*</span><span class="p">)</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">add</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Combine</span> <span class="kt">I32</span> <span class="n">via</span> <span class="p">(</span><span class="o">++</span><span class="p">)</span> <span class="ow">=</span> <span class="p">(</span><span class="o">+</span><span class="p">)</span>
+<span class="nf">mul</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Combine</span> <span class="kt">I32</span> <span class="n">via</span> <span class="p">(</span><span class="o">++</span><span class="p">)</span> <span class="ow">=</span> <span class="p">(</span><span class="o">*</span><span class="p">)</span>
 
 <span class="nf">print</span> <span class="p">(</span><span class="mi">2</span> <span class="o">++</span> <span class="mi">3</span><span class="p">)</span>  <span class="c1">// Error, multiple matching impls found! `add` and `mul` are both in scope</span>
 
-<span class="nf">print</span> <span class="p">(</span><span class="mi">2</span> <span class="o">++</span> <span class="mi">3</span><span class="p">)</span> <span class="k">via</span> <span class="n">add</span>  <span class="c1">//=&gt; 5</span>
-<span class="nf">print</span> <span class="p">(</span><span class="mi">2</span> <span class="o">++</span> <span class="mi">3</span><span class="p">)</span> <span class="k">via</span> <span class="n">mul</span>  <span class="c1">//=&gt; 6</span>
+<span class="nf">print</span> <span class="p">(</span><span class="mi">2</span> <span class="o">++</span> <span class="mi">3</span><span class="p">)</span> <span class="n">via</span> <span class="n">add</span>  <span class="c1">//=&gt; 5</span>
+<span class="nf">print</span> <span class="p">(</span><span class="mi">2</span> <span class="o">++</span> <span class="mi">3</span><span class="p">)</span> <span class="n">via</span> <span class="n">mul</span>  <span class="c1">//=&gt; 6</span>
 </code></pre></div><hr>
 <h1 id="modules">Modules</h1>
 <p>Ante&rsquo;s module system follows a simple, hierarchical structure
@@ -1501,9 +1619,9 @@ wildcard imports, you can also specify definitions to exclude, via the <code>hid
 <span class="c1">// If we want to import everything from Baz.Nested while renaming</span>
 <span class="c1">// some of the items we need to list them separately since `as`</span>
 <span class="c1">// doesn&#39;t work with * imports:</span>
-<span class="k">import</span> <span class="kt">Baz</span><span class="o">.</span><span class="kt">Nested</span><span class="o">.</span><span class="n">get_baz</span> <span class="n">as</span> <span class="n">other_get_baz</span>
+<span class="k">import</span> <span class="kt">Baz</span><span class="o">.</span><span class="kt">Nested</span><span class="o">.</span><span class="n">get_baz</span> <span class="k">as</span> <span class="n">other_get_baz</span>
 
-<span class="k">import</span> <span class="kt">Foo</span><span class="o">.</span><span class="n">a</span> <span class="n">as</span> <span class="n">foo_a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span> <span class="n">as</span> <span class="n">foo_d</span>
+<span class="k">import</span> <span class="kt">Foo</span><span class="o">.</span><span class="n">a</span> <span class="k">as</span> <span class="n">foo_a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span> <span class="k">as</span> <span class="n">foo_d</span>
 
 <span class="c1">// No error here</span>
 <span class="nf">get_baz</span> <span class="p">()</span> <span class="ow">=</span> <span class="n">my_local_baz</span>
@@ -1513,7 +1631,7 @@ package but not to any external packages. Items can optionally be exported
 across package boundaries by adding each name to an <code>export</code> list at the top
 of the module.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// fib and sum will be exported as library functions</span>
-<span class="nf">export</span> <span class="n">fib</span><span class="p">,</span> <span class="n">sum</span>
+<span class="k">export</span> <span class="n">fib</span><span class="p">,</span> <span class="n">sum</span>
 
 <span class="nf">fib</span> <span class="n">n</span> <span class="ow">=</span> <span class="n">fib_helper</span> <span class="n">n</span> <span class="mi">0</span> <span class="mi">1</span>
 
@@ -1696,7 +1814,7 @@ on its right. Here is the definition of <code>with</code> in pseudocode:</p>
 </code></pre></div><p>There are also times when we want to use a handler to handle an entire block. For this,
 we can use the <code>using</code> keyword:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// try: (Unit -&gt; a can Fail) -&gt; Maybe a</span>
-<span class="k">using</span> <span class="n">try</span>
+<span class="nf">using</span> <span class="n">try</span>
 
 <span class="nf">foo</span> <span class="ow">=</span> <span class="n">failable_operation</span> <span class="p">()</span>
 <span class="nf">bar</span> <span class="ow">=</span> <span class="n">failable_operation</span> <span class="p">()</span>
@@ -1740,7 +1858,7 @@ function&rsquo;s effects were not explicitly specified. So we can rewrite <code>
 </code></pre></div><p>And it would be equivalent. Note that this effect-polymorphism by default isn&rsquo;t always desired.
 In these cases, the function parameter&rsquo;s effects can be explicitly specified. This
 may be the case when spawning threads for example:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">spawn_thread</span> <span class="p">(</span><span class="n">thread</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=&gt;</span> <span class="kt">Unit</span> <span class="k">pure</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">IO</span><span class="p">,</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">spawn_thread</span> <span class="p">(</span><span class="n">thread</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=&gt;</span> <span class="kt">Unit</span> <span class="n">pure</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">IO</span><span class="p">,</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><p>The above function&rsquo;s signature states that <code>spawn_thread</code> may <code>Fail</code> and perform some IO (presumably
 in the form of spawning an OS thread), while <code>thread</code> may not perform any effects itself.</p>
 <p>Another case is when a function parameter has effects that the outer function does not. Consider:</p>
@@ -1941,7 +2059,7 @@ or <code>Continue</code> lets us program in a very imperative style,
 while remaining purely functional behind the scenes.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-an" data-lang="an"><span class="k">effect</span> <span class="kt">Loop</span> <span class="k">with</span>
     <span class="n">break</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span>
-    <span class="n">continue</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span>
+    <span class="k">continue</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span>
 
 <span class="nf">for</span> <span class="p">(</span><span class="n">iter</span><span class="o">:</span> <span class="n">i</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">e</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Loop</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Iterate</span> <span class="n">i</span> <span class="n">e</span> <span class="ow">=</span>
     <span class="k">match</span> <span class="n">next</span> <span class="n">iter</span>
@@ -1949,7 +2067,7 @@ while remaining purely functional behind the scenes.</p>
     <span class="o">|</span> <span class="kt">Some</span> <span class="p">(</span><span class="n">rest</span><span class="p">,</span> <span class="n">elem</span><span class="p">)</span> <span class="ow">-&gt;</span>
         <span class="k">handle</span> <span class="n">f</span> <span class="n">elem</span>
         <span class="o">|</span> <span class="n">break</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="p">()</span>
-        <span class="o">|</span> <span class="n">continue</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="n">for</span> <span class="n">rest</span> <span class="n">f</span>
+        <span class="o">|</span> <span class="k">continue</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="n">for</span> <span class="n">rest</span> <span class="n">f</span>
         <span class="c1">// If the body returns normally, we also want to continue the loop</span>
         <span class="o">|</span> <span class="k">return</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="n">for</span> <span class="n">rest</span> <span class="n">f</span>
 
@@ -2838,6 +2956,101 @@ for the continuation monad.</p>
                     
                         <ul class="toc-h2">
                     
+                        <ul class="toc-h3">
+                    
+                    
+                    
+                    
+                    <a href="/docs/language/#tagged-unions">
+                        <li>Tagged Unions</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                        <ul class="toc-h3">
+                    
+                        <ul class="toc-h4">
+                    
+                    
+                    
+                    
+                    <a href="/docs/language/#repeated-union-fields">
+                        <li>Repeated Union Fields</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                        <ul class="toc-h3">
+                    
+                        <ul class="toc-h4">
+                    
+                    
+                    
+                    
+                    <a href="/docs/language/#variant-types">
+                        <li>Variant Types</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
                     
                     
                     
@@ -2964,8 +3177,8 @@ for the continuation monad.</p>
                     
                     
                     
-                    <a href="/docs/language/#move-semantics">
-                        <li>Move Semantics</li>
+                    <a href="/docs/language/#ownership">
+                        <li>Ownership</li>
                     </a>
                     
                     
@@ -3206,6 +3419,31 @@ for the continuation monad.</p>
                     
                     
                         </ul>
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/docs/language/#thread-safety">
+                        <li>Thread Safety</li>
+                    </a>
+                    
                     
                         </ul>
                     
