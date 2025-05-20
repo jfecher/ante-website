@@ -6,6 +6,8 @@ categories = ["effects"]
 banner = "img/banners/lantern3.jpg"
 +++
 
+# Why Algebraic Effects
+
 With the idea of algebraic effects slowly gaining more traction and as Ante's own implementation of algebraic effects gets closer to completion,
 one thing I've noticed is that while there exists articles or documentation explaining _what_ algebraic effects are (including a
 [section in Ante's documentation](/docs/language#algebraic-effects)), there are much fewer resources explaining _why_ you'd want them in the first place.
@@ -24,7 +26,36 @@ algebraic effects allow us to abstract out interfaces almost trivially - more on
 
 ---
 
-# Error Handling
+## User-defineable control-flow
+
+- Generators, exceptions, async (https://effekt-lang.org/docs/casestudies/scheduler)
+- Automatic Differentiation (https://effekt-lang.org/docs/casestudies/ad)
+
+--- 
+
+## Abstraction
+
+- Dependency Injection
+- Database
+
+---
+
+## Nice APIs
+
+- State effect, Allocator, Random, Parsers, Build Systems
+- Writing in direct style, avoiding `map`
+
+---
+
+## Guaranteeing Purity
+
+- spawn threads
+- Software transactional memory (STM)
+  - https://github.com/effekt-community/effekt-stm/blob/main/stm.effekt
+
+---
+
+## Error Handling
 
 One of the most common uses for algebraic effects [citation needed] is in error handling. You may have heard from other explanations that
 algebraic effects "are basically resumeable exceptions" - and yeah, if you just don't resume an algebraic effect when it is performed you
@@ -89,7 +120,7 @@ easily and that they make combinator functions on them fairly simple to define w
 
 ---
 
-# State
+## State
 
 A common pattern seen across many programs and libraries is the use of some sort of `Context` object passed around to
 most functions. Algebraic effects can make this a bit more ergonomic by making the argument-passing of the Context
@@ -132,11 +163,11 @@ With a state effect, this central Vec wouldn't need to be passed around explicit
 we could also define a type alias to combine state effects from passing around several of these without needing
 to wrap them in a single gigantic struct.
 
-## Globals
+### Globals
 
 ---
 
-# Earlier Returns and Loops
+## Earlier Returns and Loops
 
 A rather minor (but neet I think!) benefit of effects is something I call _earlier returns_. We're all familiar
 with normal early returns:
@@ -182,26 +213,26 @@ TODO: continue & break as effects?
 
 ---
 
-# Generators
+## Generators
 
 ---
 
-# Capability-based Security
+## Capability-based Security
 
 ---
 
-# Abstractions and Mocking
+## Abstractions and Mocking
 
 - Redirect IO into string buffer
 
 ---
 
-# Async and Coroutines
+## Async and Coroutines
 
 ---
 
-# Prevent Side Effects Where it Counts
+## Prevent Side Effects Where it Counts
 
 ---
 
-# Comparisons with Monads
+## Comparisons with Monads
