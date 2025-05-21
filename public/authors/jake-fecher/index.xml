@@ -6,11 +6,11 @@
     <description>Recent content in Jake Fecher on Ante</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 19 May 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://antelang.org/authors/jake-fecher/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 21 May 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://antelang.org/authors/jake-fecher/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Why Algebraic Effects?</title>
       <link>https://antelang.org/blog/why_effects/</link>
-      <pubDate>Mon, 19 May 2025 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 21 May 2025 00:00:00 +0000</pubDate>
       
       <guid>https://antelang.org/blog/why_effects/</guid>
       <description>Why Algebraic Effects Algebraic effects1 (a.k.a. effect handlers) are a very useful up-and-coming feature that I personally think will see a huge surge in popularity in the programming languages of tomorrow. They&amp;rsquo;re one of the core features of Ante, as well as being the focus of many research languages including Koka, Effekt, Eff, and Flix. However, while many articles or documentation snippets try to explain what effect handlers are (including Ante&amp;rsquo;s own documentation), I think few really take the time to focus on why you would want to use them.</description>

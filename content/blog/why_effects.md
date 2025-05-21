@@ -133,7 +133,7 @@ my_for_each (generator: Unit -> Unit can Yield a) (f: a -> Unit): Unit =
 
 // Let's use it!
 yield_all_elements_of_vec (Vec.of [1, 2, 3, 4])
-    // `with` is sugar to apply effect handler functions, you can mostly ignore it
+    // `with` is sugar to apply effect handler functions
     with filter (fn x -> x % 2 == 0)
     with my_for_each print  // prints 2 then 4
 ```
