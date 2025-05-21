@@ -3,7 +3,7 @@ authors = ["Jake Fecher"]
 title = "Algebraic Effects, Ownership, and Borrowing"
 date = "2024-02-20"
 categories = ["effects", "thread safety", "memory management"]
-banner = "img/banners/anteater2.jpg"
+banner = "img/banners/anteater2_cropped.jpg"
 +++
 
 ---

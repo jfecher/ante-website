@@ -3,7 +3,7 @@ authors = ["Jake Fecher"]
 title = "Achieving Safe, Aliasable Mutability with Unboxed Types"
 date = "2024-01-29"
 categories = ["mutability", "thread safety", "memory management"]
-banner = "img/banners/antelope_bird.jpg"
+banner = "img/banners/antelope_bird_cropped.jpg"
 +++
 
 This is part of Ante's goal to loosen restrictions on low-level programming while remaining
