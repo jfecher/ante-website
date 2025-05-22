@@ -143,7 +143,7 @@ yields control back to a handler which switches execution to another function. [
 of that in Effekt.
 
 Basically, algebraic effects get you a lot of expressivity in your language, and as a bonus these different
-effects interact well with each other as well. We'll get into this more later but algebraic effects composing well
+effects compose well with each other. We'll get into this more later but algebraic effects composing well
 is a huge usability win over other effect abstractions.
 
 --- 
@@ -188,7 +188,7 @@ mock_database (f: Unit -> a can Database): a =
     handle f ()
     | query _msg ->
         // Ignore the message and always return Ok
-        resume (DbResponse.Ok)
+        resume DbResponse.Ok
 
 test_business_logic () =
     // Apply the `mock_database` handler to the rest of the function
@@ -214,7 +214,7 @@ print_to_string (f: Unit -> a can Print): a, String can Print =
 
     handle
         result = f ()
-        resule, all_messages
+        result, all_messages
     | print msg ->
         all_messages := all_messages ++ "\n" ++ msg
         resume ()
@@ -272,8 +272,8 @@ effect Use a with
 ```
 
 Most languages call this a state effect and it is generic over the type of state to use.
-In our case we can instantiate it as `Use Context`. We can define a handler to provide
-the initial state value like so:
+
+We can define a handler to provide the initial state value like so[^2]:
 
 ```ante
 state (f: Unit -> a can Use s) (initial: s): a =
@@ -316,7 +316,7 @@ example (strings: !Strings) =
     append_with_separator strings string1 " " string2
 
 run_example () =
-    context = Strings (Vec.new ())
+    mut context = Strings (Vec.new ())
     example !context
 ```
 
@@ -336,7 +336,7 @@ push_string (string: String): StringKey can Use Strings =
     set strings
     key
 
-get_string (key: StringKey): &String can Use Strings =
+get_string (key: StringKey): String can Use Strings =
     strings = get () : Strings
     strings.get key |> unwrap
 
@@ -464,8 +464,46 @@ call_result_functions (): U32 can Fail =
     x * 2
 ```
 
+If we need to go off the good path we can just apply a handler:
+
+```ante
+call_result_functions (): U32 can Fail =
+    // get_line's Fail effect is now handled by `default` which returns "42" instead of failing
+    line = Std.IO.Stdin.get_line () with default "42"
+    x = parse line : U32
+    x * 2
+```
+
 Compared to error unions we never have to wrap our data in `Some`/`Ok` and we don't
-have to worry about error types not composing well either.
+have to worry about error types not composing well either:
+
+```ante
+// Now imagine we have:
+LibraryA.foo (): U32 can Throw LibraryA.Error = ...
+LibraryB.bar (): U32 can Throw LibraryB.Error = ...
+
+type MyError = message: String
+
+// Composing the different error types just works
+my_function (): Unit can Throw LibraryA.Error, Throw LibraryB.Error, Throw MyError =
+    x = LibraryA.foo ()
+    y = LibraryB.bar ()
+    if x + y < 10 then
+        throw (MyError "The results of `foo` and `bar` are too small")
+```
+
+And if it gets too cumbersome to type out all those `Throw` clauses we can make a type alias
+for the effects we want to handle:
+
+```ante
+AllErrors = can Throw LibraryA.Error, Throw LibraryB.Error, Throw MyError
+
+my_function (): Unit can AllErrors =
+    x = LibraryA.foo ()
+    y = LibraryB.bar ()
+    if x + y < 10 then
+        throw (MyError "The results of `foo` and `bar` are too small")
+```
 
 ---
 
@@ -474,7 +512,7 @@ have to worry about error types not composing well either.
 Most languages with effect handlers (barring perhaps only OCaml) also use effects wherever
 side-effects may occur. You may have noticed the `can Print` or `can IO` on previous examples,
 and it's true - you can't use side-effects in Ante without marking that the function may perform
-them[^2]. Setting aside the cases when `IO` or print outs are redirected or used for mocking,
+them[^3]. Setting aside the cases when `IO` or print outs are redirected or used for mocking,
 these effects are usually handled in `main` automatically - so what benefit does it actually
 provide by making programmers mark these functions?
 
@@ -500,7 +538,7 @@ helps greatly when auditing the security of libraries. When you call a function
 `get_pi: Unit -> F64` you know that it isn't doing any sneaky IO in the background. If that
 library is later updated to `get_pi: Unit -> F64 can IO` you know something suspicious is
 probably happening, and you'll get an error in your code as long as the function you're calling
-`get_pi` in doesn't already require the `IO` effect[^3][^4]. This has parallels with [Capability
+`get_pi` in doesn't already require the `IO` effect[^4][^5]. This has parallels with [Capability
 Based Security](https://joeduffyblog.com/2015/11/10/objects-as-secure-capabilities/)
 (bonus paper [Designing with Static Capabilities and Effects](https://arxiv.org/abs/2005.11444))
 where we must pass around capabilities like `fs: FileSystem` as explicit objects and only
@@ -521,11 +559,12 @@ and bubbles up effects to handlers to compile to C without a runtime, [Ante](htt
 [OCaml](https://github.com/ocaml-multicore/ocaml-effects-tutorial) limit `resume` to only being called
 once which precludes some effects like non-determinism but allows the internal continuations to be implemented
 more efficiently (e.g. via segmented stacks), and [Effekt](https://effekt-lang.org/) specializes handlers
-out of the program completely[^5]!
+out of the program completely[^6]!
 
 
 [^1]: The "algebraic" in algebraic effects is mostly a vestigial term. Using "effect handlers" is probably more accurate but I'll be referring to these mostly as algebraic effects since that is the term most users are familiar with. Also I think it is confusing to say "effect handlers" when talking about the effect itself and not just the handler.
-[^2]: The compiler can't check `extern` definitions for you, so the type definitions on those have to be trusted. There is also a (planned) way to perform an `IO` effect only when compiling in debug mode to allow debug printouts while still maintaining effect safety on release mode.
-[^3]: This is one reason why it's usually preferable to declare the minimum amount of effects. Like saying your function `can Print` rather than bringing in all of `can IO`.
-[^4]: The addition of a new effect to `get_pi` would also break semantic versioning so it can't be snuck into a bugfix version.
-[^5]: This comes with the limitation that most functions are second-class but you can still get first-class functions by boxing them and switching to a pay-as-you-go approach. See [the docs](https://effekt-lang.org/tour/captures) as well as [this paper](https://dl.acm.org/doi/10.1145/3527320).
+[^2]: This definition of `state` completely ignores ownership rules. We'd need a `Copy a` restriction for a real implementation but I didn't want to get side-tracked explaining ownership and traits in this post since it isn't relevant for effects in general. Most languages with algebraic effects allow pervasive sharing of values. Ante with its ownership semantics derived from Rust's is a bit of a black sheep here.
+[^3]: The compiler can't check `extern` definitions for you, so the type definitions on those have to be trusted. There is also a (planned) way to perform an `IO` effect only when compiling in debug mode to allow debug printouts while still maintaining effect safety on release mode.
+[^4]: This is one reason why it's usually preferable to declare the minimum amount of effects. Like saying your function `can Print` rather than bringing in all of `can IO`.
+[^5]: The addition of a new effect to `get_pi` would also break semantic versioning so it can't be snuck into a bugfix version.
+[^6]: This comes with the limitation that most functions are second-class but you can still get first-class functions by boxing them and switching to a pay-as-you-go approach. See [the docs](https://effekt-lang.org/tour/captures) as well as [this paper](https://dl.acm.org/doi/10.1145/3527320).

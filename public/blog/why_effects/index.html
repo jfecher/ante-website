@@ -406,7 +406,7 @@ onto a sticky note:</p>
 yields control back to a handler which switches execution to another function. <a href="https://effekt-lang.org/docs/casestudies/scheduler">Here&rsquo;s an example</a>
 of that in Effekt.</p>
 <p>Basically, algebraic effects get you a lot of expressivity in your language, and as a bonus these different
-effects interact well with each other as well. We&rsquo;ll get into this more later but algebraic effects composing well
+effects compose well with each other. We&rsquo;ll get into this more later but algebraic effects composing well
 is a huge usability win over other effect abstractions.</p>
 <hr>
 <h2 id="as-an-abstraction">As an Abstraction</h2>
@@ -437,7 +437,7 @@ or even with a mock database for testing:</p>
     <span class="k">handle</span> <span class="n">f</span> <span class="p">()</span>
     <span class="o">|</span> <span class="n">query</span> <span class="n">_msg</span> <span class="ow">-&gt;</span>
         <span class="c1">// Ignore the message and always return Ok</span>
-        <span class="k">resume</span> <span class="p">(</span><span class="kt">DbResponse</span><span class="o">.</span><span class="kt">Ok</span><span class="p">)</span>
+        <span class="k">resume</span> <span class="kt">DbResponse</span><span class="o">.</span><span class="kt">Ok</span>
 
 <span class="nf">test_business_logic</span> <span class="p">()</span> <span class="ow">=</span>
     <span class="c1">// Apply the `mock_database` handler to the rest of the function</span>
@@ -459,7 +459,7 @@ or even with a mock database for testing:</p>
 
     <span class="k">handle</span>
         <span class="n">result</span> <span class="ow">=</span> <span class="n">f</span> <span class="p">()</span>
-        <span class="n">resule</span><span class="p">,</span> <span class="n">all_messages</span>
+        <span class="n">result</span><span class="p">,</span> <span class="n">all_messages</span>
     <span class="o">|</span> <span class="n">print</span> <span class="n">msg</span> <span class="ow">-&gt;</span>
         <span class="n">all_messages</span> <span class="o">:=</span> <span class="n">all_messages</span> <span class="o">++</span> <span class="s">&#34;</span><span class="se">\n</span><span class="s">&#34;</span> <span class="o">++</span> <span class="n">msg</span>
         <span class="k">resume</span> <span class="p">()</span>
@@ -504,9 +504,8 @@ we need are functions to <code>get</code> the context and to <code>set</code> it
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Use</span> <span class="n">a</span> <span class="k">with</span>
     <span class="n">get</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span>
     <span class="n">set</span><span class="o">:</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
-</code></pre></div><p>Most languages call this a state effect and it is generic over the type of state to use.
-In our case we can instantiate it as <code>Use Context</code>. We can define a handler to provide
-the initial state value like so:</p>
+</code></pre></div><p>Most languages call this a state effect and it is generic over the type of state to use.</p>
+<p>We can define a handler to provide the initial state value like so<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">state</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Use</span> <span class="n">s</span><span class="p">)</span> <span class="p">(</span><span class="n">initial</span><span class="o">:</span> <span class="n">s</span><span class="p">)</span><span class="o">:</span> <span class="n">a</span> <span class="ow">=</span>
     <span class="k">mut</span> <span class="n">context</span> <span class="ow">=</span> <span class="n">initial</span>
     <span class="k">handle</span> <span class="n">f</span> <span class="p">()</span>
@@ -543,7 +542,7 @@ the vector everywhere:</p>
     <span class="n">append_with_separator</span> <span class="n">strings</span> <span class="n">string1</span> <span class="s">&#34; &#34;</span> <span class="n">string2</span>
 
 <span class="nf">run_example</span> <span class="p">()</span> <span class="ow">=</span>
-    <span class="n">context</span> <span class="ow">=</span> <span class="kt">Strings</span> <span class="p">(</span><span class="kt">Vec</span><span class="o">.</span><span class="n">new</span> <span class="p">())</span>
+    <span class="k">mut</span> <span class="n">context</span> <span class="ow">=</span> <span class="kt">Strings</span> <span class="p">(</span><span class="kt">Vec</span><span class="o">.</span><span class="n">new</span> <span class="p">())</span>
     <span class="n">example</span> <span class="o">!</span><span class="n">context</span>
 </code></pre></div><p>Using a state effect essentially threads through the context automatically:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Strings</span> <span class="ow">=</span> <span class="n">vec</span><span class="o">:</span> <span class="kt">Vec</span> <span class="kt">String</span>
@@ -559,7 +558,7 @@ the vector everywhere:</p>
     <span class="n">set</span> <span class="n">strings</span>
     <span class="n">key</span>
 
-<span class="nf">get_string</span> <span class="p">(</span><span class="n">key</span><span class="o">:</span> <span class="kt">StringKey</span><span class="p">)</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">String</span> <span class="k">can</span> <span class="kt">Use</span> <span class="kt">Strings</span> <span class="ow">=</span>
+<span class="nf">get_string</span> <span class="p">(</span><span class="n">key</span><span class="o">:</span> <span class="kt">StringKey</span><span class="p">)</span><span class="o">:</span> <span class="kt">String</span> <span class="k">can</span> <span class="kt">Use</span> <span class="kt">Strings</span> <span class="ow">=</span>
     <span class="n">strings</span> <span class="ow">=</span> <span class="n">get</span> <span class="p">()</span> <span class="o">:</span> <span class="kt">Strings</span>
     <span class="n">strings</span><span class="o">.</span><span class="n">get</span> <span class="n">key</span> <span class="o">|&gt;</span> <span class="n">unwrap</span>
 
@@ -655,14 +654,41 @@ needed with effects though. The direct approach just works:</p>
     <span class="n">line</span> <span class="ow">=</span> <span class="kt">Std</span><span class="o">.</span><span class="kt">IO</span><span class="o">.</span><span class="kt">Stdin</span><span class="o">.</span><span class="n">get_line</span> <span class="p">()</span>
     <span class="n">x</span> <span class="ow">=</span> <span class="n">parse</span> <span class="n">line</span> <span class="o">:</span> <span class="kt">U32</span>
     <span class="n">x</span> <span class="o">*</span> <span class="mi">2</span>
+</code></pre></div><p>If we need to go off the good path we can just apply a handler:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">call_result_functions</span> <span class="p">()</span><span class="o">:</span> <span class="kt">U32</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span>
+    <span class="c1">// get_line&#39;s Fail effect is now handled by `default` which returns &#34;42&#34; instead of failing</span>
+    <span class="n">line</span> <span class="ow">=</span> <span class="kt">Std</span><span class="o">.</span><span class="kt">IO</span><span class="o">.</span><span class="kt">Stdin</span><span class="o">.</span><span class="n">get_line</span> <span class="p">()</span> <span class="k">with</span> <span class="n">default</span> <span class="s">&#34;42&#34;</span>
+    <span class="n">x</span> <span class="ow">=</span> <span class="n">parse</span> <span class="n">line</span> <span class="o">:</span> <span class="kt">U32</span>
+    <span class="n">x</span> <span class="o">*</span> <span class="mi">2</span>
 </code></pre></div><p>Compared to error unions we never have to wrap our data in <code>Some</code>/<code>Ok</code> and we don&rsquo;t
-have to worry about error types not composing well either.</p>
-<hr>
+have to worry about error types not composing well either:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Now imagine we have:</span>
+<span class="kt">LibraryA</span><span class="o">.</span><span class="n">foo</span> <span class="p">()</span><span class="o">:</span> <span class="kt">U32</span> <span class="k">can</span> <span class="kt">Throw</span> <span class="kt">LibraryA</span><span class="o">.</span><span class="kt">Error</span> <span class="ow">=</span> <span class="o">...</span>
+<span class="kt">LibraryB</span><span class="o">.</span><span class="n">bar</span> <span class="p">()</span><span class="o">:</span> <span class="kt">U32</span> <span class="k">can</span> <span class="kt">Throw</span> <span class="kt">LibraryB</span><span class="o">.</span><span class="kt">Error</span> <span class="ow">=</span> <span class="o">...</span>
+
+<span class="k">type</span> <span class="kt">MyError</span> <span class="ow">=</span> <span class="n">message</span><span class="o">:</span> <span class="kt">String</span>
+
+<span class="c1">// Composing the different error types just works</span>
+<span class="nf">my_function</span> <span class="p">()</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Throw</span> <span class="kt">LibraryA</span><span class="o">.</span><span class="kt">Error</span><span class="p">,</span> <span class="kt">Throw</span> <span class="kt">LibraryB</span><span class="o">.</span><span class="kt">Error</span><span class="p">,</span> <span class="kt">Throw</span> <span class="kt">MyError</span> <span class="ow">=</span>
+    <span class="n">x</span> <span class="ow">=</span> <span class="kt">LibraryA</span><span class="o">.</span><span class="n">foo</span> <span class="p">()</span>
+    <span class="n">y</span> <span class="ow">=</span> <span class="kt">LibraryB</span><span class="o">.</span><span class="n">bar</span> <span class="p">()</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="k">then</span>
+        <span class="n">throw</span> <span class="p">(</span><span class="kt">MyError</span> <span class="s">&#34;The results of `foo` and `bar` are too small&#34;</span><span class="p">)</span>
+</code></pre></div><p>And if it gets too cumbersome to type out all those <code>Throw</code> clauses we can make a type alias
+for the effects we want to handle:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">AllErrors</span> <span class="ow">=</span> <span class="k">can</span> <span class="kt">Throw</span> <span class="kt">LibraryA</span><span class="o">.</span><span class="kt">Error</span><span class="p">,</span> <span class="kt">Throw</span> <span class="kt">LibraryB</span><span class="o">.</span><span class="kt">Error</span><span class="p">,</span> <span class="kt">Throw</span> <span class="kt">MyError</span>
+
+<span class="nf">my_function</span> <span class="p">()</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">AllErrors</span> <span class="ow">=</span>
+    <span class="n">x</span> <span class="ow">=</span> <span class="kt">LibraryA</span><span class="o">.</span><span class="n">foo</span> <span class="p">()</span>
+    <span class="n">y</span> <span class="ow">=</span> <span class="kt">LibraryB</span><span class="o">.</span><span class="n">bar</span> <span class="p">()</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="k">then</span>
+        <span class="n">throw</span> <span class="p">(</span><span class="kt">MyError</span> <span class="s">&#34;The results of `foo` and `bar` are too small&#34;</span><span class="p">)</span>
+</code></pre></div><hr>
 <h2 id="guaranteeing-purity">Guaranteeing Purity</h2>
 <p>Most languages with effect handlers (barring perhaps only OCaml) also use effects wherever
 side-effects may occur. You may have noticed the <code>can Print</code> or <code>can IO</code> on previous examples,
 and it&rsquo;s true - you can&rsquo;t use side-effects in Ante without marking that the function may perform
-them<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>. Setting aside the cases when <code>IO</code> or print outs are redirected or used for mocking,
+them<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>. Setting aside the cases when <code>IO</code> or print outs are redirected or used for mocking,
 these effects are usually handled in <code>main</code> automatically - so what benefit does it actually
 provide by making programmers mark these functions?</p>
 <p>For one, a number of functions actually require other non-side-effectful (ie. pure) functions
@@ -681,7 +707,7 @@ helps greatly when auditing the security of libraries. When you call a function
 <code>get_pi: Unit -&gt; F64</code> you know that it isn&rsquo;t doing any sneaky IO in the background. If that
 library is later updated to <code>get_pi: Unit -&gt; F64 can IO</code> you know something suspicious is
 probably happening, and you&rsquo;ll get an error in your code as long as the function you&rsquo;re calling
-<code>get_pi</code> in doesn&rsquo;t already require the <code>IO</code> effect<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup><sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>. This has parallels with <a href="https://joeduffyblog.com/2015/11/10/objects-as-secure-capabilities/">Capability
+<code>get_pi</code> in doesn&rsquo;t already require the <code>IO</code> effect<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup><sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup>. This has parallels with <a href="https://joeduffyblog.com/2015/11/10/objects-as-secure-capabilities/">Capability
 Based Security</a>
 (bonus paper <a href="https://arxiv.org/abs/2005.11444">Designing with Static Capabilities and Effects</a>)
 where we must pass around capabilities like <code>fs: FileSystem</code> as explicit objects and only
@@ -700,7 +726,7 @@ and bubbles up effects to handlers to compile to C without a runtime, <a href="h
 <a href="https://github.com/ocaml-multicore/ocaml-effects-tutorial">OCaml</a> limit <code>resume</code> to only being called
 once which precludes some effects like non-determinism but allows the internal continuations to be implemented
 more efficiently (e.g. via segmented stacks), and <a href="https://effekt-lang.org/">Effekt</a> specializes handlers
-out of the program completely<sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup>!</p>
+out of the program completely<sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup>!</p>
 <section class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
@@ -708,16 +734,19 @@ out of the program completely<sup id="fnref:5"><a href="#fn:5" class="footnote-r
 <p>The &ldquo;algebraic&rdquo; in algebraic effects is mostly a vestigial term. Using &ldquo;effect handlers&rdquo; is probably more accurate but I&rsquo;ll be referring to these mostly as algebraic effects since that is the term most users are familiar with. Also I think it is confusing to say &ldquo;effect handlers&rdquo; when talking about the effect itself and not just the handler.&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:2" role="doc-endnote">
-<p>The compiler can&rsquo;t check <code>extern</code> definitions for you, so the type definitions on those have to be trusted. There is also a (planned) way to perform an <code>IO</code> effect only when compiling in debug mode to allow debug printouts while still maintaining effect safety on release mode.&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p>This definition of <code>state</code> completely ignores ownership rules. We&rsquo;d need a <code>Copy a</code> restriction for a real implementation but I didn&rsquo;t want to get side-tracked explaining ownership and traits in this post since it isn&rsquo;t relevant for effects in general. Most languages with algebraic effects allow pervasive sharing of values. Ante with its ownership semantics derived from Rust&rsquo;s is a bit of a black sheep here.&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:3" role="doc-endnote">
-<p>This is one reason why it&rsquo;s usually preferable to declare the minimum amount of effects. Like saying your function <code>can Print</code> rather than bringing in all of <code>can IO</code>.&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p>The compiler can&rsquo;t check <code>extern</code> definitions for you, so the type definitions on those have to be trusted. There is also a (planned) way to perform an <code>IO</code> effect only when compiling in debug mode to allow debug printouts while still maintaining effect safety on release mode.&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:4" role="doc-endnote">
-<p>The addition of a new effect to <code>get_pi</code> would also break semantic versioning so it can&rsquo;t be snuck into a bugfix version.&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p>This is one reason why it&rsquo;s usually preferable to declare the minimum amount of effects. Like saying your function <code>can Print</code> rather than bringing in all of <code>can IO</code>.&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:5" role="doc-endnote">
-<p>This comes with the limitation that most functions are second-class but you can still get first-class functions by boxing them and switching to a pay-as-you-go approach. See <a href="https://effekt-lang.org/tour/captures">the docs</a> as well as <a href="https://dl.acm.org/doi/10.1145/3527320">this paper</a>.&#160;<a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p>The addition of a new effect to <code>get_pi</code> would also break semantic versioning so it can&rsquo;t be snuck into a bugfix version.&#160;<a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:6" role="doc-endnote">
+<p>This comes with the limitation that most functions are second-class but you can still get first-class functions by boxing them and switching to a pay-as-you-go approach. See <a href="https://effekt-lang.org/tour/captures">the docs</a> as well as <a href="https://dl.acm.org/doi/10.1145/3527320">this paper</a>.&#160;<a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
 </section>
