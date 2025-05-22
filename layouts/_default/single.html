@@ -1,27 +1,26 @@
 <!DOCTYPE html>
 <html lang="{{ .Site.LanguageCode }}">
-
   <head>
     {{ partial "headers.html" . }}
     {{ partial "custom_headers.html" . }}
   </head>
 
   <body>
-
     <div id="all">
-
         {{ partial "top.html" . }}
-
         {{ partial "nav.html" . }}
-
         {{ partial "breadcrumbs.html" . }}
-
         <div id="content">
-            <div class="container">
-
+            <div class="container" id="post-container">
                 <div class="row">
-
                     <!-- *** LEFT COLUMN *** -->
+
+                    <div class="col-md-3">
+                        <!-- *** MENUS AND WIDGETS *** -->
+                        {{ partial "sidebar.html" . }}
+                        <!-- *** MENUS AND FILTERS END *** -->
+                    </div>
+                    <!-- /.col-md-3 -->
 
                     <div class="col-md-9" id="blog-post">
 
@@ -57,17 +56,7 @@
                     <!-- *** LEFT COLUMN END *** -->
 
                     <!-- *** RIGHT COLUMN *** -->
-
-                    <div class="col-md-3">
-
-                        <!-- *** MENUS AND WIDGETS *** -->
-
-                        {{ partial "sidebar.html" . }}
-
-                        <!-- *** MENUS AND FILTERS END *** -->
-
-                    </div>
-                    <!-- /.col-md-3 -->
+                    <div class="col-md-3 right-float"/>
 
                     <!-- *** RIGHT COLUMN END *** -->
 
