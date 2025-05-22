@@ -3,7 +3,7 @@ authors = ["Jake Fecher"]
 title = "Why Algebraic Effects?"
 date = "2025-05-21"
 categories = ["effects"]
-banner = "img/banners/lantern3.jpg"
+banner = "img/banners/lanterns.jpg"
 +++
 
 # Why Algebraic Effects
