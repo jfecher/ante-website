@@ -491,6 +491,35 @@
                     
                     
                     
+                    <a href="/blog/why_effects/#replayability">
+                        <li>Replayability</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                        <ul class="toc-h3">
+                    
+                    
+                    
+                    
                     <a href="/blog/why_effects/#capability-based-security">
                         <li>Capability-based Security</li>
                     </a>
@@ -563,9 +592,8 @@
 languages of tomorrow. They&rsquo;re one of the core features of Ante, as well as being the focus of many research
 languages including <a href="https://koka-lang.github.io/koka/doc/index.html">Koka</a>, <a href="https://effekt-lang.org/">Effekt</a>, <a href="https://www.eff-lang.org/">Eff</a>,
 and <a href="https://flix.dev/">Flix</a>. However, while many articles or documentation snippets try to explain <em>what</em> effect handlers are (including
-<a href="/docs/language#algebraic-effects">Ante&rsquo;s own documentation</a>), I think few really take the time to focus on <em>why</em> you would want to use them.
-Believe me when I say that effect handlers have so many use-cases that it would be difficult to enumerate them all. That&rsquo;s why I&rsquo;m going to focus
-on a couple categories instead and do my best to mention use-cases that fall into those categories.</p>
+<a href="/docs/language#algebraic-effects">Ante&rsquo;s own documentation</a>), few really go in-depth on <em>why</em> you would want to use them.
+In this post I&rsquo;ll explain exactly that and will include as complete a list as possible on all the use-cases of algebraic effects.</p>
 <h2 id="a-note-on-syntax-and-semantics">A Note on Syntax and Semantics</h2>
 <p>I&rsquo;ll be using Ante pseudocode for much of this article. If you&rsquo;re not familiar with effect handlers or Ante I encourage you to read the documentation link
 above or read from any of the other effectful languages for a good head start! But I recognize it&rsquo;s hard to get buy-in to learn something before showing
@@ -926,7 +954,8 @@ have to worry about error types not composing well either:</p>
     <span class="n">y</span> <span class="ow">=</span> <span class="kt">LibraryB</span><span class="o">.</span><span class="n">bar</span> <span class="p">()</span>
     <span class="k">if</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="k">then</span>
         <span class="n">throw</span> <span class="p">(</span><span class="kt">MyError</span> <span class="s">&#34;The results of `foo` and `bar` are too small&#34;</span><span class="p">)</span>
-</code></pre></div><p>And if it gets too cumbersome to type out all those <code>Throw</code> clauses we can make a type alias
+</code></pre></div><p>You can think of us</p>
+<p>And if it gets too cumbersome to type out all those <code>Throw</code> clauses we can make a type alias
 for the effects we want to handle:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">AllErrors</span> <span class="ow">=</span> <span class="k">can</span> <span class="kt">Throw</span> <span class="kt">LibraryA</span><span class="o">.</span><span class="kt">Error</span><span class="p">,</span> <span class="kt">Throw</span> <span class="kt">LibraryB</span><span class="o">.</span><span class="kt">Error</span><span class="p">,</span> <span class="kt">Throw</span> <span class="kt">MyError</span>
 
@@ -953,6 +982,16 @@ requires pure functions. It works by running many functions simultaneously and i
 ever mutated out from under one thread while it was performing a transaction, it just restarts
 that transaction. For the curious, there&rsquo;s a proof of concept implementation of it in Effekt
 <a href="https://github.com/effekt-community/effekt-stm/blob/main/stm.effekt">here</a>.</p>
+<h3 id="replayability">Replayability</h3>
+<p>Another neat aspect of purity is that it can give you replayability similar to the <code>rr</code> debugging
+utility. This is the tech needed for deterministic network replication and log structured backups
+used in databases and videogame networking.</p>
+<p>To implement this you would need two handlers: <code>record</code> and <code>replay</code> which handle the top-level
+effect emitted by <code>main</code>. In most languages this is named <code>IO</code>. <code>record</code> would record that the
+effect occurred, re-raise it to be handled by the built-in <code>IO</code> handler, and record it&rsquo;s result.
+Then, on another run <code>replay</code> would handle <code>IO</code> and use the results from the effect log instead
+of actually performing them. A particularly smart language could even <code>record</code> by default in
+debug builds to always get deterministic debugging!</p>
 <h3 id="capability-based-security">Capability-based Security</h3>
 <p>The requirement to include all unhandled effects as part of the type signature of a function
 helps greatly when auditing the security of libraries. When you call a function
@@ -970,13 +1009,14 @@ and why I think they&rsquo;re going to be much more pervasive in the future, but
 Mainly efficiency concerns, although it should be said that compilation output of effects has improved
 greatly in recent years. Most languages with algebraic effects will optimize &ldquo;tail-resumptive&rdquo; effects
 (any effect where the last thing the handler does is call <code>resume</code>) into normal closure calls. This is great
-because this is already most effects in practice (citation needed - although <em>all</em> the examples in this blog
-post fit in this category!). Different languages also have their own strategies for optimizing the remaining
+because this is already most effects in practice (citation needed - although almost all the examples in this blog
+post fit in this category! Exceptions are the only, <em>ahem</em>, exception here since they do not <code>resume</code> at all).
+Different languages also have their own strategies for optimizing the remaining
 effect handlers: <a href="https://koka-lang.github.io/koka/doc/index.html">Koka</a> uses
 <a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2021/08/genev-icfp21.pdf">evidence passing</a>
 and bubbles up effects to handlers to compile to C without a runtime, <a href="https://antelang.org/">Ante</a> and
 <a href="https://github.com/ocaml-multicore/ocaml-effects-tutorial">OCaml</a> limit <code>resume</code> to only being called
-once which precludes some effects like non-determinism but allows the internal continuations to be implemented
+at most once which precludes some effects like non-determinism but allows the internal continuations to be implemented
 more efficiently (e.g. via segmented stacks), and <a href="https://effekt-lang.org/">Effekt</a> specializes handlers
 out of the program completely<sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup>!</p>
 <section class="footnotes" role="doc-endnotes">

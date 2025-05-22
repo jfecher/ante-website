@@ -12,9 +12,8 @@ Algebraic effects[^1] (a.k.a. effect handlers) are a very useful up-and-coming f
 languages of tomorrow. They're one of the core features of Ante, as well as being the focus of many research
 languages including [Koka](https://koka-lang.github.io/koka/doc/index.html), [Effekt](https://effekt-lang.org/), [Eff](https://www.eff-lang.org/),
 and [Flix](https://flix.dev/). However, while many articles or documentation snippets try to explain _what_ effect handlers are (including
-[Ante's own documentation](/docs/language#algebraic-effects)), I think few really take the time to focus on _why_ you would want to use them.
-Believe me when I say that effect handlers have so many use-cases that it would be difficult to enumerate them all. That's why I'm going to focus
-on a couple categories instead and do my best to mention use-cases that fall into those categories.
+[Ante's own documentation](/docs/language#algebraic-effects)), few really go in-depth on _why_ you would want to use them.
+In this post I'll explain exactly that and will include as complete a list as possible on all the use-cases of algebraic effects.
 
 ## A Note on Syntax and Semantics
 
@@ -492,6 +491,8 @@ my_function (): Unit can Throw LibraryA.Error, Throw LibraryB.Error, Throw MyErr
         throw (MyError "The results of `foo` and `bar` are too small")
 ```
 
+You can think of us
+
 And if it gets too cumbersome to type out all those `Throw` clauses we can make a type alias
 for the effects we want to handle:
 
@@ -531,6 +532,19 @@ ever mutated out from under one thread while it was performing a transaction, it
 that transaction. For the curious, there's a proof of concept implementation of it in Effekt
 [here](https://github.com/effekt-community/effekt-stm/blob/main/stm.effekt).
 
+### Replayability
+
+Another neat aspect of purity is that it can give you replayability similar to the `rr` debugging
+utility. This is the tech needed for deterministic network replication and log structured backups
+used in databases and videogame networking.
+
+To implement this you would need two handlers: `record` and `replay` which handle the top-level
+effect emitted by `main`. In most languages this is named `IO`. `record` would record that the
+effect occurred, re-raise it to be handled by the built-in `IO` handler, and record it's result.
+Then, on another run `replay` would handle `IO` and use the results from the effect log instead
+of actually performing them. A particularly smart language could even `record` by default in
+debug builds to always get deterministic debugging!
+
 ### Capability-based Security
 
 The requirement to include all unhandled effects as part of the type signature of a function
@@ -551,13 +565,14 @@ and why I think they're going to be much more pervasive in the future, but there
 Mainly efficiency concerns, although it should be said that compilation output of effects has improved
 greatly in recent years. Most languages with algebraic effects will optimize "tail-resumptive" effects
 (any effect where the last thing the handler does is call `resume`) into normal closure calls. This is great
-because this is already most effects in practice (citation needed - although _all_ the examples in this blog
-post fit in this category!). Different languages also have their own strategies for optimizing the remaining
+because this is already most effects in practice (citation needed - although almost all the examples in this blog
+post fit in this category! Exceptions are the only, _ahem_, exception here since they do not `resume` at all).
+Different languages also have their own strategies for optimizing the remaining
 effect handlers: [Koka](https://koka-lang.github.io/koka/doc/index.html) uses
 [evidence passing](https://www.microsoft.com/en-us/research/wp-content/uploads/2021/08/genev-icfp21.pdf)
 and bubbles up effects to handlers to compile to C without a runtime, [Ante](https://antelang.org/) and 
 [OCaml](https://github.com/ocaml-multicore/ocaml-effects-tutorial) limit `resume` to only being called
-once which precludes some effects like non-determinism but allows the internal continuations to be implemented
+at most once which precludes some effects like non-determinism but allows the internal continuations to be implemented
 more efficiently (e.g. via segmented stacks), and [Effekt](https://effekt-lang.org/) specializes handlers
 out of the program completely[^6]!
 
