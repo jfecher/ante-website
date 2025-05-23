@@ -441,9 +441,9 @@ try_get_line_from_stdin (): Maybe String can IO = ...
 try_parse (s: String): Maybe U32 = ...
 
 // read an integer from stdin, returning that value doubled
-call_result_functions (): Maybe U32 can IO =
+call_failable_functions (): Maybe U32 can IO =
     try_get_line_from_stdin () |>.and_then fn line ->
-        try_parse line |>.map fn (x: U32) ->
+        try_parse line |>.map fn x ->
             x * 2
 ```
 
@@ -457,19 +457,19 @@ get_line_from_stdin (): String can Fail, IO = ...
 parse (s: String): U32 can Fail = ...
 
 // read an integer from stdin, returning that value doubled
-call_result_functions (): U32 can Fail =
-    line = Std.IO.Stdin.get_line ()
-    x = parse line : U32
+call_failable_functions (): U32 can Fail =
+    line = get_line_from_stdin ()
+    x = parse line
     x * 2
 ```
 
 If we need to go off the good path we can just apply a handler:
 
 ```ante
-call_result_functions (): U32 can Fail =
-    // get_line's Fail effect is now handled by `default` which returns "42" instead of failing
-    line = Std.IO.Stdin.get_line () with default "42"
-    x = parse line : U32
+call_failable_functions (): U32 can Fail =
+    // get_line_from_stdin's Fail effect is now handled by `default` which returns "42" instead of failing
+    line = get_line_from_stdin () with default "42"
+    x = parse line
     x * 2
 ```
 
@@ -491,8 +491,6 @@ my_function (): Unit can Throw LibraryA.Error, Throw LibraryB.Error, Throw MyErr
         throw (MyError "The results of `foo` and `bar` are too small")
 ```
 
-You can think of us
-
 And if it gets too cumbersome to type out all those `Throw` clauses we can make a type alias
 for the effects we want to handle:
 
@@ -505,6 +503,13 @@ my_function (): Unit can AllErrors =
     if x + y < 10 then
         throw (MyError "The results of `foo` and `bar` are too small")
 ```
+
+You can think of this as being similar to using an anonymous union type for error returns.
+We don't need to define explicit wrappers to combine all the errors we use as with tagged
+unions, and different error types compose naturally into the union. This also means if a
+library `can Throw String`, and our code also `can Throw String`, these will combine into
+just one `can Throw String` effect. If we want to keep them separate we need to use a wrapper
+type like `MyError` above.
 
 ---
 
@@ -540,7 +545,7 @@ used in databases and videogame networking.
 
 To implement this you would need two handlers: `record` and `replay` which handle the top-level
 effect emitted by `main`. In most languages this is named `IO`. `record` would record that the
-effect occurred, re-raise it to be handled by the built-in `IO` handler, and record it's result.
+effect occurred, re-raise it to be handled by the built-in `IO` handler, and record its result.
 Then, on another run `replay` would handle `IO` and use the results from the effect log instead
 of actually performing them. A particularly smart language could even `record` by default in
 debug builds to always get deterministic debugging!
@@ -556,30 +561,39 @@ probably happening, and you'll get an error in your code as long as the function
 Based Security](https://joeduffyblog.com/2015/11/10/objects-as-secure-capabilities/)
 (bonus paper [Designing with Static Capabilities and Effects](https://arxiv.org/abs/2005.11444))
 where we must pass around capabilities like `fs: FileSystem` as explicit objects and only
-functions with these objects can access the file system.
+functions with these objects can access the file system. With algebraic effects it works similarly
+except the functions declare effects instead of taking capability parameters. There is a downside
+to the effect approach though, and its the same one mentioned above: since effects are automatically
+threaded through your program you won't get an error if a function like `get_pi` is updated to
+require `IO` if your function also already requires that effect. This can crop up anywhere
+effects are used. E.g. with a `Fail` effect if a library function can't `Fail` but then was
+updated to possibly `Fail`, it'll propagate upward to your existing `Fail` handler if used in
+one of your functions that also can `Fail`. This may be fine but it may also be unintended depending
+on the program. For example, perhaps a user may have preferred to handle it by providing a default value.
 
 ---
 
 Whew! That was a lot, but we made it through. Obviously this post focused on the positives of effects
 and why I think they're going to be much more pervasive in the future, but there are negatives as well.
-Mainly efficiency concerns, although it should be said that compilation output of effects has improved
+Aside from the accidental handling of effects issue mentioned above, the main downside with effects has
+traditionally been efficiency concerns, although it should be said that compilation output of effects has improved
 greatly in recent years. Most languages with algebraic effects will optimize "tail-resumptive" effects
 (any effect where the last thing the handler does is call `resume`) into normal closure calls. This is great
 because this is already most effects in practice (citation needed - although almost all the examples in this blog
-post fit in this category! Exceptions are the only, _ahem_, exception here since they do not `resume` at all).
+post fit in this category! Exceptions being the only, _ahem_, exception here since they do not `resume` at all).
 Different languages also have their own strategies for optimizing the remaining
 effect handlers: [Koka](https://koka-lang.github.io/koka/doc/index.html) uses
 [evidence passing](https://www.microsoft.com/en-us/research/wp-content/uploads/2021/08/genev-icfp21.pdf)
 and bubbles up effects to handlers to compile to C without a runtime, [Ante](https://antelang.org/) and 
 [OCaml](https://github.com/ocaml-multicore/ocaml-effects-tutorial) limit `resume` to only being called
-at most once which precludes some effects like non-determinism but allows the internal continuations to be implemented
-more efficiently (e.g. via segmented stacks), and [Effekt](https://effekt-lang.org/) specializes handlers
-out of the program completely[^6]!
+at most once which precludes some effects like non-determinism but simplifies resource handling and
+allows the internal continuations to be implemented more efficiently (e.g. via segmented stacks), and
+[Effekt](https://effekt-lang.org/) specializes handlers out of the program completely[^6]!
 
 
 [^1]: The "algebraic" in algebraic effects is mostly a vestigial term. Using "effect handlers" is probably more accurate but I'll be referring to these mostly as algebraic effects since that is the term most users are familiar with. Also I think it is confusing to say "effect handlers" when talking about the effect itself and not just the handler.
 [^2]: This definition of `state` completely ignores ownership rules. We'd need a `Copy a` restriction for a real implementation but I didn't want to get side-tracked explaining ownership and traits in this post since it isn't relevant for effects in general. Most languages with algebraic effects allow pervasive sharing of values. Ante with its ownership semantics derived from Rust's is a bit of a black sheep here.
 [^3]: The compiler can't check `extern` definitions for you, so the type definitions on those have to be trusted. There is also a (planned) way to perform an `IO` effect only when compiling in debug mode to allow debug printouts while still maintaining effect safety on release mode.
-[^4]: This is one reason why it's usually preferable to declare the minimum amount of effects. Like saying your function `can Print` rather than bringing in all of `can IO`.
+[^4]: This is one reason why it's usually preferable to declare the minimum amount of effects. Like saying your function `can Print` rather than bringing in all of `can IO`. If you don't know what the minimal set is, type inference can figure it out for you.
 [^5]: The addition of a new effect to `get_pi` would also break semantic versioning so it can't be snuck into a bugfix version.
 [^6]: This comes with the limitation that most functions are second-class but you can still get first-class functions by boxing them and switching to a pay-as-you-go approach. See [the docs](https://effekt-lang.org/tour/captures) as well as [this paper](https://dl.acm.org/doi/10.1145/3527320).

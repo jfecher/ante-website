@@ -801,9 +801,9 @@ the vector everywhere:</p>
 <span class="k">type</span> <span class="kt">StringKey</span> <span class="ow">=</span> <span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span>
 
 <span class="c1">// `!` is a mutable reference</span>
-<span class="nf">push_string</span> <span class="p">(</span><span class="n">strings</span><span class="o">:</span> <span class="o">!</span><span class="kt">Strings</span><span class="p">)</span> <span class="p">(</span><span class="kt">string</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">StringKey</span> <span class="ow">=</span>
+<span class="nf">push_string</span> <span class="p">(</span><span class="n">strings</span><span class="o">:</span> <span class="o">!</span><span class="kt">Strings</span><span class="p">)</span> <span class="p">(</span><span class="n">string</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">StringKey</span> <span class="ow">=</span>
     <span class="n">key</span> <span class="ow">=</span> <span class="kt">StringKey</span> <span class="p">(</span><span class="n">strings</span><span class="o">.</span><span class="n">len</span> <span class="p">())</span>
-    <span class="n">strings</span><span class="o">.</span><span class="n">push</span> <span class="kt">string</span>
+    <span class="n">strings</span><span class="o">.</span><span class="n">push</span> <span class="n">string</span>
     <span class="n">key</span>
 
 <span class="nf">get_string</span> <span class="p">(</span><span class="n">strings</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">Strings</span><span class="p">)</span> <span class="p">(</span><span class="n">key</span><span class="o">:</span> <span class="kt">StringKey</span><span class="p">)</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">String</span> <span class="ow">=</span>
@@ -828,10 +828,10 @@ the vector everywhere:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Strings</span> <span class="ow">=</span> <span class="n">vec</span><span class="o">:</span> <span class="kt">Vec</span> <span class="kt">String</span>
 <span class="k">type</span> <span class="kt">StringKey</span> <span class="ow">=</span> <span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span>
 
-<span class="nf">push_string</span> <span class="p">(</span><span class="kt">string</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">StringKey</span> <span class="k">can</span> <span class="kt">Use</span> <span class="kt">Strings</span> <span class="ow">=</span>
+<span class="nf">push_string</span> <span class="p">(</span><span class="n">string</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">StringKey</span> <span class="k">can</span> <span class="kt">Use</span> <span class="kt">Strings</span> <span class="ow">=</span>
     <span class="k">mut</span> <span class="n">strings</span> <span class="ow">=</span> <span class="n">get</span> <span class="p">()</span> <span class="o">:</span> <span class="kt">Strings</span>
     <span class="n">key</span> <span class="ow">=</span> <span class="kt">StringKey</span> <span class="p">(</span><span class="n">strings</span><span class="o">.</span><span class="n">len</span> <span class="p">())</span>
-    <span class="n">strings</span><span class="o">.</span><span class="n">push</span> <span class="kt">string</span>
+    <span class="n">strings</span><span class="o">.</span><span class="n">push</span> <span class="n">string</span>
     <span class="c1">// We could modify `Use a` to give mutable references or</span>
     <span class="c1">// use it via `Use !Strings` but for the sake of example</span>
     <span class="c1">// we just make sure to `set` here when mutating `strings`.</span>
@@ -918,9 +918,9 @@ to <code>map</code> the <code>Some</code> value in-between steps:</p>
 <span class="nf">try_parse</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="kt">U32</span> <span class="ow">=</span> <span class="o">...</span>
 
 <span class="c1">// read an integer from stdin, returning that value doubled</span>
-<span class="nf">call_result_functions</span> <span class="p">()</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="kt">U32</span> <span class="k">can</span> <span class="kt">IO</span> <span class="ow">=</span>
+<span class="nf">call_failable_functions</span> <span class="p">()</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="kt">U32</span> <span class="k">can</span> <span class="kt">IO</span> <span class="ow">=</span>
     <span class="n">try_get_line_from_stdin</span> <span class="p">()</span> <span class="o">|&gt;.</span><span class="n">and_then</span> <span class="k">fn</span> <span class="n">line</span> <span class="ow">-&gt;</span>
-        <span class="n">try_parse</span> <span class="n">line</span> <span class="o">|&gt;.</span><span class="n">map</span> <span class="k">fn</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">U32</span><span class="p">)</span> <span class="ow">-&gt;</span>
+        <span class="n">try_parse</span> <span class="n">line</span> <span class="o">|&gt;.</span><span class="n">map</span> <span class="k">fn</span> <span class="n">x</span> <span class="ow">-&gt;</span>
             <span class="n">x</span> <span class="o">*</span> <span class="mi">2</span>
 </code></pre></div><p>This is cumbersome enough languages like Rust provide syntax-sugar like <code>?</code>
 to automatically return error values and focus on the good path. That isn&rsquo;t
@@ -930,15 +930,15 @@ needed with effects though. The direct approach just works:</p>
 <span class="nf">parse</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">U32</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
 
 <span class="c1">// read an integer from stdin, returning that value doubled</span>
-<span class="nf">call_result_functions</span> <span class="p">()</span><span class="o">:</span> <span class="kt">U32</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span>
-    <span class="n">line</span> <span class="ow">=</span> <span class="kt">Std</span><span class="o">.</span><span class="kt">IO</span><span class="o">.</span><span class="kt">Stdin</span><span class="o">.</span><span class="n">get_line</span> <span class="p">()</span>
-    <span class="n">x</span> <span class="ow">=</span> <span class="n">parse</span> <span class="n">line</span> <span class="o">:</span> <span class="kt">U32</span>
+<span class="nf">call_failable_functions</span> <span class="p">()</span><span class="o">:</span> <span class="kt">U32</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span>
+    <span class="n">line</span> <span class="ow">=</span> <span class="n">get_line_from_stdin</span> <span class="p">()</span>
+    <span class="n">x</span> <span class="ow">=</span> <span class="n">parse</span> <span class="n">line</span>
     <span class="n">x</span> <span class="o">*</span> <span class="mi">2</span>
 </code></pre></div><p>If we need to go off the good path we can just apply a handler:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">call_result_functions</span> <span class="p">()</span><span class="o">:</span> <span class="kt">U32</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span>
-    <span class="c1">// get_line&#39;s Fail effect is now handled by `default` which returns &#34;42&#34; instead of failing</span>
-    <span class="n">line</span> <span class="ow">=</span> <span class="kt">Std</span><span class="o">.</span><span class="kt">IO</span><span class="o">.</span><span class="kt">Stdin</span><span class="o">.</span><span class="n">get_line</span> <span class="p">()</span> <span class="k">with</span> <span class="n">default</span> <span class="s">&#34;42&#34;</span>
-    <span class="n">x</span> <span class="ow">=</span> <span class="n">parse</span> <span class="n">line</span> <span class="o">:</span> <span class="kt">U32</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">call_failable_functions</span> <span class="p">()</span><span class="o">:</span> <span class="kt">U32</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span>
+    <span class="c1">// get_line_from_stdin&#39;s Fail effect is now handled by `default` which returns &#34;42&#34; instead of failing</span>
+    <span class="n">line</span> <span class="ow">=</span> <span class="n">get_line_from_stdin</span> <span class="p">()</span> <span class="k">with</span> <span class="n">default</span> <span class="s">&#34;42&#34;</span>
+    <span class="n">x</span> <span class="ow">=</span> <span class="n">parse</span> <span class="n">line</span>
     <span class="n">x</span> <span class="o">*</span> <span class="mi">2</span>
 </code></pre></div><p>Compared to error unions we never have to wrap our data in <code>Some</code>/<code>Ok</code> and we don&rsquo;t
 have to worry about error types not composing well either:</p>
@@ -954,8 +954,7 @@ have to worry about error types not composing well either:</p>
     <span class="n">y</span> <span class="ow">=</span> <span class="kt">LibraryB</span><span class="o">.</span><span class="n">bar</span> <span class="p">()</span>
     <span class="k">if</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="k">then</span>
         <span class="n">throw</span> <span class="p">(</span><span class="kt">MyError</span> <span class="s">&#34;The results of `foo` and `bar` are too small&#34;</span><span class="p">)</span>
-</code></pre></div><p>You can think of us</p>
-<p>And if it gets too cumbersome to type out all those <code>Throw</code> clauses we can make a type alias
+</code></pre></div><p>And if it gets too cumbersome to type out all those <code>Throw</code> clauses we can make a type alias
 for the effects we want to handle:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">AllErrors</span> <span class="ow">=</span> <span class="k">can</span> <span class="kt">Throw</span> <span class="kt">LibraryA</span><span class="o">.</span><span class="kt">Error</span><span class="p">,</span> <span class="kt">Throw</span> <span class="kt">LibraryB</span><span class="o">.</span><span class="kt">Error</span><span class="p">,</span> <span class="kt">Throw</span> <span class="kt">MyError</span>
 
@@ -964,7 +963,13 @@ for the effects we want to handle:</p>
     <span class="n">y</span> <span class="ow">=</span> <span class="kt">LibraryB</span><span class="o">.</span><span class="n">bar</span> <span class="p">()</span>
     <span class="k">if</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="k">then</span>
         <span class="n">throw</span> <span class="p">(</span><span class="kt">MyError</span> <span class="s">&#34;The results of `foo` and `bar` are too small&#34;</span><span class="p">)</span>
-</code></pre></div><hr>
+</code></pre></div><p>You can think of this as being similar to using an anonymous union type for error returns.
+We don&rsquo;t need to define explicit wrappers to combine all the errors we use as with tagged
+unions, and different error types compose naturally into the union. This also means if a
+library <code>can Throw String</code>, and our code also <code>can Throw String</code>, these will combine into
+just one <code>can Throw String</code> effect. If we want to keep them separate we need to use a wrapper
+type like <code>MyError</code> above.</p>
+<hr>
 <h2 id="guaranteeing-purity">Guaranteeing Purity</h2>
 <p>Most languages with effect handlers (barring perhaps only OCaml) also use effects wherever
 side-effects may occur. You may have noticed the <code>can Print</code> or <code>can IO</code> on previous examples,
@@ -988,7 +993,7 @@ utility. This is the tech needed for deterministic network replication and log s
 used in databases and videogame networking.</p>
 <p>To implement this you would need two handlers: <code>record</code> and <code>replay</code> which handle the top-level
 effect emitted by <code>main</code>. In most languages this is named <code>IO</code>. <code>record</code> would record that the
-effect occurred, re-raise it to be handled by the built-in <code>IO</code> handler, and record it&rsquo;s result.
+effect occurred, re-raise it to be handled by the built-in <code>IO</code> handler, and record its result.
 Then, on another run <code>replay</code> would handle <code>IO</code> and use the results from the effect log instead
 of actually performing them. A particularly smart language could even <code>record</code> by default in
 debug builds to always get deterministic debugging!</p>
@@ -1002,23 +1007,32 @@ probably happening, and you&rsquo;ll get an error in your code as long as the fu
 Based Security</a>
 (bonus paper <a href="https://arxiv.org/abs/2005.11444">Designing with Static Capabilities and Effects</a>)
 where we must pass around capabilities like <code>fs: FileSystem</code> as explicit objects and only
-functions with these objects can access the file system.</p>
+functions with these objects can access the file system. With algebraic effects it works similarly
+except the functions declare effects instead of taking capability parameters. There is a downside
+to the effect approach though, and its the same one mentioned above: since effects are automatically
+threaded through your program you won&rsquo;t get an error if a function like <code>get_pi</code> is updated to
+require <code>IO</code> if your function also already requires that effect. This can crop up anywhere
+effects are used. E.g. with a <code>Fail</code> effect if a library function can&rsquo;t <code>Fail</code> but then was
+updated to possibly <code>Fail</code>, it&rsquo;ll propagate upward to your existing <code>Fail</code> handler if used in
+one of your functions that also can <code>Fail</code>. This may be fine but it may also be unintended depending
+on the program. For example, perhaps a user may have preferred to handle it by providing a default value.</p>
 <hr>
 <p>Whew! That was a lot, but we made it through. Obviously this post focused on the positives of effects
 and why I think they&rsquo;re going to be much more pervasive in the future, but there are negatives as well.
-Mainly efficiency concerns, although it should be said that compilation output of effects has improved
+Aside from the accidental handling of effects issue mentioned above, the main downside with effects has
+traditionally been efficiency concerns, although it should be said that compilation output of effects has improved
 greatly in recent years. Most languages with algebraic effects will optimize &ldquo;tail-resumptive&rdquo; effects
 (any effect where the last thing the handler does is call <code>resume</code>) into normal closure calls. This is great
 because this is already most effects in practice (citation needed - although almost all the examples in this blog
-post fit in this category! Exceptions are the only, <em>ahem</em>, exception here since they do not <code>resume</code> at all).
+post fit in this category! Exceptions being the only, <em>ahem</em>, exception here since they do not <code>resume</code> at all).
 Different languages also have their own strategies for optimizing the remaining
 effect handlers: <a href="https://koka-lang.github.io/koka/doc/index.html">Koka</a> uses
 <a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2021/08/genev-icfp21.pdf">evidence passing</a>
 and bubbles up effects to handlers to compile to C without a runtime, <a href="https://antelang.org/">Ante</a> and
 <a href="https://github.com/ocaml-multicore/ocaml-effects-tutorial">OCaml</a> limit <code>resume</code> to only being called
-at most once which precludes some effects like non-determinism but allows the internal continuations to be implemented
-more efficiently (e.g. via segmented stacks), and <a href="https://effekt-lang.org/">Effekt</a> specializes handlers
-out of the program completely<sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup>!</p>
+at most once which precludes some effects like non-determinism but simplifies resource handling and
+allows the internal continuations to be implemented more efficiently (e.g. via segmented stacks), and
+<a href="https://effekt-lang.org/">Effekt</a> specializes handlers out of the program completely<sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup>!</p>
 <section class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
@@ -1032,7 +1046,7 @@ out of the program completely<sup id="fnref:6"><a href="#fn:6" class="footnote-r
 <p>The compiler can&rsquo;t check <code>extern</code> definitions for you, so the type definitions on those have to be trusted. There is also a (planned) way to perform an <code>IO</code> effect only when compiling in debug mode to allow debug printouts while still maintaining effect safety on release mode.&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:4" role="doc-endnote">
-<p>This is one reason why it&rsquo;s usually preferable to declare the minimum amount of effects. Like saying your function <code>can Print</code> rather than bringing in all of <code>can IO</code>.&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p>This is one reason why it&rsquo;s usually preferable to declare the minimum amount of effects. Like saying your function <code>can Print</code> rather than bringing in all of <code>can IO</code>. If you don&rsquo;t know what the minimal set is, type inference can figure it out for you.&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:5" role="doc-endnote">
 <p>The addition of a new effect to <code>get_pi</code> would also break semantic versioning so it can&rsquo;t be snuck into a bugfix version.&#160;<a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
