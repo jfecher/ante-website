@@ -1315,6 +1315,8 @@ bar x
 
 ## Borrowing
 
+> The current design for borrowing is being reconsidered. See [borrowing alternatives](/docs/ideas#borrowing-alternatives).
+
 Like Rust, if a value needs to be used multiple times, we can borrow references
 to it so that we can refer to the value as many times as we need.
 
@@ -1343,14 +1345,23 @@ Compared to references in Rust, Ante's references are also bound by lifetimes, a
 this lifetime cannot be explicitly referred to by a lifetime variable. This is a tradeoff
 which simplifies the language somewhat but means that the expressivity of references is
 also more restricted compared to Rust. Generally, references are meant to mostly be used
-as a parameter-passing method rather than stored deeply within types.
+as a parameter-passing method rather than stored deeply within types. Such a scheme is
+actually more similar to C# (see [this blog post](https://em-tg.github.io/csborrow/)) than
+Rust in this regard.
 
 When used in a parameter position, each variable of a function is assumed to have a
 possibly different lifetime:
 
 ```ante
-concat_foo (foo: &Foo) : String =
-    foo.first ++ foo.second
+concat_foo (foo1: &Foo) (foo2: &Foo) : String =
+    foo1.msg ++ foo2.msg
+
+foo_example (param: &Foo): String =
+    temporary = Foo.new ()
+
+    // `param` and `temporary` have different lifetimes but this call is allowed since
+    // `concat_foo` allows two parameters of differing lifetimes.
+    concat_foo param &temporary
 ```
 
 Taking a reference prevents moving the underlying value before the reference is dropped:
@@ -1423,7 +1434,9 @@ the lifetime of the `Context` to that of the reference it contains internally. T
 similar to using a lifetime variable in Rust: `Context<'a>`.
 
 If a type captures multiple references, the lifetime used by `Context` is the shortest
-of all the captured lifetimes.
+of all the captured lifetimes. Note that this means a type with multiple lifetime variables
+in Rust like `Context<'a, 'b>` is not expressible in Ante with plain references. If such a
+type is needed, runtime-checked references or pointer types need to be used.
 
 `ref` is also often seen when using closures which capture references:
 

@@ -817,3 +817,136 @@ one of the smart pointer types to hold their elements instead.
 
 For these reasons, lifetime inference isn't an incredibly useful for Ante
 today so it is not included in the language.
+
+# Borrowing Alternatives
+
+The current design of borrowing does not mesh well with the safe, shared mutability design.
+This is not because they are incompatible, but rather because they clash with Ante's goal
+of making developing programs easier by stemming from different definitions of "easy".
+
+Borrowing is "easy" because it is conceptually simpler than Rust's full set of borrowing
+rules with lifetime variables - but is less flexible as a result so users are more likely
+to run into errors when testing its limits (its introduction of implicit lifetime variables
+also makes lifetime errors more difficult to explain for the compiler). Meanwhile, the
+shared/owned distinction for mutable references is "easy" because it is more flexible and
+allows for more patterns - at the cost of being more to learn. These are opposites and it
+is worth re-examining the design for one or both to identify whether Ante prefers simpler
+or more flexible designs.
+
+I currently lean towards the more complex but more flexible angle mostly because the
+ship toward simplicity has sailed when Ante already has both algebraic effects and
+unboxed values with move semantics. That being said, there is something to be said for
+moderation and avoiding unnecessary complexity. Anyway, let's examine some alternatives
+for borrowing:
+
+## Second-class reference parameters, first-class returns
+
+Ante's previous design for borrowing used second-class references similar to [Hylo](https://www.hylo-lang.org/).
+These are a good fit for parameters which is the majority use case for most references. Since
+they are second class they do not allow being passed around anywhere (they are limited to purely
+being a parameter-passing mode) and thus aren't allowed within structs at all. This removes
+the complicated corner cases for the compiler but the programmer may still want to return
+references or store them in structs for their use case.
+
+For returning or storing references, instead of extending the second-class scheme to work in more
+cases (e.g. subscript functions and second-class structs), I think a good tradeoff which maintains
+more simplicity while still being flexible and efficient is to have users promote second-class references
+into first-class, runtime-checked references in these cases. These runtime-checked references would check
+each time before they are dereferenced whether the underlying value was moved. This check could be decently
+efficient since in a working program the check should never fail and thus the branch predictor can easily
+predict the fast path. This should be a reasonably flexible,
+simple, and performant solution since the runtime checks won't be incurred in the common case of parameter
+passing when second-class references can still be used. Without delving too much into possible implementation
+strategies of these runtime-checked references though, the issue with this scheme is maintaining thread-safety.
+The first-class references wouldn't be tracked with a lifetime known by the compiler at compile-time so the
+compiler wouldn't always be able to error when a variable is mutably shared across threads while a first-class
+reference was still reading it. It isn't clear to me how to solve this issue. So while tempting, this scheme
+is currently off the table.
+
+## Places
+
+Another alternative is to abandon Ante's goal of having no lifetime variables and instead adopt an
+approach much closer to Rust. Compared to other approaches, this has the benefit of having a clear story
+for thread-safety. Ante could continue with the more flexible lean in extending Rust's approach a bit by
+basing lifetimes off of "places" instead of source-code regions which is an approach which generalizes
+better to support self-referential structs and borrowing a subset of a struct's fields. Also unlike lifetimes,
+a place has a concrete syntax which can be refered to:
+
+```ante
+x = 3
+y: &'x I32 = &x
+
+borrow_foo (ctx: &Context) (unused: &Unused): &'ctx Foo = 
+    ctx.&foo
+
+// Lifetime variables are still required in the general case
+borrow_foo (ctx: & &'inner Context) (unused: &Unused): &'inner Foo =
+    ctx.&foo
+```
+
+Specifying that `y` borrows directly from `x` wouldn't be required (it can be inferred, as lifetimes often are in Rust),
+but this can provide new users another way to learn lifetimes by conceptualizing them as a note that we're borrowing from the
+corresponding variable.
+
+This scheme can be extended to support self-referential structs:
+
+```ante
+// Packet itself has no lifetime arguments so it can be freely moved, sent across threads, etc
+type Packet =
+    text: String
+    line_in_text: &'self.text String
+
+text = File.read_to_string "input.txt"
+line = text.substr (5..12)
+packet = Packet text line
+```
+
+And this scheme can also be extended to support referring to struct fields directly:
+
+```ante
+Context.get_foo &self: &'self.foo Foo =
+    self.&foo
+```
+
+Which enables these helper functions to be used in cases where `Context` is already borrowing an owned,
+mutable reference. Such a scenario is somewhat common in Rust and often results in the fields being
+accessed manually or an unnecessary `.clone()`.
+
+```
+Context.example (!own self) =
+    // Compiler can see that `get_foo` only borrows from `self.foo`
+    foo = self.get_foo ()
+
+    // Assume `iter_mut` requires a `!own` reference to `self.messages`
+    // Ok since this only borrows `self.messages` and the compiler can see that
+    // only `self.foo` is currently borrowed
+    self.messages.iter_mut fn msg ->
+        do_something_with msg foo
+```
+
+As-is though, `get_foo` above isn't sufficient in that although the compiler can see it only returns
+a borrowed foo, it still requires all of `self` to be called. So if we move the call to `get_foo` inside
+the loop we'd get an error:
+
+```
+Context.example (!own self) =
+    self.messages.iter_mut fn msg ->
+        // error: `self.messages.iter_mut` requires exclusive access to `self.messages` but
+        // `self.get_foo` is called which requires `self`.
+        foo = self.get_foo ()
+
+        do_something_with msg foo
+```
+
+For this to work, we'd presumably need alter the definition of `get_foo` to only use certain
+fields of the struct using something like a compiler-aware destructuring:
+
+```ante
+// Compiler would need to know that the destructuring here would mean only `foo` can be used
+// from the context and use that information when checking lifetimes
+Context.get_foo (&Context foo ..): &Foo =
+    foo
+```
+
+I think it is here though that the additional complexity gets increasingly difficult to justify.
+For now, changing Ante's borrowing scheme remains just an idea.

@@ -35,7 +35,7 @@
 
 
 
-<link href="/css/custom.css" rel="stylesheet">
+<link href="/css/custom.css?1752077820" rel="stylesheet">
 
 
 
@@ -731,6 +731,77 @@
                 
             
         
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                    
+                    
+                    
+                    <a href="/docs/ideas/#borrowing-alternatives">
+                        <li>Borrowing Alternatives</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/docs/ideas/#second-class-reference-parameters-first-class-returns">
+                        <li>Second-class reference parameters, first-class returns</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/docs/ideas/#places">
+                        <li>Places</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
     </div>
     
 
@@ -851,30 +922,30 @@ quotes the code on its right hand side and returns an object of type <code>Code<
 Other <code>Code</code> objects can be interpolated into this via <code>$</code>. <code>comptime</code> functions which return a
 <code>Code</code> object will automatically interpolate this code into their callsite, unless the result is
 captured with a <code>comptime</code> variable.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">comptime</span> <span class="n">loop_unroll</span> <span class="p">(</span><span class="n">iterations</span><span class="o">:</span> <span class="kt">U8</span><span class="p">)</span> <span class="p">(</span><span class="n">body</span><span class="o">:</span> <span class="kt">U8</span> <span class="ow">-&gt;</span> <span class="kt">Code</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Code</span> <span class="ow">=</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">comptime</span> <span class="n">loop_unroll</span> <span class="p">(</span><span class="n">iterations</span><span class="o">:</span> <span class="kt">U8</span><span class="p">)</span> <span class="p">(</span><span class="n">body</span><span class="o">:</span> <span class="kt">U8</span> <span class="ow">-&gt;</span> <span class="kt">Code</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Code</span> <span class="ow">=</span>
     <span class="k">loop</span> <span class="p">(</span><span class="n">i</span> <span class="ow">=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">-&gt;</span>
         <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="n">iterations</span>
-        <span class="k">then</span> <span class="k">quote</span> <span class="p">()</span>
-        <span class="k">else</span> <span class="k">quote</span>
+        <span class="k">then</span> <span class="n">quote</span> <span class="p">()</span>
+        <span class="k">else</span> <span class="n">quote</span>
             <span class="o">$</span><span class="p">(</span><span class="n">body</span> <span class="n">i</span><span class="p">)</span>
             <span class="o">$</span><span class="p">(</span><span class="k">recur</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
 
-<span class="k">comptime</span> <span class="n">pow</span> <span class="p">(</span><span class="n">base</span><span class="o">:</span> <span class="kt">Code</span><span class="p">)</span> <span class="p">(</span><span class="n">exponent</span><span class="o">:</span> <span class="kt">U8</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Code</span> <span class="ow">=</span>
-    <span class="k">quote</span>
+<span class="nf">comptime</span> <span class="n">pow</span> <span class="p">(</span><span class="n">base</span><span class="o">:</span> <span class="kt">Code</span><span class="p">)</span> <span class="p">(</span><span class="n">exponent</span><span class="o">:</span> <span class="kt">U8</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Code</span> <span class="ow">=</span>
+    <span class="n">quote</span>
         <span class="n">result</span> <span class="ow">=</span> <span class="k">mut</span> <span class="mi">1</span>
         <span class="o">$</span><span class="p">(</span><span class="n">loop_unroll</span> <span class="n">exponent</span> <span class="k">fn</span> <span class="n">_</span> <span class="ow">-&gt;</span>
-            <span class="k">quote</span> <span class="n">result</span> <span class="o">*=</span> <span class="o">$</span><span class="n">base</span><span class="p">)</span>
+            <span class="n">quote</span> <span class="n">result</span> <span class="o">*=</span> <span class="o">$</span><span class="n">base</span><span class="p">)</span>
         <span class="n">result</span>
 
 <span class="nf">x</span> <span class="ow">=</span> <span class="k">mut</span> <span class="mi">2</span>
-<span class="nf">x</span> <span class="ow">=</span> <span class="n">pow</span> <span class="p">(</span><span class="k">quote</span> <span class="n">x</span><span class="p">)</span> <span class="mi">5</span>
+<span class="nf">x</span> <span class="ow">=</span> <span class="n">pow</span> <span class="p">(</span><span class="n">quote</span> <span class="n">x</span><span class="p">)</span> <span class="mi">5</span>
 <span class="nf">print</span> <span class="n">x</span>  <span class="c1">//=&gt; 32</span>
 
 <span class="c1">// A `macro` keyword can be considered for compile-time functions which return `Code` values.</span>
-<span class="k">macro</span> <span class="n">pow</span> <span class="n">base</span> <span class="p">(</span><span class="n">exponent</span><span class="o">:</span> <span class="kt">U8</span><span class="p">)</span> <span class="ow">=</span>
+<span class="nf">macro</span> <span class="n">pow</span> <span class="n">base</span> <span class="p">(</span><span class="n">exponent</span><span class="o">:</span> <span class="kt">U8</span><span class="p">)</span> <span class="ow">=</span>
     <span class="n">result</span> <span class="ow">=</span> <span class="k">mut</span> <span class="mi">1</span>
     <span class="o">$</span><span class="p">(</span><span class="n">loop_unroll</span> <span class="n">exponent</span> <span class="k">fn</span> <span class="n">_</span> <span class="ow">-&gt;</span>
-        <span class="k">quote</span> <span class="n">result</span> <span class="o">*=</span> <span class="o">$</span><span class="n">base</span><span class="p">)</span>
+        <span class="n">quote</span> <span class="n">result</span> <span class="o">*=</span> <span class="o">$</span><span class="n">base</span><span class="p">)</span>
     <span class="n">result</span>
 </code></pre></div><p>This could be expanded to include compile-time introspection functions on <code>Code</code> objects to retrieve
 the AST kind, type of the object, etc.</p>
@@ -882,12 +953,12 @@ the AST kind, type of the object, etc.</p>
 would be evaluated after type checking, and affected code may need to restart name resolution and
 type checking until there are no more compile-time functions to be evaluated.</p>
 <p>It would also be possible to implement <code>derive</code> using this:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">comptime</span> <span class="n">derive_functions</span> <span class="ow">=</span> <span class="k">mut</span> <span class="kt">HashMap</span><span class="o">.</span><span class="n">new</span> <span class="p">()</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">comptime</span> <span class="n">derive_functions</span> <span class="ow">=</span> <span class="k">mut</span> <span class="kt">HashMap</span><span class="o">.</span><span class="n">new</span> <span class="p">()</span>
 
-<span class="k">comptime</span> <span class="n">register_derive</span> <span class="p">(</span><span class="n">function</span><span class="o">:</span> <span class="kt">Code</span> <span class="ow">-&gt;</span> <span class="kt">Code</span><span class="p">)</span> <span class="p">(</span><span class="n">trait_name</span><span class="o">:</span> <span class="kt">Code</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span>
+<span class="nf">comptime</span> <span class="n">register_derive</span> <span class="p">(</span><span class="n">function</span><span class="o">:</span> <span class="kt">Code</span> <span class="ow">-&gt;</span> <span class="kt">Code</span><span class="p">)</span> <span class="p">(</span><span class="n">trait_name</span><span class="o">:</span> <span class="kt">Code</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span>
     <span class="n">insert</span> <span class="n">derive_functions</span> <span class="n">trait_name</span> <span class="n">function</span>
 
-<span class="k">comptime</span> <span class="k">derive</span> <span class="p">(</span><span class="n">type_definition</span><span class="o">:</span> <span class="kt">Code</span><span class="p">)</span> <span class="p">(</span><span class="n">trait_name</span><span class="o">:</span> <span class="kt">Code</span><span class="p">)</span><span class="o">:</span> <span class="kt">Code</span> <span class="ow">=</span>
+<span class="nf">comptime</span> <span class="n">derive</span> <span class="p">(</span><span class="n">type_definition</span><span class="o">:</span> <span class="kt">Code</span><span class="p">)</span> <span class="p">(</span><span class="n">trait_name</span><span class="o">:</span> <span class="kt">Code</span><span class="p">)</span><span class="o">:</span> <span class="kt">Code</span> <span class="ow">=</span>
     <span class="k">if</span> <span class="k">not</span> <span class="n">is_type_definition</span> <span class="n">type_definition</span> <span class="k">then</span>
         <span class="n">error</span> <span class="s">&#34;derive can only be used on type definitions&#34;</span>
 
@@ -900,8 +971,8 @@ type checking until there are no more compile-time functions to be evaluated.</p
 </code></pre></div><p>Using this, we could register a handler by:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="o">!</span><span class="n">register_derive</span> <span class="kt">Eq</span>
 <span class="nf">derive_eq</span> <span class="p">(</span><span class="n">type_definition</span><span class="o">:</span> <span class="kt">Code</span><span class="p">)</span><span class="o">:</span> <span class="kt">Code</span> <span class="ow">=</span>
-    <span class="n">arg1</span> <span class="ow">=</span> <span class="k">quote</span> <span class="n">arg1</span>
-    <span class="n">arg2</span> <span class="ow">=</span> <span class="k">quote</span> <span class="n">arg2</span>
+    <span class="n">arg1</span> <span class="ow">=</span> <span class="n">quote</span> <span class="n">arg1</span>
+    <span class="n">arg2</span> <span class="ow">=</span> <span class="n">quote</span> <span class="n">arg2</span>
 
     <span class="c1">// for structs return `arg1.field1 == arg2.field1 and ... and arg1.fieldN == arg2.fieldN`</span>
     <span class="n">body</span> <span class="ow">=</span> <span class="k">if</span> <span class="n">is_struct_definition</span> <span class="n">type_definition</span> <span class="k">then</span>
@@ -921,7 +992,7 @@ type checking until there are no more compile-time functions to be evaluated.</p
     <span class="n">typename</span> <span class="ow">=</span> <span class="n">type_name</span> <span class="n">type_definition</span>
     <span class="n">generics</span> <span class="ow">=</span> <span class="n">generics</span> <span class="n">type_definition</span>
 
-    <span class="k">quote</span> <span class="k">impl</span> <span class="kt">Eq</span> <span class="p">(</span><span class="o">$</span><span class="n">typename</span> <span class="o">$</span><span class="n">generics</span><span class="p">)</span> <span class="k">with</span>
+    <span class="n">quote</span> <span class="k">impl</span> <span class="kt">Eq</span> <span class="p">(</span><span class="o">$</span><span class="n">typename</span> <span class="o">$</span><span class="n">generics</span><span class="p">)</span> <span class="k">with</span>
         <span class="n">eq</span> <span class="o">$</span><span class="n">arg1</span> <span class="o">$</span><span class="n">arg2</span> <span class="ow">=</span> <span class="o">$</span><span class="n">body</span>
 
 
@@ -929,17 +1000,17 @@ type checking until there are no more compile-time functions to be evaluated.</p
 <span class="c1">///   [`a`, `b`, .., `z`]</span>
 <span class="c1">/// Into:</span>
 <span class="c1">///   arg1.a == arg2.a and arg2.b == arg2.b and ... and arg1.z == arg2.z</span>
-<span class="k">comptime</span> <span class="n">derive_eq_struct_helper</span> <span class="p">(</span><span class="n">arg1</span><span class="o">:</span> <span class="kt">Code</span><span class="p">)</span> <span class="p">(</span><span class="n">arg2</span><span class="o">:</span> <span class="kt">Code</span><span class="p">)</span> <span class="p">(</span><span class="n">typ</span><span class="o">:</span> <span class="kt">Code</span><span class="p">)</span><span class="o">:</span> <span class="kt">Code</span> <span class="ow">=</span>
+<span class="nf">comptime</span> <span class="n">derive_eq_struct_helper</span> <span class="p">(</span><span class="n">arg1</span><span class="o">:</span> <span class="kt">Code</span><span class="p">)</span> <span class="p">(</span><span class="n">arg2</span><span class="o">:</span> <span class="kt">Code</span><span class="p">)</span> <span class="p">(</span><span class="n">typ</span><span class="o">:</span> <span class="kt">Code</span><span class="p">)</span><span class="o">:</span> <span class="kt">Code</span> <span class="ow">=</span>
     <span class="n">fields</span> <span class="ow">=</span> <span class="n">fields_of_type</span> <span class="n">typ</span>
     <span class="n">field_names</span> <span class="ow">=</span> <span class="n">vecmap</span> <span class="n">fields</span> <span class="n">field_name</span>
 
     <span class="n">calls</span> <span class="ow">=</span> <span class="n">map</span> <span class="n">fields</span> <span class="k">fn</span> <span class="n">field</span> <span class="ow">-&gt;</span>
-        <span class="k">quote</span> <span class="o">$</span><span class="n">arg1</span><span class="o">.$</span><span class="n">field</span> <span class="o">==</span> <span class="o">$</span><span class="n">arg2</span><span class="o">.$</span><span class="n">field</span>
+        <span class="n">quote</span> <span class="o">$</span><span class="n">arg1</span><span class="o">.$</span><span class="n">field</span> <span class="o">==</span> <span class="o">$</span><span class="n">arg2</span><span class="o">.$</span><span class="n">field</span>
 
     <span class="n">join_with</span> <span class="n">calls</span> <span class="k">fn</span> <span class="n">call1</span> <span class="n">call2</span> <span class="ow">-&gt;</span>
-        <span class="k">quote</span> <span class="o">$</span><span class="n">call1</span> <span class="k">and</span> <span class="o">$</span><span class="n">call2</span>
+        <span class="n">quote</span> <span class="o">$</span><span class="n">call1</span> <span class="k">and</span> <span class="o">$</span><span class="n">call2</span>
 </code></pre></div><p>Which could be used as:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="o">!</span><span class="k">derive</span> <span class="kt">Eq</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="o">!</span><span class="n">derive</span> <span class="kt">Eq</span>
 <span class="k">type</span> <span class="kt">MyType</span> <span class="ow">=</span>
     <span class="n">x</span><span class="o">:</span> <span class="kt">I32</span>
     <span class="n">y</span><span class="o">:</span> <span class="kt">U32</span>
@@ -1096,7 +1167,7 @@ trait by specifying rules for what to do for product types, sum types, and annot
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">trait</span> <span class="kt">Hash</span> <span class="n">a</span> <span class="k">with</span>
     <span class="n">hash</span><span class="o">:</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">U64</span>
 
-<span class="k">derive</span> <span class="kt">Hash</span> <span class="n">a</span> <span class="k">via</span> <span class="k">match</span> <span class="n">a</span>
+<span class="nf">derive</span> <span class="kt">Hash</span> <span class="n">a</span> <span class="n">via</span> <span class="k">match</span> <span class="n">a</span>
 <span class="o">|</span> <span class="kt">Product</span> <span class="n">a</span> <span class="n">b</span> <span class="ow">-&gt;</span> <span class="n">hash_combine</span> <span class="p">(</span><span class="n">hash</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">hash</span> <span class="n">b</span><span class="p">)</span>
 <span class="o">|</span> <span class="kt">Sum</span> <span class="p">(</span><span class="kt">Left</span> <span class="n">s</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="n">hash</span> <span class="n">s</span>
 <span class="o">|</span> <span class="kt">Sum</span> <span class="p">(</span><span class="kt">Right</span> <span class="n">s</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="n">hash</span> <span class="n">s</span>
@@ -1105,7 +1176,7 @@ trait by specifying rules for what to do for product types, sum types, and annot
 
 <span class="k">type</span> <span class="kt">Foo</span> <span class="ow">=</span> <span class="n">x</span><span class="o">:</span> <span class="kt">I32</span><span class="p">,</span> <span class="n">y</span><span class="o">:</span> <span class="kt">I32</span>
 
-<span class="nf">hash_foo</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Hash</span> <span class="kt">Foo</span> <span class="k">via</span> <span class="k">derive</span>
+<span class="nf">hash_foo</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Hash</span> <span class="kt">Foo</span> <span class="n">via</span> <span class="n">derive</span>
 </code></pre></div><p>These would function somewhat as type-directed rules for the compiler to generate impls
 from a given type. The exact cases we would need may push toward a different list of cases
 (e.g. a simple Product pair type won&rsquo;t enable easy differentiation of the begin and end of a
@@ -1113,7 +1184,7 @@ struct&rsquo;s fields) so the final design may be more general with a bit more n
 add StartStruct and StructEnd variants which may be useful for Serialization and other traits).</p>
 <p>The above strategy with Hash simply recurses on each field of the type. This is a common enough
 usecase that we can consider even providing this as a builtin strategy to save users some trouble:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">derive</span> <span class="kt">Hash</span> <span class="n">a</span> <span class="k">via</span> <span class="k">recur</span> <span class="n">hash_combine</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">derive</span> <span class="kt">Hash</span> <span class="n">a</span> <span class="n">via</span> <span class="k">recur</span> <span class="n">hash_combine</span>
 </code></pre></div><p>If the trait functions take more than the single <code>a</code> parameter it is unclear if an error should be
 issued or the strategy can default to passing along these parameters as-is. We could try to generalize
 the <code>with</code> clause to accept a function taking all parameters and return values as well but this starts
@@ -1160,7 +1231,7 @@ with normal impl deriving for newtypes:</li>
 </ol>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">NonZeroU32</span> <span class="ow">=</span> <span class="n">x</span><span class="o">:</span> <span class="kt">U32</span>
 
-<span class="nf">derives</span> <span class="ow">=</span> <span class="k">impl</span> <span class="p">(</span><span class="kt">Add</span><span class="p">,</span> <span class="kt">Mul</span><span class="p">)</span> <span class="kt">NonZeroU32</span> <span class="k">via</span> <span class="k">derive</span>
+<span class="nf">derives</span> <span class="ow">=</span> <span class="k">impl</span> <span class="p">(</span><span class="kt">Add</span><span class="p">,</span> <span class="kt">Mul</span><span class="p">)</span> <span class="kt">NonZeroU32</span> <span class="n">via</span> <span class="n">derive</span>
 </code></pre></div><p>However, a generalized forwarding mechanism could be made more generic. For example, it could allow
 deriving from some (but not all) fields:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Wrapper</span> <span class="ow">=</span>
@@ -1168,7 +1239,7 @@ deriving from some (but not all) fields:</p>
     <span class="n">b</span><span class="o">:</span> <span class="kt">I32</span>
     <span class="n">context</span><span class="o">:</span> <span class="kt">OpaqueContext</span>
 
-<span class="nf">hash_wrapper</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Hash</span> <span class="kt">Wrapper</span> <span class="k">via</span> <span class="k">forward</span> <span class="n">a</span> <span class="n">b</span>
+<span class="nf">hash_wrapper</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Hash</span> <span class="kt">Wrapper</span> <span class="n">via</span> <span class="n">forward</span> <span class="n">a</span> <span class="n">b</span>
 </code></pre></div><hr>
 <h1 id="allocator-optimizations">Allocator Optimizations</h1>
 <p>The default allocator malloc in addition to its faster friends jemalloc and mimalloc are
@@ -1313,7 +1384,7 @@ infer these refinements like normal types. If we instead allow any value
 to be used in refinements we would get fully-dependent types for which
 inference and basic type checking (without manual proofs) is undecidable.</p>
 <p>Refinement types can be used to ensure indexing into a vector is always valid:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">get</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span> <span class="k">where</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="n">len</span> <span class="n">a</span><span class="p">)</span> <span class="o">:</span> <span class="n">t</span> <span class="ow">=</span> <span class="o">...</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">get</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span> <span class="n">where</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="n">len</span> <span class="n">a</span><span class="p">)</span> <span class="o">:</span> <span class="n">t</span> <span class="ow">=</span> <span class="o">...</span>
 
 <span class="nf">a</span> <span class="ow">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 <span class="nf">get</span> <span class="n">a</span> <span class="mi">2</span>  <span class="c1">// valid</span>
@@ -1330,13 +1401,13 @@ example uses this technique to tag vectors returned by the <code>sort</code>
 function as being sorted, then restricting the input of <code>binary_search</code>
 to only sorted vectors:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// You can name a return type for use in refinements</span>
-<span class="nf">sort</span> <span class="p">(</span><span class="n">vec</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="o">:</span> <span class="n">ret</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span> <span class="k">where</span> <span class="n">sorted</span> <span class="n">ret</span> <span class="ow">=</span> <span class="o">...</span>
+<span class="nf">sort</span> <span class="p">(</span><span class="n">vec</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="o">:</span> <span class="n">ret</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span> <span class="n">where</span> <span class="n">sorted</span> <span class="n">ret</span> <span class="ow">=</span> <span class="o">...</span>
 
-<span class="nf">binary_search</span> <span class="p">(</span><span class="n">vec</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span> <span class="k">where</span> <span class="n">sorted</span> <span class="n">vec</span><span class="p">)</span> <span class="p">(</span><span class="n">elem</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Maybe</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span> <span class="k">where</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="n">len</span> <span class="n">vec</span><span class="p">)</span> <span class="ow">=</span> <span class="o">...</span>
+<span class="nf">binary_search</span> <span class="p">(</span><span class="n">vec</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span> <span class="n">where</span> <span class="n">sorted</span> <span class="n">vec</span><span class="p">)</span> <span class="p">(</span><span class="n">elem</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Maybe</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span> <span class="n">where</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="n">len</span> <span class="n">vec</span><span class="p">)</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><p>Type aliases can be used to cut down on the annotations:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">SortedVec</span> <span class="n">t</span> <span class="ow">=</span> <span class="n">a</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span> <span class="k">where</span> <span class="n">sorted</span> <span class="n">a</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">SortedVec</span> <span class="n">t</span> <span class="ow">=</span> <span class="n">a</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span> <span class="n">where</span> <span class="n">sorted</span> <span class="n">a</span>
 
-<span class="kt">Index</span> <span class="n">vec</span> <span class="ow">=</span> <span class="n">x</span><span class="o">:</span><span class="kt">Usz</span> <span class="k">where</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">len</span> <span class="n">vec</span>
+<span class="kt">Index</span> <span class="n">vec</span> <span class="ow">=</span> <span class="n">x</span><span class="o">:</span><span class="kt">Usz</span> <span class="n">where</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">len</span> <span class="n">vec</span>
 
 <span class="nf">sort</span> <span class="p">(</span><span class="n">vec</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="o">:</span> <span class="kt">SortedVec</span> <span class="n">t</span> <span class="ow">=</span> <span class="o">...</span>
 
@@ -1410,6 +1481,105 @@ free/resize memory (ie. the vast majority of containers) should use
 one of the smart pointer types to hold their elements instead.</p>
 <p>For these reasons, lifetime inference isn&rsquo;t an incredibly useful for Ante
 today so it is not included in the language.</p>
+<h1 id="borrowing-alternatives">Borrowing Alternatives</h1>
+<p>The current design of borrowing does not mesh well with the safe, shared mutability design.
+This is not because they are incompatible, but rather because they clash with Ante&rsquo;s goal
+of making developing programs easier by stemming from different definitions of &ldquo;easy&rdquo;.</p>
+<p>Borrowing is &ldquo;easy&rdquo; because it is conceptually simpler than Rust&rsquo;s full set of borrowing
+rules with lifetime variables - but is less flexible as a result so users are more likely
+to run into errors when testing its limits (its introduction of implicit lifetime variables
+also makes lifetime errors more difficult to explain for the compiler). Meanwhile, the
+shared/owned distinction for mutable references is &ldquo;easy&rdquo; because it is more flexible and
+allows for more patterns - at the cost of being more to learn. These are opposites and it
+is worth re-examining the design for one or both to identify whether Ante prefers simpler
+or more flexible designs.</p>
+<p>I currently lean towards the more complex but more flexible angle mostly because the
+ship toward simplicity has sailed when Ante already has both algebraic effects and
+unboxed values with move semantics. That being said, there is something to be said for
+moderation and avoiding unnecessary complexity. Anyway, let&rsquo;s examine some alternatives
+for borrowing:</p>
+<h2 id="second-class-reference-parameters-first-class-returns">Second-class reference parameters, first-class returns</h2>
+<p>Ante&rsquo;s previous design for borrowing used second-class references similar to <a href="https://www.hylo-lang.org/">Hylo</a>.
+These are a good fit for parameters which is the majority use case for most references. Since
+they are second class they do not allow being passed around anywhere (they are limited to purely
+being a parameter-passing mode) and thus aren&rsquo;t allowed within structs at all. This removes
+the complicated corner cases for the compiler but the programmer may still want to return
+references or store them in structs for their use case.</p>
+<p>For returning or storing references, instead of extending the second-class scheme to work in more
+cases (e.g. subscript functions and second-class structs), I think a good tradeoff which maintains
+more simplicity while still being flexible and efficient is to have users promote second-class references
+into first-class, runtime-checked references in these cases. These runtime-checked references would check
+each time before they are dereferenced whether the underlying value was moved. This check could be decently
+efficient since in a working program the check should never fail and thus the branch predictor can easily
+predict the fast path. This should be a reasonably flexible,
+simple, and performant solution since the runtime checks won&rsquo;t be incurred in the common case of parameter
+passing when second-class references can still be used. Without delving too much into possible implementation
+strategies of these runtime-checked references though, the issue with this scheme is maintaining thread-safety.
+The first-class references wouldn&rsquo;t be tracked with a lifetime known by the compiler at compile-time so the
+compiler wouldn&rsquo;t always be able to error when a variable is mutably shared across threads while a first-class
+reference was still reading it. It isn&rsquo;t clear to me how to solve this issue. So while tempting, this scheme
+is currently off the table.</p>
+<h2 id="places">Places</h2>
+<p>Another alternative is to abandon Ante&rsquo;s goal of having no lifetime variables and instead adopt an
+approach much closer to Rust. Compared to other approaches, this has the benefit of having a clear story
+for thread-safety. Ante could continue with the more flexible lean in extending Rust&rsquo;s approach a bit by
+basing lifetimes off of &ldquo;places&rdquo; instead of source-code regions which is an approach which generalizes
+better to support self-referential structs and borrowing a subset of a struct&rsquo;s fields. Also unlike lifetimes,
+a place has a concrete syntax which can be refered to:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">x</span> <span class="ow">=</span> <span class="mi">3</span>
+<span class="nf">y</span><span class="o">:</span> <span class="o">&amp;</span><span class="n">&#39;x</span> <span class="kt">I32</span> <span class="ow">=</span> <span class="o">&amp;</span><span class="n">x</span>
+
+<span class="nf">borrow_foo</span> <span class="p">(</span><span class="n">ctx</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">Context</span><span class="p">)</span> <span class="p">(</span><span class="n">unused</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">Unused</span><span class="p">)</span><span class="o">:</span> <span class="o">&amp;</span><span class="n">&#39;ctx</span> <span class="kt">Foo</span> <span class="ow">=</span> 
+    <span class="n">ctx</span><span class="o">.&amp;</span><span class="n">foo</span>
+
+<span class="c1">// Lifetime variables are still required in the general case</span>
+<span class="nf">borrow_foo</span> <span class="p">(</span><span class="n">ctx</span><span class="o">:</span> <span class="o">&amp;</span> <span class="o">&amp;</span><span class="n">&#39;inner</span> <span class="kt">Context</span><span class="p">)</span> <span class="p">(</span><span class="n">unused</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">Unused</span><span class="p">)</span><span class="o">:</span> <span class="o">&amp;</span><span class="n">&#39;inner</span> <span class="kt">Foo</span> <span class="ow">=</span>
+    <span class="n">ctx</span><span class="o">.&amp;</span><span class="n">foo</span>
+</code></pre></div><p>Specifying that <code>y</code> borrows directly from <code>x</code> wouldn&rsquo;t be required (it can be inferred, as lifetimes often are in Rust),
+but this can provide new users another way to learn lifetimes by conceptualizing them as a note that we&rsquo;re borrowing from the
+corresponding variable.</p>
+<p>This scheme can be extended to support self-referential structs:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Packet itself has no lifetime arguments so it can be freely moved, sent across threads, etc</span>
+<span class="k">type</span> <span class="kt">Packet</span> <span class="ow">=</span>
+    <span class="n">text</span><span class="o">:</span> <span class="kt">String</span>
+    <span class="n">line_in_text</span><span class="o">:</span> <span class="o">&amp;</span><span class="n">&#39;self</span><span class="o">.</span><span class="n">text</span> <span class="kt">String</span>
+
+<span class="nf">text</span> <span class="ow">=</span> <span class="kt">File</span><span class="o">.</span><span class="n">read_to_string</span> <span class="s">&#34;input.txt&#34;</span>
+<span class="nf">line</span> <span class="ow">=</span> <span class="n">text</span><span class="o">.</span><span class="n">substr</span> <span class="p">(</span><span class="mi">5</span><span class="o">..</span><span class="mi">12</span><span class="p">)</span>
+<span class="nf">packet</span> <span class="ow">=</span> <span class="kt">Packet</span> <span class="n">text</span> <span class="n">line</span>
+</code></pre></div><p>And this scheme can also be extended to support referring to struct fields directly:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Context</span><span class="o">.</span><span class="n">get_foo</span> <span class="o">&amp;</span><span class="n">self</span><span class="o">:</span> <span class="o">&amp;</span><span class="n">&#39;self</span><span class="o">.</span><span class="n">foo</span> <span class="kt">Foo</span> <span class="ow">=</span>
+    <span class="n">self</span><span class="o">.&amp;</span><span class="n">foo</span>
+</code></pre></div><p>Which enables these helper functions to be used in cases where <code>Context</code> is already borrowing an owned,
+mutable reference. Such a scenario is somewhat common in Rust and often results in the fields being
+accessed manually or an unnecessary <code>.clone()</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-mysql" data-lang="mysql"><span class="n">Context</span><span class="p">.</span><span class="nf">example</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">own</span><span class="w"> </span><span class="n">self</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w">
+</span><span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="n">Compiler</span><span class="w"> </span><span class="n">can</span><span class="w"> </span><span class="n">see</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="o">`</span><span class="n">get_foo</span><span class="o">`</span><span class="w"> </span><span class="n">only</span><span class="w"> </span><span class="n">borrows</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="o">`</span><span class="n">self</span><span class="p">.</span><span class="n">foo</span><span class="o">`</span><span class="w">
+</span><span class="w">    </span><span class="n">foo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="nf">get_foo</span><span class="w"> </span><span class="p">()</span><span class="w">
+</span><span class="w">
+</span><span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="n">Assume</span><span class="w"> </span><span class="o">`</span><span class="n">iter_mut</span><span class="o">`</span><span class="w"> </span><span class="n">requires</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">`!</span><span class="n">own</span><span class="o">`</span><span class="w"> </span><span class="n">reference</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="o">`</span><span class="n">self</span><span class="p">.</span><span class="n">messages</span><span class="o">`</span><span class="w">
+</span><span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="n">Ok</span><span class="w"> </span><span class="n">since</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">only</span><span class="w"> </span><span class="n">borrows</span><span class="w"> </span><span class="o">`</span><span class="n">self</span><span class="p">.</span><span class="n">messages</span><span class="o">`</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">compiler</span><span class="w"> </span><span class="n">can</span><span class="w"> </span><span class="n">see</span><span class="w"> </span><span class="n">that</span><span class="w">
+</span><span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="n">only</span><span class="w"> </span><span class="o">`</span><span class="n">self</span><span class="p">.</span><span class="n">foo</span><span class="o">`</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">currently</span><span class="w"> </span><span class="n">borrowed</span><span class="w">
+</span><span class="w">    </span><span class="n">self</span><span class="p">.</span><span class="n">messages</span><span class="p">.</span><span class="n">iter_mut</span><span class="w"> </span><span class="n">fn</span><span class="w"> </span><span class="n">msg</span><span class="w"> </span><span class="o">-&gt;</span><span class="w">
+</span><span class="w">        </span><span class="n">do_something_with</span><span class="w"> </span><span class="n">msg</span><span class="w"> </span><span class="n">foo</span><span class="w">
+</span></code></pre></div><p>As-is though, <code>get_foo</code> above isn&rsquo;t sufficient in that although the compiler can see it only returns
+a borrowed foo, it still requires all of <code>self</code> to be called. So if we move the call to <code>get_foo</code> inside
+the loop we&rsquo;d get an error:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-mysql" data-lang="mysql"><span class="n">Context</span><span class="p">.</span><span class="nf">example</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">own</span><span class="w"> </span><span class="n">self</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w">
+</span><span class="w">    </span><span class="n">self</span><span class="p">.</span><span class="n">messages</span><span class="p">.</span><span class="n">iter_mut</span><span class="w"> </span><span class="n">fn</span><span class="w"> </span><span class="n">msg</span><span class="w"> </span><span class="o">-&gt;</span><span class="w">
+</span><span class="w">        </span><span class="o">//</span><span class="w"> </span><span class="n">error</span><span class="p">:</span><span class="w"> </span><span class="o">`</span><span class="n">self</span><span class="p">.</span><span class="n">messages</span><span class="p">.</span><span class="n">iter_mut</span><span class="o">`</span><span class="w"> </span><span class="n">requires</span><span class="w"> </span><span class="n">exclusive</span><span class="w"> </span><span class="n">access</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="o">`</span><span class="n">self</span><span class="p">.</span><span class="n">messages</span><span class="o">`</span><span class="w"> </span><span class="n">but</span><span class="w">
+</span><span class="w">        </span><span class="o">//</span><span class="w"> </span><span class="o">`</span><span class="n">self</span><span class="p">.</span><span class="n">get_foo</span><span class="o">`</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">called</span><span class="w"> </span><span class="n">which</span><span class="w"> </span><span class="n">requires</span><span class="w"> </span><span class="o">`</span><span class="n">self</span><span class="o">`</span><span class="p">.</span><span class="w">
+</span><span class="w">        </span><span class="n">foo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="nf">get_foo</span><span class="w"> </span><span class="p">()</span><span class="w">
+</span><span class="w">
+</span><span class="w">        </span><span class="n">do_something_with</span><span class="w"> </span><span class="n">msg</span><span class="w"> </span><span class="n">foo</span><span class="w">
+</span></code></pre></div><p>For this to work, we&rsquo;d presumably need alter the definition of <code>get_foo</code> to only use certain
+fields of the struct using something like a compiler-aware destructuring:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Compiler would need to know that the destructuring here would mean only `foo` can be used</span>
+<span class="c1">// from the context and use that information when checking lifetimes</span>
+<span class="kt">Context</span><span class="o">.</span><span class="n">get_foo</span> <span class="p">(</span><span class="o">&amp;</span><span class="kt">Context</span> <span class="n">foo</span> <span class="o">..</span><span class="p">)</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">Foo</span> <span class="ow">=</span>
+    <span class="n">foo</span>
+</code></pre></div><p>I think it is here though that the additional complexity gets increasingly difficult to justify.
+For now, changing Ante&rsquo;s borrowing scheme remains just an idea.</p>
 
                         </div>
                         
