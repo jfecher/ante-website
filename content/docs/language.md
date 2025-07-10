@@ -1486,7 +1486,7 @@ an element through `Vec.get_cloned`:
 
 ```ante
 // Raises Fail if the index is out of bounds
-get_cloned (v: &Vec t) (index: Usz) : &t can Fail given Clone t
+get_cloned (v: &Vec t) (index: Usz) : t can Fail given Clone t
 ```
 
 As a result, if you know you're going to be working with mutably shared Vecs
