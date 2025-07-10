@@ -35,7 +35,7 @@
 
 
 
-<link href="/css/custom.css?1752175337" rel="stylesheet">
+<link href="/css/custom.css?1752175503" rel="stylesheet">
 
 
 
@@ -3317,10 +3317,10 @@ These are also useful in cases when types need to be recursively boxed (like <co
 or patterns where shared mutability is inherently necessary like the observer pattern.</p>
 <p>Taking the reference of a field of a <code>shared</code> type will always yield a <code>shared</code> reference back
 (similar to a <code>Rc t</code>) since the <code>shared</code> type may be cloned and shared elsewhere.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">expr = Int 3
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">expr</span> <span class="ow">=</span> <span class="kt">Int</span> <span class="mi">3</span>
 
-// Even immutable references into shared types are always shared
-my_ref: &amp;shared Expr = &amp;expr
+<span class="c1">// Even immutable references into shared types are always shared</span>
+<span class="nf">my_ref</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">shared</span> <span class="kt">Expr</span> <span class="ow">=</span> <span class="o">&amp;</span><span class="n">expr</span>
 </code></pre></div><p>Since taking the reference of a tagged-union&rsquo;s field requires an <code>own</code>ed reference (tagged-unions do
 not have stable shapes since they may be mutated to a different union variant), when matching on
 <code>shared</code> types, it is more useful to match without taking the reference first since fields will

@@ -1519,7 +1519,7 @@ or patterns where shared mutability is inherently necessary like the observer pa
 Taking the reference of a field of a `shared` type will always yield a `shared` reference back
 (similar to a `Rc t`) since the `shared` type may be cloned and shared elsewhere.
 
-```
+```ante
 expr = Int 3
 
 // Even immutable references into shared types are always shared
