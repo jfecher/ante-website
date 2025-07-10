@@ -848,8 +848,14 @@ being a parameter-passing mode) and thus aren't allowed within structs at all. T
 the complicated corner cases for the compiler but the programmer may still want to return
 references or store them in structs for their use case.
 
-For returning or storing references, instead of extending the second-class scheme to work in more
-cases (e.g. subscript functions and second-class structs), I think a good tradeoff which maintains
+For returning or storing references, the standard approach is to extend the second-class universe to
+include second-class subscript functions, second-class structs, second-class closures, etc. Continuing with
+this though means dividing the language into two colors: second-class and non-second class. Second-class references
+not being a type for example means you'd need another separate `map` function which takes its argument by reference
+instead of by value. This is quite the negative for Ante which uses algebraic effects to otherwise avoid the
+function coloring problem which affects many other languages.
+
+Instead, I think a good tradeoff which maintains
 more simplicity while still being flexible and efficient is to have users promote second-class references
 into first-class, runtime-checked references in these cases. These runtime-checked references would check
 each time before they are dereferenced whether the underlying value was moved. This check could be decently
