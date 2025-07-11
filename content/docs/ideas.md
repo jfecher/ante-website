@@ -900,7 +900,7 @@ Lifetime errors being moved to a runtime error would help quicken workflow and l
 would also allow programmers to write invalid programs which appear correct but actually lead to lifetime
 errors at runtime - potentially only in rare cases. Consider:
 
-```hs
+```ante
 type Error =
    // Take a reference to log to avoid cloning the string
    | InvalidLog (log: &String)
@@ -975,7 +975,7 @@ Which enables these helper functions to be used in cases where `Context` is alre
 mutable reference. Such a scenario is somewhat common in Rust and often results in the fields being
 accessed manually or an unnecessary `.clone()`.
 
-```
+```ante
 Context.example (!own self) =
     // Compiler can see that `get_foo` only borrows from `self.foo`
     foo = self.get_foo ()
@@ -991,7 +991,7 @@ As-is though, `get_foo` above isn't sufficient in that although the compiler can
 a borrowed foo, it still requires all of `self` to be called. So if we move the call to `get_foo` inside
 the loop we'd get an error:
 
-```
+```ante
 Context.example (!own self) =
     self.messages.iter_mut fn msg ->
         // error: `self.messages.iter_mut` requires exclusive access to `self.messages` but

@@ -35,7 +35,7 @@
 
 
 
-<link href="/css/custom.css?1752253725" rel="stylesheet">
+<link href="/css/custom.css?1752253825" rel="stylesheet">
 
 
 
@@ -1570,16 +1570,16 @@ like <code>ref</code>.</p>
 <p>Lifetime errors being moved to a runtime error would help quicken workflow and lower annotation burden but
 would also allow programmers to write invalid programs which appear correct but actually lead to lifetime
 errors at runtime - potentially only in rare cases. Consider:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">type Error =
-   // Take a reference to log to avoid cloning the string
-   | InvalidLog (log: &amp;String)
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Error</span> <span class="ow">=</span>
+   <span class="c1">// Take a reference to log to avoid cloning the string</span>
+   <span class="o">|</span> <span class="kt">InvalidLog</span> <span class="p">(</span><span class="n">log</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">String</span><span class="p">)</span>
 
-Ctx.try_push_log &amp;self (log: String): Unit can Throw Error =
-    self.log log
+<span class="kt">Ctx</span><span class="o">.</span><span class="n">try_push_log</span> <span class="o">&amp;</span><span class="n">self</span> <span class="p">(</span><span class="n">log</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Throw</span> <span class="kt">Error</span> <span class="ow">=</span>
+    <span class="n">self</span><span class="o">.</span><span class="n">log</span> <span class="n">log</span>
 
-    if too_many_logs self then
-        last_log: &amp;String = self.get_last_log ()
-        throw (InvalidLog last_log)
+    <span class="k">if</span> <span class="n">too_many_logs</span> <span class="n">self</span> <span class="k">then</span>
+        <span class="n">last_log</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">String</span> <span class="ow">=</span> <span class="n">self</span><span class="o">.</span><span class="n">get_last_log</span> <span class="p">()</span>
+        <span class="n">throw</span> <span class="p">(</span><span class="kt">InvalidLog</span> <span class="n">last_log</span><span class="p">)</span>
 </code></pre></div><p>This code may seem odd but fine but becomes increasingly problematic when used in contexts it was not
 originally intended in. For example, we may want to collect all errors that occur <em>after</em> <code>Ctx</code> gets
 dropped. If this happens, any references within the <code>InvalidLog</code> variant would be invalidated and we&rsquo;d
@@ -1626,26 +1626,26 @@ corresponding variable.</p>
 </code></pre></div><p>Which enables these helper functions to be used in cases where <code>Context</code> is already borrowing an owned,
 mutable reference. Such a scenario is somewhat common in Rust and often results in the fields being
 accessed manually or an unnecessary <code>.clone()</code>.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-mysql" data-lang="mysql"><span class="n">Context</span><span class="p">.</span><span class="nf">example</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">own</span><span class="w"> </span><span class="n">self</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w">
-</span><span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="n">Compiler</span><span class="w"> </span><span class="n">can</span><span class="w"> </span><span class="n">see</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="o">`</span><span class="n">get_foo</span><span class="o">`</span><span class="w"> </span><span class="n">only</span><span class="w"> </span><span class="n">borrows</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="o">`</span><span class="n">self</span><span class="p">.</span><span class="n">foo</span><span class="o">`</span><span class="w">
-</span><span class="w">    </span><span class="n">foo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="nf">get_foo</span><span class="w"> </span><span class="p">()</span><span class="w">
-</span><span class="w">
-</span><span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="n">Assume</span><span class="w"> </span><span class="o">`</span><span class="n">iter_mut</span><span class="o">`</span><span class="w"> </span><span class="n">requires</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">`!</span><span class="n">own</span><span class="o">`</span><span class="w"> </span><span class="n">reference</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="o">`</span><span class="n">self</span><span class="p">.</span><span class="n">messages</span><span class="o">`</span><span class="w">
-</span><span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="n">Ok</span><span class="w"> </span><span class="n">since</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">only</span><span class="w"> </span><span class="n">borrows</span><span class="w"> </span><span class="o">`</span><span class="n">self</span><span class="p">.</span><span class="n">messages</span><span class="o">`</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">compiler</span><span class="w"> </span><span class="n">can</span><span class="w"> </span><span class="n">see</span><span class="w"> </span><span class="n">that</span><span class="w">
-</span><span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="n">only</span><span class="w"> </span><span class="o">`</span><span class="n">self</span><span class="p">.</span><span class="n">foo</span><span class="o">`</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">currently</span><span class="w"> </span><span class="n">borrowed</span><span class="w">
-</span><span class="w">    </span><span class="n">self</span><span class="p">.</span><span class="n">messages</span><span class="p">.</span><span class="n">iter_mut</span><span class="w"> </span><span class="n">fn</span><span class="w"> </span><span class="n">msg</span><span class="w"> </span><span class="o">-&gt;</span><span class="w">
-</span><span class="w">        </span><span class="n">do_something_with</span><span class="w"> </span><span class="n">msg</span><span class="w"> </span><span class="n">foo</span><span class="w">
-</span></code></pre></div><p>As-is though, <code>get_foo</code> above isn&rsquo;t sufficient in that although the compiler can see it only returns
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Context</span><span class="o">.</span><span class="n">example</span> <span class="p">(</span><span class="o">!</span><span class="k">own</span> <span class="n">self</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="c1">// Compiler can see that `get_foo` only borrows from `self.foo`</span>
+    <span class="n">foo</span> <span class="ow">=</span> <span class="n">self</span><span class="o">.</span><span class="n">get_foo</span> <span class="p">()</span>
+
+    <span class="c1">// Assume `iter_mut` requires a `!own` reference to `self.messages`</span>
+    <span class="c1">// Ok since this only borrows `self.messages` and the compiler can see that</span>
+    <span class="c1">// only `self.foo` is currently borrowed</span>
+    <span class="n">self</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">iter_mut</span> <span class="k">fn</span> <span class="n">msg</span> <span class="ow">-&gt;</span>
+        <span class="n">do_something_with</span> <span class="n">msg</span> <span class="n">foo</span>
+</code></pre></div><p>As-is though, <code>get_foo</code> above isn&rsquo;t sufficient in that although the compiler can see it only returns
 a borrowed foo, it still requires all of <code>self</code> to be called. So if we move the call to <code>get_foo</code> inside
 the loop we&rsquo;d get an error:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-mysql" data-lang="mysql"><span class="n">Context</span><span class="p">.</span><span class="nf">example</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">own</span><span class="w"> </span><span class="n">self</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w">
-</span><span class="w">    </span><span class="n">self</span><span class="p">.</span><span class="n">messages</span><span class="p">.</span><span class="n">iter_mut</span><span class="w"> </span><span class="n">fn</span><span class="w"> </span><span class="n">msg</span><span class="w"> </span><span class="o">-&gt;</span><span class="w">
-</span><span class="w">        </span><span class="o">//</span><span class="w"> </span><span class="n">error</span><span class="p">:</span><span class="w"> </span><span class="o">`</span><span class="n">self</span><span class="p">.</span><span class="n">messages</span><span class="p">.</span><span class="n">iter_mut</span><span class="o">`</span><span class="w"> </span><span class="n">requires</span><span class="w"> </span><span class="n">exclusive</span><span class="w"> </span><span class="n">access</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="o">`</span><span class="n">self</span><span class="p">.</span><span class="n">messages</span><span class="o">`</span><span class="w"> </span><span class="n">but</span><span class="w">
-</span><span class="w">        </span><span class="o">//</span><span class="w"> </span><span class="o">`</span><span class="n">self</span><span class="p">.</span><span class="n">get_foo</span><span class="o">`</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">called</span><span class="w"> </span><span class="n">which</span><span class="w"> </span><span class="n">requires</span><span class="w"> </span><span class="o">`</span><span class="n">self</span><span class="o">`</span><span class="p">.</span><span class="w">
-</span><span class="w">        </span><span class="n">foo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="nf">get_foo</span><span class="w"> </span><span class="p">()</span><span class="w">
-</span><span class="w">
-</span><span class="w">        </span><span class="n">do_something_with</span><span class="w"> </span><span class="n">msg</span><span class="w"> </span><span class="n">foo</span><span class="w">
-</span></code></pre></div><p>For this to work, we&rsquo;d presumably need alter the definition of <code>get_foo</code> to only use certain
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Context</span><span class="o">.</span><span class="n">example</span> <span class="p">(</span><span class="o">!</span><span class="k">own</span> <span class="n">self</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="n">self</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">iter_mut</span> <span class="k">fn</span> <span class="n">msg</span> <span class="ow">-&gt;</span>
+        <span class="c1">// error: `self.messages.iter_mut` requires exclusive access to `self.messages` but</span>
+        <span class="c1">// `self.get_foo` is called which requires `self`.</span>
+        <span class="n">foo</span> <span class="ow">=</span> <span class="n">self</span><span class="o">.</span><span class="n">get_foo</span> <span class="p">()</span>
+
+        <span class="n">do_something_with</span> <span class="n">msg</span> <span class="n">foo</span>
+</code></pre></div><p>For this to work, we&rsquo;d presumably need alter the definition of <code>get_foo</code> to only use certain
 fields of the struct. This could be done using Ante&rsquo;s existing anonymous struct types:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// The compiler would need to know that the anonymous struct type used here would mean only</span>
 <span class="c1">// `foo` can be used and use that information when checking lifetimes in the caller</span>
