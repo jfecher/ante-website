@@ -35,7 +35,7 @@
 
 
 
-<link href="/css/custom.css?1752175503" rel="stylesheet">
+<link href="/css/custom.css?1752253725" rel="stylesheet">
 
 
 
@@ -765,8 +765,33 @@
                     
                     
                     
-                    <a href="/docs/ideas/#second-class-reference-parameters-first-class-returns">
-                        <li>Second-class reference parameters, first-class returns</li>
+                    <a href="/docs/ideas/#second-class-reference-parameters">
+                        <li>Second-class reference parameters</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/docs/ideas/#first-class-runtime-checked-references">
+                        <li>First-class runtime-checked references</li>
                     </a>
                     
                     
@@ -1498,7 +1523,7 @@ ship toward simplicity has sailed when Ante already has both algebraic effects a
 unboxed values with move semantics. That being said, there is something to be said for
 moderation and avoiding unnecessary complexity. Anyway, let&rsquo;s examine some alternatives
 for borrowing:</p>
-<h2 id="second-class-reference-parameters-first-class-returns">Second-class reference parameters, first-class returns</h2>
+<h2 id="second-class-reference-parameters">Second-class reference parameters</h2>
 <p>Ante&rsquo;s previous design for borrowing used second-class references similar to <a href="https://www.hylo-lang.org/">Hylo</a>.
 These are a good fit for parameters which is the majority use case for most references. Since
 they are second class they do not allow being passed around anywhere (they are limited to purely
@@ -1511,24 +1536,66 @@ this though means dividing the language into two colors: second-class and non-se
 not being a type for example means you&rsquo;d need another separate <code>map</code> function which takes its argument by reference
 instead of by value. This is quite the negative for Ante which uses algebraic effects to otherwise avoid the
 function coloring problem which affects many other languages.</p>
-<p>Instead, I think a good tradeoff which maintains
-more simplicity while still being flexible and efficient is to have users promote second-class references
-into first-class, runtime-checked references in these cases. These runtime-checked references would check
-each time before they are dereferenced whether the underlying value was moved. This check could be decently
-efficient since in a working program the check should never fail and thus the branch predictor can easily
-predict the fast path. This should be a reasonably flexible,
-simple, and performant solution since the runtime checks won&rsquo;t be incurred in the common case of parameter
-passing when second-class references can still be used. Without delving too much into possible implementation
-strategies of these runtime-checked references though, the issue with this scheme is maintaining thread-safety.
-The first-class references wouldn&rsquo;t be tracked with a lifetime known by the compiler at compile-time so the
-compiler wouldn&rsquo;t always be able to error when a variable is mutably shared across threads while a first-class
-reference was still reading it. It isn&rsquo;t clear to me how to solve this issue. So while tempting, this scheme
-is currently off the table.</p>
+<h2 id="first-class-runtime-checked-references">First-class runtime-checked references</h2>
+<p>Alternatively, using a reference type that is first-class but has its lifetime checked at runtime instead
+of compile-time (e.g. generational references). This avoids the coloring problem but incurs extra runtime
+overhead and opens up the possibility for additional runtime errors.</p>
+<p>Another point to consider is that allowing both mutable and immutable references to be first-class and untracked
+breaks thread safety. We could easily have a program which sends an immutable reference to a separate thread
+while the original thread mutates a mutable reference to the same value in a non-atomic manner. To prevent this,
+these mutable references need to be removed entirely. Mutation of values however would still be possible through
+the various wrapper types providing interior mutability such as <code>Cell</code>, <code>RefCell</code>, <code>Mutex</code>, etc. This preserves
+thread safety since the compiler can see these types within a value and knows whether the type as a whole will
+be thread safe if it uses no thread unsafe types like <code>Cell</code> or <code>RefCell</code>.</p>
+<p>A downside to this approach is that it becomes much more awkward to mutate values since you must go through
+one of these wrapper types:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Ctx</span> <span class="ow">=</span> <span class="n">logs</span><span class="o">:</span> <span class="kt">Cell</span> <span class="p">(</span><span class="kt">Vec</span> <span class="kt">String</span><span class="p">)</span>
+
+<span class="c1">// Mutable references no longer exist so we can no longer tell from the</span>
+<span class="c1">// signature of `log` that it mutates `self`</span>
+<span class="kt">Ctx</span><span class="o">.</span><span class="n">log</span> <span class="o">&amp;</span><span class="n">self</span> <span class="p">(</span><span class="n">new_log</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="c1">// Pushing to a vector is now a 3 step process</span>
+    <span class="k">mut</span> <span class="n">logs</span> <span class="ow">=</span> <span class="n">self</span><span class="o">.</span><span class="n">logs</span><span class="o">.</span><span class="n">take</span> <span class="p">()</span>
+    <span class="n">logs</span><span class="o">.</span><span class="n">push</span> <span class="n">new_log</span>
+    <span class="n">self</span><span class="o">.</span><span class="n">logs</span><span class="o">.</span><span class="n">set</span> <span class="n">logs</span>
+</code></pre></div><p>Using <code>RefCell</code> is not much better:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Ctx</span> <span class="ow">=</span> <span class="n">logs</span><span class="o">:</span> <span class="kt">RefCell</span> <span class="p">(</span><span class="kt">Vec</span> <span class="kt">String</span><span class="p">)</span>
+
+<span class="kt">Ctx</span><span class="o">.</span><span class="n">log</span> <span class="o">&amp;</span><span class="n">self</span> <span class="p">(</span><span class="n">new_log</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="n">self</span><span class="o">.</span><span class="n">logs</span><span class="o">.</span><span class="n">borrow_mut</span> <span class="p">()</span> <span class="o">|&gt;.</span><span class="n">push</span> <span class="n">new_log</span>
+</code></pre></div><p>This would be a hit to the ease of use of mutable values in general, but its possible Ante as a more FP-leaning
+language could get away with this by pushing for more immutability. This approach is actually fairly similar
+to ML languages like OCaml which use primarily immutable values but allow mutation only through special types
+like <code>ref</code>.</p>
+<p>Lifetime errors being moved to a runtime error would help quicken workflow and lower annotation burden but
+would also allow programmers to write invalid programs which appear correct but actually lead to lifetime
+errors at runtime - potentially only in rare cases. Consider:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">type Error =
+   // Take a reference to log to avoid cloning the string
+   | InvalidLog (log: &amp;String)
+
+Ctx.try_push_log &amp;self (log: String): Unit can Throw Error =
+    self.log log
+
+    if too_many_logs self then
+        last_log: &amp;String = self.get_last_log ()
+        throw (InvalidLog last_log)
+</code></pre></div><p>This code may seem odd but fine but becomes increasingly problematic when used in contexts it was not
+originally intended in. For example, we may want to collect all errors that occur <em>after</em> <code>Ctx</code> gets
+dropped. If this happens, any references within the <code>InvalidLog</code> variant would be invalidated and we&rsquo;d
+get a runtime error trying to print the string. With explicit lifetimes, the compiler would have caught
+this and prevented the code to collect errors after context is dropped from being written in the first place.
+Patterns like this require additional documentation to document where the lifetime of the log in <code>InvalidLog</code>
+is coming from in the first place and the maximum time it can be expected to be valid. In addition,
+additional unit tests may be needed to ensure lifetime errors do not arise in certain situations. At this
+point, explicit lifetimes may be preferable since they enforce this documentation is provided, prevent
+invalid code from being written, and require fewer unit tests.</p>
 <h2 id="places">Places</h2>
 <p>Another alternative is to abandon Ante&rsquo;s goal of having no lifetime variables and instead adopt an
-approach much closer to Rust. Compared to other approaches, this has the benefit of having a clear story
-for thread-safety. Ante could continue with the more flexible lean in extending Rust&rsquo;s approach a bit by
-basing lifetimes off of &ldquo;places&rdquo; instead of source-code regions which is an approach which generalizes
+approach much closer to Rust. This would give a clear story for thread-safety and internal mutability,
+allowing types like <code>GhostCell</code> which require similar compiler-enforced semantics to exist. Ante could
+continue with the more flexible lean in extending Rust&rsquo;s approach a bit by basing lifetimes off of
+&ldquo;places&rdquo; instead of source-code regions which is an approach which generalizes
 better to support self-referential structs and borrowing a subset of a struct&rsquo;s fields. Also unlike lifetimes,
 a place has a concrete syntax which can be refered to:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">x</span> <span class="ow">=</span> <span class="mi">3</span>
@@ -1537,7 +1604,8 @@ a place has a concrete syntax which can be refered to:</p>
 <span class="nf">borrow_foo</span> <span class="p">(</span><span class="n">ctx</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">Context</span><span class="p">)</span> <span class="p">(</span><span class="n">unused</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">Unused</span><span class="p">)</span><span class="o">:</span> <span class="o">&amp;</span><span class="n">&#39;ctx</span> <span class="kt">Foo</span> <span class="ow">=</span> 
     <span class="n">ctx</span><span class="o">.&amp;</span><span class="n">foo</span>
 
-<span class="c1">// Lifetime variables are still required in the general case</span>
+<span class="c1">// Lifetime variables are still required in the general case, such as disambiguating</span>
+<span class="c1">// a nested reference&#39;s lifetime or referring to a union variant&#39;s lifetime</span>
 <span class="nf">borrow_foo</span> <span class="p">(</span><span class="n">ctx</span><span class="o">:</span> <span class="o">&amp;</span> <span class="o">&amp;</span><span class="n">&#39;inner</span> <span class="kt">Context</span><span class="p">)</span> <span class="p">(</span><span class="n">unused</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">Unused</span><span class="p">)</span><span class="o">:</span> <span class="o">&amp;</span><span class="n">&#39;inner</span> <span class="kt">Foo</span> <span class="ow">=</span>
     <span class="n">ctx</span><span class="o">.&amp;</span><span class="n">foo</span>
 </code></pre></div><p>Specifying that <code>y</code> borrows directly from <code>x</code> wouldn&rsquo;t be required (it can be inferred, as lifetimes often are in Rust),
@@ -1578,13 +1646,27 @@ the loop we&rsquo;d get an error:</p>
 </span><span class="w">
 </span><span class="w">        </span><span class="n">do_something_with</span><span class="w"> </span><span class="n">msg</span><span class="w"> </span><span class="n">foo</span><span class="w">
 </span></code></pre></div><p>For this to work, we&rsquo;d presumably need alter the definition of <code>get_foo</code> to only use certain
-fields of the struct using something like a compiler-aware destructuring:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Compiler would need to know that the destructuring here would mean only `foo` can be used</span>
-<span class="c1">// from the context and use that information when checking lifetimes</span>
-<span class="kt">Context</span><span class="o">.</span><span class="n">get_foo</span> <span class="p">(</span><span class="o">&amp;</span><span class="kt">Context</span> <span class="n">foo</span> <span class="o">..</span><span class="p">)</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">Foo</span> <span class="ow">=</span>
+fields of the struct. This could be done using Ante&rsquo;s existing anonymous struct types:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// The compiler would need to know that the anonymous struct type used here would mean only</span>
+<span class="c1">// `foo` can be used and use that information when checking lifetimes in the caller</span>
+<span class="kt">Context</span><span class="o">.</span><span class="n">get_foo</span> <span class="p">(</span><span class="n">ctx</span><span class="o">:</span> <span class="o">&amp;</span><span class="p">{</span> <span class="n">foo</span><span class="o">:</span> <span class="kt">Foo</span><span class="p">,</span> <span class="o">..</span> <span class="p">})</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">Foo</span> <span class="ow">=</span>
+    <span class="n">ctx</span><span class="o">.&amp;</span><span class="n">foo</span>
+
+<span class="c1">// The above may be a bit much for a new user to not only write but also know that they should do so.</span>
+<span class="c1">// Luckily, Ante already infers the above type when no types are specified.</span>
+<span class="kt">Context</span><span class="o">.</span><span class="n">get_foo</span> <span class="n">ctx</span> <span class="ow">=</span>
+    <span class="n">ctx</span><span class="o">.&amp;</span><span class="n">foo</span>
+
+<span class="c1">// Could also consider some syntactic sugar so that the type of `foo: Foo` doesn&#39;t need to</span>
+<span class="c1">// be repeated from the definition of `Context`:</span>
+<span class="kt">Context</span><span class="o">.</span><span class="n">get_foo3</span> <span class="p">(</span><span class="n">ctx</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">Context</span> <span class="p">{</span> <span class="n">foo</span><span class="p">,</span> <span class="o">..</span> <span class="p">})</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">Foo</span> <span class="ow">=</span>
+    <span class="n">ctx</span><span class="o">.&amp;</span><span class="n">foo</span>
+
+<span class="c1">// Or leverage destructuring syntax</span>
+<span class="kt">Context</span><span class="o">.</span><span class="n">get_foo4</span> <span class="p">(</span><span class="o">&amp;</span><span class="kt">Context</span> <span class="k">with</span> <span class="n">foo</span> <span class="o">..</span><span class="p">)</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">Foo</span> <span class="ow">=</span>
     <span class="n">foo</span>
-</code></pre></div><p>I think it is here though that the additional complexity gets increasingly difficult to justify.
-For now, changing Ante&rsquo;s borrowing scheme remains just an idea.</p>
+</code></pre></div><p>This is a somewhat unnecessary addition which is more of a nice-to-have but could improve
+usability by reducing unnecessary aliasability-xor-mutability errors.</p>
 
                         </div>
                         

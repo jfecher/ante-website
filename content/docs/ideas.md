@@ -839,7 +839,7 @@ unboxed values with move semantics. That being said, there is something to be sa
 moderation and avoiding unnecessary complexity. Anyway, let's examine some alternatives
 for borrowing:
 
-## Second-class reference parameters, first-class returns
+## Second-class reference parameters
 
 Ante's previous design for borrowing used second-class references similar to [Hylo](https://www.hylo-lang.org/).
 These are a good fit for parameters which is the majority use case for most references. Since
@@ -855,26 +855,82 @@ not being a type for example means you'd need another separate `map` function wh
 instead of by value. This is quite the negative for Ante which uses algebraic effects to otherwise avoid the
 function coloring problem which affects many other languages.
 
-Instead, I think a good tradeoff which maintains
-more simplicity while still being flexible and efficient is to have users promote second-class references
-into first-class, runtime-checked references in these cases. These runtime-checked references would check
-each time before they are dereferenced whether the underlying value was moved. This check could be decently
-efficient since in a working program the check should never fail and thus the branch predictor can easily
-predict the fast path. This should be a reasonably flexible,
-simple, and performant solution since the runtime checks won't be incurred in the common case of parameter
-passing when second-class references can still be used. Without delving too much into possible implementation
-strategies of these runtime-checked references though, the issue with this scheme is maintaining thread-safety.
-The first-class references wouldn't be tracked with a lifetime known by the compiler at compile-time so the
-compiler wouldn't always be able to error when a variable is mutably shared across threads while a first-class
-reference was still reading it. It isn't clear to me how to solve this issue. So while tempting, this scheme
-is currently off the table.
+## First-class runtime-checked references
+
+Alternatively, using a reference type that is first-class but has its lifetime checked at runtime instead
+of compile-time (e.g. generational references). This avoids the coloring problem but incurs extra runtime
+overhead and opens up the possibility for additional runtime errors.
+
+Another point to consider is that allowing both mutable and immutable references to be first-class and untracked
+breaks thread safety. We could easily have a program which sends an immutable reference to a separate thread
+while the original thread mutates a mutable reference to the same value in a non-atomic manner. To prevent this,
+these mutable references need to be removed entirely. Mutation of values however would still be possible through
+the various wrapper types providing interior mutability such as `Cell`, `RefCell`, `Mutex`, etc. This preserves
+thread safety since the compiler can see these types within a value and knows whether the type as a whole will
+be thread safe if it uses no thread unsafe types like `Cell` or `RefCell`.
+
+A downside to this approach is that it becomes much more awkward to mutate values since you must go through
+one of these wrapper types:
+
+```ante
+type Ctx = logs: Cell (Vec String)
+
+// Mutable references no longer exist so we can no longer tell from the
+// signature of `log` that it mutates `self`
+Ctx.log &self (new_log: String) =
+    // Pushing to a vector is now a 3 step process
+    mut logs = self.logs.take ()
+    logs.push new_log
+    self.logs.set logs
+```
+Using `RefCell` is not much better:
+```ante
+type Ctx = logs: RefCell (Vec String)
+
+Ctx.log &self (new_log: String) =
+    self.logs.borrow_mut () |>.push new_log
+```
+
+This would be a hit to the ease of use of mutable values in general, but its possible Ante as a more FP-leaning
+language could get away with this by pushing for more immutability. This approach is actually fairly similar
+to ML languages like OCaml which use primarily immutable values but allow mutation only through special types
+like `ref`.
+
+Lifetime errors being moved to a runtime error would help quicken workflow and lower annotation burden but
+would also allow programmers to write invalid programs which appear correct but actually lead to lifetime
+errors at runtime - potentially only in rare cases. Consider:
+
+```hs
+type Error =
+   // Take a reference to log to avoid cloning the string
+   | InvalidLog (log: &String)
+
+Ctx.try_push_log &self (log: String): Unit can Throw Error =
+    self.log log
+
+    if too_many_logs self then
+        last_log: &String = self.get_last_log ()
+        throw (InvalidLog last_log)
+```
+
+This code may seem odd but fine but becomes increasingly problematic when used in contexts it was not
+originally intended in. For example, we may want to collect all errors that occur _after_ `Ctx` gets
+dropped. If this happens, any references within the `InvalidLog` variant would be invalidated and we'd
+get a runtime error trying to print the string. With explicit lifetimes, the compiler would have caught
+this and prevented the code to collect errors after context is dropped from being written in the first place.
+Patterns like this require additional documentation to document where the lifetime of the log in `InvalidLog`
+is coming from in the first place and the maximum time it can be expected to be valid. In addition,
+additional unit tests may be needed to ensure lifetime errors do not arise in certain situations. At this
+point, explicit lifetimes may be preferable since they enforce this documentation is provided, prevent
+invalid code from being written, and require fewer unit tests.
 
 ## Places
 
 Another alternative is to abandon Ante's goal of having no lifetime variables and instead adopt an
-approach much closer to Rust. Compared to other approaches, this has the benefit of having a clear story
-for thread-safety. Ante could continue with the more flexible lean in extending Rust's approach a bit by
-basing lifetimes off of "places" instead of source-code regions which is an approach which generalizes
+approach much closer to Rust. This would give a clear story for thread-safety and internal mutability,
+allowing types like `GhostCell` which require similar compiler-enforced semantics to exist. Ante could
+continue with the more flexible lean in extending Rust's approach a bit by basing lifetimes off of
+"places" instead of source-code regions which is an approach which generalizes
 better to support self-referential structs and borrowing a subset of a struct's fields. Also unlike lifetimes,
 a place has a concrete syntax which can be refered to:
 
@@ -885,7 +941,8 @@ y: &'x I32 = &x
 borrow_foo (ctx: &Context) (unused: &Unused): &'ctx Foo = 
     ctx.&foo
 
-// Lifetime variables are still required in the general case
+// Lifetime variables are still required in the general case, such as disambiguating
+// a nested reference's lifetime or referring to a union variant's lifetime
 borrow_foo (ctx: & &'inner Context) (unused: &Unused): &'inner Foo =
     ctx.&foo
 ```
@@ -945,14 +1002,28 @@ Context.example (!own self) =
 ```
 
 For this to work, we'd presumably need alter the definition of `get_foo` to only use certain
-fields of the struct using something like a compiler-aware destructuring:
+fields of the struct. This could be done using Ante's existing anonymous struct types:
 
 ```ante
-// Compiler would need to know that the destructuring here would mean only `foo` can be used
-// from the context and use that information when checking lifetimes
-Context.get_foo (&Context foo ..): &Foo =
+// The compiler would need to know that the anonymous struct type used here would mean only
+// `foo` can be used and use that information when checking lifetimes in the caller
+Context.get_foo (ctx: &{ foo: Foo, .. }): &Foo =
+    ctx.&foo
+
+// The above may be a bit much for a new user to not only write but also know that they should do so.
+// Luckily, Ante already infers the above type when no types are specified.
+Context.get_foo ctx =
+    ctx.&foo
+
+// Could also consider some syntactic sugar so that the type of `foo: Foo` doesn't need to
+// be repeated from the definition of `Context`:
+Context.get_foo3 (ctx: &Context { foo, .. }): &Foo =
+    ctx.&foo
+
+// Or leverage destructuring syntax
+Context.get_foo4 (&Context with foo ..): &Foo =
     foo
 ```
 
-I think it is here though that the additional complexity gets increasingly difficult to justify.
-For now, changing Ante's borrowing scheme remains just an idea.
+This is a somewhat unnecessary addition which is more of a nice-to-have but could improve
+usability by reducing unnecessary aliasability-xor-mutability errors.
