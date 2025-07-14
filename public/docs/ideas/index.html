@@ -35,7 +35,7 @@
 
 
 
-<link href="/css/custom.css?1752253825" rel="stylesheet">
+<link href="/css/custom.css?1752507592" rel="stylesheet">
 
 
 
@@ -1053,18 +1053,17 @@ the allocator for us:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Allocate</span> <span class="n">a</span> <span class="k">with</span>
     <span class="n">allocate</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">Ptr</span> <span class="n">a</span>
 </code></pre></div><p>Now functions that may allocate are marked with an effect:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Rc</span> <span class="n">a</span> <span class="ow">=</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Box</span> <span class="n">a</span> <span class="ow">=</span>
     <span class="n">raw_ptr</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="n">a</span>
-    <span class="n">aliases</span><span class="o">:</span> <span class="kt">U32</span>
 
-<span class="nf">of</span> <span class="p">(</span><span class="n">value</span><span class="o">:</span> <span class="n">a</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Rc</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Allocate</span> <span class="n">a</span> <span class="ow">=</span>
-    <span class="kt">Rc</span> <span class="p">(</span><span class="n">allocate</span> <span class="n">a</span><span class="p">)</span> <span class="mi">1</span>
+<span class="kt">Box</span><span class="o">.</span><span class="n">of</span> <span class="p">(</span><span class="n">value</span><span class="o">:</span> <span class="n">a</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Box</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Allocate</span> <span class="n">a</span> <span class="ow">=</span>
+    <span class="kt">Box</span> <span class="p">(</span><span class="n">allocate</span> <span class="n">a</span><span class="p">)</span>
 </code></pre></div><p>Providing a custom allocator can now be done through a regular handler:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">malloc_allocator</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Allocate</span> <span class="n">b</span><span class="p">)</span> <span class="o">:</span> <span class="n">a</span> <span class="ow">=</span>
     <span class="k">handle</span> <span class="n">f</span> <span class="p">()</span>
     <span class="o">|</span> <span class="n">allocate</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="n">size_of</span> <span class="p">(</span><span class="kt">MkType</span> <span class="o">:</span> <span class="kt">Type</span> <span class="n">b</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="n">malloc</span> <span class="o">|&gt;</span> <span class="k">resume</span>
 
-<span class="nf">rc</span> <span class="ow">=</span> <span class="kt">Rc</span><span class="o">.</span><span class="n">of</span> <span class="mi">3</span> <span class="k">with</span> <span class="n">malloc_allocator</span>
+<span class="nf">_</span> <span class="ow">=</span> <span class="kt">Box</span><span class="o">.</span><span class="n">of</span> <span class="mi">3</span> <span class="k">with</span> <span class="n">malloc_allocator</span>
 </code></pre></div><p>or if no handler is provided then <code>main</code> will automatically handle Allocate effects
 with a default handler (presumably deferring to malloc or region allocation).</p>
 <p>There are a number of open questions however:</p>

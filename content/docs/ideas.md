@@ -228,12 +228,11 @@ effect Allocate a with
 Now functions that may allocate are marked with an effect:
 
 ```ante
-type Rc a =
+type Box a =
     raw_ptr: Ptr a
-    aliases: U32
 
-of (value: a) : Rc a can Allocate a =
-    Rc (allocate a) 1
+Box.of (value: a) : Box a can Allocate a =
+    Box (allocate a)
 ```
 
 Providing a custom allocator can now be done through a regular handler:
@@ -243,7 +242,7 @@ malloc_allocator (f: Unit -> a can Allocate b) : a =
     handle f ()
     | allocate () -> size_of (MkType : Type b) |> malloc |> resume
 
-rc = Rc.of 3 with malloc_allocator
+_ = Box.of 3 with malloc_allocator
 ```
 
 or if no handler is provided then `main` will automatically handle Allocate effects
