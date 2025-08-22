@@ -81,13 +81,13 @@ function sliderHomepage () {
   if ($('#slider').length) {
     // var owl = $('#slider')
 
-    $('#slider').owlCarousel({
-      autoPlay: 3000,
-      items: 4,
-      itemsDesktopSmall: [900, 3],
-      itemsTablet: [600, 3],
-      itemsMobile: [500, 2]
-    })
+    // $('#slider').owlCarousel({
+    //   autoPlay: 3000,
+    //   items: 4,
+    //   itemsDesktopSmall: [900, 3],
+    //   itemsTablet: [600, 3],
+    //   itemsMobile: [500, 2]
+    // })
   }
 }
 

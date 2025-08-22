@@ -188,3 +188,10 @@ pre code {
 body {
     font-size: 16px;
 }
+
+table {
+    border-spacing: 15px;
+    border-collapse: unset;
+    background-color: #ffffff0d;
+    margin-bottom: 10px;
+}
