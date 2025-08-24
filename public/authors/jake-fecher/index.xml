@@ -6,7 +6,17 @@
     <description>Recent content in Jake Fecher on Ante</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 21 May 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://antelang.org/authors/jake-fecher/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 21 Aug 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://antelang.org/authors/jake-fecher/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>More on Safe, Aliasable Mutability with Unboxed Types</title>
+      <link>https://antelang.org/blog/safe_shared_mutability2/</link>
+      <pubDate>Thu, 21 Aug 2025 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/blog/safe_shared_mutability2/</guid>
+      <description>This post is an exploration on some additional possible semantics for mutability (and immutability).
+Introduction  In my first blog post I introduced &amp;amp;shared mut references as a way to achieve safe, shared mutability in a language with unboxed types. For those unfamiliar with them, I encourage you to start with the first blog post. As a brief summary though, I started with Rust&amp;rsquo;s system with owned mutable references which I referred to as &amp;amp;own mut, and added on &amp;amp;shared mut from there.</description>
+    </item>
+    
     <item>
       <title>Why Algebraic Effects?</title>
       <link>https://antelang.org/blog/why_effects/</link>

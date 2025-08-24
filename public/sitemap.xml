@@ -3,28 +3,37 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://antelang.org/</loc>
-    <lastmod>2025-05-21T00:00:00+00:00</lastmod>
+    <lastmod>2025-08-21T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://antelang.org/authors/</loc>
-    <lastmod>2025-05-21T00:00:00+00:00</lastmod>
+    <lastmod>2025-08-21T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://antelang.org/blog/</loc>
-    <lastmod>2025-05-21T00:00:00+00:00</lastmod>
+    <lastmod>2025-08-21T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://antelang.org/categories/</loc>
-    <lastmod>2025-05-21T00:00:00+00:00</lastmod>
+    <lastmod>2025-08-21T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://antelang.org/authors/jake-fecher/</loc>
+    <lastmod>2025-08-21T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://antelang.org/categories/memory-management/</loc>
+    <lastmod>2025-08-21T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://antelang.org/blog/safe_shared_mutability2/</loc>
+    <lastmod>2025-08-21T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://antelang.org/categories/mutability/</loc>
+    <lastmod>2025-08-21T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://antelang.org/categories/thread-safety/</loc>
+    <lastmod>2025-08-21T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://antelang.org/categories/effects/</loc>
     <lastmod>2025-05-21T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://antelang.org/authors/jake-fecher/</loc>
-    <lastmod>2025-05-21T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://antelang.org/blog/why_effects/</loc>
     <lastmod>2025-05-21T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://antelang.org/categories/memory-management/</loc>
-    <lastmod>2024-03-17T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://antelang.org/blog/simplification_through_addition/</loc>
     <lastmod>2024-03-17T00:00:00+00:00</lastmod>
@@ -38,13 +47,7 @@
     <loc>https://antelang.org/blog/effects_ownership_and_borrowing/</loc>
     <lastmod>2024-02-20T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://antelang.org/categories/thread-safety/</loc>
-    <lastmod>2024-02-20T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://antelang.org/blog/safe_shared_mutability/</loc>
-    <lastmod>2024-01-29T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://antelang.org/categories/mutability/</loc>
     <lastmod>2024-01-29T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://antelang.org/docs/</loc>

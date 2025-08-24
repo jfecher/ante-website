@@ -35,7 +35,7 @@
 
 
 
-<link href="/css/custom.css?1752507592" rel="stylesheet">
+<link href="/css/custom.css?1756072605" rel="stylesheet">
 
 
 
@@ -2326,7 +2326,7 @@ This is because ante has global <a href="#type-inference">type inference</a>.</p
 <span class="nf">print</span> <span class="n">pet_name</span>  <span class="c1">//=&gt; Cinder</span>
 </code></pre></div><p>Here&rsquo;s another example showing a function that can mutate the passed in parameter using a mutable reference (<code>!</code>):</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">count_evens</span> <span class="n">array</span> <span class="n">counter</span> <span class="ow">=</span>
-    <span class="n">for</span> <span class="n">array</span> <span class="k">fn</span> <span class="n">elem</span> <span class="ow">-&gt;</span>
+    <span class="k">for</span> <span class="n">array</span> <span class="k">fn</span> <span class="n">elem</span> <span class="ow">-&gt;</span>
         <span class="k">if</span> <span class="n">even</span> <span class="n">elem</span> <span class="k">then</span>
             <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
 
@@ -2726,12 +2726,12 @@ of parenthesis but in ante since tuples are just nested pairs you can just add a
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">pairs</span> <span class="ow">=</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)]</span>
 
 <span class="c1">// Other languages require deconstructing with nested parenthesis:</span>
-<span class="nf">for</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">pairs</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">one</span><span class="p">,</span> <span class="n">two</span><span class="p">))</span> <span class="ow">-&gt;</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">pairs</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">one</span><span class="p">,</span> <span class="n">two</span><span class="p">))</span> <span class="ow">-&gt;</span>
     <span class="n">print</span> <span class="s">&#34;Iteration $i: sum = ${one + two}&#34;</span>
 
 <span class="c1">// But since `,` is just a normal operator,</span>
 <span class="c1">// the following version is equally valid</span>
-<span class="nf">for</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">pairs</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">one</span><span class="p">,</span> <span class="n">two</span><span class="p">)</span> <span class="ow">-&gt;</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">pairs</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">one</span><span class="p">,</span> <span class="n">two</span><span class="p">)</span> <span class="ow">-&gt;</span>
     <span class="n">print</span> <span class="s">&#34;Iteration $i: sum = ${one + two}&#34;</span>
 </code></pre></div><p>Finally, its necessary to mention that the earlier <code>Cast</code> example printed nested
 pairs as <code>1, 2, 3</code> where as the <code>Show</code> instances in haskell printed tuples as <code>(1, 2, 3)</code>.
@@ -2812,9 +2812,9 @@ or else branch can either be single expressions or an indented block expression.
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// The type of for is:</span>
 <span class="c1">// for : a -&gt; (elem -&gt; Unit) -&gt; Unit given Iterator a elem</span>
 
-<span class="nf">for</span> <span class="p">(</span><span class="mi">0</span><span class="o">..</span><span class="mi">10</span><span class="p">)</span> <span class="n">print</span>   <span class="c1">// prints 0-9 inclusive</span>
+<span class="k">for</span> <span class="p">(</span><span class="mi">0</span><span class="o">..</span><span class="mi">10</span><span class="p">)</span> <span class="n">print</span>   <span class="c1">// prints 0-9 inclusive</span>
 
-<span class="nf">for</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">array</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">elem</span><span class="p">)</span> <span class="ow">-&gt;</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">array</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">elem</span><span class="p">)</span> <span class="ow">-&gt;</span>
     <span class="c1">// do something more complex...</span>
     <span class="n">print</span> <span class="n">result</span>
 </code></pre></div><p>You may notice that there is no way to break or continue out of the <code>for</code> function. Moreover if you need a more complex loop that a while loop may traditionally provide in other languages, there likely isn’t an already existing iterate function that would suit your need. Other functional languages usually use helper functions with recursion to address this problem:</p>
@@ -3436,7 +3436,7 @@ so that we can disambiguate between them if needed.</p>
 
 <span class="nf">foo_impls</span> <span class="ow">=</span> <span class="k">impl</span>
     <span class="c1">// We can impl multiple traits via the same method:</span>
-    <span class="p">(</span><span class="kt">Hash</span><span class="p">,</span> <span class="kt">Eq</span><span class="p">,</span> <span class="kt">Cmp</span><span class="p">)</span> <span class="kt">Foo</span> <span class="n">via</span> <span class="n">derive</span>
+    <span class="p">(</span><span class="kt">Hash</span><span class="p">,</span> <span class="kt">Eq</span><span class="p">,</span> <span class="kt">Cmp</span><span class="p">)</span> <span class="kt">Foo</span> <span class="n">via</span> <span class="k">derive</span>
 
     <span class="c1">// We can also forward to a subset of fields:</span>
     <span class="kt">Print</span> <span class="kt">Foo</span> <span class="n">via</span> <span class="n">forward</span> <span class="n">second</span>
@@ -4017,15 +4017,15 @@ while remaining purely functional behind the scenes.</p>
     <span class="n">break</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span>
     <span class="k">continue</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span>
 
-<span class="nf">for</span> <span class="p">(</span><span class="n">iter</span><span class="o">:</span> <span class="n">i</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">e</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Loop</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Iterate</span> <span class="n">i</span> <span class="n">e</span> <span class="ow">=</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">iter</span><span class="o">:</span> <span class="n">i</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">e</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Loop</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Iterate</span> <span class="n">i</span> <span class="n">e</span> <span class="ow">=</span>
     <span class="k">match</span> <span class="n">next</span> <span class="n">iter</span>
     <span class="o">|</span> <span class="kt">None</span> <span class="ow">-&gt;</span> <span class="p">()</span>
     <span class="o">|</span> <span class="kt">Some</span> <span class="p">(</span><span class="n">rest</span><span class="p">,</span> <span class="n">elem</span><span class="p">)</span> <span class="ow">-&gt;</span>
         <span class="k">handle</span> <span class="n">f</span> <span class="n">elem</span>
         <span class="o">|</span> <span class="n">break</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="p">()</span>
-        <span class="o">|</span> <span class="k">continue</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="n">for</span> <span class="n">rest</span> <span class="n">f</span>
+        <span class="o">|</span> <span class="k">continue</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="k">for</span> <span class="n">rest</span> <span class="n">f</span>
         <span class="c1">// If the body returns normally, we also want to continue the loop</span>
-        <span class="o">|</span> <span class="k">return</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="n">for</span> <span class="n">rest</span> <span class="n">f</span>
+        <span class="o">|</span> <span class="k">return</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="k">for</span> <span class="n">rest</span> <span class="n">f</span>
 
 <span class="nf">while</span> <span class="p">(</span><span class="n">cond</span><span class="o">:</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span><span class="p">)</span> <span class="p">(</span><span class="n">body</span><span class="o">:</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">State</span> <span class="n">a</span> <span class="ow">=</span>
     <span class="k">if</span> <span class="n">cond</span> <span class="p">(</span><span class="n">get</span> <span class="p">())</span> <span class="k">then</span>
@@ -4037,7 +4037,7 @@ while remaining purely functional behind the scenes.</p>
 
 <span class="c1">// Loop until we eventually find a prime number through sheer luck</span>
 <span class="nf">loop_examples</span> <span class="p">(</span><span class="n">vec</span><span class="o">:</span> <span class="kt">Vec</span> <span class="kt">I32</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Print</span><span class="p">,</span> <span class="kt">State</span> <span class="kt">I32</span> <span class="ow">=</span>
-    <span class="n">for</span> <span class="n">vec</span> <span class="k">fn</span> <span class="n">elem</span> <span class="ow">-&gt;</span>
+    <span class="k">for</span> <span class="n">vec</span> <span class="k">fn</span> <span class="n">elem</span> <span class="ow">-&gt;</span>
         <span class="n">largest</span> <span class="ow">=</span> <span class="n">get</span> <span class="p">()</span>
         <span class="k">if</span> <span class="n">largest</span> <span class="o">&gt;</span> <span class="mi">100</span> <span class="k">then</span>
             <span class="n">print</span> <span class="s">&#34;oops, too big!&#34;</span>
@@ -4184,6 +4184,19 @@ for the continuation monad.</p>
                 
                 <div class="item same-height-row clearfix">
                     <div class="image same-height-always">
+                        <a href="https://antelang.org/blog/safe_shared_mutability2/">
+                          
+                            <img src="/img/banners/antelope_flowers_cropped.jpg" class="img-responsive" alt="More on Safe, Aliasable Mutability with Unboxed Types">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/blog/safe_shared_mutability2/">More on Safe, Aliasable Mutability with Unboxed Types</a></h5>
+                    </div>
+                </div>
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
                         <a href="https://antelang.org/blog/why_effects/">
                           
                             <img src="/img/banners/lanterns.jpg" class="img-responsive" alt="Why Algebraic Effects?">
@@ -4205,19 +4218,6 @@ for the continuation monad.</p>
                     </div>
                     <div class="name same-height-always">
                         <h5><a href="https://antelang.org/blog/simplification_through_addition/">Simplification Through Addition</a></h5>
-                    </div>
-                </div>
-                
-                <div class="item same-height-row clearfix">
-                    <div class="image same-height-always">
-                        <a href="https://antelang.org/blog/effects_ownership_and_borrowing/">
-                          
-                            <img src="/img/banners/anteater2_cropped.jpg" class="img-responsive" alt="Algebraic Effects, Ownership, and Borrowing">
-                          
-                        </a>
-                    </div>
-                    <div class="name same-height-always">
-                        <h5><a href="https://antelang.org/blog/effects_ownership_and_borrowing/">Algebraic Effects, Ownership, and Borrowing</a></h5>
                     </div>
                 </div>
                 

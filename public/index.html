@@ -36,7 +36,7 @@
 
 
 
-<link href="/css/custom.css?1752507592" rel="stylesheet">
+<link href="/css/custom.css?1756072605" rel="stylesheet">
 
 
 
@@ -63,7 +63,7 @@
 
 
 
-<meta property="og:updated_time" content="2025-05-21T00:00:00Z">
+<meta property="og:updated_time" content="2025-08-21T00:00:00Z">
 
 
 
@@ -583,6 +583,71 @@ elem_to_string c i =
                         <div class="top">
                             <div class="image" style="overflow:hidden">
                                 
+                                <img src="/img/banners/antelope_flowers_cropped.jpg" class="img-responsive" alt="" >
+                                
+                            </div>
+                            <div class="bg"></div>
+                            <div class="text">
+                                <p class="buttons">
+                                    <a href="https://antelang.org/blog/safe_shared_mutability2/" class="btn btn-template-transparent-primary"><i class="fas fa-link"></i> Read more</a>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="content">
+                            <h4><a href="https://antelang.org/blog/safe_shared_mutability2/">More on Safe, Aliasable Mutability with Unboxed Types</a></h4>
+                            <p class="author-category">
+			    
+			      By <a href="/authors/jake-fecher">Jake Fecher</a>
+                            
+                            
+                                
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                on 2025-08-21
+                            
+                            </p>
+                            
+                            <p class="intro">This post is an exploration on some additional possible semantics for mutability (and immutability).
+Introduction  In my first blog post I introduced &amp;shared mut references as a way to achieve safe, shared mutability in a language with unboxed types. For those unfamiliar with them, I encourage you to start with the first blog post. As a brief summary though, I started with Rust&rsquo;s system with owned mutable references which I referred to as &amp;own mut, and added on &amp;shared mut from there.</p>
+                            <p class="read-more">
+                              <a href="https://antelang.org/blog/safe_shared_mutability2/" class="btn btn-template-main">Continue reading</a>
+                            </p>
+                            
+                        </div>
+                    </div>
+                    
+
+                </div>
+                
+                <div class="col-md-3 col-sm-6">
+                    <div class="box-image-text blog">
+                        <div class="top">
+                            <div class="image" style="overflow:hidden">
+                                
                                 <img src="/img/banners/lanterns.jpg" class="img-responsive" alt="" >
                                 
                             </div>
@@ -772,71 +837,6 @@ effect Read a with read : Unit -&gt; a the_value (value: a) (f: Unit -&gt; b can
 
                 </div>
                 
-                <div class="col-md-3 col-sm-6">
-                    <div class="box-image-text blog">
-                        <div class="top">
-                            <div class="image" style="overflow:hidden">
-                                
-                                <img src="/img/banners/antelope_bird_cropped.jpg" class="img-responsive" alt="" >
-                                
-                            </div>
-                            <div class="bg"></div>
-                            <div class="text">
-                                <p class="buttons">
-                                    <a href="https://antelang.org/blog/safe_shared_mutability/" class="btn btn-template-transparent-primary"><i class="fas fa-link"></i> Read more</a>
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="content">
-                            <h4><a href="https://antelang.org/blog/safe_shared_mutability/">Achieving Safe, Aliasable Mutability with Unboxed Types</a></h4>
-                            <p class="author-category">
-			    
-			      By <a href="/authors/jake-fecher">Jake Fecher</a>
-                            
-                            
-                                
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                on 2024-01-29
-                            
-                            </p>
-                            
-                            <p class="intro">This is part of Ante&rsquo;s goal to loosen restrictions on low-level programming while remaining fast, memory-safe, and thread-safe.
- Background  When writing low-level, memory-safe, and thread-safe programs, a nice feature that lets us achieve all of these is an ownership model. Ownership models have been used by quite a few languages, but the language which popularized them was Rust. In Rust, the compiler will check our code to ensure we have no dangling references and cannot access already-freed memory (among other errors).</p>
-                            <p class="read-more">
-                              <a href="https://antelang.org/blog/safe_shared_mutability/" class="btn btn-template-main">Continue reading</a>
-                            </p>
-                            
-                        </div>
-                    </div>
-                    
-
-                </div>
-                
 
             </div>
             
@@ -871,6 +871,19 @@ effect Read a with read : Unit -&gt; a the_value (value: a) (f: Unit -&gt; b can
                 
                 <div class="item same-height-row clearfix">
                     <div class="image same-height-always">
+                        <a href="https://antelang.org/blog/safe_shared_mutability2/">
+                          
+                            <img src="/img/banners/antelope_flowers_cropped.jpg" class="img-responsive" alt="More on Safe, Aliasable Mutability with Unboxed Types">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/blog/safe_shared_mutability2/">More on Safe, Aliasable Mutability with Unboxed Types</a></h5>
+                    </div>
+                </div>
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
                         <a href="https://antelang.org/blog/why_effects/">
                           
                             <img src="/img/banners/lanterns.jpg" class="img-responsive" alt="Why Algebraic Effects?">
@@ -892,19 +905,6 @@ effect Read a with read : Unit -&gt; a the_value (value: a) (f: Unit -&gt; b can
                     </div>
                     <div class="name same-height-always">
                         <h5><a href="https://antelang.org/blog/simplification_through_addition/">Simplification Through Addition</a></h5>
-                    </div>
-                </div>
-                
-                <div class="item same-height-row clearfix">
-                    <div class="image same-height-always">
-                        <a href="https://antelang.org/blog/effects_ownership_and_borrowing/">
-                          
-                            <img src="/img/banners/anteater2_cropped.jpg" class="img-responsive" alt="Algebraic Effects, Ownership, and Borrowing">
-                          
-                        </a>
-                    </div>
-                    <div class="name same-height-always">
-                        <h5><a href="https://antelang.org/blog/effects_ownership_and_borrowing/">Algebraic Effects, Ownership, and Borrowing</a></h5>
                     </div>
                 </div>
                 

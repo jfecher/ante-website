@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="robots" content="all,follow">
+<meta name="googlebot" content="index,follow,snippet,archive">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>More on Safe, Aliasable Mutability with Unboxed Types</title>
+<meta name="author" content="Jake Fecher" />
+
+
+
+
+<meta name="keywords" content="ante, programming, language, antelang, lang">
+
+
+<meta name="description" content="">
+
+<meta name="generator" content="Hugo 0.89.0-DEV" />
+
+
+<link href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800' rel='stylesheet' type='text/css'>
+
+
+<link rel="stylesheet" href="//use.fontawesome.com/releases/v5.11.2/css/all.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+
+<link href="/css/animate.css" rel="stylesheet">
+
+
+
+  <link href="/css/style.red.css" rel="stylesheet" id="theme-stylesheet">
+
+
+
+<link href="/css/custom.css?1756072605" rel="stylesheet">
+
+
+
+  <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+
+
+<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon" />
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
+
+
+<link href="/css/owl.carousel.css" rel="stylesheet">
+<link href="/css/owl.theme.css" rel="stylesheet">
+
+
+<link rel="alternate" href="https://antelang.org/index.xml" type="application/rss+xml" title="Ante">
+
+
+
+
+
+
+
+
+<meta property="og:locale" content="en_us">
+<meta property="og:site_name" content="Ante">
+<meta property="og:title" content="More on Safe, Aliasable Mutability with Unboxed Types">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://antelang.org/blog/safe_shared_mutability2/" />
+<meta property="og:description" content="">
+<meta property="og:image" content="https://antelang.org/img/banners/antelope_flowers_cropped.jpg">
+<meta property="og:image:type" content="image/jpg">
+
+
+
+  <meta property="og:image:width" content="643">
+  <meta property="og:image:height" content="643">
+
+
+<meta property="og:updated_time" content="2025-08-21T00:00:00Z">
+
+  
+  
+  <meta property="article:section" content="mutability">
+  
+  
+  <meta property="article:published_time" content="2025-08-21T00:00:00Z">
+  <meta property="article:modified_time" content="2025-08-21T00:00:00Z">
+
+
+
+<meta name="twitter:card" content="summary_large_image">
+
+<meta name="twitter:title" content="More on Safe, Aliasable Mutability with Unboxed Types">
+
+<meta name="twitter:image" content="https://antelang.org/img/banners/antelope_flowers_cropped.jpg">
+
+<meta name="twitter:description" content="">
+
+
+      <meta charset="utf-8">
+  <meta name="robots" content="all,follow">
+  <meta name="googlebot" content="index,follow,snippet,archive">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>More on Safe, Aliasable Mutability with Unboxed Types</title>
+  <meta name="author" content="" />
+
+  <meta name="keywords" content="ante, programming, language, antelang, lang">	
+  <meta name="description" content="For exploring algebraic effects, safe shared mutability, and other novel features">
+
+  <meta name="generator" content="Hugo 0.89.0-DEV" />
+
+  <link href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800' rel='stylesheet' type='text/css'>
+
+  
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+  
+  <link href="https://antelang.org/css/animate.css" rel="stylesheet">
+
+  
+  
+    <link href="https://antelang.org/css/style.red.css" rel="stylesheet" id="theme-stylesheet">
+  
+
+
+  
+  <link href="https://antelang.org/css/custom.css" rel="stylesheet">
+ 
+  
+  <link rel="stylesheet" href="https://antelang.org/css/syntax.css">
+
+  
+  
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  
+
+  
+  <link rel="shortcut icon" href="https://antelang.org/img/favicon.ico" type="image/x-icon" />
+  <link rel="apple-touch-icon" href="https://antelang.org/img/apple-touch-icon.png" />
+  
+
+  <link href="https://antelang.org/css/owl.carousel.css" rel="stylesheet">
+  <link href="https://antelang.org/css/owl.theme.css" rel="stylesheet">
+
+  <link rel="alternate" href="https://antelang.org/index.xml" type="application/rss+xml" title="Ante">
+
+  
+  <meta property="og:title" content="More on Safe, Aliasable Mutability with Unboxed Types" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://antelang.org/blog/safe_shared_mutability2//" />
+  <meta property="og:image" content="" />
+
+  </head>
+
+  <body>
+    <div id="all">
+        
+
+        
+
+    <div class="navbar navbar-default yamm" role="navigation" id="navbar">
+
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand home" href="https://antelang.org/">
+                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="More on Safe, Aliasable Mutability with Unboxed Types" class="hidden-xs hidden-sm">
+                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="More on Safe, Aliasable Mutability with Unboxed Types" class="visible-xs visible-sm">
+                    <span class="sr-only">More on Safe, Aliasable Mutability with Unboxed Types - go to homepage</span>
+                </a>
+                
+<div class="navbar-buttons">
+        <div class="navbar-collapse collapse" id="navigation">
+            <ul class="nav navbar-nav navbar-right">
+            
+            <li class="dropdown">
+                <a href="https://antelang.org//docs/language">Tour</a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//docs/ideas">Ideas</a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//docs/roadmap">Roadmap</a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//blog">Blog</a>
+            </li>
+
+            <li class="dropdown">
+                <a href="https://github.com/jfecher/ante"><i class="fa fa-15x fa-github"></i></a>
+            </li>
+            <li class="dropdown">
+                <a href="https://reddit.com/r/ante"><i class="fab fa-15x fa-reddit"></i></a>
+            </li>
+            <li class="dropdown">
+                <a href="https://discord.gg/NPJncGBAws"><i class="fab fa-15x fa-discord"></i></a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//index.xml"><i class="fa fa-15x fa-rss"></i></a>
+            </li>
+
+            </ul>
+        </div>
+        <button type="button" class="navbar-toggle btn-template-main" onclick="document.getElementById('navigation').classList.toggle('collapse')">
+    <span class="sr-only">Toggle Navigation</span>
+        <i class="fa fa-align-justify"></i>
+    </button>
+</div>
+
+            </div>
+            
+
+            
+            
+
+            <div class="collapse clearfix" id="search">
+
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search">
+                        <span class="input-group-btn">
+
+                    <button type="submit" class="btn btn-template-main"><i class="fa fa-search"></i></button>
+
+                </span>
+                    </div>
+                </form>
+
+            </div>
+            
+
+        </div>
+    </div>
+    
+
+
+
+
+
+        <div id="heading-breadcrumbs">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>More on Safe, Aliasable Mutability with Unboxed Types</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+        <div id="content">
+            <div class="container" id="post-container">
+                <div class="row">
+                    
+
+                    <div class="col-md-3">
+                        
+                        <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>Contents</h1>
+    </div>
+
+    
+    
+    
+    
+    <div class="table-of-contents toc bd-callout">
+        
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                    
+                    
+                    
+                    <a href="/blog/safe_shared_mutability2/#introduction">
+                        <li>Introduction</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                    
+                    
+                    
+                    <a href="/blog/safe_shared_mutability2/#syntax">
+                        <li>Syntax</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                    
+                    
+                    
+                    <a href="/blog/safe_shared_mutability2/#get-to-the-point">
+                        <li>Get to the Point</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                    
+                    
+                    
+                    <a href="/blog/safe_shared_mutability2/#interior-mutability">
+                        <li>Interior Mutability</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/blog/safe_shared_mutability2/#another-immutable-reference">
+                        <li>Another Immutable Reference?</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/blog/safe_shared_mutability2/#allegations-against-stable-t">
+                        <li>Allegations against !stable t</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/blog/safe_shared_mutability2/#experiment-can-we-track-whether-a-typeamprsquos-interior-is-aliased">
+                        <li>Experiment: Can We Track Whether A Type&amp;amp;rsquo;s Interior is Aliased?</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                    
+                    
+                    
+                    <a href="/blog/safe_shared_mutability2/#letamprsquos-be-happy-with-what-we-have">
+                        <li>Let&amp;amp;rsquo;s Be Happy With What We Have</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/blog/safe_shared_mutability2/#we-have-gc-at-home">
+                        <li>We Have GC at Home</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/blog/safe_shared_mutability2/#cell-style">
+                        <li>Cell-Style</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                    
+                    
+                    
+                    <a href="/blog/safe_shared_mutability2/#closing-thoughts">
+                        <li>Closing Thoughts</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                
+            
+        
+    </div>
+    
+
+
+    
+  </div>
+</div>
+
+                        
+                    </div>
+                    
+
+                    <div class="col-md-9" id="blog-post">
+
+                        
+                          <p class="text-muted text-uppercase mb-small text-right">
+                            
+			      By <a href="/authors/jake-fecher">Jake Fecher</a>
+                            
+                            
+                            
+                              
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                              2025-08-21
+                            
+                          </p>
+                        
+
+                        <div id="post-content">
+                          <p>This post is an exploration on some additional possible semantics for mutability (and immutability).</p>
+<h1 id="introduction">Introduction</h1>
+<hr>
+<p>In my first blog post I introduced <code>&amp;shared mut</code> references as a way to achieve safe, shared mutability
+in a language with unboxed types. For those unfamiliar with them, I encourage you to start with
+<a href="/blog/safe_shared_mutability">the first blog post</a>. As a brief summary though, I started with Rust&rsquo;s
+system with owned mutable references which I referred to as <code>&amp;own mut</code>, and added on <code>&amp;shared mut</code> from
+there. <code>&amp;shared mut</code> references allow mutation and aliasing but disallow obtaining a reference into any shape-unstable members
+where shape-unstable is defined as any member in which a mutation may cause it to be dropped. Think of an
+optional string value (<code>Maybe String</code>) where the inner String will be dropped if the outer value is mutated
+to <code>None</code>.</p>
+<p>Summary out of the way - there is an issue with the previous blog post! Namely, it details <em>one</em>
+method of shared mutability, but more than one zero-cost method exists! Perhaps even more egregious,
+this new method has much more obvious semantics than the <code>shared</code> references from the first post.</p>
+<p>This post will explain exactly what that new kind of reference is! &hellip;And why Ante won&rsquo;t have it.</p>
+<hr>
+<h1 id="syntax">Syntax</h1>
+<p>Before we get further into it I&rsquo;ll give a note on syntax since Ante&rsquo;s syntax has changed since the original
+post. In today&rsquo;s Ante, <code>&amp;t</code> is an immutable reference to a type <code>t</code>, while <code>!t</code> is a shared mutable reference to
+a type <code>t</code>, and <code>!own t</code> is a Rust-style owned mutable reference to <code>t</code>. To avoid confusion though, I&rsquo;ll always refer
+to shared mutable references as <code>!shared t</code> in this post.</p>
+<hr>
+<h1 id="get-to-the-point">Get to the Point</h1>
+<p>The kind of mutable reference that I missed originally is what I&rsquo;m calling a shape-stable mutable reference: <code>!stable t</code>.
+This reference (unlike <code>!shared t</code><sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>) does let you project a reference into any member of the type but restricts
+mutation to only shape-stable changes such that nothing can be dropped. With this for example, you can pattern
+match on tagged-union values as deep as you want and mutate an integer you find within.</p>
+<p>To highlight how this compares to other kinds of mutable references, here&rsquo;s a comparison:</p>
+<table>
+<thead>
+<tr>
+<th>Reference Type</th>
+<th style="text-align:center">Shape-stable Mutations</th>
+<th style="text-align:center">Shape-unstable Mutations</th>
+<th style="text-align:center">Shape-stable projections</th>
+<th style="text-align:center">Shape-unstable projections</th>
+<th style="text-align:center">Copy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>!shared t</code></td>
+<td style="text-align:center">✓</td>
+<td style="text-align:center">✓</td>
+<td style="text-align:center">✓</td>
+<td style="text-align:center">X</td>
+<td style="text-align:center">✓</td>
+</tr>
+<tr>
+<td><code>!stable t</code></td>
+<td style="text-align:center">✓</td>
+<td style="text-align:center">X</td>
+<td style="text-align:center">✓</td>
+<td style="text-align:center">✓</td>
+<td style="text-align:center">✓</td>
+</tr>
+<tr>
+<td><code>!own t</code></td>
+<td style="text-align:center">✓</td>
+<td style="text-align:center">✓</td>
+<td style="text-align:center">✓</td>
+<td style="text-align:center">✓</td>
+<td style="text-align:center">X</td>
+</tr>
+<tr>
+<td><code>&amp;Cell t</code></td>
+<td style="text-align:center">✓</td>
+<td style="text-align:center">✓</td>
+<td style="text-align:center">X</td>
+<td style="text-align:center">X</td>
+<td style="text-align:center">✓</td>
+</tr>
+</tbody>
+</table>
+<p>Alternatively, you can think about these in terms of what operations they&rsquo;d support on a <code>Vec t</code> (growable array) type:</p>
+<table>
+<thead>
+<tr>
+<th>Reference Type</th>
+<th style="text-align:center">push, pop</th>
+<th style="text-align:center">Retrieve a mutable reference to an element</th>
+<th style="text-align:center">Trivially<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> retrieve mutable references to two elements</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>!shared Vec t</code></td>
+<td style="text-align:center">✓</td>
+<td style="text-align:center">X</td>
+<td style="text-align:center">X</td>
+</tr>
+<tr>
+<td><code>!stable Vec t</code></td>
+<td style="text-align:center">X</td>
+<td style="text-align:center">✓</td>
+<td style="text-align:center">✓</td>
+</tr>
+<tr>
+<td><code>!own Vec t</code></td>
+<td style="text-align:center">✓</td>
+<td style="text-align:center">✓</td>
+<td style="text-align:center">X</td>
+</tr>
+<tr>
+<td><code>&amp;Cell (Vec t)</code></td>
+<td style="text-align:center">X<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup></td>
+<td style="text-align:center">X</td>
+<td style="text-align:center">X</td>
+</tr>
+</tbody>
+</table>
+<p>This table looks a bit different because vectors don&rsquo;t have any shape-stable projection or mutations.
+If users were allowed to access the integer length or capacity fields directly these would be shape-stable,
+but allowing users to mutate them directly could break invariants of course.</p>
+<p>In the original post I mentioned that <code>!shared t</code> is effectively a built-in version of <code>&amp;Cell t</code>. Now, although we may also think of
+<code>!stable t</code> as a variant on <code>&amp;Cell t</code>, we can see above that <code>!stable t</code> is not <code>!shared t</code>, and neither
+is quite the same as <code>&amp;Cell t</code>. I think these differences speak to the value of these constructs not necessarily for
+real-world usability (since Ante is still in its early stages) but in creating a language to communicate different safe
+mutability schemes. Both <code>!stable t</code> and <code>!shared t</code> better communicate intent versus a <code>&amp;u</code> where <code>u</code> uses interior mutability:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">FooCell</span> <span class="ow">=</span>
+    <span class="n">x</span><span class="o">:</span> <span class="kt">Cell</span> <span class="kt">U32</span>
+    <span class="n">y</span><span class="o">:</span> <span class="kt">Option</span> <span class="kt">String</span>
+
+<span class="k">type</span> <span class="kt">FooPlain</span> <span class="ow">=</span>
+    <span class="n">x</span><span class="o">:</span> <span class="kt">U32</span>
+    <span class="n">y</span><span class="o">:</span> <span class="kt">Option</span> <span class="kt">String</span>
+
+<span class="c1">// Is x mutated? Maybe..</span>
+<span class="nf">bar1</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">FooCell</span><span class="p">)</span> <span class="ow">=</span> <span class="o">...</span>
+
+<span class="c1">// Is x mutated? No!</span>
+<span class="nf">bar2</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">FooPlain</span><span class="p">)</span> <span class="ow">=</span> <span class="o">...</span>
+
+<span class="c1">// Is x mutated? Almost definitely!</span>
+<span class="c1">// Insights: only integers or plain-old-data is likely to be mutated (`y` is safe).</span>
+<span class="nf">bar3</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="o">!</span><span class="k">stable</span> <span class="kt">FooPlain</span><span class="p">)</span> <span class="ow">=</span> <span class="o">...</span>
+
+<span class="c1">// Is x mutated? Almost definitely!</span>
+<span class="c1">// Insights: whatever is mutated won&#39;t be within a shape-unstable member of the type.</span>
+<span class="c1">// So the `String` inside `y` won&#39;t be directly mutated but the outer `Option` may be!</span>
+<span class="nf">bar3</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="o">!</span><span class="k">shared</span> <span class="kt">FooPlain</span><span class="p">)</span> <span class="ow">=</span> <span class="o">...</span>
+</code></pre></div><hr>
+<h1 id="interior-mutability">Interior Mutability</h1>
+<p>One mild annoyance I have with rust that is based more on theoretic grounds rather than an actual practical
+concern is that its immutable references aren&rsquo;t actually immutable:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="c1">// Does this mutate bar? Maybe! We&#39;d need to know if there are any types providing internal mutability within `Bar` to be sure.
+</span><span class="c1"></span><span class="k">fn</span> <span class="nf">foo</span><span class="p">(</span><span class="n">bar</span>: <span class="kp">&amp;</span><span class="nc">Bar</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="o">..</span><span class="p">.}</span><span class="w">
+</span></code></pre></div><p>Once you opt for interior mutability on a type you lose valuable information in type signatures on whether
+that function may mutate your type or not.</p>
+<p>I think shared, mutable references have the potential to be a solution here. After all, they largely share the same use
+as interior mutability types: providing shared mutability. For example, let&rsquo;s consider the <code>Clone</code> trait which requires
+an immutable reference in Rust despite the existence of types like <code>Rc t</code> which need to be mutated to be cloned. If we
+change this trait to accepts a mutable parameter as a <code>!stable t</code> instead, we can implement it soundly while still
+allowing aliasing:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Imagine if `Clone` took a `!stable t` parameter instead of `&amp;t`:</span>
+<span class="k">impl</span> <span class="kt">Clone</span> <span class="p">(</span><span class="kt">Rc</span> <span class="n">t</span><span class="p">)</span> <span class="k">with</span>
+    <span class="n">clone</span> <span class="p">(</span><span class="n">rc</span><span class="o">:</span> <span class="o">!</span><span class="k">stable</span> <span class="kt">Rc</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">Rc</span> <span class="n">t</span> <span class="ow">=</span>
+        <span class="n">rc</span><span class="o">.</span><span class="n">internal_reference_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">as_ptr</span> <span class="n">self</span> <span class="o">|&gt;</span> <span class="n">deref</span>
+</code></pre></div><p>That being said, changing <code>Clone</code> to the signature above would mean it&rsquo;d be impossible to clone immutable references - unless
+we allow coercing <code>&amp;t</code> to <code>!stable t</code> - which would defeat the point of immutable references in the first place I think.</p>
+<p>It&rsquo;d also be somewhat unsatisfactory if a trait like <code>Clone</code>, which conceptually is not supposed to mutate its parameters, takes
+a mutable reference to its data because of corner cases like <code>Rc t</code> where mutation is required. Should the general case be less
+clear due to the existence of corner-cases? Taking this to its logical extent, nearly all traits which accept immutable reference
+parameters should actually accept some kind of shared, mutable parameter instead just for the rare exception where they are required.
+Perhaps something like <code>Rc t</code> is best implemented with an explicitly interior-mutable counter such as <code>Cell U32</code> after all.</p>
+<hr>
+<h2 id="another-immutable-reference">Another Immutable Reference?</h2>
+<p>So if <code>Cell t</code> and other interior-mutability types are still useful to provide an exception for mutating an otherwise immutable
+reference, would it be useful to tackle the problem from the other end by providing <em>actual</em> immutable references to the few
+methods where it is a requirement? For example, we may have a library which stores arbitrary user-data where it would be
+unsafe to mutate it, but we want to give out a reference to it anyway:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">MyBTreeMap</span> <span class="n">k</span> <span class="n">v</span> <span class="ow">=</span> <span class="o">...</span>
+
+<span class="c1">// Retrieve a reference to the first (key, value) pair in the map</span>
+<span class="kt">MyBTreeMap</span><span class="o">.</span><span class="n">first</span> <span class="p">(</span><span class="n">self</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">MyBTreeMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span><span class="o">:</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">k</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">v</span><span class="p">)</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
+</code></pre></div><p>The above interface would be unsafe since <code>k</code> may contain interior mutability and the user may mutate it, interfering with
+the internal invariant that keys within our map are stored in an ordered fashion. A proper API would return a wrapper type
+instead which re-orders the map anytime the user mutated the key. Alternatively, if we had another kind of reference, let&rsquo;s
+call it <code>&amp;imm t</code> which disallows <em>all</em> mutations, even those through interior mutable types, then the API would be safe, right?</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">MyBTreeMap</span> <span class="n">k</span> <span class="n">v</span> <span class="ow">=</span> <span class="o">...</span>
+
+<span class="c1">// Retrieve a reference to the first (key, value) pair in the map</span>
+<span class="kt">MyBTreeMap</span><span class="o">.</span><span class="n">first</span> <span class="p">(</span><span class="n">self</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">MyBTreeMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span><span class="o">:</span> <span class="p">(</span><span class="o">&amp;</span><span class="k">imm</span> <span class="n">k</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">v</span><span class="p">)</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
+</code></pre></div><p>Well&hellip; no. As long as we can retrieve an owned version of the same underlying value and mutate that, we still have the
+same problem:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">bad</span> <span class="p">(</span><span class="n">map</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">MyBTreeMap</span> <span class="p">(</span><span class="kt">Rc</span> <span class="kt">I32</span><span class="p">)</span> <span class="n">v</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="n">key</span><span class="p">,</span> <span class="n">_</span> <span class="ow">=</span> <span class="n">map</span><span class="o">.</span><span class="n">first</span> <span class="p">()</span>
+
+    <span class="c1">// uh-oh, no more &amp;imm</span>
+    <span class="k">mut</span> <span class="n">key_clone</span><span class="o">:</span> <span class="kt">Rc</span> <span class="kt">I32</span> <span class="ow">=</span> <span class="n">clone</span> <span class="n">key</span>
+    <span class="o">@</span><span class="n">key_clone</span> <span class="o">:=</span> <span class="mi">32</span>  <span class="c1">// nothing to trigger `map` to re-order</span>
+</code></pre></div><p>So a <code>&amp;imm t</code> type alone would not actually gain us anything of value. Maybe we need an infectious <em>mode</em>
+so that it applies to all values (not just references) such that not even a <code>clone</code> may remove it:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">MyBTreeMap</span><span class="o">.</span><span class="n">first</span> <span class="p">(</span><span class="n">self</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">MyBTreeMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span><span class="o">:</span> <span class="p">(</span><span class="k">imm</span> <span class="o">&amp;</span><span class="n">k</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">v</span><span class="p">)</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
+
+<span class="nf">bad</span> <span class="p">(</span><span class="n">map</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">MyBTreeMap</span> <span class="p">(</span><span class="kt">Rc</span> <span class="kt">I32</span><span class="p">)</span> <span class="n">v</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="n">key</span><span class="p">,</span> <span class="n">_</span> <span class="ow">=</span> <span class="n">map</span><span class="o">.</span><span class="n">first</span> <span class="p">()</span>
+
+    <span class="c1">// Still get an `imm` now when cloning</span>
+    <span class="k">mut</span> <span class="n">key_clone</span><span class="o">:</span> <span class="k">imm</span> <span class="kt">Rc</span> <span class="kt">I32</span> <span class="ow">=</span> <span class="n">clone</span> <span class="n">key</span>
+    <span class="o">@</span><span class="n">key_clone</span> <span class="o">:=</span> <span class="mi">32</span>  <span class="c1">// error: mutating an immutable value</span>
+</code></pre></div><blockquote>
+<p>Q: If <code>imm</code> prevents internal mutability, how are we cloning an <code>Rc I32</code>?</p>
+<p>A: Good question - we probably can&rsquo;t actually clone <code>imm Rc t</code>&rsquo;s. The same problem is also present if we had another
+shared pointer type that doesn&rsquo;t require internal mutability for cloning though.</p>
+</blockquote>
+<p>When thinking about this type my original thought was that it must be thread-safe even if it contained types with interior
+mutability. After all, mutations should be blocked on those types like they are in the example above. Unfortunately,
+it still isn&rsquo;t thread-safe. It&rsquo;s possible to use ye olde Rc trick:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">data</span> <span class="ow">=</span> <span class="kt">Arc</span><span class="o">.</span><span class="n">of</span> <span class="o">&lt;|</span> <span class="kt">Cell</span><span class="o">.</span><span class="n">of</span> <span class="o">&lt;|</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+
+<span class="c1">// Even if we need an owned value to make an `imm` wrapper, this is still unsound</span>
+<span class="k">imm</span> <span class="n">imm_data</span> <span class="ow">=</span> <span class="n">clone</span> <span class="n">data</span>
+
+<span class="nf">spawn_thread</span> <span class="k">fn</span> <span class="p">()</span> <span class="ow">-&gt;</span>
+    <span class="n">foo</span> <span class="o">&amp;</span><span class="n">imm_data</span>
+
+<span class="c1">// The original still isn&#39;t imm so we can mutate the inner Cell</span>
+<span class="nf">data</span><span class="o">.</span><span class="n">set</span> <span class="p">(</span><span class="kt">Vec</span><span class="o">.</span><span class="n">new</span> <span class="p">())</span>
+</code></pre></div><p>Mutating a value in one thread while another reads it is generally an ungood thing to do.</p>
+<p>Preventing this requires the <code>t</code> in <code>imm t</code> to have the usual <code>Send</code>/<code>Sync</code> requirements when used in multiple threads.
+Without thread-safety, <code>imm t</code> would be an entire additional core language feature, along with a change to the
+<code>Clone</code> trait, just to prevent interior mutability in some rare cases. So perhaps it is not so useful after all.</p>
+<hr>
+<h2 id="allegations-against-stable-t">Allegations against <code>!stable t</code></h2>
+<p>If <code>Cell t</code> is still needed, is <code>!stable t</code> useful at all then when it is effectively just a way to wrap each nested
+member with <code>Cell</code> automatically?</p>
+<p>Eh.</p>
+<p>There are a few advantages <code>!stable t</code> has over <code>Cell t</code>:</p>
+<ul>
+<li><code>!stable t</code> doesn&rsquo;t require the user change the definition of <code>t</code> to add shared mutability for each desired member.</li>
+<li>Due to the above, <code>t</code> is still thread-safe (!). Although we of course can&rsquo;t copy <code>!stable t</code> to multiple threads
+we can still use <code>&amp;t</code> just fine. If <code>t</code> used <code>Cell</code> internally, it wouldn&rsquo;t be safe even with immutable references.</li>
+<li><code>!stable t</code> is easier to add after-the-fact. Consider a user with a type <code>t</code> with several methods on it. One day
+they add a new method where they discover that one field on the type should really be wrapped in a <code>Cell</code>. To
+refactor this they will have to change every instance of the field to handle the wrapping and unwrapping
+of the outer <code>Cell</code> wrapper. Compare this with them using <code>!stable</code> mutability instead: they may not need to change
+any code at all<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup> and could simply continue writing their method.</li>
+<li><code>!stable t</code> is more discoverable than <code>Cell t</code>. This is more of a minor point, but as a dedicated language construct,
+<code>!stable</code> references may be easier for new users to reach for compared to <code>Cell</code>. Although either could easily be
+forgotten about, the later also requires remembering useful conversions such as
+<a href="https://doc.rust-lang.org/std/cell/struct.Cell.html#method.from_mut"><code>Cell::from_mut</code></a> and
+<a href="https://doc.rust-lang.org/std/cell/struct.Cell.html#method.as_slice_of_cells"><code>Cell::as_slice_of_cells</code></a>.</li>
+</ul>
+<p>That being said, there are some major disadvantages to <code>!stable t</code> as well:</p>
+<ul>
+<li><code>!stable t</code> cannot even set a struct to a new value if the struct contains a shape-unstable type like <code>Vec u</code>.
+With <code>Cell&lt;T&gt;</code> in Rust this is possible through <a href="https://doc.rust-lang.org/std/cell/struct.Cell.html#method.set"><code>Cell::set</code></a> (among other methods).
+This limits <code>!stable t</code> to only the most trivial of mutations in practice.</li>
+<li>Including both <code>!stable t</code> and <code>Cell t</code> complicates the language for a very small gain.</li>
+<li>It would be unsound to allow obtaining both a <code>!shared t</code> and a <code>!stable t</code> from a <code>Rc t</code>.
+If it was allowed, we could use <code>!stable t</code> to project a reference deep into the type, then use a <code>!shared t</code> to the
+same value to drop the value that&rsquo;s being held. Since the <code>Rc t</code> to <code>!shared t</code> conversion is useful to keep (see later in the article),
+we&rsquo;d need to remove the <code>Rc t</code> to <code>!stable t</code> conversion, <strong>which means <code>!stable t</code>&rsquo;s advantage of being able to project into any type
+isn&rsquo;t actually true anymore.</strong></li>
+</ul>
+<hr>
+<h2 id="experiment-can-we-track-whether-a-types-interior-is-aliased">Experiment: Can We Track Whether A Type&rsquo;s Interior is Aliased?</h2>
+<p>Before we discard <code>!stable t</code> entirely though we should note that the reason it loses it&rsquo;s advantage of being able
+to project into any type is only because <code>!shared t</code> also exists. Maybe the best solution would be to redesign
+the language to better support <code>!stable t</code> and <code>!shared t</code> together, if possible. One system I&rsquo;ve seen
+toyed with in this mutability space as an alternative to Ante&rsquo;s shared references is to instead track whether
+a type is aliased in a field that may be dropped directly. So we want to have some notion for &ldquo;a reference&rdquo;
+and &ldquo;a reference derived from another, which may be dropped if the first is mutated.&rdquo; To accomplish this,
+we&rsquo;re going to try to blend <code>!stable t</code> and <code>!shared t</code> since the former provides the projection we want
+and the later provides the mutation properties we need. For example, we&rsquo;d like to be able to recursively
+traverse through a tagged-union value, projecting references within until a mutation is desired. When we
+mutate we&rsquo;ll need to guarantee we don&rsquo;t have shared references inside the portion of the type that is
+being cut off from the rest. Can we have our cake and eat it too? Let&rsquo;s do an experiment.</p>
+<p>The Problem:</p>
+<ul>
+<li><code>!stable t</code> is useful for projecting mutable references into a type, but once we find a mutation we want to
+perform, unless it is a very simple one like incrementing an integer, odds are it is shape-unstable and
+we cannot actually perform it through a <code>!stable t</code>.</li>
+<li><code>!shared t</code> is useful for performing most mutations but traversing through a type requires we clone or replace
+the value each time we step into the shape-unstable interior of a type.</li>
+</ul>
+<p>What We Want:</p>
+<ul>
+<li>A way to traverse through a type with <code>!stable t</code> semantics then use <code>!shared t</code> semantics when a mutation is needed.</li>
+</ul>
+<p>In theory, this would be sound to do if we can guarantee that the stable reference wasn&rsquo;t used to project
+into any field that may be dropped by the shared reference. We want a kind of local uniqueness where we
+don&rsquo;t care if any parent nodes in a tree are aliased, but want to ensure that child nodes are not. This
+would be the reverse of a <code>!own t</code> to <code>!shared t</code> or <code>!stable t</code> coercion which would let you alias
+children of the current value but not any parents.</p>
+<p>If we did have such tracking then we could imagine the following code would be invalid:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">lets_trigger_an_error</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="o">!</span><span class="k">stable</span> <span class="kt">Maybe</span> <span class="kt">String</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="n">is</span> <span class="kt">Some</span> <span class="n">s</span> <span class="k">then</span>
+        <span class="c1">// error: this is a shape-unstable mutation which may drop `s`</span>
+        <span class="n">x</span> <span class="o">:=</span> <span class="kt">None</span>
+        <span class="c1">// note: `s` still used later here</span>
+        <span class="n">print</span> <span class="n">s</span>
+</code></pre></div><p>While the following would be allowed since no shape-unstable references exist when the mutation is performed:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">ok</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="o">!</span><span class="k">stable</span> <span class="kt">Maybe</span> <span class="kt">String</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="n">x_alias</span> <span class="ow">=</span> <span class="n">x</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="n">is</span> <span class="kt">Some</span> <span class="n">_s</span> <span class="k">then</span>
+        <span class="c1">// `_s` is unused so this assignment is ok</span>
+        <span class="n">x</span> <span class="o">:=</span> <span class="kt">None</span>
+
+    <span class="n">print</span> <span class="n">x</span>
+    <span class="n">print</span> <span class="n">x_alias</span>
+</code></pre></div><p>We can imagine that the compiler may keep track of this internally using the lifetime variable on references.
+Perhaps it could have an internal list of variables in the local scope that share a lifetime along with which,
+if any, are projections into a shape-unstable type from another reference. This clues us into an issue with
+the above scheme: how should the compiler track aliases which do not share the same lifetime - for example
+via a cloned <code>Rc t</code>?</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">bad</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="o">!</span><span class="k">stable</span> <span class="kt">Rc</span> <span class="p">(</span><span class="kt">Maybe</span> <span class="kt">String</span><span class="p">))</span> <span class="ow">=</span>
+    <span class="n">x_clone</span> <span class="ow">=</span> <span class="n">clone</span> <span class="n">x</span>
+    <span class="n">string_ref</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">String</span> <span class="ow">=</span> <span class="n">x_clone</span><span class="o">.</span><span class="n">as_ref</span> <span class="p">()</span> <span class="o">|&gt;</span> <span class="n">unwrap</span>
+
+    <span class="c1">// Compiler: &#34;Hmm, well `x` doesn&#39;t appear to be aliased internally...&#34;</span>
+    <span class="n">x</span> <span class="o">:=</span> <span class="kt">None</span>
+    <span class="n">print</span> <span class="n">string_ref</span> <span class="c1">// uh-oh! `string_ref` was already dropped</span>
+</code></pre></div><p>There are a couple ways we could fix this, although I don&rsquo;t find any satisfactory:</p>
+<ol>
+<li>We could disallow projection of <code>!stable t</code> into shared types like <code>Rc t</code>.</li>
+</ol>
+<ul>
+<li>This brings us right back to where we started before the experiment.</li>
+</ul>
+<ol start="2">
+<li>We could attach a lifetime to <code>Rc t</code> (becoming <code>Rc a t</code>, killer of <code>Rm o u s e</code>)</li>
+</ol>
+<ul>
+<li>This makes lifetimes much more infectious. Something like <code>LinkedList t</code> for example would
+now need to be <code>LinkedList a t</code> assuming it uses <code>Rc a t</code> internally.</li>
+<li>Since the lifetime is on the type, this now also prevents dynamic-splitting of reference-counted
+data. For example, consider a tree which uses <code>Rc a Tree</code> links for each node. If we had <code>Rc Tree</code>
+links we would be able to cut off branches from this tree and treat them as two separate trees.
+With <code>Rc a Tree</code> links, when we cut off branches, the two resulting trees are still linked via
+the same lifetime variable, preventing independent mutation on both. This is a problem shared
+by <a href="https://docs.rs/ghost-cell/latest/ghost_cell/ghost_cell/struct.GhostCell.html#">ghost cell</a> in Rust.</li>
+</ul>
+<hr>
+<h1 id="lets-be-happy-with-what-we-have">Let&rsquo;s Be Happy With What We Have</h1>
+<p>For the reasons above, I don&rsquo;t think <code>!stable t</code> is useful enough to include as a core language
+feature in Ante. I hesitate to think it&rsquo;d be useful enough to include in any language, truthfully.
+If there are other designers out there who are very partial to <code>!stable t</code>-style shared mutability
+over <code>!shared t</code>-style shared mutability I&rsquo;d love to hear how the issues above are overcome. In the
+meantime though, I thought I&rsquo;d quickly review some things <code>!shared t</code> can already do, and some design
+patterns I intend it to be used in since the original post was light on <em>how</em> to use these.</p>
+<h2 id="we-have-gc-at-home">We Have GC at Home</h2>
+<p>The usecase I&rsquo;m personally most excited for is using shared references to emulate garbage-collected
+languages, even in a language with affine types like Ante.</p>
+<p>No, I&rsquo;m serious. Don&rsquo;t give me that look.</p>
+<p>We can combine shared references with <a href="http://localhost:1313/docs/language/#shared-types">shared types</a>
+(which can be thought of as auto-wrapping a type in <code>Rc</code>) to get something that looks and acts like a
+much higher-level language:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">derive</span> <span class="kt">Copy</span>
+<span class="k">type</span> <span class="kt">Color</span> <span class="ow">=</span> <span class="o">|</span> <span class="kt">R</span> <span class="o">|</span> <span class="kt">B</span>
+
+<span class="k">shared</span> <span class="k">type</span> <span class="kt">RbTree</span> <span class="n">t</span> <span class="ow">=</span>
+    <span class="o">|</span> <span class="kt">Empty</span>
+    <span class="o">|</span> <span class="kt">Tree</span> <span class="kt">Color</span> <span class="kt">RbTree</span> <span class="n">t</span> <span class="kt">RbTree</span>
+
+<span class="nf">balance</span> <span class="p">(</span><span class="n">tree</span><span class="o">:</span> <span class="kt">RbTree</span><span class="p">)</span><span class="o">:</span> <span class="kt">RbTree</span> <span class="ow">=</span>
+    <span class="k">match</span> <span class="n">tree</span>
+    <span class="o">|</span> <span class="kt">Tree</span> <span class="kt">B</span> <span class="p">(</span><span class="kt">Tree</span> <span class="kt">R</span> <span class="p">(</span><span class="kt">Tree</span> <span class="kt">R</span> <span class="n">a</span> <span class="n">x</span> <span class="n">b</span><span class="p">)</span> <span class="n">y</span> <span class="n">c</span><span class="p">)</span> <span class="n">z</span> <span class="n">d</span>
+    <span class="o">|</span> <span class="kt">Tree</span> <span class="kt">B</span> <span class="p">(</span><span class="kt">Tree</span> <span class="kt">R</span> <span class="n">a</span> <span class="n">x</span> <span class="p">(</span><span class="kt">Tree</span> <span class="kt">R</span> <span class="n">b</span> <span class="n">y</span> <span class="n">c</span><span class="p">))</span> <span class="n">z</span> <span class="n">d</span>
+    <span class="o">|</span> <span class="kt">Tree</span> <span class="kt">B</span> <span class="n">a</span> <span class="n">x</span> <span class="p">(</span><span class="kt">Tree</span> <span class="kt">R</span> <span class="p">(</span><span class="kt">Tree</span> <span class="kt">R</span> <span class="n">b</span> <span class="n">y</span> <span class="n">c</span><span class="p">)</span> <span class="n">z</span> <span class="n">d</span><span class="p">)</span>
+    <span class="o">|</span> <span class="kt">Tree</span> <span class="kt">B</span> <span class="n">a</span> <span class="n">x</span> <span class="p">(</span><span class="kt">Tree</span> <span class="kt">R</span> <span class="n">b</span> <span class="n">y</span> <span class="p">(</span><span class="kt">Tree</span> <span class="kt">R</span> <span class="n">c</span> <span class="n">z</span> <span class="n">d</span><span class="p">))</span> <span class="ow">-&gt;</span> <span class="kt">Tree</span> <span class="kt">R</span> <span class="p">(</span><span class="kt">Tree</span> <span class="kt">B</span> <span class="n">a</span> <span class="n">x</span> <span class="n">b</span><span class="p">)</span> <span class="n">y</span> <span class="p">(</span><span class="kt">T</span> <span class="kt">B</span> <span class="n">c</span> <span class="n">z</span> <span class="n">d</span><span class="p">)</span>
+    <span class="o">|</span> <span class="n">other</span> <span class="ow">-&gt;</span> <span class="n">other</span>
+</code></pre></div><p>These values are all conceptually shared but this does not complicate things. After all, even if we
+need mutation, that is what <code>!shared t</code> is for:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">shared</span> <span class="k">type</span> <span class="kt">Expr</span> <span class="ow">=</span>
+    <span class="o">|</span> <span class="kt">Int</span> <span class="kt">I32</span>
+    <span class="o">|</span> <span class="kt">Var</span> <span class="kt">String</span>
+    <span class="o">|</span> <span class="kt">Add</span> <span class="kt">Expr</span> <span class="kt">Expr</span>
+
+<span class="nf">remove_unknown_vars</span> <span class="p">(</span><span class="n">e</span><span class="o">:</span> <span class="o">!</span><span class="kt">Expr</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="k">match</span> <span class="n">e</span>
+    <span class="o">|</span> <span class="kt">Int</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="p">()</span>
+    <span class="o">|</span> <span class="kt">Add</span> <span class="o">!</span><span class="n">l</span> <span class="o">!</span><span class="n">r</span> <span class="ow">-&gt;</span>
+        <span class="n">remove_unknown_vars</span> <span class="o">!</span><span class="n">l</span>
+        <span class="n">remove_unknown_vars</span> <span class="o">!</span><span class="n">r</span>
+    <span class="o">|</span> <span class="kt">Var</span> <span class="n">name</span> <span class="k">if</span> <span class="n">name</span> <span class="o">!=</span> <span class="s">&#34;foo&#34;</span> <span class="ow">-&gt;</span>
+        <span class="n">e</span> <span class="o">:=</span> <span class="kt">Int</span> <span class="mi">0</span>
+        <span class="n">print</span> <span class="s">&#34;Who is ${name}?&#34;</span>
+    <span class="o">|</span> <span class="kt">Var</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="p">()</span>
+</code></pre></div><blockquote>
+<p>Q: Won&rsquo;t <code>name</code> be a dangling reference after <code>e</code> is mutated to a different variant?</p>
+<p>A: Nope! When a shared value is matched on, it is automatically copied, and the copied
+value is used for the match. <code>shared</code> benefits from being implemented as a pointer type
+which is fast to copy. In practice this may be <code>Rc t</code>, or it may be a region-allocated
+pointer with no incrementing required to copy, etc. To allow for more optimization, Ante
+does not explicitly specify the pointer type which wraps <code>shared</code> types. If users need
+a guarantee, they are welcome to use explicit pointer wrappers.</p>
+</blockquote>
+<p>This is the kind of code I envision users will write in Ante in the future. I think there
+is a great opportunity space for library authors providing Rust-style low-level libraries
+maximizing performance where possible, and users writing binaries on top of these with shared
+types to lower the learning barrier and make any code with non-realtime guarantees easier to write.</p>
+<p>Speaking of non-realtime guarantees, it&rsquo;d even be possible for users writing binaries to
+enable a real tracing GC for shared types. This would be optional and only toggleable for binaries
+to avoid libraries relying on it and segmenting the ecosystem. Still, I find this to be a
+fascinating design space. Many high-level languages like C# have spent a long time optimizing
+performance by adding stack-allocated types and references after the fact. Ante is doing the
+opposite by starting with a performant base with affine types, stack-allocated values, and
+temporary, lifetime-tracked references by default, and adding sharedness and potentially
+even garbage-collection on as a layer over it all.</p>
+<h2 id="cell-style">Cell-Style</h2>
+<p>Shared types are great, but not all types are shared. Since <code>!shared</code> often requires copying
+or cloning values to be able to project references into them (e.g. the <code>match e</code> example above),
+what should users do when they have a <code>!shared</code> reference to a non-shared type like <code>Vec t</code>?
+Well, they could clone it, but that can be expensive for types like vectors. They could also
+create their own wrapper:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">SVec</span> <span class="n">t</span> <span class="ow">=</span> <span class="k">shared</span> <span class="kt">Vec</span> <span class="n">t</span>
+</code></pre></div><p>This may be fine if a user is creating their own type or is planning to use <code>SVec t</code> in many
+places, but sometimes users need one-time solutions too. For those, it turns out that similar
+to <code>&amp;Cell t</code>, <code>!shared t</code> actually <em>can</em> project a reference inside <code>t</code> if it replaces it
+with a temporary filler value first:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// We want each Vec element stored inline for efficiency, but we also want to</span>
+<span class="c1">// mutate them in a shared fashion without cloning them.</span>
+<span class="nf">push_to_all_columns</span> <span class="p">(</span><span class="n">matrix</span><span class="o">:</span> <span class="o">!</span><span class="kt">Vec</span> <span class="p">(</span><span class="kt">Vec</span> <span class="kt">I32</span><span class="p">))</span> <span class="ow">=</span>
+    <span class="k">mut</span> <span class="n">rows</span> <span class="ow">=</span> <span class="kt">Std</span><span class="o">.</span><span class="kt">Mem</span><span class="o">.</span><span class="n">take</span> <span class="n">matrix</span>  <span class="c1">// replaces matrix with Vec.new (), returning its old value</span>
+    <span class="c1">// `iter_mut` requires an owned reference, which we now have</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="k">in</span> <span class="n">rows</span><span class="o">.</span><span class="n">iter_mut</span> <span class="p">()</span> <span class="k">do</span>
+        <span class="n">row</span><span class="o">.</span><span class="n">push</span> <span class="mi">0</span>
+
+    <span class="c1">// Finally, put the mutated value back in the shared reference</span>
+    <span class="o">@</span><span class="n">matrix</span> <span class="o">:=</span> <span class="n">rows</span>
+
+<span class="c1">// As a reminder, if we were just pushing to the outer Vec, we don&#39;t need anything</span>
+<span class="c1">// special since Vec.push already only requires a shared reference since it doesn&#39;t</span>
+<span class="c1">// give out a reference to the shape-unstable interior.</span>
+<span class="nf">push_row</span> <span class="p">(</span><span class="n">matrix</span><span class="o">:</span> <span class="o">!</span><span class="kt">Vec</span> <span class="p">(</span><span class="kt">Vec</span> <span class="kt">I32</span><span class="p">))</span> <span class="ow">=</span>
+    <span class="n">matrix</span><span class="o">.</span><span class="n">push</span> <span class="p">(</span><span class="kt">Vec</span><span class="o">.</span><span class="n">new</span> <span class="p">())</span>
+</code></pre></div><hr>
+<h1 id="closing-thoughts">Closing Thoughts</h1>
+<p>So Ante will not be getting <code>!stable t</code> but at the same time, I don&rsquo;t think it needs it.
+<code>!shared t</code> is already surprisingly flexible, and along with shared types we get pretty
+much all we need to support a high level interface on an otherwise much lower-level
+language. This isn&rsquo;t to say it get&rsquo;s us 100% there - Ante still inherits Rust&rsquo;s several
+kinds of closures (<code>Fn</code>, <code>FnMut</code>, <code>FnOnce</code>) which complicates functional programming a bit.
+I&rsquo;m quite optimistic on the future of shared references though, and that is just one
+of feature of Ante. If you were at all intrigued by this article, consider keeping up with the project
+from the <a href="https://discord.gg/NPJncGBAws">discord server</a>. The compiler is currently in the
+middle of a full rewrite after 5 years since the last so progress will be slow, yet changes
+will be constant.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>Perhaps <code>!shared t</code> should be called <code>!unstable t</code> since it can mutate unstably.&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>Without proving disjointness of each index&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p>Using <code>Cell::replace</code> one can use other kinds of mutable references on the resulting owned value,
+but these aren&rsquo;t directly on a Cell so they aren&rsquo;t counted. If we counted this, we&rsquo;d have to count it
+for <code>!shared (Vec t)</code> as well since <code>!shared</code> has a similar API.&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p>Whether they need to change any code depends on whether they need their mutability to merely be aliasable or
+if they really do need to mutate through an &ldquo;immutable&rdquo; reference.&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+                        </div>
+                        
+                        
+
+                    </div>
+                    
+
+                    
+
+                    
+                    <div class="col-md-3 right-float"/>
+
+                    
+
+                </div>
+                
+
+            </div>
+            
+        </div>
+        
+
+        <footer id="footer">
+    <div class="container">
+
+        
+
+        <div class="col-md-4 col-sm-6">
+
+            
+            <h4>Recent posts</h4>
+
+            <div class="blog-entries">
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="https://antelang.org/blog/safe_shared_mutability2/">
+                          
+                            <img src="/img/banners/antelope_flowers_cropped.jpg" class="img-responsive" alt="More on Safe, Aliasable Mutability with Unboxed Types">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/blog/safe_shared_mutability2/">More on Safe, Aliasable Mutability with Unboxed Types</a></h5>
+                    </div>
+                </div>
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="https://antelang.org/blog/why_effects/">
+                          
+                            <img src="/img/banners/lanterns.jpg" class="img-responsive" alt="Why Algebraic Effects?">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/blog/why_effects/">Why Algebraic Effects?</a></h5>
+                    </div>
+                </div>
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="https://antelang.org/blog/simplification_through_addition/">
+                          
+                            <img src="/img/banners/antelope_canyon_cropped.jpg" class="img-responsive" alt="Simplification Through Addition">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/blog/simplification_through_addition/">Simplification Through Addition</a></h5>
+                    </div>
+                </div>
+                
+            </div>
+
+            <hr class="hidden-md hidden-lg">
+            
+
+        </div>
+        
+
+        
+
+    </div>
+    
+</footer>
+
+
+
+
+
+
+
+<div id="copyright">
+    <div class="container">
+        <div class="col-md-12">
+            
+            <p class="pull-right">
+              Template by <a href="https://bootstrapious.com/p/universal-business-e-commerce-template">Bootstrapious</a>.
+              
+
+              Ported to Hugo by <a href="https://github.com/devcows/hugo-universal-theme">DevCows</a>.
+            </p>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+    </div>
+    
+
+    
+<script src="//code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Counter-Up/1.0/jquery.counterup.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-parallax/1.1.3/jquery-parallax.js"></script>
+
+<script src="https://antelang.org/js/front.js"></script>
+
+
+<script src="https://antelang.org/js/owl.carousel.min.js"></script>
+
+
+  </body>
+</html>

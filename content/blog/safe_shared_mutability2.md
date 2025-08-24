@@ -25,6 +25,8 @@ Summary out of the way - there is an issue with the previous blog post! Namely, 
 method of shared mutability, but more than one zero-cost method exists! Perhaps even more egregious,
 this new method has much more obvious semantics than the `shared` references from the first post.
 
+This post will explain exactly what that new kind of reference is! ...And why Ante won't have it.
+
 ---
 
 # Syntax
@@ -58,7 +60,7 @@ Alternatively, you can think about these in terms of what operations they'd supp
 | `!shared Vec t` |     ✓     |                      X                     |                             X                            |
 | `!stable Vec t` |     X     |                      ✓                     |                             ✓                            |
 | `!own Vec t`    |     ✓     |                      ✓                     |                             X                            |
-| `&Cell (Vec t)` |   ~[^0]   |                      X                     |                             X                            |
+| `&Cell (Vec t)` |   X[^0]   |                      X                     |                             X                            |
 
 This table looks a bit different because vectors don't have any shape-stable projection or mutations.
 If users were allowed to access the integer length or capacity fields directly these would be shape-stable,
@@ -66,7 +68,9 @@ but allowing users to mutate them directly could break invariants of course.
 
 
 [^naming]: Perhaps `!shared t` should be called `!unstable t` since it can mutate unstably.
-[^0]: Via `Cell::replace` or similar, then using other kinds of mutable references on the resulting owned value
+[^0]: Using `Cell::replace` one can use other kinds of mutable references on the resulting owned value,
+but these aren't directly on a Cell so they aren't counted. If we counted this, we'd have to count it
+for `!shared (Vec t)` as well since `!shared` has a similar API.
 [^1]: Without proving disjointness of each index
 
 In the original post I mentioned that `!shared t` is effectively a built-in version of `&Cell t`. Now, although we may also think of
@@ -151,7 +155,7 @@ unsafe to mutate it, but we want to give out a reference to it anyway:
 type MyBTreeMap k v = ...
 
 // Retrieve a reference to the first (key, value) pair in the map
-MyBTreeMap.first (self: &MyBTreeMap): (&k, &v) can Fail = ...
+MyBTreeMap.first (self: &MyBTreeMap k v): (&k, &v) can Fail = ...
 ```
 
 The above interface would be unsafe since `k` may contain interior mutability and the user may mutate it, interfering with
@@ -178,7 +182,7 @@ bad (map: &MyBTreeMap (Rc I32) v) =
     @key_clone := 32  // nothing to trigger `map` to re-order
 ```
 
-So a `&imm t` type alone would not actually gain us anything of value. To be useful it'd need to be an infectious _mode_
+So a `&imm t` type alone would not actually gain us anything of value. Maybe we need an infectious _mode_
 so that it applies to all values (not just references) such that not even a `clone` may remove it:
 
 ```ante
@@ -192,6 +196,11 @@ bad (map: &MyBTreeMap (Rc I32) v) =
     @key_clone := 32  // error: mutating an immutable value
 ```
 
+> Q: If `imm` prevents internal mutability, how are we cloning an `Rc I32`?
+>
+> A: Good question - we probably can't actually clone `imm Rc t`'s. The same problem is also present if we had another
+> shared pointer type that doesn't require internal mutability for cloning though.
+
 When thinking about this type my original thought was that it must be thread-safe even if it contained types with interior
 mutability. After all, mutations should be blocked on those types like they are in the example above. Unfortunately,
 it still isn't thread-safe. It's possible to use ye olde Rc trick:
@@ -200,7 +209,7 @@ it still isn't thread-safe. It's possible to use ye olde Rc trick:
 data = Arc.of <| Cell.of <| Vec.of [1, 2, 3]
 
 // Even if we need an owned value to make an `imm` wrapper, this is still unsound
-imm_data = imm clone data
+imm imm_data = clone data
 
 spawn_thread fn () ->
     foo &imm_data
@@ -211,7 +220,7 @@ data.set (Vec.new ())
 
 Mutating a value in one thread while another reads it is generally an ungood thing to do.
 
-Preventing this requires the `t` in `imm t` have the usual `Send`/`Sync` requirements when used in multiple threads.
+Preventing this requires the `t` in `imm t` to have the usual `Send`/`Sync` requirements when used in multiple threads.
 Without thread-safety, `imm t` would be an entire additional core language feature, along with a change to the
 `Clone` trait, just to prevent interior mutability in some rare cases. So perhaps it is not so useful after all.
 
@@ -222,7 +231,7 @@ Without thread-safety, `imm t` would be an entire additional core language featu
 If `Cell t` is still needed, is `!stable t` useful at all then when it is effectively just a way to wrap each nested
 member with `Cell` automatically?
 
-Maybe.
+Eh.
 
 There are a few advantages `!stable t` has over `Cell t`:
 - `!stable t` doesn't require the user change the definition of `t` to add shared mutability for each desired member.
@@ -241,14 +250,14 @@ forgotten about, the later also requires remembering useful conversions such as
 
 That being said, there are some major disadvantages to `!stable t` as well:
 - `!stable t` cannot even set a struct to a new value if the struct contains a shape-unstable type like `Vec u`.
-With `Cell<T>` in Rust this is possible through [`Cell::set`](https://doc.rust-lang.org/std/cell/struct.Cell.html#method.set).
+With `Cell<T>` in Rust this is possible through [`Cell::set`](https://doc.rust-lang.org/std/cell/struct.Cell.html#method.set) (among other methods).
 This limits `!stable t` to only the most trivial of mutations in practice.
 - Including both `!stable t` and `Cell t` complicates the language for a very small gain.
-- If we allow obtaining a `!shared t` from a `Rc t`, it wouldn't be valid to also allow obtaining a `!stable t` from a `Rc t`.
+- It would be unsound to allow obtaining both a `!shared t` and a `!stable t` from a `Rc t`.
 If it was allowed, we could use `!stable t` to project a reference deep into the type, then use a `!shared t` to the
-same value to drop the value that's being held. The `Rc t` to `!shared t` conversion is useful to keep but if we have
-to remove the `Rc t` to `!stable t` conversion **then `!stable t`'s advantage of being able to project into any type
-isn't actually true.**
+same value to drop the value that's being held. Since the `Rc t` to `!shared t` conversion is useful to keep (see later in the article),
+we'd need to remove the `Rc t` to `!stable t` conversion, **which means `!stable t`'s advantage of being able to project into any type
+isn't actually true anymore.**
 
 [^2]: Whether they need to change any code depends on whether they need their mutability to merely be aliasable or
 if they really do need to mutate through an "immutable" reference.
@@ -256,21 +265,33 @@ if they really do need to mutate through an "immutable" reference.
 ---
 ## Experiment: Can We Track Whether A Type's Interior is Aliased?
 
+Before we discard `!stable t` entirely though we should note that the reason it loses it's advantage of being able
+to project into any type is only because `!shared t` also exists. Maybe the best solution would be to redesign
+the language to better support `!stable t` and `!shared t` together, if possible. One system I've seen
+toyed with in this mutability space as an alternative to Ante's shared references is to instead track whether
+a type is aliased in a field that may be dropped directly. So we want to have some notion for "a reference"
+and "a reference derived from another, which may be dropped if the first is mutated." To accomplish this,
+we're going to try to blend `!stable t` and `!shared t` since the former provides the projection we want
+and the later provides the mutation properties we need. For example, we'd like to be able to recursively
+traverse through a tagged-union value, projecting references within until a mutation is desired. When we
+mutate we'll need to guarantee we don't have shared references inside the portion of the type that is
+being cut off from the rest. Can we have our cake and eat it too? Let's do an experiment.
+
 The Problem:
 - `!stable t` is useful for projecting mutable references into a type, but once we find a mutation we want to
 perform, unless it is a very simple one like incrementing an integer, odds are it is shape-unstable and
 we cannot actually perform it through a `!stable t`.
-- `!shared t` is useful for performing most mutations but traversing through a type requires we clone each time
-we step into the shape-unstable interior of a type.
+- `!shared t` is useful for performing most mutations but traversing through a type requires we clone or replace
+the value each time we step into the shape-unstable interior of a type.
 
 What We Want:
-- A way to traverse through a type with `!stable t` then convert to `!shared t` when a mutation is needed.
+- A way to traverse through a type with `!stable t` semantics then use `!shared t` semantics when a mutation is needed.
 
 In theory, this would be sound to do if we can guarantee that the stable reference wasn't used to project
 into any field that may be dropped by the shared reference. We want a kind of local uniqueness where we
 don't care if any parent nodes in a tree are aliased, but want to ensure that child nodes are not. This
-would be the reverse of a `!own t` to `!shared t` or `!stable t` coercion which lets you alias children of the
-current value but not any parents.
+would be the reverse of a `!own t` to `!shared t` or `!stable t` coercion which would let you alias
+children of the current value but not any parents.
 
 If we did have such tracking then we could imagine the following code would be invalid:
 ```ante
@@ -300,9 +321,7 @@ via a cloned `Rc t`?
 ```ante
 bad (x: !stable Rc (Maybe String)) =
     x_clone = clone x
-    string_ref: &String = match &x_clone
-        | Some s -> s
-        | None -> panic "oops"
+    string_ref: &String = x_clone.as_ref () |> unwrap
 
     // Compiler: "Hmm, well `x` doesn't appear to be aliased internally..."
     x := None
@@ -311,34 +330,147 @@ bad (x: !stable Rc (Maybe String)) =
 
 There are a couple ways we could fix this, although I don't find any satisfactory:
 1. We could disallow projection of `!stable t` into shared types like `Rc t`.
-  - This removes one of the only usecases of `!stable t` - its ability to be projected anywhere.
-  With this restriction, the already niche `!stable t` would no longer be able to be projected
-  into recursive union types for example. If users need shared mutability and are already required
-  to clone `Rc t` values, they might as well use `!shared t` instead.
-2. We could attach a lifetime to `Rc t` (becoming `Rc a t`... rcat.. reverse-cat.. hmm)
+  - This brings us right back to where we started before the experiment.
+2. We could attach a lifetime to `Rc t` (becoming `Rc a t`, killer of `Rm o u s e`)
   - This makes lifetimes much more infectious. Something like `LinkedList t` for example would
   now need to be `LinkedList a t` assuming it uses `Rc a t` internally.
   - Since the lifetime is on the type, this now also prevents dynamic-splitting of reference-counted
   data. For example, consider a tree which uses `Rc a Tree` links for each node. If we had `Rc Tree`
   links we would be able to cut off branches from this tree and treat them as two separate trees.
   With `Rc a Tree` links, when we cut off branches, the two resulting trees are still linked via
-  the same lifetime variable, preventing independent mutation on both.
+  the same lifetime variable, preventing independent mutation on both. This is a problem shared
+  by [ghost cell](https://docs.rs/ghost-cell/latest/ghost_cell/ghost_cell/struct.GhostCell.html#) in Rust.
 
 ---
 
-# Ghost Cell 👻🦠
+# Let's Be Happy With What We Have
 
-Yet another type of aliasable mutability which doesn't require runtime support is the well-known
-[ghost cell](https://docs.rs/ghost-cell/latest/ghost_cell/ghost_cell/struct.GhostCell.html#). Ghost cells
-are pretty cool because they provide a kind of interior mutability that can accomplish anything a `!own t`
-can but are also aliasable (or at least a `&GhostCell a t` is) and even thread-safe! The trick is that 
-to mutably borrow the data within a ghost cell, you have to provide a
-[`!own GhostToken a`](https://docs.rs/ghost-cell/latest/ghost_cell/ghost_cell/struct.GhostToken.html) -
-and similarly for borrowing the `t` immutably. This effectively separates permissions from the data such that
-all your ownership constraints are now on this separate token you must also pass around.
+For the reasons above, I don't think `!stable t` is useful enough to include as a core language
+feature in Ante. I hesitate to think it'd be useful enough to include in any language, truthfully.
+If there are other designers out there who are very partial to `!stable t`-style shared mutability
+over `!shared t`-style shared mutability I'd love to hear how the issues above are overcome. In the
+meantime though, I thought I'd quickly review some things `!shared t` can already do, and some design
+patterns I intend it to be used in since the original post was light on _how_ to use these.
 
-This gives us some great advantages but also comes with some downsides. Namely:
-- In order for each `GhostToken` to correspond to one or more `GhostCell`s, they must both be branded with a
-unique type - in Rust's case a unique lifetime is used. This results in similar issues to the `Rc a Tree` experiment
-above where recursive data will need to share the same brand, and the data effectively cannot be separated from the
-rest of the recursive tree after it is constructed.
+## We Have GC at Home
+
+The usecase I'm personally most excited for is using shared references to emulate garbage-collected
+languages, even in a language with affine types like Ante.
+
+No, I'm serious. Don't give me that look.
+
+We can combine shared references with [shared types](http://localhost:1313/docs/language/#shared-types)
+(which can be thought of as auto-wrapping a type in `Rc`) to get something that looks and acts like a
+much higher-level language:
+
+```ante
+derive Copy
+type Color = | R | B
+
+shared type RbTree t =
+    | Empty
+    | Tree Color RbTree t RbTree
+
+balance (tree: RbTree): RbTree =
+    match tree
+    | Tree B (Tree R (Tree R a x b) y c) z d
+    | Tree B (Tree R a x (Tree R b y c)) z d
+    | Tree B a x (Tree R (Tree R b y c) z d)
+    | Tree B a x (Tree R b y (Tree R c z d)) -> Tree R (Tree B a x b) y (T B c z d)
+    | other -> other
+```
+
+These values are all conceptually shared but this does not complicate things. After all, even if we
+need mutation, that is what `!shared t` is for:
+
+```ante
+shared type Expr =
+    | Int I32
+    | Var String
+    | Add Expr Expr
+
+remove_unknown_vars (e: !Expr) =
+    match e
+    | Int _ -> ()
+    | Add !l !r ->
+        remove_unknown_vars !l
+        remove_unknown_vars !r
+    | Var name if name != "foo" ->
+        e := Int 0
+        print "Who is ${name}?"
+    | Var _ -> ()
+```
+
+> Q: Won't `name` be a dangling reference after `e` is mutated to a different variant?
+>
+> A: Nope! When a shared value is matched on, it is automatically copied, and the copied
+> value is used for the match. `shared` benefits from being implemented as a pointer type
+> which is fast to copy. In practice this may be `Rc t`, or it may be a region-allocated
+> pointer with no incrementing required to copy, etc. To allow for more optimization, Ante
+> does not explicitly specify the pointer type which wraps `shared` types. If users need
+> a guarantee, they are welcome to use explicit pointer wrappers.
+
+This is the kind of code I envision users will write in Ante in the future. I think there
+is a great opportunity space for library authors providing Rust-style low-level libraries
+maximizing performance where possible, and users writing binaries on top of these with shared
+types to lower the learning barrier and make any code with non-realtime guarantees easier to write.
+
+Speaking of non-realtime guarantees, it'd even be possible for users writing binaries to
+enable a real tracing GC for shared types. This would be optional and only toggleable for binaries
+to avoid libraries relying on it and segmenting the ecosystem. Still, I find this to be a
+fascinating design space. Many high-level languages like C# have spent a long time optimizing
+performance by adding stack-allocated types and references after the fact. Ante is doing the
+opposite by starting with a performant base with affine types, stack-allocated values, and
+temporary, lifetime-tracked references by default, and adding sharedness and potentially
+even garbage-collection on as a layer over it all.
+
+## Cell-Style
+
+Shared types are great, but not all types are shared. Since `!shared` often requires copying
+or cloning values to be able to project references into them (e.g. the `match e` example above),
+what should users do when they have a `!shared` reference to a non-shared type like `Vec t`?
+Well, they could clone it, but that can be expensive for types like vectors. They could also
+create their own wrapper:
+
+```ante
+type SVec t = shared Vec t
+```
+
+This may be fine if a user is creating their own type or is planning to use `SVec t` in many
+places, but sometimes users need one-time solutions too. For those, it turns out that similar
+to `&Cell t`, `!shared t` actually _can_ project a reference inside `t` if it replaces it
+with a temporary filler value first:
+
+```ante
+// We want each Vec element stored inline for efficiency, but we also want to
+// mutate them in a shared fashion without cloning them.
+push_to_all_columns (matrix: !Vec (Vec I32)) =
+    mut rows = Std.Mem.take matrix  // replaces matrix with Vec.new (), returning its old value
+    // `iter_mut` requires an owned reference, which we now have
+    for row in rows.iter_mut () do
+        row.push 0
+
+    // Finally, put the mutated value back in the shared reference
+    @matrix := rows
+
+// As a reminder, if we were just pushing to the outer Vec, we don't need anything
+// special since Vec.push already only requires a shared reference since it doesn't
+// give out a reference to the shape-unstable interior.
+push_row (matrix: !Vec (Vec I32)) =
+    matrix.push (Vec.new ())
+```
+
+---
+
+# Closing Thoughts
+
+So Ante will not be getting `!stable t` but at the same time, I don't think it needs it.
+`!shared t` is already surprisingly flexible, and along with shared types we get pretty
+much all we need to support a high level interface on an otherwise much lower-level
+language. This isn't to say it get's us 100% there - Ante still inherits Rust's several
+kinds of closures (`Fn`, `FnMut`, `FnOnce`) which complicates functional programming a bit.
+I'm quite optimistic on the future of shared references though, and that is just one
+of feature of Ante. If you were at all intrigued by this article, consider keeping up with the project
+from the [discord server](https://discord.gg/NPJncGBAws). The compiler is currently in the
+middle of a full rewrite after 5 years since the last so progress will be slow, yet changes
+will be constant.

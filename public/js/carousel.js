@@ -19,7 +19,7 @@ let scrollLeft;
 //   isDown = false;
 //   slider.classList.remove('active');
 // });
-// 
+
 // slider.addEventListener('mousemove', e => {
 //   if (!isDown) return;
 //   e.preventDefault();
