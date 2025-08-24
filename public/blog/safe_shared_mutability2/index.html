@@ -35,7 +35,7 @@
 
 
 
-<link href="/css/custom.css?1756072605" rel="stylesheet">
+<link href="/css/custom.css?1756073574" rel="stylesheet">
 
 
 
@@ -644,7 +644,7 @@ match on tagged-union values as deep as you want and mutate an integer you find 
 <td><code>&amp;Cell t</code></td>
 <td style="text-align:center">✓</td>
 <td style="text-align:center">✓</td>
-<td style="text-align:center">X</td>
+<td style="text-align:center">✓<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup></td>
 <td style="text-align:center">X</td>
 <td style="text-align:center">✓</td>
 </tr>
@@ -657,7 +657,7 @@ match on tagged-union values as deep as you want and mutate an integer you find 
 <th>Reference Type</th>
 <th style="text-align:center">push, pop</th>
 <th style="text-align:center">Retrieve a mutable reference to an element</th>
-<th style="text-align:center">Trivially<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> retrieve mutable references to two elements</th>
+<th style="text-align:center">Trivially<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> retrieve mutable references to two elements</th>
 </tr>
 </thead>
 <tbody>
@@ -681,7 +681,7 @@ match on tagged-union values as deep as you want and mutate an integer you find 
 </tr>
 <tr>
 <td><code>&amp;Cell (Vec t)</code></td>
-<td style="text-align:center">X<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup></td>
+<td style="text-align:center">X<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup></td>
 <td style="text-align:center">X</td>
 <td style="text-align:center">X</td>
 </tr>
@@ -814,7 +814,7 @@ we can still use <code>&amp;t</code> just fine. If <code>t</code> used <code>Cel
 they add a new method where they discover that one field on the type should really be wrapped in a <code>Cell</code>. To
 refactor this they will have to change every instance of the field to handle the wrapping and unwrapping
 of the outer <code>Cell</code> wrapper. Compare this with them using <code>!stable</code> mutability instead: they may not need to change
-any code at all<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup> and could simply continue writing their method.</li>
+any code at all<sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup> and could simply continue writing their method.</li>
 <li><code>!stable t</code> is more discoverable than <code>Cell t</code>. This is more of a minor point, but as a dedicated language construct,
 <code>!stable</code> references may be easier for new users to reach for compared to <code>Cell</code>. Although either could easily be
 forgotten about, the later also requires remembering useful conversions such as
@@ -1024,16 +1024,21 @@ will be constant.</p>
 <p>Perhaps <code>!shared t</code> should be called <code>!unstable t</code> since it can mutate unstably.&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:2" role="doc-endnote">
-<p>Without proving disjointness of each index&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><code>Cell&lt;T&gt;</code> in Rust supports shape-stable projections into array elements via helper methods. The language does not currently
+support shape-stable projections of it into struct fields, but this is only because it is not a built-in type. It would be safe
+in theory to allow struct-field projection of <code>Cell&lt;T&gt;</code>.&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:3" role="doc-endnote">
-<p>Using <code>Cell::replace</code> one can use other kinds of mutable references on the resulting owned value,
-but these aren&rsquo;t directly on a Cell so they aren&rsquo;t counted. If we counted this, we&rsquo;d have to count it
-for <code>!shared (Vec t)</code> as well since <code>!shared</code> has a similar API.&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p>Without proving disjointness of each index&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:4" role="doc-endnote">
+<p>Using <code>Cell::replace</code> one can use other kinds of mutable references on the resulting owned value,
+but these aren&rsquo;t directly on a Cell so they aren&rsquo;t counted. If we counted this, we&rsquo;d have to count it
+for <code>!shared (Vec t)</code> as well since <code>!shared</code> has a similar API.&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:5" role="doc-endnote">
 <p>Whether they need to change any code depends on whether they need their mutability to merely be aliasable or
-if they really do need to mutate through an &ldquo;immutable&rdquo; reference.&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+if they really do need to mutate through an &ldquo;immutable&rdquo; reference.&#160;<a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
 </section>

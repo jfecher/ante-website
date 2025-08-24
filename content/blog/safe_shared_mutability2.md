@@ -51,7 +51,7 @@ To highlight how this compares to other kinds of mutable references, here's a co
 | `!shared t`    |            ✓           |             ✓            |             ✓            |              X             |   ✓  |
 | `!stable t`    |            ✓           |             X            |             ✓            |              ✓             |   ✓  |
 | `!own t`       |            ✓           |             ✓            |             ✓            |              ✓             |   X  |
-| `&Cell t`      |            ✓           |             ✓            |             X            |              X             |   ✓  |
+| `&Cell t`      |            ✓           |             ✓            |             ✓[^cell]     |              X             |   ✓  |
 
 Alternatively, you can think about these in terms of what operations they'd support on a `Vec t` (growable array) type:
 
@@ -68,6 +68,9 @@ but allowing users to mutate them directly could break invariants of course.
 
 
 [^naming]: Perhaps `!shared t` should be called `!unstable t` since it can mutate unstably.
+[^cell]: `Cell<T>` in Rust supports shape-stable projections into array elements via helper methods. The language does not currently
+support shape-stable projections of it into struct fields, but this is only because it is not a built-in type. It would be safe
+in theory to allow struct-field projection of `Cell<T>`.
 [^0]: Using `Cell::replace` one can use other kinds of mutable references on the resulting owned value,
 but these aren't directly on a Cell so they aren't counted. If we counted this, we'd have to count it
 for `!shared (Vec t)` as well since `!shared` has a similar API.
