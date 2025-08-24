@@ -269,58 +269,6 @@ vec.push "method!"
 ```
 
 ---
-# Type Inference
-
-Types almost never need to be manually specified due to the global type inference
-algorithm which is based on an extended version of Hindley-Milner with let-polymorphism,
-multi-parameter typeclasses (traits) and a limited form of functional dependencies.
-
-This means ante can infer variable types, parameter types, function return types, and
-even infer which traits are needed in generic function signatures.
-
-```ante
-// Something is iterable if we can call `next` on it and
-// get either Some element and the rest of the iterator or
-// None and we finish iterating
-trait Iterator it -> elem with
-    next: it -> Maybe (it, elem)
-
-first_equals_two it =
-    match next it
-    | Some (2, _) -> true
-    | _ -> false
-```
-We never gave any type for `first_equals_two` yet ante infers its type for us as
-`a -> Bool given Iterator a I32` - that is a function that returns a `Bool` and takes
-a generic parameter of type `a` which must be an iterator producing elements of type `I32`.
-
-### Type Inference in Idiomatic Code
-
-Note that while global type inference is possible, it is not idiomatic to have large
-code bases omitting types on every function. Generally speaking, the larger the code base,
-the more important it is to have clear type signatures for globally visible functions to
-improve type errors in the case types change. Given it is preferred to have explicit type
-signatures for functions, one may wonder why offer type inference on them at all? There
-are a few reasons for this.
-
-1. When contributing to a new or existing code base a developer often adds a couple functions at a time.
-The intended work-flow of Ante is to omit the types of these functions,
-and when the programmer is satisfied, they can have the compiler write in the
-inferred function types itself after a successful compilation. This way the programmer does less
-unnecessary work but still gets explicit types in the end. They are also still free to write explicit
-types for any particularly difficult functions they need before then to help with type errors.
-
-2. For smaller scripts it can be nice to write code without types. A type error affecting the inferred
-types of other functions is less of an issue when you only have a handful of them and don't intend to write more.
-
-3. Even in larger code bases, inferred types on functions can still be useful in some rare cases like
-particularly trivial helper functions, or trait impl methods where the trait always dictates the function
-type anyway.
-
-4. In a teaching scenario, it can be useful to have the flexibility to defer teaching about types a little.
-They should likely still be taught early but any bit of lowering the initial shock value for students new to programming can help.
-
----
 # Significant Whitespace
 
 Ante uses significant whitespace to help declutter source code and prevent bugs
@@ -449,26 +397,26 @@ standard one's you're probably used to:
 
 ```ante
 // The standard set of numeric ops with operator precedence as you'd expect
-trait Add a with
+trait Add a =
     (+): a -> a -> a
 
-trait Sub a with
+trait Sub a =
     (-): a -> a -> a
 
-trait Mul a with
+trait Mul a =
     (*): a -> a -> a
 
-trait Div a with
+trait Div a =
     (/): a -> a -> a
 
 // % is modulus, not remainder. So -3 % 5 == 2
-trait Mod a with
+trait Mod a =
     (%): a -> a -> a
 ```
 
 ```ante
 // Comparison operators are implemented in terms of the `Cmp` trait
-trait Cmp a with
+trait Cmp a =
     compare: a -> a -> Ordering
 
 type Ordering = | Lesser | Equal | Greater
@@ -537,7 +485,10 @@ plays nicely with ML-style function call syntax, and gives the helpful mnemonic
 "get the value _at_ the reference".
 
 Note that dereferencing a value via `@` requires the value implement `Copy`.
-Types which are expensive to copy implement `Clone` instead.
+Types which are expensive to copy implement `Clone` instead. Note that there
+is no requirement for `Copy` types to be memcpy-able. Instead it is used for
+types which are "cheap" to copy - usually meaning they don't need to allocate
+any heap memory. A result of this is that `Rc t` is `Copy`.
 
 If you need to access a struct field, `struct.field` will automatically dereference
 `struct` as many times as needed to access its field.
@@ -681,19 +632,17 @@ for (enumerate pairs) fn (i, one, two) ->
 Finally, its necessary to mention that the earlier `Cast` example printed nested
 pairs as `1, 2, 3` where as the `Show` instances in haskell printed tuples as `(1, 2, 3)`.
 If we wanted to surround our nested pairs with parenthesis we have to work a bit
-harder by having a helper trait so we can specialize the impl for pairs:
+harder by specializing the impl for pairs:
 
 ```ante
-trait ToStringHelper t given Cast t String with
-    to_string_helper (x: t) -> String = cast x
+impl cast_pair_string: Cast (Pair a b) String with
+    cast pair = "(${to_string_no_parens pair})"
 
-cast_pair_string = impl
-    Cast (Pair a b) String via
-        cast pair = "(${to_string_helper pair})"
-
-    // Specialize the impl for pairs so we can recur on the rhs
-    ToStringHelper (Pair a b) via
-        to_string_helper (a, b) = "$a, ${to_string_helper b}"
+// Convert a pair to a string without parens
+to_string_no_parens (x, y) =
+    str = "${x}, "
+    rhs = if Type.of y |> is_pair_type then to_string_no_parens y else cast y
+    str ++ rhs
 ```
 
 And these two functions will cover all possible lengths of nested pairs.
@@ -701,10 +650,15 @@ And these two functions will cover all possible lengths of nested pairs.
 ---
 # Lambdas
 
-Lambdas in ante have the following syntax:
-`fn arg1 arg2 ... argN -> body`. Additionally a function definition
+Lambdas in ante have the following syntax: `fn arg1 arg2 ... argN -> body`.
+All functions in Ante must have at least one parameter. When the first argument is excluded (as in `fn -> body`), 
+this is taken as sugar for a function taking a `Unit` parameter: `fn () -> body`.
+
+Additionally a function definition
 `foo a b c = body` is sugar for a variable assigned to
-a lambda: `foo = fn a b c -> body`. Lambdas can also capture part of
+a lambda: `foo = fn a b c -> body`.
+
+Lambdas can also capture part of
 the variables in the scope they were declared. When they do this,
 they are called closures:
 
@@ -1014,6 +968,59 @@ evaluate (e: Expr) (env: HashMap String I32): I32 can Error =
 ```
 
 ---
+# Type Inference
+
+Types almost never need to be manually specified due to the global type inference
+algorithm which is based on an extended version of Hindley-Milner with let-polymorphism,
+multi-parameter typeclasses (traits) and a limited form of functional dependencies.
+
+This means ante can infer variable types, parameter types, function return types, and
+even infer which traits are needed in generic function signatures.
+
+```ante
+// Something is iterable if we can call `next` on it and
+// get either Some element and the rest of the iterator or
+// None and we finish iterating
+trait Iterator it -> elem =
+    next: fn it -> Maybe (it, elem)
+
+first_equals_two it =
+    match next it
+    | Some (2, _) -> true
+    | _ -> false
+```
+We never gave any type for `first_equals_two` yet ante infers its type for us as
+`fn a {Iterator a I32} -> Bool` - that is a function that returns a `Bool` and takes
+a generic parameter of type `a` along with an [implicit parameter](#implicits) which is an instance
+of the iterator trait for `a` producing elements of type `I32`.
+
+### Type Inference in Idiomatic Code
+
+Note that while global type inference is possible, it is not idiomatic to have large
+code bases omitting types on every function. Generally speaking, the larger the code base,
+the more important it is to have clear type signatures for globally visible functions to
+improve type errors in the case types change. Given it is preferred to have explicit type
+signatures for functions, one may wonder why offer type inference on them at all? There
+are a few reasons for this.
+
+1. When contributing to a new or existing code base a developer often adds a couple functions at a time.
+The intended work-flow of Ante is to omit the types of these functions,
+and when the programmer is satisfied, they can have the compiler write in the
+inferred function types itself after a successful compilation. This way the programmer does less
+unnecessary work but still gets explicit types in the end. They are also still free to write explicit
+types for any particularly difficult functions they need before then to help with type errors.
+
+2. For smaller scripts it can be nice to write code without types. A type error affecting the inferred
+types of other functions is less of an issue when you only have a handful of them and don't intend to write more.
+
+3. Even in larger code bases, inferred types on functions can still be useful in some rare cases like
+particularly trivial helper functions, or trait impl methods where the trait always dictates the function
+type anyway.
+
+4. In a teaching scenario, it can be useful to have the flexibility to defer teaching about types a little.
+They should likely still be taught early but any bit of lowering the initial shock value for students new to programming can help.
+
+---
 # Types
 
 Ante is a strongly, statically typed language with global type inference.
@@ -1107,7 +1114,7 @@ simplify (expr: Expr): Expr =
 these fields are unneeded in a pattern match they can also be excluded with `..` which will
 automatically fill in an remaining fields in a pattern:
 
-```
+```ante
 simplify (expr: Expr): Expr =
     match expr
     | Int x -> Int x
@@ -1240,9 +1247,10 @@ print 5.0  // Since we can print any float type, we arbitrarily default 5.0 to a
 
 ## Function Types
 
-Function types in Ante are of the form `arg1 - arg2 - .. - argN -> return_type`.
+Function types in Ante are of the form `fn arg1 arg2 .. argN -> return_type`.
 Note that functions in Ante always have at least one argument. Zero-argument functions
-are usually encoded as functions accepting a single unit value as an argument, e.g. `Unit -> I32`.
+are usually encoded as functions accepting a single unit value as an argument, e.g. `fn Unit -> I32`,
+which there is also sugar for: `fn -> I32`.
 
 Function types can also have an optional effect clause at the end. More on this
 in [Effects in Function Types](#effects-in-function-types).
@@ -1315,8 +1323,6 @@ bar x
 
 ## Borrowing
 
-> The current design for borrowing is being reconsidered. See [borrowing alternatives](/docs/ideas#borrowing-alternatives).
-
 Like Rust, if a value needs to be used multiple times, we can borrow references
 to it so that we can refer to the value as many times as we need.
 
@@ -1339,18 +1345,13 @@ qux !s
 print s  //=> "???"
 ```
 
-### Restrictions on References
+### Lifetimes
 
-Compared to references in Rust, Ante's references are also bound by lifetimes, although
-this lifetime cannot be explicitly referred to by a lifetime variable. This is a tradeoff
-which simplifies the language somewhat but means that the expressivity of references is
-also more restricted compared to Rust. Generally, references are meant to mostly be used
-as a parameter-passing method rather than stored deeply within types. Such a scheme is
-actually more similar to C# (see [this blog post](https://em-tg.github.io/csborrow/)) than
-Rust in this regard.
+Ante's references are bound by lifetime, similar to Rust. The full form of a reference
+type is `&l t` where `l` is a lifetime and `t` is the element type.
 
-When used in a parameter position, each variable of a function is assumed to have a
-possibly different lifetime:
+When used in a function signature, lifetimes may be ellided. When this happens, each
+variable of a function is assumed to have a possibly different lifetime:
 
 ```ante
 concat_foo (foo1: &Foo) (foo2: &Foo) : String =
@@ -1374,22 +1375,24 @@ bad (foo: Foo) =
 
 #### Returning References
 
-The next most common use of references is writing functions to lend references
-to avoid cloning the inner value unnecessarily. Other languages with
-references approach this differently. In Hylo for example, references may only
-be returned in special "subscript" functions, which are in turn only able to be
-called within another function call, e.g. `foo(my_subscript(bar, baz), qux)`.
-
-Ante recognizes this common case and tries to be more flexible in comparison.
-Functions returning references are allowed:
+If a function's signature returns a reference and uses only a single reference parameter,
+we can still elide the lifetimes since there is only one lifetime the return value may
+be referring to (besides the static lifetime):
 
 ```ante
-get_ref (foo: &Foo) (_bar: &Bar) : &Baz =
+get_ref (foo: &Foo) : &Baz =
     foo.&baz
 ```
 
-If a reference is returned from a function, none of the referenced inputs
-can be moved until the returned reference is dropped.
+However, if we accept multiple references, the lifetime needs to be specified:
+
+```ante
+get_ref2 (foo: &f Foo) (_: &Bar) : &f Baz =
+    foo.&baz
+```
+
+If a reference is returned from a function, the referenced input(s)
+can't be moved until the returned reference is dropped.
 
 ```ante
 example2 (foo: Foo) (bar: Bar) =
@@ -1399,52 +1402,25 @@ example2 (foo: Foo) (bar: Bar) =
     print r
 ```
 
-Since Ante has no lifetime annotations it does not know from which
-variable the return result is borrowed from. To solve this, Ante conservatively
-ties the lifetime of the return result to the lifetime of all of the reference
-parameters to the function. In addition to not being able to move any of these
-parameters afterward, this can also have implications for whether each reference
-must be `shared` or not (see [shared mutability](#shared-mutability)). Consider the following code:
-
-```ante
-example2 (foo: Foo) (bar: !Bar) =
-    r = get_ref &foo bar
-    print bar
-    print r
-    ()
-```
-
-We get an error that `bar` must be a `shared` reference because the compiler sees
-`r` as a reference potentially aliased to `bar`, which would make it mutably
-aliased since `bar: !Bar`. This is despite us being able to peek into `get_ref`
-to see it actually only ever returns a reference inside of `foo`.
 
 #### Lifetime-bound Types
 
-Types which capture references must themselves be bound by the same lifetime as those
-references. This is indicated using the `ref` keyword. For example, if we had a struct:
+Lifetimes can also be added to type definitions. This is necessary if a type needs
+to hold onto a temporary reference with an unknown lifetime, although most of the time
+users should favor wrapper types such as `Rc t`.
 
 ```ante
-type Context =
-    global_context: &GlobalContext
+type Context l =
+    global_context: &l GlobalContext
 ```
 
-We would have to refer to this struct elsewhere as `ref Context`, which will restrict
-the lifetime of the `Context` to that of the reference it contains internally. This is
-similar to using a lifetime variable in Rust: `Context<'a>`.
-
-If a type captures multiple references, the lifetime used by `Context` is the shortest
-of all the captured lifetimes. Note that this means a type with multiple lifetime variables
-in Rust like `Context<'a, 'b>` is not expressible in Ante with plain references. If such a
-type is needed, runtime-checked references or pointer types need to be used.
-
-`ref` is also often seen when using closures which capture references:
+When adding a lifetime parameter, Ante can infer the kind of the type parameter should
+be a lifetime instead of a type in some situations, but may need an explicit annotation
+in others:
 
 ```ante
-x = Bar
-foo () = x
-
-// Type of foo is:  ref Fn Unit => &Bar
+// l is unused
+type Foo (l: lifetime) = ()
 ```
 
 ---
@@ -1453,21 +1429,28 @@ foo () = x
 
 Another difference from Rust is that Ante allows shared (aliasable) mutability.
 In addition to whether a reference is `mut`able or not, a reference can also
-be tagged whether it is `own`ed or `shared`. Additionally, if there is a mutable
+be tagged whether it is `own`ed or shared. The sharedness of a reference exists
+on a different axis from its mutability, so you can have a shared but immutable
+reference as well. Additionally, if there is a mutable
 reference borrwed from a value with at least 1 other borrowed reference to the same
 value, all references are inferred to be mutably `shared`.
 
 ```ante
+// &    = shared, immutable reference
+// !    = shared, mutable reference
+// &own = owned, immutable reference
+// !own = owned, mutable reference
+
 message = "Hello"
-ref1: !shared String = !message
-ref2: !shared String = !message
+ref1: !String = !message
+ref2: !String = !message
 
 @ref1 := "${message}, WorZd!"  // "Hello, WorZd!"
 ref2.replace "Z" "l"
 print ref2                     // "Hello, World!"
 ```
 
-The `own` and `shared` tags are used to prevent operations that would be unsafe
+The `own` tag is used to prevent operations that would be unsafe
 on a shared mutable reference. A common theme of these operations is that they hand
 out references inside of a type with an unstable shape. For example, handing out
 a reference to a `Vec` element would be unsafe in a shared context since the `Vec`
@@ -1506,7 +1489,7 @@ shared type Expr =
     | Var String
     | Add Expr Expr  // No explicit boxing required
 
-my_expr = Add (Int 3) (Var "foo")
+my_expr = Expr.Add (Int 3) (Var "foo")
 ```
 
 You can think of these types as always being wrapped in a reference-counted pointer. They are
@@ -1516,45 +1499,31 @@ about it for fewer types - even if they still need to handle it for built-in typ
 These are also useful in cases when types need to be recursively boxed (like `Expr` above) anyway,
 or patterns where shared mutability is inherently necessary like the observer pattern.
 
-Taking the reference of a field of a `shared` type will always yield a `shared` reference back
-(similar to a `Rc t`) since the `shared` type may be cloned and shared elsewhere.
+Taking the reference of a field of a `shared` type will always yield a shared reference back
+(similar to a `Rc t`) since the shared type may be cloned and shared elsewhere.
 
 ```ante
-expr = Int 3
+expr = Expr.Int 3
 
 // Even immutable references into shared types are always shared
-my_ref: &shared Expr = &expr
+my_ref: &Expr = &expr
 ```
 
 Since taking the reference of a tagged-union's field requires an `own`ed reference (tagged-unions do
 not have stable shapes since they may be mutated to a different union variant), when matching on
-`shared` types, it is more useful to match without taking the reference first since fields will
-be automatically copied:
+`shared` types they are automatically copied:
 
 ```ante
 eval1 (e: Expr) =
-    match &e  // Error, cannot match on a tagged-union under a `shared` reference
+    match &e  // Warning: implicit copy occurs here when trying to get a reference to `e`'s fields 
     | Int x -> x
     ...
 
 eval2 (e: Expr) =
-    match e  // Ok
+    match e  // Ok (copied)
     | Int x -> x
     ...
 ```
-
-### Reference Polymorphism
-
-If the `own` and `shared` modifiers are omitted from the reference type, the
-reference is considered to be polymorphic over both. Since most code will
-not care if a reference is shared or not, this gives us some much needed
-polymorphism while reducing notational burden. `Vec.get_cloned` above
-is one example of a function taking references polymorphic in whether they are owned or shared.
-
-Note that a polymorphic reference will have the capabilities of the lowest
-common denominator - a `shared` reference. If an owned value is needed a
-type error will be issued signalling the function will need to require an owned
-reference instead.
 
 ### Internal Mutability
 
@@ -1568,7 +1537,7 @@ Since Ante natively supports shared references, it is also possibly to obtain a
 shared reference directly through a shared pointer type like an `Rc t`:
 
 ```ante
-as_mut (rc: &own mut Rc t) : &shared mut t = ...
+as_mut (rc: !own Rc t) : !t = ...
 ```
 
 Note that like most pointer types, we still need an owned reference of the
@@ -1580,15 +1549,17 @@ inner references are lent out.
 
 If we wanted to create a shared mutable container where each element is also
 mutably shared, we could use a `Vec (Rc t)` with this technique. Note that the
-`Vec` itself doesn't need to be boxed since we can hand out `&shared mut` references
+`Vec` itself doesn't need to be boxed since we can hand out shared, mutable references
 from owned values already. If want to store the same `Vec` reference in other data types
-then we would need an `Rc` or other shared wrapper around the `Vec`.
+then we would need an `Rc` or other shared wrapper around the `Vec`. To make using
+shared mutable references easier and minimize cloning costs, consider using `shared`
+types to do the pointer-wrapping for you.
 
 This is essentially how many higher level languages make shared mutability work: by boxing
 each value. When we employ this strategy in Ante however, we don't even need to box every
 value. Just boxing container elements and union data is often sufficient.
 
-If an owned reference `&own t` or `&own mut t` is ever required however,
+If an owned reference `&own t` or `!own t` is ever required however,
 a different type such as `RefCell t` would still need to be used to provide
 the runtime tracking required to enforce this constraint.
 
@@ -1596,6 +1567,59 @@ the runtime tracking required to enforce this constraint.
 
 Ante uses the familiar `Send` and `Sync` traits from Rust for safe concurrency. It does
 not innovate here but continues with the safe, tried and true model.
+
+---
+# Implicits
+
+In addition to normal, explicit parameters, functions can have _implicitly passed parameters_.
+Implicit parameters are written with curly braces `{}` surrounding them to distinguish them
+from normal parameters, and may have their names omitted if it is not otherwise used.
+
+```ante
+foo (x: I32) {y: I32}: I32 =
+    x + y
+
+bar (x: I32) {I32}: I32 =
+    // bar's second parameter is automatically forwarded to `foo` here
+    foo x
+```
+
+When looking for an implicit value, the compiler will consider any implicit parameter already
+in scope in addition to each definition with the `implicit` modifier:
+
+```
+implicit pi: I32 = 3  // close enough
+
+main () =
+    // pi is the only implicit I32 in scope, so it is used
+    bar 0
+```
+
+When there are multiple conflicting values of the requested type to use, the compiler will
+issue an error:
+
+```
+implicit pi: I32 = 3
+implicit zero: I32 = 0
+
+main () =
+    // error: `bar` requests an implicit `I32` but there are multiple conflicting implicits in scope: `pi` and `zero`
+    // note: try explicitly specifying which implicit to use
+    bar 0
+```
+
+As the note tells us, when this happens we can disambiguate by explicitly passing the desired
+value to `bar`. This can be done using curly brances:
+
+```ante
+implicit pi: I32 = 3
+implicit zero: I32 = 0
+
+main () =
+    bar 0 {pi}
+```
+
+Implicits are most commonly used for passing around [trait implementations](#impls).
 
 ---
 # Traits
@@ -1606,8 +1630,8 @@ have certain operations available on them - like adding. In ante, this
 is done via traits. You can define a trait as follows:
 
 ```ante
-trait Stringify t with
-    stringify: t -> String
+trait Stringify t =
+    stringify: fn t -> String
 ```
 
 Here we say `stringify` is a function that takes a value of type `t` and returns a
@@ -1615,23 +1639,30 @@ Here we say `stringify` is a function that takes a value of type `t` and returns
 can be converted to strings:
 
 ```ante
-stringify_print (x: t) : Unit given Stringify t =
+stringify_print (x: t) {Stringify t}: Unit =
     print (stringify x)
 ```
 
+Traits in Ante are a bit different from other languages in that they are struct types
+where each function is a field of that struct. In fact, their only difference from
+normal structs is that the functions they define may be generic without the trait type itself
+being generic over that type.
+
 Just like types and algebraic effects, we can leave out all our traits
-in the `given` clauses and they can still be inferred.
+in the `given` clauses and they can still be inferred. When we do want to explicitly
+specify them, like above, we use [implicit parameters](#implicits) to automatically
+pass around the instances for us. Note that this also means we need to ensure we
+import any trait implementations we want into scope first.
 
 Traits can also define relations over multiple types. For example,
-we may want to be more general than the `Stringify` cast above -
-that is we may want to have a trait that can cast to any result
-type. To do this we can have a trait that constrains two generic types
-such that there must be a cast function that can cast from the
-first to the second:
+we may want to be more general than the `Stringify` cast above and
+have a trait to cast to any result type. To do this we can have a
+trait that constrains two generic types such that there must be a
+cast function that can cast from the first to the second:
 
 ```ante
-trait Cast a b with
-    cast: a -> b
+trait Cast a b =
+    cast: fn a -> b
 
 // We can cast to a String using
 cast 3 : String
@@ -1639,12 +1670,20 @@ cast 3 : String
 
 ## Impls
 
-To use functions like `stringify` or `stringify_print` above,
-we'll have to `impl`ement the trait for the types we want
-to use it with. This can be done with `impl` blocks:
+Since traits are types in Ante, trait implementations are simply
+instantiations of those types. These instantiations are often
+marked `implicit` so that they may be passed around with less boilerplate.
+Trait implementations being values does mean we have to name these
+values though. Here's an example implementation for `Stringify Bool`:
 
 ```ante
-stringify_bool = impl Stringify Bool via
+impl stringify_bool: Stringify Bool with
+    stringify b =
+        if b then "true"
+        else "false"
+
+// `impl` is roughly equivalent to:
+implicit stringify_bool: Stringify Bool = Stringify with
     stringify b =
         if b then "true"
         else "false"
@@ -1666,16 +1705,17 @@ are named in ante. This enables impls to be imported or hidden from
 scope in the same manner as any other construct: by name.
 
 ```ante
-import Foo.hash_bar, std_impls hiding eq_foo
+import Foo.Impls.* hiding eq_foo
 ```
 
-This also enables the ability to specify which impl to use via the `via`
-keyword if there are ever multiple conflicting impls in scope.
+When an impl is ambiguous, you can just specify the [implicit parameter](#implicits)
+explicitly:
 
 ```ante
-empty = impl Stringify a via stringify _ = ""
+impl conflicting_impl: Stringify a with
+    stringify _ = ""
 
-print_to_string true via stringify_bool
+print_to_string true {stringify_bool}
 ```
 
 Having multiple conflicting impls anywhere in a codebase is often an error
@@ -1683,27 +1723,6 @@ in other languages, necessitating extensive use of the newtype pattern
 for otherwise unnecessary wrapper types and boilerplate. Ante does not
 enforce global [coherence](#coherence), instead opting for this name-based
 approach to disambiguate where necessary.
-
-As a final example, note that names don't have to be given to individual impls,
-we can also group impls together to reduce the notational burden of needing to
-name each individual impl. Note that becaues impls are disambiguated by name,
-we should avoid including multiple impls for the same trait in the same named group
-so that we can disambiguate between them if needed.
-
-```ante
-type Foo = first: Bar, second: Baz
-
-foo_impls = impl
-    // We can impl multiple traits via the same method:
-    (Hash, Eq, Cmp) Foo via derive
-
-    // We can also forward to a subset of fields:
-    Print Foo via forward second
-
-    // And we can use manual impls
-    Combine Foo via
-        (++) a b = Foo a.first (qux a b)
-```
 
 Note that the mechanism to specify how to derive impls for custom traits is still experimental.
 See more on [the ideas page](/docs/ideas#derive-without-macros).
@@ -1729,20 +1748,19 @@ We can start out with a trait similar to our `Cast` trait from
 before:
 
 ```ante
-trait Container c elem with
-    get: c -> Usz -> Maybe elem
+trait Container c elem =
+    get: fn c Usz -> Maybe elem
 ```
 
 At first glance this looks fine, but there's a problem: we
 can implement it with any combination of `c` and `elem`:
 
 ```ante
-conflicting_impls = impl
-    Container (Vec I32) I32 via
-        get (v: Vec I32) (index: Usz) : Maybe I32 = ...
+impl conflicting1: Container (Vec I32) I32 with
+    get (v: Vec I32) (index: Usz) : Maybe I32 = ...
 
-    Container (Vec I32) String via
-        get (v: Vec I32) (index: Usz) : Maybe String = ...
+impl conflicting2: Container (Vec I32) String with
+    get (v: Vec I32) (index: Usz) : Maybe String = ...
 ```
 
 But we already had an impl for `Vec I32`, and defining a
@@ -1753,10 +1771,10 @@ specify that for any given type `c`, there's only 1 valid
 `elem` value. We can do that by adding an `->`:
 
 ```ante
-trait Container c -> elem with
-    get: c -> Usz -> Maybe elem
+trait Container c -> elem =
+    get: fn c Usz -> Maybe elem
 
-vec_container = impl Container (Vec a) a via
+impl vec_container: Container (Vec a) a with
     get (v: Vec a) (i: Usz) : Maybe a = ...
 ```
 
@@ -1785,17 +1803,17 @@ impls for types outside of the modules the type or trait were
 declared in. If there are ever conflicts with multiple valid
 impls being found, an error is given at the callsite and the
 user will have to manually specify which to use either by only
-importing one of these impls or with an explicit `via` clause
-at the callsite:
+importing one of these impls or by explicitly specifying which
+[implicit parameter](#implicits) to use:
 
 ```ante
-add = impl Combine I32 via (++) = (+)
-mul = impl Combine I32 via (++) = (*)
+impl add: Combine I32 with (++) = (+)
+impl mul: Combine I32 with (++) = (*)
 
 print (2 ++ 3)  // Error, multiple matching impls found! `add` and `mul` are both in scope
 
-print (2 ++ 3) via add  //=> 5
-print (2 ++ 3) via mul  //=> 6
+print ((++) 2 3 {add})  //=> 5
+print ((++) 2 3 {mul})  //=> 6
 ```
 
 ---
@@ -1899,6 +1917,21 @@ import Foo.a as foo_a, b, c, d as foo_d
 get_baz () = my_local_baz
 ```
 
+## Implicit Imports
+
+To import a value into scope and enable any definitions searching for a `implicit` of the
+same type to use it, the value must be imported via `import implicit`. This is most often
+used for trait implementations:
+
+```ante
+import Lib.MyType
+import implicit Lib.MyType.Impls.*
+
+main () =
+    x = MyType.new ()
+    print (x == x)  // requires Eq MyType
+```
+
 ## Exports and Visibility
 
 All names defined at global scope are by default visible to the entire
@@ -2000,23 +2033,19 @@ a type. Make sure the type is accurate as the compiler
 cannot check these signatures for correctness:
 
 ```ante
-extern puts: C.String -> C.Int
+extern puts: fn C.String -> C.Int
 ```
 
 You can also use extern with a block of declarations:
 
 ```ante
 extern
-    exit: C.Int -> never_returns
-    malloc: Usz -> Ptr a
-    printf: C.String -> ... -> C.Int
+    exit: fn C.Int -> never_returns
+    malloc: fn Usz -> Ptr a
 ```
 
-Note that you can also use varargs (`...`) in these declarations
-and it will work as expected. There is currently no equivalent
-to an untagged C union in Ante so using any FFI that requires
-passing in unions will require putting them behind pointers
-in Ante.
+There is currently no equivalent to an untagged C union in Ante so using any FFI that requires
+passing in unions will require putting them behind pointers in Ante.
 
 ---
 # Algebraic Effects
@@ -2041,7 +2070,7 @@ the return type of the effect. For example, if our effect is:
 
 ```an
 effect GiveInt with
-    give_int: String -> I32
+    give_int: fn String -> I32
 ```
 
 Then we will have to call `resume` with an `I32` to continue the original computation.
@@ -2407,8 +2436,8 @@ threading stateful values through multiple functions.
 
 ```ante
 effect Use a with
-    get: Unit -> a
-    put: a -> Unit
+    get: fn Unit -> a
+    put: fn a -> Unit
 
 state (mut current_state: s) (f: Unit -> a can Use s) : a =
     handle f ()
@@ -2477,8 +2506,8 @@ while remaining purely functional behind the scenes.
 
 ```an
 effect Loop with
-    break: Unit -> a
-    continue: Unit -> a
+    break: fn Unit -> a
+    continue: fn Unit -> a
 
 for (iter: i) (f: e -> Unit can Loop) : Unit can Iterate i e =
     match next iter
@@ -2527,7 +2556,7 @@ The yield effect provides a way to implement generators.
 
 ```ante
 effect Yield a with
-    yield: Unit -> a
+    yield: fn Unit -> a
 
 traverse (xs: List Int) : Unit can Yield Int =
     match xs
@@ -2573,10 +2602,10 @@ mock them for testing.
 
 ```an
 effect Print with
-    print: String -> Unit
+    print: fn String -> Unit
 
 effect QueryDatabase with
-    querydb: String -> Response
+    querydb: fn String -> Response
 
 database f =
     db = Database.connect "..."
