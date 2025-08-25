@@ -266,7 +266,7 @@ isn't actually true anymore.**
 if they really do need to mutate through an "immutable" reference.
 
 ---
-## Experiment: Can We Track Whether A Type's Interior is Aliased?
+## Experiment: Can We Track Whether A Types Interior is Aliased?
 
 Before we discard `!stable t` entirely though we should note that the reason it loses it's advantage of being able
 to project into any type is only because `!shared t` also exists. Maybe the best solution would be to redesign
@@ -346,7 +346,7 @@ There are a couple ways we could fix this, although I don't find any satisfactor
 
 ---
 
-# Let's Be Happy With What We Have
+# Lets Be Happy With What We Have
 
 For the reasons above, I don't think `!stable t` is useful enough to include as a core language
 feature in Ante. I hesitate to think it'd be useful enough to include in any language, truthfully.
@@ -362,7 +362,7 @@ languages, even in a language with affine types like Ante.
 
 No, I'm serious. Don't give me that look.
 
-We can combine shared references with [shared types](http://localhost:1313/docs/language/#shared-types)
+We can combine shared references with [shared types](/docs/language/#shared-types)
 (which can be thought of as auto-wrapping a type in `Rc`) to get something that looks and acts like a
 much higher-level language:
 
@@ -461,6 +461,30 @@ push_to_all_columns (matrix: !Vec (Vec I32)) =
 // give out a reference to the shape-unstable interior.
 push_row (matrix: !Vec (Vec I32)) =
     matrix.push (Vec.new ())
+```
+
+## Shared Temporary
+
+The final pattern for using shared, mutable references I want to mention is the pattern
+of using owned, mutable references then converting that `!own t` into multiple `!shared t`
+within a function locally where aliasing is needed.
+
+Converting a `!own t` to a `!shared t` is perfectly safe to do - the original
+owned reference can't be used while the shared ones are active. So even if your code
+mostly uses owned references, they can still be locally weakened to shared references
+which can help avoid the aliasibility XOR mutability errors from `!own t` alone:
+
+```ante
+// Neither of these helpers require exclusive access to Context
+Context.get_foo !self: !Foo = self.!foo
+Context.get_bar !self: !Bar = self.!bar
+
+Context.baz (!own self): U32 =
+    // Using several methods to mutably borrow at once in Rust would be an error
+    foo = self.get_foo ()
+    bar = self.get_bar ()
+    foo.qux bar
+    ...
 ```
 
 ---
