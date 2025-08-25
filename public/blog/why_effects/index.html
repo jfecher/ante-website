@@ -35,7 +35,7 @@
 
 
 
-<link href="/css/custom.css?1756078995" rel="stylesheet">
+<link href="/css/custom.css" rel="stylesheet">
 
 
 
@@ -981,7 +981,7 @@ provide by making programmers mark these functions?</p>
 as input. When spawning threads for example, we can&rsquo;t allow the spawning thread to call into
 handlers owned by our thread:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Spawn all the given functions as threads and wait until they complete</span>
-<span class="nf">spawn_all</span> <span class="p">(</span><span class="n">functions</span><span class="o">:</span> <span class="kt">Vec</span> <span class="p">(</span><span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="n">pure</span><span class="p">))</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">IO</span> <span class="ow">=</span> <span class="o">...</span>
+<span class="nf">spawn_all</span> <span class="p">(</span><span class="n">functions</span><span class="o">:</span> <span class="kt">Vec</span> <span class="p">(</span><span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="k">pure</span><span class="p">))</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">IO</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><p>There is also a technique for concurrency called Software Transactional Memory (STM) which
 requires pure functions. It works by running many functions simultaneously and if a value is
 ever mutated out from under one thread while it was performing a transaction, it just restarts
@@ -1095,12 +1095,12 @@ allows the internal continuations to be implemented more efficiently (e.g. via s
                     <div class="image same-height-always">
                         <a href="https://antelang.org/blog/safe_shared_mutability2/">
                           
-                            <img src="/img/banners/antelope_flowers_cropped.jpg" class="img-responsive" alt="More on Safe, Aliasable Mutability with Unboxed Types">
+                            <img src="/img/banners/antelope_flowers_cropped.jpg" class="img-responsive" alt="Stable, Mutable References">
                           
                         </a>
                     </div>
                     <div class="name same-height-always">
-                        <h5><a href="https://antelang.org/blog/safe_shared_mutability2/">More on Safe, Aliasable Mutability with Unboxed Types</a></h5>
+                        <h5><a href="https://antelang.org/blog/safe_shared_mutability2/">Stable, Mutable References</a></h5>
                     </div>
                 </div>
                 

@@ -1,6 +1,6 @@
 +++
 authors = ["Jake Fecher"]
-title = "More on Safe, Aliasable Mutability with Unboxed Types"
+title = "Stable, Mutable References"
 date = "2025-08-21"
 categories = ["mutability", "thread safety", "memory management"]
 banner = "img/banners/antelope_flowers_cropped.jpg"
