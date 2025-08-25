@@ -728,7 +728,7 @@ that function may mutate your type or not.</p>
 <p>I think shared, mutable references have the potential to be a solution here. After all, they largely share the same use
 as interior mutability types: providing shared mutability. For example, let&rsquo;s consider the <code>Clone</code> trait which requires
 an immutable reference in Rust despite the existence of types like <code>Rc t</code> which need to be mutated to be cloned. If we
-change this trait to accepts a mutable parameter as a <code>!stable t</code> instead, we can implement it soundly while still
+change this trait to accept a mutable parameter as a <code>!stable t</code> instead, we can implement it soundly while still
 allowing aliasing:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Imagine if `Clone` took a `!stable t` parameter instead of `&amp;t`:</span>
 <span class="k">impl</span> <span class="kt">Clone</span> <span class="p">(</span><span class="kt">Rc</span> <span class="n">t</span><span class="p">)</span> <span class="k">with</span>
