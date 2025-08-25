@@ -3393,8 +3393,8 @@ issue an error:</p>
 </span><span class="w">    </span><span class="n">bar</span><span class="w"> </span><span class="mi">0</span><span class="w">
 </span></code></pre></div><p>As the note tells us, when this happens we can disambiguate by explicitly passing the desired
 value to <code>bar</code>. This can be done using curly brances:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">implicit</span> <span class="n">pi</span><span class="o">:</span> <span class="kt">I32</span> <span class="ow">=</span> <span class="mi">3</span>
-<span class="nf">implicit</span> <span class="n">zero</span><span class="o">:</span> <span class="kt">I32</span> <span class="ow">=</span> <span class="mi">0</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">implicit</span> <span class="n">pi</span><span class="o">:</span> <span class="kt">I32</span> <span class="ow">=</span> <span class="mi">3</span>
+<span class="k">implicit</span> <span class="n">zero</span><span class="o">:</span> <span class="kt">I32</span> <span class="ow">=</span> <span class="mi">0</span>
 
 <span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span>
     <span class="n">bar</span> <span class="mi">0</span> <span class="p">{</span><span class="n">pi</span><span class="p">}</span>
@@ -3443,7 +3443,7 @@ values though. Here&rsquo;s an example implementation for <code>Stringify Bool</
         <span class="k">else</span> <span class="s">&#34;false&#34;</span>
 
 <span class="c1">// `impl` is roughly equivalent to:</span>
-<span class="nf">implicit</span> <span class="n">stringify_bool</span><span class="o">:</span> <span class="kt">Stringify</span> <span class="kt">Bool</span> <span class="ow">=</span> <span class="kt">Stringify</span> <span class="k">with</span>
+<span class="k">implicit</span> <span class="n">stringify_bool</span><span class="o">:</span> <span class="kt">Stringify</span> <span class="kt">Bool</span> <span class="ow">=</span> <span class="kt">Stringify</span> <span class="k">with</span>
     <span class="n">stringify</span> <span class="n">b</span> <span class="ow">=</span>
         <span class="k">if</span> <span class="n">b</span> <span class="k">then</span> <span class="s">&#34;true&#34;</span>
         <span class="k">else</span> <span class="s">&#34;false&#34;</span>
@@ -3609,7 +3609,7 @@ wildcard imports, you can also specify definitions to exclude, via the <code>hid
 same type to use it, the value must be imported via <code>import implicit</code>. This is most often
 used for trait implementations:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Lib</span><span class="o">.</span><span class="kt">MyType</span>
-<span class="k">import</span> <span class="n">implicit</span> <span class="kt">Lib</span><span class="o">.</span><span class="kt">MyType</span><span class="o">.</span><span class="kt">Impls</span><span class="o">.*</span>
+<span class="k">import</span> <span class="k">implicit</span> <span class="kt">Lib</span><span class="o">.</span><span class="kt">MyType</span><span class="o">.</span><span class="kt">Impls</span><span class="o">.*</span>
 
 <span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span>
     <span class="n">x</span> <span class="ow">=</span> <span class="kt">MyType</span><span class="o">.</span><span class="n">new</span> <span class="p">()</span>
