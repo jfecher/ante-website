@@ -62,7 +62,7 @@ Alternatively, you can think about these in terms of what operations they'd supp
 | `!own Vec t`    |     ✓     |                      ✓                     |                             X                            |
 | `&Cell (Vec t)` |   X[^0]   |                      X                     |                             X                            |
 
-This table looks a bit different because vectors don't have any shape-stable projection or mutations.
+This table looks a bit different because vectors don't have any shape-stable projections or mutations.
 If users were allowed to access the integer length or capacity fields directly these would be shape-stable,
 but allowing users to mutate them directly could break invariants of course.
 

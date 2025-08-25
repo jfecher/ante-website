@@ -687,7 +687,7 @@ match on tagged-union values as deep as you want and mutate an integer you find 
 </tr>
 </tbody>
 </table>
-<p>This table looks a bit different because vectors don&rsquo;t have any shape-stable projection or mutations.
+<p>This table looks a bit different because vectors don&rsquo;t have any shape-stable projections or mutations.
 If users were allowed to access the integer length or capacity fields directly these would be shape-stable,
 but allowing users to mutate them directly could break invariants of course.</p>
 <p>In the original post I mentioned that <code>!shared t</code> is effectively a built-in version of <code>&amp;Cell t</code>. Now, although we may also think of
