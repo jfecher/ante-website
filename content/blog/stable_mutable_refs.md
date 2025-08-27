@@ -558,13 +558,14 @@ which can help avoid the aliasibility XOR mutability errors from `!own t` alone:
 
 ```ante
 // Neither of these helpers require exclusive access to Context
-Context.get_foo !self: !Foo = self.!foo
-Context.get_bar !self: !Bar = self.!bar
+// These both retrieve shared references to fields on the struct type.
+get_foo (self: !Context): !Foo = self.!foo
+get_bar (self: !Context): !Bar = self.!bar
 
-Context.baz (!own self): U32 =
+baz (self: !own Context): U32 =
     // Using several methods to mutably borrow at once in Rust would be an error
-    foo = self.get_foo ()
-    bar = self.get_bar ()
+    foo = get_foo self
+    bar = get_bar self
     foo.qux bar
     ...
 ```

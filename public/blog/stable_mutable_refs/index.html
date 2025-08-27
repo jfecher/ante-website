@@ -35,7 +35,7 @@
 
 
 
-<link href="/css/custom.css?1756306167" rel="stylesheet">
+<link href="/css/custom.css?1756308084" rel="stylesheet">
 
 
 
@@ -1101,13 +1101,14 @@ owned reference can&rsquo;t be used while the shared ones are active. So even if
 mostly uses owned references, they can still be locally weakened to shared references
 which can help avoid the aliasibility XOR mutability errors from <code>!own t</code> alone:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Neither of these helpers require exclusive access to Context</span>
-<span class="kt">Context</span><span class="o">.</span><span class="n">get_foo</span> <span class="o">!</span><span class="n">self</span><span class="o">:</span> <span class="o">!</span><span class="kt">Foo</span> <span class="ow">=</span> <span class="n">self</span><span class="o">.!</span><span class="n">foo</span>
-<span class="kt">Context</span><span class="o">.</span><span class="n">get_bar</span> <span class="o">!</span><span class="n">self</span><span class="o">:</span> <span class="o">!</span><span class="kt">Bar</span> <span class="ow">=</span> <span class="n">self</span><span class="o">.!</span><span class="n">bar</span>
+<span class="c1">// These both retrieve shared references to fields on the struct type.</span>
+<span class="nf">get_foo</span> <span class="p">(</span><span class="n">self</span><span class="o">:</span> <span class="o">!</span><span class="kt">Context</span><span class="p">)</span><span class="o">:</span> <span class="o">!</span><span class="kt">Foo</span> <span class="ow">=</span> <span class="n">self</span><span class="o">.!</span><span class="n">foo</span>
+<span class="nf">get_bar</span> <span class="p">(</span><span class="n">self</span><span class="o">:</span> <span class="o">!</span><span class="kt">Context</span><span class="p">)</span><span class="o">:</span> <span class="o">!</span><span class="kt">Bar</span> <span class="ow">=</span> <span class="n">self</span><span class="o">.!</span><span class="n">bar</span>
 
-<span class="kt">Context</span><span class="o">.</span><span class="n">baz</span> <span class="p">(</span><span class="o">!</span><span class="k">own</span> <span class="n">self</span><span class="p">)</span><span class="o">:</span> <span class="kt">U32</span> <span class="ow">=</span>
+<span class="nf">baz</span> <span class="p">(</span><span class="n">self</span><span class="o">:</span> <span class="o">!</span><span class="k">own</span> <span class="kt">Context</span><span class="p">)</span><span class="o">:</span> <span class="kt">U32</span> <span class="ow">=</span>
     <span class="c1">// Using several methods to mutably borrow at once in Rust would be an error</span>
-    <span class="n">foo</span> <span class="ow">=</span> <span class="n">self</span><span class="o">.</span><span class="n">get_foo</span> <span class="p">()</span>
-    <span class="n">bar</span> <span class="ow">=</span> <span class="n">self</span><span class="o">.</span><span class="n">get_bar</span> <span class="p">()</span>
+    <span class="n">foo</span> <span class="ow">=</span> <span class="n">get_foo</span> <span class="n">self</span>
+    <span class="n">bar</span> <span class="ow">=</span> <span class="n">get_bar</span> <span class="n">self</span>
     <span class="n">foo</span><span class="o">.</span><span class="n">qux</span> <span class="n">bar</span>
     <span class="o">...</span>
 </code></pre></div><hr>
