@@ -6,41 +6,123 @@ categories = ["mutability", "thread safety", "memory management"]
 banner = "img/banners/antelope_flowers_cropped.jpg"
 +++
 
-This post is an exploration on some additional possible semantics for mutability (and immutability).
-
 # Introduction
 
 ---
 
 In my first blog post I introduced `&shared mut` references as a way to achieve safe, shared mutability
-in a language with unboxed types. For those unfamiliar with them, I encourage you to start with
-[the first blog post](/blog/safe_shared_mutability). As a brief summary though, I started with Rust's
-system with owned mutable references which I referred to as `&own mut`, and added on `&shared mut` from
-there. `&shared mut` references allow mutation and aliasing but disallow obtaining a reference into any shape-unstable members
-where shape-unstable is defined as any member in which a mutation may cause it to be dropped. Think of an
-optional string value (`Maybe String`) where the inner String will be dropped if the outer value is mutated
-to `None`.
+in a language with unboxed types. For more information on those, start with
+[the first blog post](/blog/safe_shared_mutability). As a brief summary though, `&shared mut` references
+can be aliased freely and mutate freely with the one restriction of not being able to be projected into
+any "shape-unstable" types.
 
-Summary out of the way - there is an issue with the previous blog post! Namely, it details _one_
-method of shared mutability, but more than one zero-cost method exists! Perhaps even more egregious,
-this new method has much more obvious semantics than the `shared` references from the first post.
+What is a shape-unstable type? It's any type where mutating it may cause a reference inside to be invalidated.
+Tagged-union value (Rust's enums) fall into this category since if we mutate `Maybe String` (`Option<String>` in Rust)
+to `None`, any references to the inner `&String` would be left dangling. Similarly, `Vec t` falls into this category
+since when we push an element, any pre-existing references to elements we have would be dangling:
 
-This post will explain exactly what that new kind of reference is! ...And why Ante won't have it.
+```ante
+dangling_refs (opt: !shared Maybe String) (vec: !shared Vec I32) =
+    inner_string: &String = as_ref opt |> unwrap
+    vec_elem: &I32 = vec.get 0 |> unwrap
+
+    opt := None
+    vec.push 0
+
+    print "Two dangling refs: ${inner_string} and ${vec_elem}"
+```
+
+> Syntax Note!
+>
+> Ante's syntax has changed since the last article! Where that article used `&shared mut t` and `&own mut t`,
+> Ante now uses `!t` and `!own t` respectively. Immutable references are still `&t`. To limit confusion in the
+> rest of this article, I'll be referring to shared references specifically as `!shared t`.
+
+To prevent code like the above, `!shared t` cannot be used to project into shape-unstable types and so we'd
+get an error on the first and second lines of `dangling_refs`. Usually if we want to project these references
+inside a type, we have to clone the inside of the type first (we'd have to clone the vector's element type
+but cloning the whole vector is unnecessary). This does not mean they are useless though - quite the contrary!
+Stick around to the end of the article for some convincing (I think) use cases for `!shared t`.
 
 ---
 
-# Syntax
+# `!stable t`
 
-Before we get further into it I'll give a note on syntax since Ante's syntax has changed since the original
-post. In today's Ante, `&t` is an immutable reference to a type `t`, while `!t` is a shared mutable reference to
-a type `t`, and `!own t` is a Rust-style owned mutable reference to `t`. To avoid confusion though, I'll always refer
-to shared mutable references as `!shared t` in this post.
+This article isn't about `!shared t` though, it's about a possible new kind of safe, shared, mutable reference
+which I'm going to call `!stable t`.
+
+The idea behind `!stable t` is having another kind of shared mutable reference which has different tradeoffs to
+`!shared t`. Notably, `!stable t` will be able to be projected into _any_ type, but with the restriction that it
+may not mutate those types in a shape-unstable way (a way which would cause any internal reference to be invalidated).
+
+Before I get into what exactly this restriction means in practice though, lets see some code which would compile
+for stable `!stable t` which would not compile for `!shared t`. Our desire for this code is to recur on a tagged-union
+value without cloning it, until we find a Leaf node we can increment the value of:
+
+```ante
+type Tree =
+   | Branch (Box Tree) (Box Tree)
+   | Leaf I32
+
+increment (tree: !stable Tree) =
+    match tree
+    | Branch l r ->
+        increment l
+        increment r
+    | Leaf x ->
+        x += 1
+```
+
+The reason the code about would error for `!shared` reference is the `match tree` line where we'd have to be
+able to project the shared reference into each variant's fields. If that were allowed, we could mutate `tree := Leaf 0`
+after `Branch l r ->` matches and cause `l` and `r` to be dangling. The fix for this is to clone `tree` before
+it is matched, but this would be very expensive for our `Tree` type!
+
+Instead, the `!stable Tree` reference says we can't mutate `Tree` in an unstable way (changing it to a different variant),
+but we can make shape-stable mutations - and what do you know the mutation we want (incrementing an integer), is perfectly stable!
+
+Just to highlight the differences again, if we go back to the `dangling_refs` example, when we used `!shared` references, we got an error on the frist couple lines:
+
+```ante
+dangling_refs (opt: !shared Maybe String) (vec: !shared Vec I32) =
+    // error! `as_ref` requires an `&own` argument, but `opt` is shared!
+    inner_string: &String = as_ref opt |> unwrap
+
+    // error! `Vec.get` requires an `&own` argument, but `vec` is shared!
+    vec_elem: &I32 = vec.get 0 |> unwrap
+
+    opt := None
+    vec.push 0
+
+    print "Two dangling refs: ${inner_string} and ${vec_elem}"
+```
+
+If we change the shared references to stable references we'd expect an error on the mutation instead:
+
+```ante
+dangling_refs (opt: !stable Maybe String) (vec: !stable Vec I32) =
+    inner_string: &String = as_ref opt |> unwrap
+    vec_elem: &I32 = vec.get 0 |> unwrap
+
+    // error! Unstable mutation on a stable reference!
+    opt := None
+    // error! Unstable mutation on a stable reference!
+    vec.push 0
+
+    print "Two dangling refs: ${inner_string} and ${vec_elem}"
+```
+
+So stable references restrict which mutations we can perform but allow us to more efficiently traverse
+values with less cloning.
+
+Sounds useful right?
+
+Well.. not really. The devil is in the details so let's go over them. 
 
 ---
 # Get to the Point
 
-The kind of mutable reference that I missed originally is what I'm calling a shape-stable mutable reference: `!stable t`.
-This reference (unlike `!shared t`[^naming]) does let you project a reference into any member of the type but restricts
+`!stable t` (unlike `!shared t`[^naming]) lets you project a reference into any member of the type but restricts
 mutation to only shape-stable changes such that nothing can be dropped. With this for example, you can pattern
 match on tagged-union values as deep as you want and mutate an integer you find within.
 
@@ -372,9 +454,9 @@ type Color = | R | B
 
 shared type RbTree t =
     | Empty
-    | Tree Color RbTree t RbTree
+    | Tree Color (RbTree t) t (RbTree t)
 
-balance (tree: RbTree): RbTree =
+balance (tree: RbTree t): RbTree t =
     match tree
     | Tree B (Tree R (Tree R a x b) y c) z d
     | Tree B (Tree R a x (Tree R b y c)) z d

@@ -13,8 +13,8 @@
       <pubDate>Thu, 21 Aug 2025 00:00:00 +0000</pubDate>
       
       <guid>https://antelang.org/blog/stable_mutable_refs/</guid>
-      <description>This post is an exploration on some additional possible semantics for mutability (and immutability).
-Introduction  In my first blog post I introduced &amp;amp;shared mut references as a way to achieve safe, shared mutability in a language with unboxed types. For those unfamiliar with them, I encourage you to start with the first blog post. As a brief summary though, I started with Rust&amp;rsquo;s system with owned mutable references which I referred to as &amp;amp;own mut, and added on &amp;amp;shared mut from there.</description>
+      <description>Introduction  In my first blog post I introduced &amp;amp;shared mut references as a way to achieve safe, shared mutability in a language with unboxed types. For more information on those, start with the first blog post. As a brief summary though, &amp;amp;shared mut references can be aliased freely and mutate freely with the one restriction of not being able to be projected into any &amp;ldquo;shape-unstable&amp;rdquo; types.
+What is a shape-unstable type?</description>
     </item>
     
     <item>

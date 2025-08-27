@@ -35,7 +35,7 @@
 
 
 
-<link href="/css/custom.css" rel="stylesheet">
+<link href="/css/custom.css?1756306167" rel="stylesheet">
 
 
 
@@ -304,8 +304,8 @@
                     
                     
                     
-                    <a href="/blog/stable_mutable_refs/#syntax">
-                        <li>Syntax</li>
+                    <a href="/blog/stable_mutable_refs/#stable-t">
+                        <li>!stable t</li>
                     </a>
                     
                     
@@ -601,31 +601,93 @@
                         
 
                         <div id="post-content">
-                          <p>This post is an exploration on some additional possible semantics for mutability (and immutability).</p>
-<h1 id="introduction">Introduction</h1>
+                          <h1 id="introduction">Introduction</h1>
 <hr>
 <p>In my first blog post I introduced <code>&amp;shared mut</code> references as a way to achieve safe, shared mutability
-in a language with unboxed types. For those unfamiliar with them, I encourage you to start with
-<a href="/blog/safe_shared_mutability">the first blog post</a>. As a brief summary though, I started with Rust&rsquo;s
-system with owned mutable references which I referred to as <code>&amp;own mut</code>, and added on <code>&amp;shared mut</code> from
-there. <code>&amp;shared mut</code> references allow mutation and aliasing but disallow obtaining a reference into any shape-unstable members
-where shape-unstable is defined as any member in which a mutation may cause it to be dropped. Think of an
-optional string value (<code>Maybe String</code>) where the inner String will be dropped if the outer value is mutated
-to <code>None</code>.</p>
-<p>Summary out of the way - there is an issue with the previous blog post! Namely, it details <em>one</em>
-method of shared mutability, but more than one zero-cost method exists! Perhaps even more egregious,
-this new method has much more obvious semantics than the <code>shared</code> references from the first post.</p>
-<p>This post will explain exactly what that new kind of reference is! &hellip;And why Ante won&rsquo;t have it.</p>
+in a language with unboxed types. For more information on those, start with
+<a href="/blog/safe_shared_mutability">the first blog post</a>. As a brief summary though, <code>&amp;shared mut</code> references
+can be aliased freely and mutate freely with the one restriction of not being able to be projected into
+any &ldquo;shape-unstable&rdquo; types.</p>
+<p>What is a shape-unstable type? It&rsquo;s any type where mutating it may cause a reference inside to be invalidated.
+Tagged-union value (Rust&rsquo;s enums) fall into this category since if we mutate <code>Maybe String</code> (<code>Option&lt;String&gt;</code> in Rust)
+to <code>None</code>, any references to the inner <code>&amp;String</code> would be left dangling. Similarly, <code>Vec t</code> falls into this category
+since when we push an element, any pre-existing references to elements we have would be dangling:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">dangling_refs</span> <span class="p">(</span><span class="n">opt</span><span class="o">:</span> <span class="o">!</span><span class="k">shared</span> <span class="kt">Maybe</span> <span class="kt">String</span><span class="p">)</span> <span class="p">(</span><span class="n">vec</span><span class="o">:</span> <span class="o">!</span><span class="k">shared</span> <span class="kt">Vec</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="n">inner_string</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">String</span> <span class="ow">=</span> <span class="n">as_ref</span> <span class="n">opt</span> <span class="o">|&gt;</span> <span class="n">unwrap</span>
+    <span class="n">vec_elem</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">I32</span> <span class="ow">=</span> <span class="n">vec</span><span class="o">.</span><span class="n">get</span> <span class="mi">0</span> <span class="o">|&gt;</span> <span class="n">unwrap</span>
+
+    <span class="n">opt</span> <span class="o">:=</span> <span class="kt">None</span>
+    <span class="n">vec</span><span class="o">.</span><span class="n">push</span> <span class="mi">0</span>
+
+    <span class="n">print</span> <span class="s">&#34;Two dangling refs: ${inner_string} and ${vec_elem}&#34;</span>
+</code></pre></div><blockquote>
+<p>Syntax Note!</p>
+<p>Ante&rsquo;s syntax has changed since the last article! Where that article used <code>&amp;shared mut t</code> and <code>&amp;own mut t</code>,
+Ante now uses <code>!t</code> and <code>!own t</code> respectively. Immutable references are still <code>&amp;t</code>. To limit confusion in the
+rest of this article, I&rsquo;ll be referring to shared references specifically as <code>!shared t</code>.</p>
+</blockquote>
+<p>To prevent code like the above, <code>!shared t</code> cannot be used to project into shape-unstable types and so we&rsquo;d
+get an error on the first and second lines of <code>dangling_refs</code>. Usually if we want to project these references
+inside a type, we have to clone the inside of the type first (we&rsquo;d have to clone the vector&rsquo;s element type
+but cloning the whole vector is unnecessary). This does not mean they are useless though - quite the contrary!
+Stick around to the end of the article for some convincing (I think) use cases for <code>!shared t</code>.</p>
 <hr>
-<h1 id="syntax">Syntax</h1>
-<p>Before we get further into it I&rsquo;ll give a note on syntax since Ante&rsquo;s syntax has changed since the original
-post. In today&rsquo;s Ante, <code>&amp;t</code> is an immutable reference to a type <code>t</code>, while <code>!t</code> is a shared mutable reference to
-a type <code>t</code>, and <code>!own t</code> is a Rust-style owned mutable reference to <code>t</code>. To avoid confusion though, I&rsquo;ll always refer
-to shared mutable references as <code>!shared t</code> in this post.</p>
+<h1 id="stable-t"><code>!stable t</code></h1>
+<p>This article isn&rsquo;t about <code>!shared t</code> though, it&rsquo;s about a possible new kind of safe, shared, mutable reference
+which I&rsquo;m going to call <code>!stable t</code>.</p>
+<p>The idea behind <code>!stable t</code> is having another kind of shared mutable reference which has different tradeoffs to
+<code>!shared t</code>. Notably, <code>!stable t</code> will be able to be projected into <em>any</em> type, but with the restriction that it
+may not mutate those types in a shape-unstable way (a way which would cause any internal reference to be invalidated).</p>
+<p>Before I get into what exactly this restriction means in practice though, lets see some code which would compile
+for stable <code>!stable t</code> which would not compile for <code>!shared t</code>. Our desire for this code is to recur on a tagged-union
+value without cloning it, until we find a Leaf node we can increment the value of:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Tree</span> <span class="ow">=</span>
+   <span class="o">|</span> <span class="kt">Branch</span> <span class="p">(</span><span class="kt">Box</span> <span class="kt">Tree</span><span class="p">)</span> <span class="p">(</span><span class="kt">Box</span> <span class="kt">Tree</span><span class="p">)</span>
+   <span class="o">|</span> <span class="kt">Leaf</span> <span class="kt">I32</span>
+
+<span class="nf">increment</span> <span class="p">(</span><span class="n">tree</span><span class="o">:</span> <span class="o">!</span><span class="k">stable</span> <span class="kt">Tree</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="k">match</span> <span class="n">tree</span>
+    <span class="o">|</span> <span class="kt">Branch</span> <span class="n">l</span> <span class="n">r</span> <span class="ow">-&gt;</span>
+        <span class="n">increment</span> <span class="n">l</span>
+        <span class="n">increment</span> <span class="n">r</span>
+    <span class="o">|</span> <span class="kt">Leaf</span> <span class="n">x</span> <span class="ow">-&gt;</span>
+        <span class="n">x</span> <span class="o">+=</span> <span class="mi">1</span>
+</code></pre></div><p>The reason the code about would error for <code>!shared</code> reference is the <code>match tree</code> line where we&rsquo;d have to be
+able to project the shared reference into each variant&rsquo;s fields. If that were allowed, we could mutate <code>tree := Leaf 0</code>
+after <code>Branch l r -&gt;</code> matches and cause <code>l</code> and <code>r</code> to be dangling. The fix for this is to clone <code>tree</code> before
+it is matched, but this would be very expensive for our <code>Tree</code> type!</p>
+<p>Instead, the <code>!stable Tree</code> reference says we can&rsquo;t mutate <code>Tree</code> in an unstable way (changing it to a different variant),
+but we can make shape-stable mutations - and what do you know the mutation we want (incrementing an integer), is perfectly stable!</p>
+<p>Just to highlight the differences again, if we go back to the <code>dangling_refs</code> example, when we used <code>!shared</code> references, we got an error on the frist couple lines:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">dangling_refs</span> <span class="p">(</span><span class="n">opt</span><span class="o">:</span> <span class="o">!</span><span class="k">shared</span> <span class="kt">Maybe</span> <span class="kt">String</span><span class="p">)</span> <span class="p">(</span><span class="n">vec</span><span class="o">:</span> <span class="o">!</span><span class="k">shared</span> <span class="kt">Vec</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="c1">// error! `as_ref` requires an `&amp;own` argument, but `opt` is shared!</span>
+    <span class="n">inner_string</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">String</span> <span class="ow">=</span> <span class="n">as_ref</span> <span class="n">opt</span> <span class="o">|&gt;</span> <span class="n">unwrap</span>
+
+    <span class="c1">// error! `Vec.get` requires an `&amp;own` argument, but `vec` is shared!</span>
+    <span class="n">vec_elem</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">I32</span> <span class="ow">=</span> <span class="n">vec</span><span class="o">.</span><span class="n">get</span> <span class="mi">0</span> <span class="o">|&gt;</span> <span class="n">unwrap</span>
+
+    <span class="n">opt</span> <span class="o">:=</span> <span class="kt">None</span>
+    <span class="n">vec</span><span class="o">.</span><span class="n">push</span> <span class="mi">0</span>
+
+    <span class="n">print</span> <span class="s">&#34;Two dangling refs: ${inner_string} and ${vec_elem}&#34;</span>
+</code></pre></div><p>If we change the shared references to stable references we&rsquo;d expect an error on the mutation instead:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">dangling_refs</span> <span class="p">(</span><span class="n">opt</span><span class="o">:</span> <span class="o">!</span><span class="k">stable</span> <span class="kt">Maybe</span> <span class="kt">String</span><span class="p">)</span> <span class="p">(</span><span class="n">vec</span><span class="o">:</span> <span class="o">!</span><span class="k">stable</span> <span class="kt">Vec</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="n">inner_string</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">String</span> <span class="ow">=</span> <span class="n">as_ref</span> <span class="n">opt</span> <span class="o">|&gt;</span> <span class="n">unwrap</span>
+    <span class="n">vec_elem</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">I32</span> <span class="ow">=</span> <span class="n">vec</span><span class="o">.</span><span class="n">get</span> <span class="mi">0</span> <span class="o">|&gt;</span> <span class="n">unwrap</span>
+
+    <span class="c1">// error! Unstable mutation on a stable reference!</span>
+    <span class="n">opt</span> <span class="o">:=</span> <span class="kt">None</span>
+    <span class="c1">// error! Unstable mutation on a stable reference!</span>
+    <span class="n">vec</span><span class="o">.</span><span class="n">push</span> <span class="mi">0</span>
+
+    <span class="n">print</span> <span class="s">&#34;Two dangling refs: ${inner_string} and ${vec_elem}&#34;</span>
+</code></pre></div><p>So stable references restrict which mutations we can perform but allow us to more efficiently traverse
+values with less cloning.</p>
+<p>Sounds useful right?</p>
+<p>Well.. not really. The devil is in the details so let&rsquo;s go over them.</p>
 <hr>
 <h1 id="get-to-the-point">Get to the Point</h1>
-<p>The kind of mutable reference that I missed originally is what I&rsquo;m calling a shape-stable mutable reference: <code>!stable t</code>.
-This reference (unlike <code>!shared t</code><sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>) does let you project a reference into any member of the type but restricts
+<p><code>!stable t</code> (unlike <code>!shared t</code><sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>) lets you project a reference into any member of the type but restricts
 mutation to only shape-stable changes such that nothing can be dropped. With this for example, you can pattern
 match on tagged-union values as deep as you want and mutate an integer you find within.</p>
 <p>To highlight how this compares to other kinds of mutable references, here&rsquo;s a comparison:</p>
@@ -890,7 +952,7 @@ would be the reverse of a <code>!own t</code> to <code>!shared t</code> or <code
 children of the current value but not any parents.</p>
 <p>If we did have such tracking then we could imagine the following code would be invalid:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">lets_trigger_an_error</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="o">!</span><span class="k">stable</span> <span class="kt">Maybe</span> <span class="kt">String</span><span class="p">)</span> <span class="ow">=</span>
-    <span class="k">if</span> <span class="n">x</span> <span class="k">is</span> <span class="kt">Some</span> <span class="n">s</span> <span class="k">then</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="n">is</span> <span class="kt">Some</span> <span class="n">s</span> <span class="k">then</span>
         <span class="c1">// error: this is a shape-unstable mutation which may drop `s`</span>
         <span class="n">x</span> <span class="o">:=</span> <span class="kt">None</span>
         <span class="c1">// note: `s` still used later here</span>
@@ -898,7 +960,7 @@ children of the current value but not any parents.</p>
 </code></pre></div><p>While the following would be allowed since no shape-unstable references exist when the mutation is performed:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">ok</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="o">!</span><span class="k">stable</span> <span class="kt">Maybe</span> <span class="kt">String</span><span class="p">)</span> <span class="ow">=</span>
     <span class="n">x_alias</span> <span class="ow">=</span> <span class="n">x</span>
-    <span class="k">if</span> <span class="n">x</span> <span class="k">is</span> <span class="kt">Some</span> <span class="n">_s</span> <span class="k">then</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="n">is</span> <span class="kt">Some</span> <span class="n">_s</span> <span class="k">then</span>
         <span class="c1">// `_s` is unused so this assignment is ok</span>
         <span class="n">x</span> <span class="o">:=</span> <span class="kt">None</span>
 
@@ -956,9 +1018,9 @@ much higher-level language:</p>
 
 <span class="k">shared</span> <span class="k">type</span> <span class="kt">RbTree</span> <span class="n">t</span> <span class="ow">=</span>
     <span class="o">|</span> <span class="kt">Empty</span>
-    <span class="o">|</span> <span class="kt">Tree</span> <span class="kt">Color</span> <span class="kt">RbTree</span> <span class="n">t</span> <span class="kt">RbTree</span>
+    <span class="o">|</span> <span class="kt">Tree</span> <span class="kt">Color</span> <span class="p">(</span><span class="kt">RbTree</span> <span class="n">t</span><span class="p">)</span> <span class="n">t</span> <span class="p">(</span><span class="kt">RbTree</span> <span class="n">t</span><span class="p">)</span>
 
-<span class="nf">balance</span> <span class="p">(</span><span class="n">tree</span><span class="o">:</span> <span class="kt">RbTree</span><span class="p">)</span><span class="o">:</span> <span class="kt">RbTree</span> <span class="ow">=</span>
+<span class="nf">balance</span> <span class="p">(</span><span class="n">tree</span><span class="o">:</span> <span class="kt">RbTree</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">RbTree</span> <span class="n">t</span> <span class="ow">=</span>
     <span class="k">match</span> <span class="n">tree</span>
     <span class="o">|</span> <span class="kt">Tree</span> <span class="kt">B</span> <span class="p">(</span><span class="kt">Tree</span> <span class="kt">R</span> <span class="p">(</span><span class="kt">Tree</span> <span class="kt">R</span> <span class="n">a</span> <span class="n">x</span> <span class="n">b</span><span class="p">)</span> <span class="n">y</span> <span class="n">c</span><span class="p">)</span> <span class="n">z</span> <span class="n">d</span>
     <span class="o">|</span> <span class="kt">Tree</span> <span class="kt">B</span> <span class="p">(</span><span class="kt">Tree</span> <span class="kt">R</span> <span class="n">a</span> <span class="n">x</span> <span class="p">(</span><span class="kt">Tree</span> <span class="kt">R</span> <span class="n">b</span> <span class="n">y</span> <span class="n">c</span><span class="p">))</span> <span class="n">z</span> <span class="n">d</span>
@@ -1019,7 +1081,7 @@ with a temporary filler value first:</p>
 <span class="nf">push_to_all_columns</span> <span class="p">(</span><span class="n">matrix</span><span class="o">:</span> <span class="o">!</span><span class="kt">Vec</span> <span class="p">(</span><span class="kt">Vec</span> <span class="kt">I32</span><span class="p">))</span> <span class="ow">=</span>
     <span class="k">mut</span> <span class="n">rows</span> <span class="ow">=</span> <span class="kt">Std</span><span class="o">.</span><span class="kt">Mem</span><span class="o">.</span><span class="n">take</span> <span class="n">matrix</span>  <span class="c1">// replaces matrix with Vec.new (), returning its old value</span>
     <span class="c1">// `iter_mut` requires an owned reference, which we now have</span>
-    <span class="n">for</span> <span class="n">row</span> <span class="k">in</span> <span class="n">rows</span><span class="o">.</span><span class="n">iter_mut</span> <span class="p">()</span> <span class="k">do</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="k">in</span> <span class="n">rows</span><span class="o">.</span><span class="n">iter_mut</span> <span class="p">()</span> <span class="k">do</span>
         <span class="n">row</span><span class="o">.</span><span class="n">push</span> <span class="mi">0</span>
 
     <span class="c1">// Finally, put the mutated value back in the shared reference</span>

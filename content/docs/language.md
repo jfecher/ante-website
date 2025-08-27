@@ -1587,7 +1587,7 @@ bar (x: I32) {I32}: I32 =
 When looking for an implicit value, the compiler will consider any implicit parameter already
 in scope in addition to each definition with the `implicit` modifier:
 
-```
+```ante
 implicit pi: I32 = 3  // close enough
 
 main () =
@@ -1598,7 +1598,7 @@ main () =
 When there are multiple conflicting values of the requested type to use, the compiler will
 issue an error:
 
-```
+```ante
 implicit pi: I32 = 3
 implicit zero: I32 = 0
 

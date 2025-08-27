@@ -36,7 +36,7 @@
 
 
 
-<link href="/css/custom.css" rel="stylesheet">
+<link href="/css/custom.css?1756306167" rel="stylesheet">
 
 
 
@@ -305,8 +305,8 @@
                                         
                                     </div>
                                     
-                                    <p class="intro">This post is an exploration on some additional possible semantics for mutability (and immutability).
-Introduction  In my first blog post I introduced &amp;shared mut references as a way to achieve safe, shared mutability in a language with unboxed types. For those unfamiliar with them, I encourage you to start with the first blog post. As a brief summary though, I started with Rust&rsquo;s system with owned mutable references which I referred to as &amp;own mut, and added on &amp;shared mut from there.</p>
+                                    <p class="intro">Introduction  In my first blog post I introduced &amp;shared mut references as a way to achieve safe, shared mutability in a language with unboxed types. For more information on those, start with the first blog post. As a brief summary though, &amp;shared mut references can be aliased freely and mutate freely with the one restriction of not being able to be projected into any &ldquo;shape-unstable&rdquo; types.
+What is a shape-unstable type?</p>
                                     <p class="read-more"><a href="https://antelang.org/blog/stable_mutable_refs/" class="btn btn-template-main">Continue reading</a>
                                     </p>
                                     
