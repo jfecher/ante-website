@@ -570,6 +570,43 @@ baz (self: !own Context): U32 =
     ...
 ```
 
+## Cyclic Data
+
+Notably, `!shared t` has no restriction that `t` must be tree-shaped. We can use it
+to fairly trivially implement a doubly-linked list for example just fine:
+
+```ante
+shared type List t =
+    start: Maybe (Node t)
+    end: Maybe (Node t)
+
+shared type Node t =
+    previous: Maybe (Node t)
+    data: t
+    next: Maybe (Node t)
+
+List.empty () = List with start = None, end = None
+
+List.push (list: !List t) (elem: t) =
+    mut new_node = Node with
+        previous = None
+        data = elem
+        next = None
+
+    if list.end is Some node then
+        // Look ma, no borrow-checker errors!
+        node.next := Some new_node
+        new_node.previous := Some node
+    else
+        list.start := Some new_node
+        list.end := Some new_node
+
+main () =
+    mut list = List.empty ()
+    list.push 0
+    list.push 1
+```
+
 ---
 
 # Closing Thoughts
