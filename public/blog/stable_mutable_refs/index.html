@@ -35,7 +35,7 @@
 
 
 
-<link href="/css/custom.css?1756998180" rel="stylesheet">
+<link href="/css/custom.css" rel="stylesheet">
 
 
 
@@ -977,7 +977,7 @@ would be the reverse of a <code>!own t</code> to <code>!shared t</code> or <code
 children of the current value but not any parents.</p>
 <p>If we did have such tracking then we could imagine the following code would be invalid:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">lets_trigger_an_error</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="o">!</span><span class="k">stable</span> <span class="kt">Maybe</span> <span class="kt">String</span><span class="p">)</span> <span class="ow">=</span>
-    <span class="k">if</span> <span class="n">x</span> <span class="n">is</span> <span class="kt">Some</span> <span class="n">s</span> <span class="k">then</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="k">is</span> <span class="kt">Some</span> <span class="n">s</span> <span class="k">then</span>
         <span class="c1">// error: this is a shape-unstable mutation which may drop `s`</span>
         <span class="n">x</span> <span class="o">:=</span> <span class="kt">None</span>
         <span class="c1">// note: `s` still used later here</span>
@@ -985,7 +985,7 @@ children of the current value but not any parents.</p>
 </code></pre></div><p>While the following would be allowed since no shape-unstable references exist when the mutation is performed:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">ok</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="o">!</span><span class="k">stable</span> <span class="kt">Maybe</span> <span class="kt">String</span><span class="p">)</span> <span class="ow">=</span>
     <span class="n">x_alias</span> <span class="ow">=</span> <span class="n">x</span>
-    <span class="k">if</span> <span class="n">x</span> <span class="n">is</span> <span class="kt">Some</span> <span class="n">_s</span> <span class="k">then</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="k">is</span> <span class="kt">Some</span> <span class="n">_s</span> <span class="k">then</span>
         <span class="c1">// `_s` is unused so this assignment is ok</span>
         <span class="n">x</span> <span class="o">:=</span> <span class="kt">None</span>
 
@@ -1106,7 +1106,7 @@ with a temporary filler value first:</p>
 <span class="nf">push_to_all_columns</span> <span class="p">(</span><span class="n">matrix</span><span class="o">:</span> <span class="o">!</span><span class="kt">Vec</span> <span class="p">(</span><span class="kt">Vec</span> <span class="kt">I32</span><span class="p">))</span> <span class="ow">=</span>
     <span class="k">mut</span> <span class="n">rows</span> <span class="ow">=</span> <span class="kt">Std</span><span class="o">.</span><span class="kt">Mem</span><span class="o">.</span><span class="n">take</span> <span class="n">matrix</span>  <span class="c1">// replaces matrix with Vec.new (), returning its old value</span>
     <span class="c1">// `iter_mut` requires an owned reference, which we now have</span>
-    <span class="k">for</span> <span class="n">row</span> <span class="k">in</span> <span class="n">rows</span><span class="o">.</span><span class="n">iter_mut</span> <span class="p">()</span> <span class="k">do</span>
+    <span class="n">for</span> <span class="n">row</span> <span class="k">in</span> <span class="n">rows</span><span class="o">.</span><span class="n">iter_mut</span> <span class="p">()</span> <span class="k">do</span>
         <span class="n">row</span><span class="o">.</span><span class="n">push</span> <span class="mi">0</span>
 
     <span class="c1">// Finally, put the mutated value back in the shared reference</span>
@@ -1156,7 +1156,7 @@ to fairly trivially implement a doubly-linked list for example just fine:</p>
         <span class="n">data</span> <span class="ow">=</span> <span class="n">elem</span>
         <span class="n">next</span> <span class="ow">=</span> <span class="kt">None</span>
 
-    <span class="k">if</span> <span class="n">list</span><span class="o">.</span><span class="n">end</span> <span class="n">is</span> <span class="kt">Some</span> <span class="n">node</span> <span class="k">then</span>
+    <span class="k">if</span> <span class="n">list</span><span class="o">.</span><span class="n">end</span> <span class="k">is</span> <span class="kt">Some</span> <span class="n">node</span> <span class="k">then</span>
         <span class="c1">// Look ma, no borrow-checker errors!</span>
         <span class="n">node</span><span class="o">.</span><span class="n">next</span> <span class="o">:=</span> <span class="kt">Some</span> <span class="n">new_node</span>
         <span class="n">new_node</span><span class="o">.</span><span class="n">previous</span> <span class="o">:=</span> <span class="kt">Some</span> <span class="n">node</span>

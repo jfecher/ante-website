@@ -35,7 +35,7 @@
 
 
 
-<link href="/css/custom.css?1756998180" rel="stylesheet">
+<link href="/css/custom.css" rel="stylesheet">
 
 
 
@@ -2413,7 +2413,7 @@ This is because ante has global <a href="#type-inference">type inference</a>.</p
 <span class="nf">print</span> <span class="n">pet_name</span>  <span class="c1">//=&gt; Cinder</span>
 </code></pre></div><p>Here&rsquo;s another example showing a function that can mutate the passed in parameter using a mutable reference (<code>!</code>):</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">count_evens</span> <span class="n">array</span> <span class="n">counter</span> <span class="ow">=</span>
-    <span class="k">for</span> <span class="n">array</span> <span class="k">fn</span> <span class="n">elem</span> <span class="ow">-&gt;</span>
+    <span class="n">for</span> <span class="n">array</span> <span class="k">fn</span> <span class="n">elem</span> <span class="ow">-&gt;</span>
         <span class="k">if</span> <span class="n">even</span> <span class="n">elem</span> <span class="k">then</span>
             <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
 
@@ -2711,7 +2711,7 @@ Lets compare the task of converting a tuple to a string with doing the same for 
 With tuples we must <a href="https://hackage.haskell.org/package/base-4.14.1.0/docs/src/GHC.Show.html#line-268">create a different impl for every possible tuple size</a>.
 with pairs on the other hand the simple implementation works for all sizes:</li>
 </ol>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">cast_pair_string</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Cast</span> <span class="p">(</span><span class="kt">Pair</span> <span class="n">a</span> <span class="n">b</span><span class="p">)</span> <span class="kt">String</span> <span class="n">via</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">cast_pair_string</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Cast</span> <span class="p">(</span><span class="kt">Pair</span> <span class="n">a</span> <span class="n">b</span><span class="p">)</span> <span class="kt">String</span> <span class="k">via</span>
     <span class="n">cast</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="ow">=</span> <span class="s">&#34;$a, $b&#34;</span>
 </code></pre></div><ol start="3">
 <li>
@@ -2766,12 +2766,12 @@ of parenthesis but in ante since tuples are just nested pairs you can just add a
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">pairs</span> <span class="ow">=</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)]</span>
 
 <span class="c1">// Other languages require deconstructing with nested parenthesis:</span>
-<span class="k">for</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">pairs</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">one</span><span class="p">,</span> <span class="n">two</span><span class="p">))</span> <span class="ow">-&gt;</span>
+<span class="nf">for</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">pairs</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">one</span><span class="p">,</span> <span class="n">two</span><span class="p">))</span> <span class="ow">-&gt;</span>
     <span class="n">print</span> <span class="s">&#34;Iteration $i: sum = ${one + two}&#34;</span>
 
 <span class="c1">// But since `,` is just a normal operator,</span>
 <span class="c1">// the following version is equally valid</span>
-<span class="k">for</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">pairs</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">one</span><span class="p">,</span> <span class="n">two</span><span class="p">)</span> <span class="ow">-&gt;</span>
+<span class="nf">for</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">pairs</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">one</span><span class="p">,</span> <span class="n">two</span><span class="p">)</span> <span class="ow">-&gt;</span>
     <span class="n">print</span> <span class="s">&#34;Iteration $i: sum = ${one + two}&#34;</span>
 </code></pre></div><p>Finally, its necessary to mention that the earlier <code>Cast</code> example printed nested
 pairs as <code>1, 2, 3</code> where as the <code>Show</code> instances in haskell printed tuples as <code>(1, 2, 3)</code>.
@@ -2853,9 +2853,9 @@ or else branch can either be single expressions or an indented block expression.
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// The type of for is:</span>
 <span class="c1">// for : a -&gt; (elem -&gt; Unit) -&gt; Unit given Iterator a elem</span>
 
-<span class="k">for</span> <span class="p">(</span><span class="mi">0</span><span class="o">..</span><span class="mi">10</span><span class="p">)</span> <span class="n">print</span>   <span class="c1">// prints 0-9 inclusive</span>
+<span class="nf">for</span> <span class="p">(</span><span class="mi">0</span><span class="o">..</span><span class="mi">10</span><span class="p">)</span> <span class="n">print</span>   <span class="c1">// prints 0-9 inclusive</span>
 
-<span class="k">for</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">array</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">elem</span><span class="p">)</span> <span class="ow">-&gt;</span>
+<span class="nf">for</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">array</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">elem</span><span class="p">)</span> <span class="ow">-&gt;</span>
     <span class="c1">// do something more complex...</span>
     <span class="n">print</span> <span class="n">result</span>
 </code></pre></div><p>You may notice that there is no way to break or continue out of the <code>for</code> function. Moreover if you need a more complex loop that a while loop may traditionally provide in other languages, there likely isn’t an already existing iterate function that would suit your need. Other functional languages usually use helper functions with recursion to address this problem:</p>
@@ -2977,18 +2977,18 @@ can be used to test an expression matches a particular case, for example:</p>
    <span class="o">|</span> <span class="kt">Add</span> <span class="kt">Expr</span> <span class="kt">Expr</span>
 
 <span class="nf">is_variable</span> <span class="p">(</span><span class="n">e</span><span class="o">:</span> <span class="kt">Expr</span><span class="p">)</span> <span class="ow">=</span>
-    <span class="n">e</span> <span class="n">is</span> <span class="kt">Var</span> <span class="n">_</span>
+    <span class="n">e</span> <span class="k">is</span> <span class="kt">Var</span> <span class="n">_</span>
 
 <span class="nf">print</span> <span class="p">(</span><span class="n">is_variable</span> <span class="p">(</span><span class="kt">Var</span> <span class="s">&#34;foo&#34;</span><span class="p">))</span> <span class="c1">//=&gt; true</span>
 <span class="nf">print</span> <span class="p">(</span><span class="n">is_variable</span> <span class="p">(</span><span class="kt">Int</span> <span class="mi">3</span><span class="p">))</span>     <span class="c1">//=&gt; false</span>
 </code></pre></div><p>If an <code>and</code> is used after the <code>is</code> expression, any variables defined in the pattern
 will be in scope of the right-hand side of the <code>and</code> expression:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">is_even_int</span> <span class="p">(</span><span class="n">e</span><span class="o">:</span> <span class="kt">Expr</span><span class="p">)</span> <span class="ow">=</span>
-    <span class="n">e</span> <span class="n">is</span> <span class="kt">Int</span> <span class="n">x</span> <span class="k">and</span> <span class="n">even</span> <span class="n">x</span>
+    <span class="n">e</span> <span class="k">is</span> <span class="kt">Int</span> <span class="n">x</span> <span class="k">and</span> <span class="n">even</span> <span class="n">x</span>
 </code></pre></div><p>Note that because <code>&lt;expr&gt; is &lt;pattern&gt;</code> is an expression and <code>and</code> also accepts two expressions,
 chaining matches is also possible:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">print_if_large_product</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="kt">I32</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
-    <span class="k">if</span> <span class="n">x</span> <span class="n">is</span> <span class="kt">Some</span> <span class="n">x2</span> <span class="k">and</span> <span class="n">y</span> <span class="n">is</span> <span class="kt">Some</span> <span class="n">y2</span> <span class="k">and</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="o">&gt;</span> <span class="mi">1000</span> <span class="k">then</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="k">is</span> <span class="kt">Some</span> <span class="n">x2</span> <span class="k">and</span> <span class="n">y</span> <span class="k">is</span> <span class="kt">Some</span> <span class="n">y2</span> <span class="k">and</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="o">&gt;</span> <span class="mi">1000</span> <span class="k">then</span>
         <span class="c1">// x2 and y2 are still in scope</span>
         <span class="n">print</span> <span class="p">(</span><span class="n">x2</span> <span class="o">*</span> <span class="n">y2</span><span class="p">)</span>
 </code></pre></div><p>Additionally, as we saw above, if <code>is</code> expressions are used within an <code>if</code> condition (or match guard)
@@ -3002,12 +3002,12 @@ never be in scope).</p>
 <p>With these limitations in mind, <code>is</code> can still be a very useful operator to shorten code using
 pattern matching.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">incorrect_example</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
-    <span class="k">if</span> <span class="k">not</span> <span class="p">(</span><span class="n">x</span> <span class="n">is</span> <span class="kt">Some</span> <span class="n">y</span><span class="p">)</span> <span class="k">and</span> <span class="n">y</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="k">then</span> <span class="c1">//error! `y` is not in scope here: (x is Some y) may not match</span>
+    <span class="k">if</span> <span class="k">not</span> <span class="p">(</span><span class="n">x</span> <span class="k">is</span> <span class="kt">Some</span> <span class="n">y</span><span class="p">)</span> <span class="k">and</span> <span class="n">y</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="k">then</span> <span class="c1">//error! `y` is not in scope here: (x is Some y) may not match</span>
         <span class="o">...</span>
 </code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">evaluate</span> <span class="p">(</span><span class="n">e</span><span class="o">:</span> <span class="kt">Expr</span><span class="p">)</span> <span class="p">(</span><span class="n">env</span><span class="o">:</span> <span class="kt">HashMap</span> <span class="kt">String</span> <span class="kt">I32</span><span class="p">)</span><span class="o">:</span> <span class="kt">I32</span> <span class="k">can</span> <span class="kt">Error</span> <span class="ow">=</span>
     <span class="k">match</span> <span class="n">e</span>
     <span class="c1">// We can check if `name` is in our HashMap within this match</span>
-    <span class="o">|</span> <span class="kt">Var</span> <span class="n">name</span> <span class="k">if</span> <span class="n">lookup</span> <span class="n">env</span> <span class="n">name</span> <span class="n">is</span> <span class="kt">Some</span> <span class="n">value</span> <span class="ow">-&gt;</span> <span class="n">value</span>
+    <span class="o">|</span> <span class="kt">Var</span> <span class="n">name</span> <span class="k">if</span> <span class="n">lookup</span> <span class="n">env</span> <span class="n">name</span> <span class="k">is</span> <span class="kt">Some</span> <span class="n">value</span> <span class="ow">-&gt;</span> <span class="n">value</span>
     <span class="o">|</span> <span class="kt">Var</span> <span class="n">name</span> <span class="ow">-&gt;</span> <span class="n">error</span> <span class="s">&#34;${name} is not defined&#34;</span>
     <span class="o">|</span> <span class="kt">Int</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">x</span>
     <span class="o">|</span> <span class="kt">Add</span> <span class="n">lhs</span> <span class="n">rhs</span> <span class="ow">-&gt;</span> <span class="n">evaluate</span> <span class="n">lhs</span> <span class="n">env</span> <span class="o">+</span> <span class="n">evaluate</span> <span class="n">rhs</span> <span class="n">env</span>
@@ -3948,7 +3948,7 @@ on its right. Here is the definition of <code>with</code> in pseudocode:</p>
 </code></pre></div><p>There are also times when we want to use a handler to handle an entire block. For this,
 we can use the <code>using</code> keyword:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// try: (Unit -&gt; a can Fail) -&gt; Maybe a</span>
-<span class="nf">using</span> <span class="n">try</span>
+<span class="k">using</span> <span class="n">try</span>
 
 <span class="nf">foo</span> <span class="ow">=</span> <span class="n">failable_operation</span> <span class="p">()</span>
 <span class="nf">bar</span> <span class="ow">=</span> <span class="n">failable_operation</span> <span class="p">()</span>
@@ -3992,7 +3992,7 @@ function&rsquo;s effects were not explicitly specified. So we can rewrite <code>
 </code></pre></div><p>And it would be equivalent. Note that this effect-polymorphism by default isn&rsquo;t always desired.
 In these cases, the function parameter&rsquo;s effects can be explicitly specified. This
 may be the case when spawning threads for example:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">spawn_thread</span> <span class="p">(</span><span class="n">thread</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=&gt;</span> <span class="kt">Unit</span> <span class="n">pure</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">IO</span><span class="p">,</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">spawn_thread</span> <span class="p">(</span><span class="n">thread</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=&gt;</span> <span class="kt">Unit</span> <span class="k">pure</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">IO</span><span class="p">,</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><p>The above function&rsquo;s signature states that <code>spawn_thread</code> may <code>Fail</code> and perform some IO (presumably
 in the form of spawning an OS thread), while <code>thread</code> may not perform any effects itself.</p>
 <p>Another case is when a function parameter has effects that the outer function does not. Consider:</p>
@@ -4193,17 +4193,17 @@ or <code>Continue</code> lets us program in a very imperative style,
 while remaining purely functional behind the scenes.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-an" data-lang="an"><span class="k">effect</span> <span class="kt">Loop</span> <span class="k">with</span>
     <span class="n">break</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span>
-    <span class="k">continue</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span>
+    <span class="n">continue</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span>
 
-<span class="k">for</span> <span class="p">(</span><span class="n">iter</span><span class="o">:</span> <span class="n">i</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">e</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Loop</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Iterate</span> <span class="n">i</span> <span class="n">e</span> <span class="ow">=</span>
+<span class="nf">for</span> <span class="p">(</span><span class="n">iter</span><span class="o">:</span> <span class="n">i</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">e</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Loop</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Iterate</span> <span class="n">i</span> <span class="n">e</span> <span class="ow">=</span>
     <span class="k">match</span> <span class="n">next</span> <span class="n">iter</span>
     <span class="o">|</span> <span class="kt">None</span> <span class="ow">-&gt;</span> <span class="p">()</span>
     <span class="o">|</span> <span class="kt">Some</span> <span class="p">(</span><span class="n">rest</span><span class="p">,</span> <span class="n">elem</span><span class="p">)</span> <span class="ow">-&gt;</span>
         <span class="k">handle</span> <span class="n">f</span> <span class="n">elem</span>
         <span class="o">|</span> <span class="n">break</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="p">()</span>
-        <span class="o">|</span> <span class="k">continue</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="k">for</span> <span class="n">rest</span> <span class="n">f</span>
+        <span class="o">|</span> <span class="n">continue</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="n">for</span> <span class="n">rest</span> <span class="n">f</span>
         <span class="c1">// If the body returns normally, we also want to continue the loop</span>
-        <span class="o">|</span> <span class="k">return</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="k">for</span> <span class="n">rest</span> <span class="n">f</span>
+        <span class="o">|</span> <span class="k">return</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="n">for</span> <span class="n">rest</span> <span class="n">f</span>
 
 <span class="nf">while</span> <span class="p">(</span><span class="n">cond</span><span class="o">:</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span><span class="p">)</span> <span class="p">(</span><span class="n">body</span><span class="o">:</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">State</span> <span class="n">a</span> <span class="ow">=</span>
     <span class="k">if</span> <span class="n">cond</span> <span class="p">(</span><span class="n">get</span> <span class="p">())</span> <span class="k">then</span>
@@ -4215,7 +4215,7 @@ while remaining purely functional behind the scenes.</p>
 
 <span class="c1">// Loop until we eventually find a prime number through sheer luck</span>
 <span class="nf">loop_examples</span> <span class="p">(</span><span class="n">vec</span><span class="o">:</span> <span class="kt">Vec</span> <span class="kt">I32</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Print</span><span class="p">,</span> <span class="kt">State</span> <span class="kt">I32</span> <span class="ow">=</span>
-    <span class="k">for</span> <span class="n">vec</span> <span class="k">fn</span> <span class="n">elem</span> <span class="ow">-&gt;</span>
+    <span class="n">for</span> <span class="n">vec</span> <span class="k">fn</span> <span class="n">elem</span> <span class="ow">-&gt;</span>
         <span class="n">largest</span> <span class="ow">=</span> <span class="n">get</span> <span class="p">()</span>
         <span class="k">if</span> <span class="n">largest</span> <span class="o">&gt;</span> <span class="mi">100</span> <span class="k">then</span>
             <span class="n">print</span> <span class="s">&#34;oops, too big!&#34;</span>
