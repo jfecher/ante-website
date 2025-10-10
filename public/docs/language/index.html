@@ -3329,16 +3329,22 @@ users should favor wrapper types such as <code>Rc t</code>.</p>
 be a lifetime instead of a type in some situations, but may need an explicit annotation
 in others:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// l is unused</span>
-<span class="k">type</span> <span class="kt">Foo</span> <span class="p">(</span><span class="n">l</span><span class="o">:</span> <span class="n">lifetime</span><span class="p">)</span> <span class="ow">=</span> <span class="p">()</span>
+<span class="k">type</span> <span class="kt">Foo</span> <span class="p">(</span><span class="n">l</span><span class="o">:</span> <span class="kt">Lifetime</span><span class="p">)</span> <span class="ow">=</span> <span class="p">()</span>
 </code></pre></div><hr>
 <h3 id="shared-mutability">Shared Mutability</h3>
 <p>Another difference from Rust is that Ante allows shared (aliasable) mutability.
 In addition to whether a reference is <code>mut</code>able or not, a reference can also
 be tagged whether it is <code>own</code>ed or shared. The sharedness of a reference exists
 on a different axis from its mutability, so you can have a shared but immutable
-reference as well. Additionally, if there is a mutable
-reference borrwed from a value with at least 1 other borrowed reference to the same
-value, all references are inferred to be mutably <code>shared</code>.</p>
+reference as well. If there is a mutable
+reference borrwed from a value with at least 1 other borrowed reference of any kind
+to the same value, all references are inferred to be shared, otherwise, they are owned.</p>
+<p>Put another way, owned references can be a single mutable reference XOR multiple
+immutable references. These rules will be familiar with anyone coming from Rust as they
+are identical to the borrowing rules used there. Shared references on the other hand lift
+this restriction, allowing you to hold multiple mutable references and/or immutable references
+simultaneously. It is not possible to hold both a shared and owned reference to the same value
+at the same time.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// &amp;    = shared, immutable reference</span>
 <span class="c1">// !    = shared, mutable reference</span>
 <span class="c1">// &amp;own = owned, immutable reference</span>
@@ -3352,7 +3358,7 @@ value, all references are inferred to be mutably <code>shared</code>.</p>
 <span class="nf">ref2</span><span class="o">.</span><span class="n">replace</span> <span class="s">&#34;Z&#34;</span> <span class="s">&#34;l&#34;</span>
 <span class="nf">print</span> <span class="n">ref2</span>                     <span class="c1">// &#34;Hello, World!&#34;</span>
 </code></pre></div><p>The <code>own</code> tag is used to prevent operations that would be unsafe
-on a shared mutable reference. A common theme of these operations is that they hand
+on references which may be mutably shared. A common theme of these operations is that they hand
 out references inside of a type with an unstable shape. For example, handing out
 a reference to a <code>Vec</code> element would be unsafe in a shared context since the <code>Vec</code>
 may be reallocated by another reference. To prevent this, <code>Vec.get</code> requires

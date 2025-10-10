@@ -1420,7 +1420,7 @@ in others:
 
 ```ante
 // l is unused
-type Foo (l: lifetime) = ()
+type Foo (l: Lifetime) = ()
 ```
 
 ---
@@ -1431,9 +1431,16 @@ Another difference from Rust is that Ante allows shared (aliasable) mutability.
 In addition to whether a reference is `mut`able or not, a reference can also
 be tagged whether it is `own`ed or shared. The sharedness of a reference exists
 on a different axis from its mutability, so you can have a shared but immutable
-reference as well. Additionally, if there is a mutable
-reference borrwed from a value with at least 1 other borrowed reference to the same
-value, all references are inferred to be mutably `shared`.
+reference as well. If there is a mutable
+reference borrwed from a value with at least 1 other borrowed reference of any kind
+to the same value, all references are inferred to be shared, otherwise, they are owned.
+
+Put another way, owned references can be a single mutable reference XOR multiple
+immutable references. These rules will be familiar with anyone coming from Rust as they
+are identical to the borrowing rules used there. Shared references on the other hand lift
+this restriction, allowing you to hold multiple mutable references and/or immutable references
+simultaneously. It is not possible to hold both a shared and owned reference to the same value
+at the same time.
 
 ```ante
 // &    = shared, immutable reference
@@ -1451,7 +1458,7 @@ print ref2                     // "Hello, World!"
 ```
 
 The `own` tag is used to prevent operations that would be unsafe
-on a shared mutable reference. A common theme of these operations is that they hand
+on references which may be mutably shared. A common theme of these operations is that they hand
 out references inside of a type with an unstable shape. For example, handing out
 a reference to a `Vec` element would be unsafe in a shared context since the `Vec`
 may be reallocated by another reference. To prevent this, `Vec.get` requires
