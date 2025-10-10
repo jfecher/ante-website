@@ -1379,10 +1379,80 @@
                     
                     
                     
+                    <a href="/docs/language/#shared-conversions">
+                        <li>Shared Conversions</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                        <ul class="toc-h3">
+                    
+                        <ul class="toc-h4">
+                    
+                    
+                    
+                    
                     <a href="/docs/language/#shared-types">
                         <li>Shared Types</li>
                     </a>
                     
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                        <ul class="toc-h3">
+                    
+                        <ul class="toc-h4">
+                    
+                        <ul class="toc-h5">
+                    
+                    
+                    
+                    
+                    <a href="/docs/language/#shared-mutable-types">
+                        <li>Shared Mutable Types</li>
+                    </a>
+                    
+                    
+                        </ul>
                     
                         </ul>
                     
@@ -3298,17 +3368,76 @@ an element through <code>Vec.get_cloned</code>:</p>
 </code></pre></div><p>As a result, if you know you&rsquo;re going to be working with mutably shared Vecs
 or other container types, and your element type is expensive to clone, you may
 want to wrap each element in a pointer type to reduce the cost of cloning: <code>Vec (Rc t)</code>.</p>
+<p>A good rule of thumb is that shared references can be used for any operation except one
+which projects the reference value into a value which may be dropped if its parent reference
+is mutated in any way. This includes something like the <code>a</code> in <code>Maybe a</code> which would be dropped
+if the value is set to <code>None</code>, but notably excludes fields of a struct.</p>
+<h4 id="shared-conversions">Shared Conversions</h4>
+<p>Converting from an owned reference to a shared one of the same kind is trivial and always allowed:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">owned_to_shared</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">own</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="n">requires_shared</span> <span class="n">x</span>  <span class="c1">// ok</span>
+
+<span class="nf">requires_shared</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="o">&amp;</span><span class="n">t</span><span class="p">)</span> <span class="ow">=</span> <span class="o">...</span>
+</code></pre></div><p>Going from shared back to owned, however, requires that all possible aliases of the given reference in scope
+are not used while the converted owned reference is in scope:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">shared_to_owned</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="o">&amp;</span><span class="n">t</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="n">requires_owned</span> <span class="n">x</span>  <span class="c1">// ok, no other alias in scope</span>
+
+<span class="nf">requires_owned</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">own</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span> <span class="o">...</span>
+</code></pre></div><p>This greatly increases the flexibility of shared references by locally refining them into owned references
+and allowing functions requiring owned references to be called.</p>
+<p>This &ldquo;no alias may be used&rdquo; restriction is important for preventing use of values which may have been dropped:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">invalid_shared_to_owned</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="o">!</span><span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="c1">// Remember that retrieving a reference to a Vec&#39;s element requires an owned reference</span>
+    <span class="n">element_ref</span> <span class="ow">=</span> <span class="n">x</span><span class="o">.&amp;</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">print</span> <span class="n">element_ref</span>  <span class="c1">// ok</span>
+
+    <span class="n">x</span><span class="o">.</span><span class="n">clear</span> <span class="p">()</span>
+
+    <span class="c1">// If the following line is uncommented, we&#39;d get an error on the line above stating we cannot call</span>
+    <span class="c1">// `x.clear` because it&#39;d mutate `x` while `element_ref` is still used, which may cause it to be dropped.</span>
+    <span class="c1">// print element_ref</span>
+</code></pre></div><p>Because other shared function parameters may alias a given reference, they may not be used either when a shared
+reference is reborrowed as owned:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="o">!</span><span class="kt">Foo</span><span class="p">)</span> <span class="p">(</span><span class="n">b</span><span class="o">:</span> <span class="o">!</span><span class="kt">Foo</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span>
+    <span class="n">a_ref</span> <span class="ow">=</span> <span class="n">requires_owned</span> <span class="n">a</span>
+    <span class="c1">// while `a_ref` is alive we cannot use `a` or `b` since they may alias</span>
+    <span class="o">...</span>
+</code></pre></div><p>Struct types which may contain the aliased type are also conservatively counted as possible aliases since the
+shared reference may be derived from the struct value. Additionally, possibly-cyclic types count as aliases to
+themselves. Otherwise, you could obtain two owned, mutable references to the same value by following the cycle
+back to the original node.</p>
+<p>Even with these restrictions, the ability to call functions requiring owning references with shared references
+lets us write more functions which only require shared references rather than owning ones. Consider the following
+function:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Context</span> <span class="ow">=</span> <span class="n">names</span><span class="o">:</span> <span class="kt">HashMap</span> <span class="kt">String</span> <span class="kt">NameData</span>
+
+<span class="k">type</span> <span class="kt">NameData</span> <span class="ow">=</span> <span class="n">uses</span><span class="o">:</span> <span class="kt">U32</span>
+
+<span class="kt">Context</span><span class="o">.</span><span class="n">use_name</span> <span class="p">(</span><span class="n">context</span><span class="o">:</span> <span class="o">!</span><span class="kt">Context</span><span class="p">)</span> <span class="p">(</span><span class="n">name</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">names</span><span class="o">.</span><span class="n">get_mut</span> <span class="n">name</span> <span class="k">is</span> <span class="kt">Some</span> <span class="n">data</span> <span class="k">then</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">uses</span> <span class="o">+=</span> <span class="mi">1</span>
+</code></pre></div><p>Because the <code>HashMap.get_mut</code> method requires a <code>!own HashMap a b</code>, we would normally be required to have an
+owned <code>Context</code> as well. Since there are no possible aliases to the context in scope however, we
+can locally treat it as owned and get a <code>!own NameData</code> anyway. Users of <code>Context.use_name</code> are
+now less constrained in how they use their <code>Context</code> since they may pass in an owned or shared object.</p>
 <h4 id="shared-types">Shared Types</h4>
 <p>Shared types (not to be confused with shared references) are a way to opt-out of
-ownership rules for a type by allowing it to be mutably stored by default in the
-context of a single-thread. These types can be declared via <code>shared type</code> and also
+ownership rules for a type by automatically wrapping it in a copy-able wrapper.
+These types can be declared via <code>shared type</code> or <code>shared mut type</code> and also
 do not require explicit boxing (they are always boxed):</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">shared</span> <span class="k">type</span> <span class="kt">Expr</span> <span class="ow">=</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Immutable shared type</span>
+<span class="k">shared</span> <span class="k">type</span> <span class="kt">Expr</span> <span class="ow">=</span>
     <span class="o">|</span> <span class="kt">Int</span> <span class="kt">I32</span>
     <span class="o">|</span> <span class="kt">Var</span> <span class="kt">String</span>
     <span class="o">|</span> <span class="kt">Add</span> <span class="kt">Expr</span> <span class="kt">Expr</span>  <span class="c1">// No explicit boxing required</span>
 
-<span class="nf">my_expr</span> <span class="ow">=</span> <span class="kt">Expr</span><span class="o">.</span><span class="kt">Add</span> <span class="p">(</span><span class="kt">Int</span> <span class="mi">3</span><span class="p">)</span> <span class="p">(</span><span class="kt">Var</span> <span class="s">&#34;foo&#34;</span><span class="p">)</span>
+<span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span>
+    <span class="n">my_expr</span> <span class="ow">=</span> <span class="kt">Expr</span><span class="o">.</span><span class="kt">Add</span> <span class="p">(</span><span class="kt">Int</span> <span class="mi">3</span><span class="p">)</span> <span class="p">(</span><span class="kt">Var</span> <span class="s">&#34;foo&#34;</span><span class="p">)</span>
+
+    <span class="c1">// We can freely copy any shared type</span>
+    <span class="n">alias1</span> <span class="ow">=</span> <span class="n">my_expr</span>
+    <span class="n">alias2</span> <span class="ow">=</span> <span class="n">my_expr</span>
 </code></pre></div><p>You can think of these types as always being wrapped in a reference-counted pointer. They are
 meant to be used when efficiency is less of a concern over code clarity. For example when
 gradually transitioning new users to use ownership rules it can be helpful if they have to worry
@@ -3333,7 +3462,27 @@ not have stable shapes since they may be mutated to a different union variant), 
     <span class="k">match</span> <span class="n">e</span>  <span class="c1">// Ok (copied)</span>
     <span class="o">|</span> <span class="kt">Int</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">x</span>
     <span class="o">...</span>
-</code></pre></div><h3 id="internal-mutability">Internal Mutability</h3>
+</code></pre></div><h5 id="shared-mutable-types">Shared Mutable Types</h5>
+<p>In addition to <code>shared type</code>, which declares a shared, but immutable type, we can declare a shared, mutable type
+via <code>shared mut type</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Mutable shared type</span>
+<span class="k">shared</span> <span class="k">mut</span> <span class="k">type</span> <span class="kt">MutExpr</span> <span class="ow">=</span>
+    <span class="o">|</span> <span class="kt">Int</span> <span class="kt">I32</span>
+    <span class="o">|</span> <span class="kt">Var</span> <span class="kt">String</span>
+    <span class="o">|</span> <span class="kt">Add</span> <span class="kt">MutExpr</span> <span class="kt">MutExpr</span>
+
+<span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span>
+    <span class="n">my_expr</span> <span class="ow">=</span> <span class="kt">MutExpr</span><span class="o">.</span><span class="kt">Add</span> <span class="p">(</span><span class="kt">Int</span> <span class="mi">3</span><span class="p">)</span> <span class="p">(</span><span class="kt">Var</span> <span class="s">&#34;foo&#34;</span><span class="p">)</span>
+
+    <span class="c1">// We can freely copy and mutate any shared mutable type</span>
+    <span class="k">mut</span> <span class="n">alias1</span> <span class="ow">=</span> <span class="n">my_expr</span>
+    <span class="n">alias2</span> <span class="ow">=</span> <span class="n">my_expr</span>
+
+    <span class="n">alias1</span> <span class="o">:=</span> <span class="kt">Int</span> <span class="mi">0</span>
+    <span class="n">assert_eq</span> <span class="n">my_expr</span> <span class="p">(</span><span class="kt">Int</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">assert_eq</span> <span class="n">alias2</span> <span class="p">(</span><span class="kt">Int</span> <span class="mi">0</span><span class="p">)</span>
+</code></pre></div><p>Unlike normal shared types, shared mutable types are not thread-safe.</p>
+<h3 id="internal-mutability">Internal Mutability</h3>
 <p>Since mutating through an immutably borrowed reference <code>&amp;t</code> is otherwise impossible,
 Ante provides several types for &ldquo;internal mutability.&rdquo; <code>RefCell t</code> will be
 a familiar sight to those used to Rust, but using this type entails runtime

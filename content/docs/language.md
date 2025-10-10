@@ -1476,20 +1476,104 @@ As a result, if you know you're going to be working with mutably shared Vecs
 or other container types, and your element type is expensive to clone, you may
 want to wrap each element in a pointer type to reduce the cost of cloning: `Vec (Rc t)`.
 
+A good rule of thumb is that shared references can be used for any operation except one
+which projects the reference value into a value which may be dropped if its parent reference
+is mutated in any way. This includes something like the `a` in `Maybe a` which would be dropped
+if the value is set to `None`, but notably excludes fields of a struct.
+
+#### Shared Conversions
+
+Converting from an owned reference to a shared one of the same kind is trivial and always allowed:
+
+```ante
+owned_to_shared (x: &own t) =
+    requires_shared x  // ok
+
+requires_shared (y: &t) = ...
+```
+
+Going from shared back to owned, however, requires that all possible aliases of the given reference in scope
+are not used while the converted owned reference is in scope:
+
+```ante
+shared_to_owned (x: &t) =
+    requires_owned x  // ok, no other alias in scope
+
+requires_owned (y: &own t) = ...
+```
+
+This greatly increases the flexibility of shared references by locally refining them into owned references
+and allowing functions requiring owned references to be called.
+
+This "no alias may be used" restriction is important for preventing use of values which may have been dropped:
+
+```ante
+invalid_shared_to_owned (x: !Vec t) =
+    // Remember that retrieving a reference to a Vec's element requires an owned reference
+    element_ref = x.&[0]
+    print element_ref  // ok
+
+    x.clear ()
+
+    // If the following line is uncommented, we'd get an error on the line above stating we cannot call
+    // `x.clear` because it'd mutate `x` while `element_ref` is still used, which may cause it to be dropped.
+    // print element_ref
+```
+
+Because other shared function parameters may alias a given reference, they may not be used either when a shared
+reference is reborrowed as owned:
+
+```ante
+foo (a: !Foo) (b: !Foo): Unit =
+    a_ref = requires_owned a
+    // while `a_ref` is alive we cannot use `a` or `b` since they may alias
+    ...
+```
+
+Struct types which may contain the aliased type are also conservatively counted as possible aliases since the
+shared reference may be derived from the struct value. Additionally, possibly-cyclic types count as aliases to
+themselves. Otherwise, you could obtain two owned, mutable references to the same value by following the cycle
+back to the original node.
+
+Even with these restrictions, the ability to call functions requiring owning references with shared references
+lets us write more functions which only require shared references rather than owning ones. Consider the following
+function:
+
+```ante
+type Context = names: HashMap String NameData
+
+type NameData = uses: U32
+
+Context.use_name (context: !Context) (name: String) =
+    if context.names.get_mut name is Some data then
+        data.uses += 1
+```
+
+Because the `HashMap.get_mut` method requires a `!own HashMap a b`, we would normally be required to have an
+owned `Context` as well. Since there are no possible aliases to the context in scope however, we
+can locally treat it as owned and get a `!own NameData` anyway. Users of `Context.use_name` are
+now less constrained in how they use their `Context` since they may pass in an owned or shared object.
+
 #### Shared Types
 
 Shared types (not to be confused with shared references) are a way to opt-out of
-ownership rules for a type by allowing it to be mutably stored by default in the
-context of a single-thread. These types can be declared via `shared type` and also
+ownership rules for a type by automatically wrapping it in a copy-able wrapper.
+These types can be declared via `shared type` or `shared mut type` and also
 do not require explicit boxing (they are always boxed):
 
 ```ante
+// Immutable shared type
 shared type Expr =
     | Int I32
     | Var String
     | Add Expr Expr  // No explicit boxing required
 
-my_expr = Expr.Add (Int 3) (Var "foo")
+main () =
+    my_expr = Expr.Add (Int 3) (Var "foo")
+
+    // We can freely copy any shared type
+    alias1 = my_expr
+    alias2 = my_expr
 ```
 
 You can think of these types as always being wrapped in a reference-counted pointer. They are
@@ -1524,6 +1608,32 @@ eval2 (e: Expr) =
     | Int x -> x
     ...
 ```
+
+##### Shared Mutable Types
+
+In addition to `shared type`, which declares a shared, but immutable type, we can declare a shared, mutable type
+via `shared mut type`:
+
+```ante
+// Mutable shared type
+shared mut type MutExpr =
+    | Int I32
+    | Var String
+    | Add MutExpr MutExpr
+
+main () =
+    my_expr = MutExpr.Add (Int 3) (Var "foo")
+
+    // We can freely copy and mutate any shared mutable type
+    mut alias1 = my_expr
+    alias2 = my_expr
+
+    alias1 := Int 0
+    assert_eq my_expr (Int 0)
+    assert_eq alias2 (Int 0)
+```
+
+Unlike normal shared types, shared mutable types are not thread-safe.
 
 ### Internal Mutability
 
