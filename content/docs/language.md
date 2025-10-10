@@ -744,7 +744,7 @@ Ante does not include traditional for or while loops since these constructs usua
 
 ```ante
 // The type of for is:
-// for : a -> (elem -> Unit) -> Unit given Iterator a elem
+// for: fn a (elem -> Unit) {Iterator a elem} -> Unit
 
 for (0..10) print   // prints 0-9 inclusive
 
@@ -1294,7 +1294,7 @@ that itself is printable and a `prefix` field that must be a string:
 
 ```ante
 // Type inferred as:
-//   { prefix: String, debug: a } -> Unit given Print a
+//   fn (prefix: String, debug: a) {Print a} -> Unit
 print_debug x =
     prefix = x.prefix ++ ": "
     print prefix
@@ -1470,13 +1470,13 @@ get (v: &own Vec t) (index: Usz) : &own t can Fail
 ```
 
 Other Vec functions like `push` or `pop` would still be safe to call on `shared`
-references to Vecs since they do not hand out references to elements. If we did
+references to Vecs since they do not hand out references to elements. If we ever
 need a Vec element when all we have is a `&Vec t`, we can still retrieve
-an element through `Vec.get_cloned`:
+an element through something like `Vec.get_cloned`:
 
 ```ante
 // Raises Fail if the index is out of bounds
-get_cloned (v: &Vec t) (index: Usz) : t can Fail given Clone t
+get_cloned (v: &Vec t) (index: Usz) {Clone t} : t can Fail
 ```
 
 As a result, if you know you're going to be working with mutably shared Vecs
@@ -1490,7 +1490,7 @@ if the value is set to `None`, but notably excludes fields of a struct.
 
 #### Shared Conversions
 
-Converting from an owned reference to a shared one of the same kind is trivial and always allowed:
+Converting from an owned reference to a shared one of the same kind is trivial and is always allowed:
 
 ```ante
 owned_to_shared (x: &own t) =
@@ -1547,12 +1547,12 @@ lets us write more functions which only require shared references rather than ow
 function:
 
 ```ante
-type Context = names: HashMap String NameData
+type Context = names: HashMap Name NameData
 
 type NameData = uses: U32
 
-Context.use_name (context: !Context) (name: String) =
-    if context.names.get_mut name is Some data then
+Context.use_name (context: !Context) (name: Name) =
+    if context.names.get_mut &name is Some data then
         data.uses += 1
 ```
 
@@ -1766,7 +1766,7 @@ normal structs is that the functions they define may be generic without the trai
 being generic over that type.
 
 Just like types and algebraic effects, we can leave out all our traits
-in the `given` clauses and they can still be inferred. When we do want to explicitly
+and they can still be inferred. When we do want to explicitly
 specify them, like above, we use [implicit parameters](#implicits) to automatically
 pass around the instances for us. Note that this also means we need to ensure we
 import any trait implementations we want into scope first.

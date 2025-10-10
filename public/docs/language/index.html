@@ -2851,7 +2851,7 @@ or else branch can either be single expressions or an indented block expression.
 </code></pre></div><h2 id="loops">Loops</h2>
 <p>Ante does not include traditional for or while loops since these constructs usually require mutability to be useful. Instead, ante favors recursive functions like map, fold_left, and for (which iterates over an iterable type, much like foreach loops in most languages):</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// The type of for is:</span>
-<span class="c1">// for : a -&gt; (elem -&gt; Unit) -&gt; Unit given Iterator a elem</span>
+<span class="c1">// for: fn a (elem -&gt; Unit) {Iterator a elem} -&gt; Unit</span>
 
 <span class="nf">for</span> <span class="p">(</span><span class="mi">0</span><span class="o">..</span><span class="mi">10</span><span class="p">)</span> <span class="n">print</span>   <span class="c1">// prints 0-9 inclusive</span>
 
@@ -3249,7 +3249,7 @@ any struct that has a field named <code>foo</code> of type <code>b</code>:</p>
 </code></pre></div><p>As a more complex example, here&rsquo;s a function that can print anything with <code>debug</code> field
 that itself is printable and a <code>prefix</code> field that must be a string:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Type inferred as:</span>
-<span class="c1">//   { prefix: String, debug: a } -&gt; Unit given Print a</span>
+<span class="c1">//   fn (prefix: String, debug: a) {Print a} -&gt; Unit</span>
 <span class="nf">print_debug</span> <span class="n">x</span> <span class="ow">=</span>
     <span class="n">prefix</span> <span class="ow">=</span> <span class="n">x</span><span class="o">.</span><span class="n">prefix</span> <span class="o">++</span> <span class="s">&#34;: &#34;</span>
     <span class="n">print</span> <span class="n">prefix</span>
@@ -3366,11 +3366,11 @@ an owned reference:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Raises Fail if the index is out of bounds</span>
 <span class="nf">get</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">own</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="o">:</span> <span class="o">&amp;</span><span class="k">own</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span>
 </code></pre></div><p>Other Vec functions like <code>push</code> or <code>pop</code> would still be safe to call on <code>shared</code>
-references to Vecs since they do not hand out references to elements. If we did
+references to Vecs since they do not hand out references to elements. If we ever
 need a Vec element when all we have is a <code>&amp;Vec t</code>, we can still retrieve
-an element through <code>Vec.get_cloned</code>:</p>
+an element through something like <code>Vec.get_cloned</code>:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Raises Fail if the index is out of bounds</span>
-<span class="nf">get_cloned</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="o">:</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="k">given</span> <span class="kt">Clone</span> <span class="n">t</span>
+<span class="nf">get_cloned</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="p">{</span><span class="kt">Clone</span> <span class="n">t</span><span class="p">}</span> <span class="o">:</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span>
 </code></pre></div><p>As a result, if you know you&rsquo;re going to be working with mutably shared Vecs
 or other container types, and your element type is expensive to clone, you may
 want to wrap each element in a pointer type to reduce the cost of cloning: <code>Vec (Rc t)</code>.</p>
@@ -3379,7 +3379,7 @@ which projects the reference value into a value which may be dropped if its pare
 is mutated in any way. This includes something like the <code>a</code> in <code>Maybe a</code> which would be dropped
 if the value is set to <code>None</code>, but notably excludes fields of a struct.</p>
 <h4 id="shared-conversions">Shared Conversions</h4>
-<p>Converting from an owned reference to a shared one of the same kind is trivial and always allowed:</p>
+<p>Converting from an owned reference to a shared one of the same kind is trivial and is always allowed:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">owned_to_shared</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">own</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span>
     <span class="n">requires_shared</span> <span class="n">x</span>  <span class="c1">// ok</span>
 
@@ -3416,12 +3416,12 @@ back to the original node.</p>
 <p>Even with these restrictions, the ability to call functions requiring owning references with shared references
 lets us write more functions which only require shared references rather than owning ones. Consider the following
 function:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Context</span> <span class="ow">=</span> <span class="n">names</span><span class="o">:</span> <span class="kt">HashMap</span> <span class="kt">String</span> <span class="kt">NameData</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Context</span> <span class="ow">=</span> <span class="n">names</span><span class="o">:</span> <span class="kt">HashMap</span> <span class="kt">Name</span> <span class="kt">NameData</span>
 
 <span class="k">type</span> <span class="kt">NameData</span> <span class="ow">=</span> <span class="n">uses</span><span class="o">:</span> <span class="kt">U32</span>
 
-<span class="kt">Context</span><span class="o">.</span><span class="n">use_name</span> <span class="p">(</span><span class="n">context</span><span class="o">:</span> <span class="o">!</span><span class="kt">Context</span><span class="p">)</span> <span class="p">(</span><span class="n">name</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span> <span class="ow">=</span>
-    <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">names</span><span class="o">.</span><span class="n">get_mut</span> <span class="n">name</span> <span class="k">is</span> <span class="kt">Some</span> <span class="n">data</span> <span class="k">then</span>
+<span class="kt">Context</span><span class="o">.</span><span class="n">use_name</span> <span class="p">(</span><span class="n">context</span><span class="o">:</span> <span class="o">!</span><span class="kt">Context</span><span class="p">)</span> <span class="p">(</span><span class="n">name</span><span class="o">:</span> <span class="kt">Name</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">names</span><span class="o">.</span><span class="n">get_mut</span> <span class="o">&amp;</span><span class="n">name</span> <span class="k">is</span> <span class="kt">Some</span> <span class="n">data</span> <span class="k">then</span>
         <span class="n">data</span><span class="o">.</span><span class="n">uses</span> <span class="o">+=</span> <span class="mi">1</span>
 </code></pre></div><p>Because the <code>HashMap.get_mut</code> method requires a <code>!own HashMap a b</code>, we would normally be required to have an
 owned <code>Context</code> as well. Since there are no possible aliases to the context in scope however, we
@@ -3572,7 +3572,7 @@ where each function is a field of that struct. In fact, their only difference fr
 normal structs is that the functions they define may be generic without the trait type itself
 being generic over that type.</p>
 <p>Just like types and algebraic effects, we can leave out all our traits
-in the <code>given</code> clauses and they can still be inferred. When we do want to explicitly
+and they can still be inferred. When we do want to explicitly
 specify them, like above, we use <a href="#implicits">implicit parameters</a> to automatically
 pass around the instances for us. Note that this also means we need to ensure we
 import any trait implementations we want into scope first.</p>
