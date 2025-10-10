@@ -1448,7 +1448,7 @@ at the same time.
 // &own = owned, immutable reference
 // !own = owned, mutable reference
 
-message = "Hello"
+mut message = "Hello"
 ref1: !String = !message
 ref2: !String = !message
 
@@ -1471,7 +1471,7 @@ get (v: &own Vec t) (index: Usz) : &own t can Fail
 
 Other Vec functions like `push` or `pop` would still be safe to call on `shared`
 references to Vecs since they do not hand out references to elements. If we did
-need a Vec element when all we have is a `&shared Vec t`, we can still retrieve
+need a Vec element when all we have is a `&Vec t`, we can still retrieve
 an element through `Vec.get_cloned`:
 
 ```ante
