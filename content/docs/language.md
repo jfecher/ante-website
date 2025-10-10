@@ -1426,7 +1426,7 @@ the following kinds of references:
 - `mut`: Allows mutation and may be aliased with other `ref` or `mut` references.
 - `imm`: Disallows mutation and may only be aliased with other `imm` references.
   - This is exactly equivalent to `&T` in Rust.
-- `xcl`: Allows mutation and may not be aliased.
+- `uniq`: Allows mutation and may not be aliased.
   - This is exactly equivalent to `&mut T` in Rust.
 
 `ref` and `mut` reference kinds in Ante allow shared mutability and thus have no
@@ -1437,11 +1437,11 @@ Here's a table showing the two axes of what operations these reference types all
 |           | Allows mutable aliasing | Disallows mutable aliasing |
 |-----------|:-----------------------:|:--------------------------:|
 | Immutable | `ref`                   |            `imm`           |
-| Mutable   | `mut`                   |            `xcl`           |
+| Mutable   | `mut`                   |            `uniq`          |
 
 So if we have a `ref` or a `mut` reference, there can be any number of other `ref` or `mut`
 references to the same value at the same time. If we have a `imm` reference, there may only be other `imm`
-references to the same value. Finally, if we have an exclusive reference (`xcl`), there will not
+references to the same value. Finally, if we have an exclusive reference (`uniq`), there will not
 be any other reference of any kind to the same value while we hold the exclusive reference.
 
 ```ante
@@ -1457,7 +1457,7 @@ ref2.replace "Z" "l"
 print ref2                     // "Hello, World!"
 ```
 
-The `imm` and `xcl` reference kinds are used prevent operations that would be unsafe
+The `imm` and `uniq` reference kinds are used prevent operations that would be unsafe
 on references which may be mutably shared. A common theme of these operations is that they hand
 out references inside of a type with an unstable shape. For example, handing out
 a reference to a `Vec` element would be unsafe in a shared context since the `Vec`'s contents
@@ -1490,10 +1490,10 @@ if the value is set to `None`, but notably excludes fields of a struct.
 
 #### Shared Conversions
 
-Converting from a reference which does not allow shared mutability (`imm` or `xcl`) to one that does (`ref` or `mut`) is trivial and is always allowed:
+Converting from a reference which does not allow shared mutability (`imm` or `uniq`) to one that does (`ref` or `mut`) is trivial and is always allowed:
 
 ```ante
-// This works with xcl to mut as well
+// This works with uniq to mut as well
 imm_to_ref (x: imm t) =
     requires_ref x  // ok
     foo = return_ref x  // ok
@@ -1507,9 +1507,9 @@ Above we know that `y` is a temporary reference only valid within `requires_ref`
 using `x` as a `imm t` reference - it isn't possible for `y` to outlive its temporary lifetime. When `return_ref` is called
 we borrow `x` as a `ref` again, and this time may not use `x` again until `foo` is dropped.
 
-Going the other way around from `ref` or `mut` to `imm` or `xcl`, however, requires the compiler to show that the reference is
+Going the other way around from `ref` or `mut` to `imm` or `uniq`, however, requires the compiler to show that the reference is
 not mutably aliased. To do this, all possible aliases of the given reference in scope
-must not used while the converted `imm` or `xcl` is in scope:
+must not used while the converted `imm` or `uniq` is in scope:
 
 ```ante
 shared_to_owned (x: ref t) =
@@ -1552,7 +1552,7 @@ shared reference may be derived from the struct value. Additionally, possibly-cy
 themselves. Otherwise, you could obtain two owned, mutable references to the same value by following the cycle
 back to the original node.
 
-Even with these restrictions, the ability to convert `ref` and `mut` to `imm` and `xcl`
+Even with these restrictions, the ability to convert `ref` and `mut` to `imm` and `uniq`
 lets us write more functions with less requirements on the arguments they are called with (since they would
 now accept references which may be mutably aliased). Consider the following function:
 
@@ -1566,9 +1566,9 @@ Context.use_name (context: mut Context) (name: Name) =
         data.uses += 1
 ```
 
-Because the `HashMap.get_mut` method requires a `xcl HashMap a b`, we would normally be required to have a
-`xcl Context` as well. Since there are no possible aliases to the context in scope however, we
-can locally treat it as `xcl` and get a `xcl NameData` anyway. Users of `Context.use_name` are
+Because the `HashMap.get_mut` method requires a `uniq HashMap a b`, we would normally be required to have a
+`uniq Context` as well. Since there are no possible aliases to the context in scope however, we
+can locally treat it as `uniq` and get a `uniq NameData` anyway. Users of `Context.use_name` are
 now less constrained in how they use their `Context` since they may pass in an owned or shared object.
 
 #### Shared Types
@@ -1645,13 +1645,13 @@ ref1: ref Expr = ref expr
 ref2: mut Expr = mut expr
 ```
 
-Since taking the reference of a tagged-union's field requires a `imm` or `xcl` reference (tagged-unions do
+Since taking the reference of a tagged-union's field requires a `imm` or `uniq` reference (tagged-unions do
 not have stable shapes since they may be mutated to a different union variant), when matching on
 `shared mut` types, they are automatically copied:
 
 ```ante
 eval1 (e: Expr) =
-    match ref e  // error: Getting a reference to a union's fields requires an `imm` or `xcl` reference
+    match ref e  // error: Getting a reference to a union's fields requires an `imm` or `uniq` reference
     | Int x -> x
     ...
 
@@ -1666,14 +1666,14 @@ eval2 (e: Expr) =
 Since mutating through an immutably borrowed reference `imm t` is otherwise impossible,
 Ante provides several types for internal mutability. `RefCell t` will be
 a familiar sight to those used to Rust, but using this type entails runtime
-checking to uphold the properties of the `imm`/`xcl` references (either a mutable reference
+checking to uphold the properties of the `imm`/`uniq` references (either a mutable reference
 can be made or multiple immutable references, but never both at once).
 
 Since Ante natively supports shared references, it is also possibly to obtain a
 shared reference directly through a shared pointer type like an `Rc t`:
 
 ```ante
-as_mut (rc: xcl Rc t): mut t = ...
+as_mut (rc: uniq Rc t): mut t = ...
 ```
 
 Note that like most pointer types, we still need an owned reference of the

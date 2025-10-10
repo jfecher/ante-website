@@ -3336,7 +3336,7 @@ the following kinds of references:</p>
 <li>This is exactly equivalent to <code>&amp;T</code> in Rust.</li>
 </ul>
 </li>
-<li><code>xcl</code>: Allows mutation and may not be aliased.
+<li><code>uniq</code>: Allows mutation and may not be aliased.
 <ul>
 <li>This is exactly equivalent to <code>&amp;mut T</code> in Rust.</li>
 </ul>
@@ -3362,13 +3362,13 @@ equivalent in Rust but can be thought of as similar to <code>&amp;Cell&lt;T&gt;<
 <tr>
 <td>Mutable</td>
 <td style="text-align:center"><code>mut</code></td>
-<td style="text-align:center"><code>xcl</code></td>
+<td style="text-align:center"><code>uniq</code></td>
 </tr>
 </tbody>
 </table>
 <p>So if we have a <code>ref</code> or a <code>mut</code> reference, there can be any number of other <code>ref</code> or <code>mut</code>
 references to the same value at the same time. If we have a <code>imm</code> reference, there may only be other <code>imm</code>
-references to the same value. Finally, if we have an exclusive reference (<code>xcl</code>), there will not
+references to the same value. Finally, if we have an exclusive reference (<code>uniq</code>), there will not
 be any other reference of any kind to the same value while we hold the exclusive reference.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">var</span> <span class="n">message</span> <span class="ow">=</span> <span class="s">&#34;Hello&#34;</span>
 
@@ -3380,7 +3380,7 @@ be any other reference of any kind to the same value while we hold the exclusive
 <span class="o">@</span><span class="n">ref1</span> <span class="o">:=</span> <span class="s">&#34;${message}, WorZd!&#34;</span>  <span class="c1">// &#34;Hello, WorZd!&#34;</span>
 <span class="nf">ref2</span><span class="o">.</span><span class="n">replace</span> <span class="s">&#34;Z&#34;</span> <span class="s">&#34;l&#34;</span>
 <span class="nf">print</span> <span class="n">ref2</span>                     <span class="c1">// &#34;Hello, World!&#34;</span>
-</code></pre></div><p>The <code>imm</code> and <code>xcl</code> reference kinds are used prevent operations that would be unsafe
+</code></pre></div><p>The <code>imm</code> and <code>uniq</code> reference kinds are used prevent operations that would be unsafe
 on references which may be mutably shared. A common theme of these operations is that they hand
 out references inside of a type with an unstable shape. For example, handing out
 a reference to a <code>Vec</code> element would be unsafe in a shared context since the <code>Vec</code>&rsquo;s contents
@@ -3402,8 +3402,8 @@ which project the reference value into a value which may be dropped if its paren
 is mutated. This includes something like the <code>a</code> in <code>Maybe a</code> which would be dropped
 if the value is set to <code>None</code>, but notably excludes fields of a struct.</p>
 <h4 id="shared-conversions">Shared Conversions</h4>
-<p>Converting from a reference which does not allow shared mutability (<code>imm</code> or <code>xcl</code>) to one that does (<code>ref</code> or <code>mut</code>) is trivial and is always allowed:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// This works with xcl to mut as well</span>
+<p>Converting from a reference which does not allow shared mutability (<code>imm</code> or <code>uniq</code>) to one that does (<code>ref</code> or <code>mut</code>) is trivial and is always allowed:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// This works with uniq to mut as well</span>
 <span class="nf">imm_to_ref</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">imm</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span>
     <span class="n">requires_ref</span> <span class="n">x</span>  <span class="c1">// ok</span>
     <span class="n">foo</span> <span class="ow">=</span> <span class="n">return_ref</span> <span class="n">x</span>  <span class="c1">// ok</span>
@@ -3414,9 +3414,9 @@ if the value is set to <code>None</code>, but notably excludes fields of a struc
 </code></pre></div><p>Above we know that <code>y</code> is a temporary reference only valid within <code>requires_ref</code>, so once the call ends we can continue
 using <code>x</code> as a <code>imm t</code> reference - it isn&rsquo;t possible for <code>y</code> to outlive its temporary lifetime. When <code>return_ref</code> is called
 we borrow <code>x</code> as a <code>ref</code> again, and this time may not use <code>x</code> again until <code>foo</code> is dropped.</p>
-<p>Going the other way around from <code>ref</code> or <code>mut</code> to <code>imm</code> or <code>xcl</code>, however, requires the compiler to show that the reference is
+<p>Going the other way around from <code>ref</code> or <code>mut</code> to <code>imm</code> or <code>uniq</code>, however, requires the compiler to show that the reference is
 not mutably aliased. To do this, all possible aliases of the given reference in scope
-must not used while the converted <code>imm</code> or <code>xcl</code> is in scope:</p>
+must not used while the converted <code>imm</code> or <code>uniq</code> is in scope:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">shared_to_owned</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span>
     <span class="n">requires_owned</span> <span class="n">x</span>  <span class="c1">// ok, no other alias in scope</span>
 
@@ -3445,7 +3445,7 @@ reference is used as an exclusive one:</p>
 shared reference may be derived from the struct value. Additionally, possibly-cyclic types count as aliases to
 themselves. Otherwise, you could obtain two owned, mutable references to the same value by following the cycle
 back to the original node.</p>
-<p>Even with these restrictions, the ability to convert <code>ref</code> and <code>mut</code> to <code>imm</code> and <code>xcl</code>
+<p>Even with these restrictions, the ability to convert <code>ref</code> and <code>mut</code> to <code>imm</code> and <code>uniq</code>
 lets us write more functions with less requirements on the arguments they are called with (since they would
 now accept references which may be mutably aliased). Consider the following function:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Context</span> <span class="ow">=</span> <span class="n">names</span><span class="o">:</span> <span class="kt">HashMap</span> <span class="kt">Name</span> <span class="kt">NameData</span>
@@ -3455,9 +3455,9 @@ now accept references which may be mutably aliased). Consider the following func
 <span class="kt">Context</span><span class="o">.</span><span class="n">use_name</span> <span class="p">(</span><span class="n">context</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Context</span><span class="p">)</span> <span class="p">(</span><span class="n">name</span><span class="o">:</span> <span class="kt">Name</span><span class="p">)</span> <span class="ow">=</span>
     <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">names</span><span class="o">.</span><span class="n">get_mut</span> <span class="p">(</span><span class="k">ref</span> <span class="n">name</span><span class="p">)</span> <span class="k">is</span> <span class="kt">Some</span> <span class="n">data</span> <span class="k">then</span>
         <span class="n">data</span><span class="o">.</span><span class="n">uses</span> <span class="o">+=</span> <span class="mi">1</span>
-</code></pre></div><p>Because the <code>HashMap.get_mut</code> method requires a <code>xcl HashMap a b</code>, we would normally be required to have a
-<code>xcl Context</code> as well. Since there are no possible aliases to the context in scope however, we
-can locally treat it as <code>xcl</code> and get a <code>xcl NameData</code> anyway. Users of <code>Context.use_name</code> are
+</code></pre></div><p>Because the <code>HashMap.get_mut</code> method requires a <code>uniq HashMap a b</code>, we would normally be required to have a
+<code>uniq Context</code> as well. Since there are no possible aliases to the context in scope however, we
+can locally treat it as <code>uniq</code> and get a <code>uniq NameData</code> anyway. Users of <code>Context.use_name</code> are
 now less constrained in how they use their <code>Context</code> since they may pass in an owned or shared object.</p>
 <h4 id="shared-types">Shared Types</h4>
 <p>Shared types are a way to opt-out of
@@ -3513,11 +3513,11 @@ of a <code>shared mut</code> type. We can however, obtain <code>ref</code> or <c
 
 <span class="nf">ref1</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Expr</span> <span class="ow">=</span> <span class="k">ref</span> <span class="n">expr</span>
 <span class="nf">ref2</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Expr</span> <span class="ow">=</span> <span class="k">mut</span> <span class="n">expr</span>
-</code></pre></div><p>Since taking the reference of a tagged-union&rsquo;s field requires a <code>imm</code> or <code>xcl</code> reference (tagged-unions do
+</code></pre></div><p>Since taking the reference of a tagged-union&rsquo;s field requires a <code>imm</code> or <code>uniq</code> reference (tagged-unions do
 not have stable shapes since they may be mutated to a different union variant), when matching on
 <code>shared mut</code> types, they are automatically copied:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">eval1</span> <span class="p">(</span><span class="n">e</span><span class="o">:</span> <span class="kt">Expr</span><span class="p">)</span> <span class="ow">=</span>
-    <span class="k">match</span> <span class="k">ref</span> <span class="n">e</span>  <span class="c1">// error: Getting a reference to a union&#39;s fields requires an `imm` or `xcl` reference</span>
+    <span class="k">match</span> <span class="k">ref</span> <span class="n">e</span>  <span class="c1">// error: Getting a reference to a union&#39;s fields requires an `imm` or `uniq` reference</span>
     <span class="o">|</span> <span class="kt">Int</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">x</span>
     <span class="o">...</span>
 
@@ -3529,11 +3529,11 @@ not have stable shapes since they may be mutated to a different union variant), 
 <p>Since mutating through an immutably borrowed reference <code>imm t</code> is otherwise impossible,
 Ante provides several types for internal mutability. <code>RefCell t</code> will be
 a familiar sight to those used to Rust, but using this type entails runtime
-checking to uphold the properties of the <code>imm</code>/<code>xcl</code> references (either a mutable reference
+checking to uphold the properties of the <code>imm</code>/<code>uniq</code> references (either a mutable reference
 can be made or multiple immutable references, but never both at once).</p>
 <p>Since Ante natively supports shared references, it is also possibly to obtain a
 shared reference directly through a shared pointer type like an <code>Rc t</code>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">as_mut</span> <span class="p">(</span><span class="n">rc</span><span class="o">:</span> <span class="k">xcl</span> <span class="kt">Rc</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">mut</span> <span class="n">t</span> <span class="ow">=</span> <span class="o">...</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">as_mut</span> <span class="p">(</span><span class="n">rc</span><span class="o">:</span> <span class="n">uniq</span> <span class="kt">Rc</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">mut</span> <span class="n">t</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><p>Note that like most pointer types, we still need an owned reference of the
 pointer itself to obtain a reference to the inside. Otherwise,
 the value would be able to drop out from under us if another shared reference
