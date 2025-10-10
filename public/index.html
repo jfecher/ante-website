@@ -292,7 +292,7 @@ eval (expr: <span class="kt">Expr</span>): <span class="kt">I32</span> <span cla
     | <span class="kt">Var</span> name -> lookup name
     | <span class="kt">Add</span> lhs rhs -> eval lhs + eval rhs  <span class="c1">// No explicit state threading</span>
 
-<span class="c1">// Convert thrown effect to optional value</span>
+<span class="c1">// Lookup a name, throwing `Fail` if it is not found</span>
 lookup (name: <span class="kt">String</span>): <span class="kt">I32</span> <span class="k">can</span> <span class="kt">Interpret</span> =
     state = get () : <span class="kt">InterpreterState</span>
     state.environment.lookup name |>.unwrap  <span class="c1">// `unwrap` throws a `Fail` effect instead of panicking</span></code></pre></div>
@@ -310,18 +310,17 @@ lookup (name: <span class="kt">String</span>): <span class="kt">I32</span> <span
                         <div class="row">
                             <div class="col-sm-5 right">
                                 <h1>Safe Shared Mutability</h1>
-                                <div class="highlight-textalign-left"><pre><span class="k">mut</span> vec = <span class="kt">Vec</span>.of [<span class="m">1</span>, <span class="m">2</span>, <span class="m">3</span>]
+                                <div class="highlight-textalign-left"><pre><span class="k">var</span> vec = <span class="kt">Vec</span>.of [<span class="m">1</span>, <span class="m">2</span>, <span class="m">3</span>]
 
-ref1 = <span class="k">!</span>vec  <span class="c1">// `!` is used for mutable references, `&` for immutable</span>
-ref2 = <span class="k">!</span>vec
+ref1 = <span class="k">mut</span> vec  <span class="c1">// Create a temporary mutable reference to vec</span>
+ref2 = <span class="k">mut</span> vec
 
 <span class="c1">// Ok! It is safe to call `Vec.push` with shared mutable references</span>
 ref1.push <span class="m">4</span>
 ref2.push <span class="m">5</span>
 
-<span class="c1">// Retrieving a reference to an element wouldn't be safe since another mutable</span>
-<span class="c1">// reference could reallocate the vector and cause it to be a dangling reference</span>
-<span class="c1">// error: `get` requires an owned reference. Try `get_cloned` instead</span>
+<span class="c1">// Retrieving a reference to an element is also possible, but we can't</span>
+<span class="c1">// use other mutable references to the same value while it is active.</span>
 elem = ref1.get <span class="m">0</span></code></pre></div>
 
                             </div>
@@ -339,17 +338,17 @@ elem = ref1.get <span class="m">0</span></code></pre></div>
                                 <h1>Generators</h1>
                                 <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="c1">// Generators are implemented via Algebraic Effects</span>
 <span class="k">effect</span> <span class="kt">Emit elem</span> <span class="k">with</span> 
-    emit: <span class="kt">elem</span> -> <span class="kt">Unit</span>
+    emit: <span class="k">fn</span> <span class="kt">elem</span> -> <span class="kt">Unit</span>
 
 <span class="c1">// One advantage of Generators is that they are easier to write than Iterators</span>
-map (stream: <span class="kt">Unit</span> -> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit a</span>) (f: <span class="kt">a</span> -> <span class="kt">b</span>) <span class="k">can</span> <span class="kt">Emit b</span> =
+map (stream: <span class="k">fn</span> <span class="kt">Unit</span> -> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit a</span>) (f: <span class="k">fn</span> <span class="kt">a</span> -> <span class="kt">b</span>) <span class="k">can</span> <span class="kt">Emit b</span> =
     <span class="k">handle</span> stream ()
     | <span class="kt">Emit</span> elem -> 
         emit (f elem)
         <span class="k">resume</span> ()
 
 <span class="c1">// Stream is a helper trait to Emit all elements of a collection</span>
-parse_csv (text: <span class="kt">s</span>) : <span class="kt">Vec</span> (<span class="kt">Vec String</span>) <span class="k">given</span> <span class="kt">Stream s String</span> =
+parse_csv (text: <span class="kt">s</span>) {<span class="kt">Stream s String</span>} : <span class="kt">Vec</span> (<span class="kt">Vec String</span>) =
     lines text |> skip <span class="m">1</span> |> map (split _ <span class="s">","</span>) |> collect
 
 csv = parse_csv (<span class="kt">File</span>.open <span class="s">"input.csv"</span>)</code></pre></div>
@@ -369,16 +368,15 @@ csv = parse_csv (<span class="kt">File</span>.open <span class="s">"input.csv"</
                                 <h1>Type Inference</h1>
                                 <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="c1">// A collection c of elements of type e</span>
 <span class="k">trait</span> <span class="kt">Collection c</span> -> <span class="kt">e</span> <span class="k">with</span> 
-    len: <span class="kt">c</span> -> <span class="kt">Usz</span>
-    get: <span class="kt">c</span> -> index:<span class="kt">Usz</span> -> <span class="kt">e</span>
+    len: <span class="k">fn</span> <span class="kt">c</span> -> <span class="kt">Usz</span>
+    get: <span class="k">fn</span> <span class="kt">c</span> (index: <span class="kt">Usz</span>) -> <span class="kt">e</span>
 
-<span class="k">trait</span> <span class="kt">Show t</span> <span class="k">with</span> to_string: <span class="kt">t</span> -> <span class="kt">String</span>
+<span class="k">trait</span> <span class="kt">Show t</span> <span class="k">with</span> to_string: <span class="k">fn</span> <span class="kt">t</span> -> <span class="kt">String</span>
 
-<span class="k">effect</span> <span class="kt">Print</span> <span class="k">with</span> print: <span class="kt">String</span> -> <span class="kt">Unit</span>
+<span class="k">effect</span> <span class="kt">Print</span> <span class="k">with</span> print: <span class="k">fn</span> <span class="kt">String</span> -> <span class="kt">Unit</span>
 
 <span class="c1">// Inferred type:
-// elem_to_string: a -> Usz -> String
-//    given Collection a b, Show b
+// elem_to_string: fn a Usz {Collection a b} {Show b} -> String
 //    can Print</span>
 elem_to_string c i =
     get c i |> to_string |> print</code></pre></div>

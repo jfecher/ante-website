@@ -14,7 +14,7 @@ description: >
         | <span class="kt">Var</span> name -> lookup name
         | <span class="kt">Add</span> lhs rhs -> eval lhs + eval rhs  <span class="c1">// No explicit state threading</span>
 
-    <span class="c1">// Convert thrown effect to optional value</span>
+    <span class="c1">// Lookup a name, throwing `Fail` if it is not found</span>
 
     lookup (name: <span class="kt">String</span>): <span class="kt">I32</span> <span class="k">can</span> <span class="kt">Interpret</span> =
         state = get () : <span class="kt">InterpreterState</span>

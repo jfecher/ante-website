@@ -141,11 +141,11 @@ reading_about_variables: Bool = true
 
 ## Mutability
 
-A variable can be made mutable by adding the `mut` keyword when defining the variable:
+A variable can be made mutable by using the `var` keyword when defining the variable:
 
 ```ante
-// Mutable variables can be created with `mut`:
-mut pet_name = "Ember"
+// Mutable variables can be created with `var`:
+var pet_name = "Ember"
 print pet_name  //=> Ember
 
 // And can be mutated with `:=`
@@ -153,7 +153,8 @@ pet_name := "Cinder"
 print pet_name  //=> Cinder
 ```
 
-Here's another example showing a function that can mutate the passed in parameter using a mutable reference (`!`):
+Here's another example showing a function that can mutate the passed in parameter using a
+temporary mutable reference (`mut`):
 
 ```ante
 count_evens array counter =
@@ -161,22 +162,25 @@ count_evens array counter =
         if even elem then
             counter += 1
 
-mut counter = 0
-count_evens [4, 5, 6] !counter
+var counter = 0
+count_evens [4, 5, 6] (mut counter)
 
 print counter  //=> 2
 ```
 
-If you have a mutable struct, you can also transfer this mutability to its
-fields to mutate them directly. This can be done via the `.!` operator to retrieve
-a reference to a field. Similarly, `.&` can be used to retrieve an immutable
-reference to a field:
+In general, `mut <expr>` lets you take a temporary mutable reference to the given expression
+on the right-hand side. In the case of variables and struct fields, this reference will refer
+to the existing value, and will require the original variable to be mutable. In the case of
+other values, such as those returned from a function, a temporary mutable reference is still
+obtained.
 
 ```ante
-mut my_pair = 1, 2
+var my_pair = 1, 2
 my_pair.first := 3
 
-field_ref = my_pair.!second
+// Without the `mut` this would copy the `second` field into a new variable
+// creating a temporary reference to it
+field_ref = mut my_pair.second
 field_ref := 4
 
 print my_pair  //=> 3, 4
@@ -185,12 +189,6 @@ print my_pair  //=> 3, 4
 bad = 1, 2
 bad.first := 3
 ```
-
-Sidenote: other languages with temporary references tend to use `&foo.bar` for retrieving
-a reference to a field. This is odd though since conceptually `foo.bar` alone often dereferences
-the field so `&(foo.bar)` appears to dereference the field than magically recovers the reference.
-Ante uses a single operator `.&` to yield a field offset instead. This also tends to require
-fewer parentheses when used with ML-style function call syntax.
 
 # Functions
 
@@ -248,7 +246,7 @@ be added to any types defined in dependencies.
 When defining a method, the `self` variable can be used as an argument which is implicitly
 of the same type as the module name. If there is no such type (e.g. it is just a normal module),
 an error will be given. Like other parameters, `self` on its own will use move semantics. It
-can also be borrowed either mutably or immutably by writing `!self` or `&self`.
+can also be borrowed either mutably or immutably by prepending a reference type such as `ref self`.
 
 For example, the standard library defines the `Vec` type for a mutable vector and defines
 methods on it like so:
@@ -258,11 +256,10 @@ type Vec a = ... // implementation omitted
 
 Vec.new () = ...
 
-// The `a` here is the same `a` from `Vec a`.
-Vec.push !self (elem: a) = ...
+(Vec a).push (mut self) (elem: a) = ...
 
 // Call the methods. This can be done without explicitly importing `Vec.new` or `Vec.push`:
-mut vec = Vec.new ()
+var vec = Vec.new ()
 vec.push "called"
 vec.push "a"
 vec.push "method!"
@@ -465,17 +462,20 @@ average_first_two array =
     (array.[0] + array.[1]) / 2
 ```
 
-Additionally, references to elements can be retrieved using a syntax similar
-to field offset syntax:
+Note that `.[]` has a high enough precedence to be used in function calls:
 
 ```ante
-print my_array.&[0]
-
-mutate my_array.![1]
+foo array.[0]
 ```
 
-Note that `.[]`, `.&[]`, and `.![]` all have precedences high enough to be
-used in function calls.
+Additionally, references to elements can be retrieved using the subscript operator
+with a reference kind:
+
+```ante
+print (ref my_array.[0])
+
+mutate (mut my_array.[1])
+```
 
 ## Dereference Operator
 
@@ -509,7 +509,7 @@ parse_csv (text: String) : Vec (Vec I32) =
     lines text
         |> skip 1  // Skip the column labels line
         |> split ","
-        |> map parse!
+        |> map parse
         |> collect
 ```
 
@@ -533,7 +533,7 @@ as long as the expected object type can be figured out by the environment.
 So one can write code such as:
 
 ```ante
-Vec.of [1, 2, 3] |> .split_first  // (1, &[2, 3])
+Vec.of [1, 2, 3] |> .split_first  // (1, [2, 3])
 ```
 
 ## Pair Operator
@@ -1027,7 +1027,7 @@ Ante is a strongly, statically typed language with global type inference.
 Types are used to restrict the set of values as best as possible such that
 only valid values are representable. For example, since references in ante
 cannot be null we can instead represent possibly null references with
-`Maybe &t` which makes it explicit whether a function can accept or
+`Maybe (ref t)` which makes it explicit whether a function can accept or
 return possibly null values.
 
 ## Type Definitions
@@ -1330,17 +1330,17 @@ to it so that we can refer to the value as many times as we need.
 s = "my string"
 
 // References can be used as many times as needed
-baz &s
-baz &s
+baz (ref s)
+baz (ref s)
 ```
 
-Mutable references can be borrowed from mutable values using `!`:
+Mutable references can be borrowed from mutable values using `mut`:
 
 ```ante
-mut s = "my string"
+var s = "my string"
 
 // This function call may modify our string
-qux !s
+qux (mut s)
 
 print s  //=> "???"
 ```
@@ -1348,29 +1348,29 @@ print s  //=> "???"
 ### Lifetimes
 
 Ante's references are bound by lifetime, similar to Rust. The full form of a reference
-type is `&l t` where `l` is a lifetime and `t` is the element type.
+type is `<reference-kind> 'l t` where `'l` is a lifetime and `t` is the element type.
 
-When used in a function signature, lifetimes may be ellided. When this happens, each
+When used in a function signature, lifetimes may be elided. When this happens, each
 variable of a function is assumed to have a possibly different lifetime:
 
 ```ante
-concat_foo (foo1: &Foo) (foo2: &Foo) : String =
+concat_foo (foo1: ref Foo) (foo2: ref Foo) : String =
     foo1.msg ++ foo2.msg
 
-foo_example (param: &Foo): String =
+foo_example (param: ref Foo): String =
     temporary = Foo.new ()
 
     // `param` and `temporary` have different lifetimes but this call is allowed since
     // `concat_foo` allows two parameters of differing lifetimes.
-    concat_foo param &temporary
+    concat_foo param (ref temporary)
 ```
 
 Taking a reference prevents moving the underlying value before the reference is dropped:
 
 ```ante
 bad (foo: Foo) =
-    // Error: Cannot move `foo` while the borrowed reference `&foo` is still alive
-    bar &foo foo
+    // Error: Cannot move `foo` while the borrowed reference `ref foo` is still alive
+    bar (ref foo) foo
 ```
 
 #### Returning References
@@ -1380,15 +1380,15 @@ we can still elide the lifetimes since there is only one lifetime the return val
 be referring to (besides the static lifetime):
 
 ```ante
-get_ref (foo: &Foo) : &Baz =
-    foo.&baz
+get_ref (foo: ref Foo) : ref Baz =
+    ref foo.baz
 ```
 
 However, if we accept multiple references, the lifetime needs to be specified:
 
 ```ante
-get_ref2 (foo: &f Foo) (_: &Bar) : &f Baz =
-    foo.&baz
+get_ref2 (foo: ref 'f Foo) (_: ref Bar) : ref 'f Baz =
+    ref foo.baz
 ```
 
 If a reference is returned from a function, the referenced input(s)
@@ -1396,7 +1396,7 @@ can't be moved until the returned reference is dropped.
 
 ```ante
 example2 (foo: Foo) (bar: Bar) =
-    r = get_ref &foo &bar
+    r = get_ref (ref foo) (ref bar)
     // Error: Cannot move `foo` while `r` is still alive
     drop foo
     print r
@@ -1410,114 +1410,124 @@ to hold onto a temporary reference with an unknown lifetime, although most of th
 users should favor wrapper types such as `Rc t`.
 
 ```ante
-type Context l =
-    global_context: &l GlobalContext
-```
-
-When adding a lifetime parameter, Ante can infer the kind of the type parameter should
-be a lifetime instead of a type in some situations, but may need an explicit annotation
-in others:
-
-```ante
-// l is unused
-type Foo (l: Lifetime) = ()
+type Context 'l =
+    global_context: ref 'l GlobalContext
 ```
 
 ---
 
-### Shared Mutability
+### Shared Mutability and Reference Kinds
 
-Another difference from Rust is that Ante allows shared (aliasable) mutability.
-In addition to whether a reference is `mut`able or not, a reference can also
-be tagged whether it is `own`ed or shared. The sharedness of a reference exists
-on a different axis from its mutability, so you can have a shared but immutable
-reference as well. If there is a mutable
-reference borrwed from a value with at least 1 other borrowed reference of any kind
-to the same value, all references are inferred to be shared, otherwise, they are owned.
+Although largely built-upon Rust, Ante's borrowing semantics differ in that it
+allows shared (aliasable) mutability via different reference kinds. Ante has
+the following kinds of references:
 
-Put another way, owned references can be a single mutable reference XOR multiple
-immutable references. These rules will be familiar with anyone coming from Rust as they
-are identical to the borrowing rules used there. Shared references on the other hand lift
-this restriction, allowing you to hold multiple mutable references and/or immutable references
-simultaneously. It is not possible to hold both a shared and owned reference to the same value
-at the same time.
+- `ref`: Disallows mutation but may be aliased with other `ref` or `mut` references.
+- `mut`: Allows mutation and may be aliased with other `ref` or `mut` references.
+- `imm`: Disallows mutation and may only be aliased with other `imm` references.
+  - This is exactly equivalent to `&T` in Rust.
+- `xcl`: Allows mutation and may not be aliased.
+  - This is exactly equivalent to `&mut T` in Rust.
+
+`ref` and `mut` reference kinds in Ante allow shared mutability and thus have no
+equivalent in Rust but can be thought of as similar to `&Cell<T>`.
+
+Here's a table showing the two axes of what operations these reference types allow:
+
+|           | Allows mutable aliasing | Disallows mutable aliasing |
+|-----------|:-----------------------:|:--------------------------:|
+| Immutable | `ref`                   |            `imm`           |
+| Mutable   | `mut`                   |            `xcl`           |
+
+So if we have a `ref` or a `mut` reference, there can be any number of other `ref` or `mut`
+references to the same value at the same time. If we have a `imm` reference, there may only be other `imm`
+references to the same value. Finally, if we have an exclusive reference (`xcl`), there will not
+be any other reference of any kind to the same value while we hold the exclusive reference.
 
 ```ante
-// &    = shared, immutable reference
-// !    = shared, mutable reference
-// &own = owned, immutable reference
-// !own = owned, mutable reference
+var message = "Hello"
 
-mut message = "Hello"
-ref1: !String = !message
-ref2: !String = !message
+// Create two shared, mutable references to the same string value
+ref1: mut String = mut message
+ref2: mut String = mut message
 
+// It is safe to modify the string through shared, mutable references
 @ref1 := "${message}, WorZd!"  // "Hello, WorZd!"
 ref2.replace "Z" "l"
 print ref2                     // "Hello, World!"
 ```
 
-The `own` tag is used to prevent operations that would be unsafe
+The `imm` and `xcl` reference kinds are used prevent operations that would be unsafe
 on references which may be mutably shared. A common theme of these operations is that they hand
 out references inside of a type with an unstable shape. For example, handing out
-a reference to a `Vec` element would be unsafe in a shared context since the `Vec`
+a reference to a `Vec` element would be unsafe in a shared context since the `Vec`'s contents
 may be reallocated by another reference. To prevent this, `Vec.get` requires
-an owned reference:
+an immutable reference:
 
 ```ante
 // Raises Fail if the index is out of bounds
-get (v: &own Vec t) (index: Usz) : &own t can Fail
+get (v: imm Vec t) (index: Usz): imm t can Fail
 ```
 
-Other Vec functions like `push` or `pop` would still be safe to call on `shared`
+Other Vec functions like `push` or `pop` would still be safe to call on shared `mut`
 references to Vecs since they do not hand out references to elements. If we ever
-need a Vec element when all we have is a `&Vec t`, we can still retrieve
+need a Vec element when all we have is a `ref Vec t`, we can still retrieve
 an element through something like `Vec.get_cloned`:
 
 ```ante
 // Raises Fail if the index is out of bounds
-get_cloned (v: &Vec t) (index: Usz) {Clone t} : t can Fail
+get_cloned (v: ref Vec t) (index: Usz) {Clone t} : t can Fail
 ```
 
 As a result, if you know you're going to be working with mutably shared Vecs
 or other container types, and your element type is expensive to clone, you may
 want to wrap each element in a pointer type to reduce the cost of cloning: `Vec (Rc t)`.
 
-A good rule of thumb is that shared references can be used for any operation except one
-which projects the reference value into a value which may be dropped if its parent reference
-is mutated in any way. This includes something like the `a` in `Maybe a` which would be dropped
+A good rule of thumb is that shared references (`ref` and `mut`) can be used for any operations except ones
+which project the reference value into a value which may be dropped if its parent reference
+is mutated. This includes something like the `a` in `Maybe a` which would be dropped
 if the value is set to `None`, but notably excludes fields of a struct.
 
 #### Shared Conversions
 
-Converting from an owned reference to a shared one of the same kind is trivial and is always allowed:
+Converting from a reference which does not allow shared mutability (`imm` or `xcl`) to one that does (`ref` or `mut`) is trivial and is always allowed:
 
 ```ante
-owned_to_shared (x: &own t) =
-    requires_shared x  // ok
+// This works with xcl to mut as well
+imm_to_ref (x: imm t) =
+    requires_ref x  // ok
+    foo = return_ref x  // ok
+    ...
 
-requires_shared (y: &t) = ...
+requires_ref (y: ref t): Unit = ...
+return_ref (y: ref t): ref t = y
 ```
 
-Going from shared back to owned, however, requires that all possible aliases of the given reference in scope
-are not used while the converted owned reference is in scope:
+Above we know that `y` is a temporary reference only valid within `requires_ref`, so once the call ends we can continue
+using `x` as a `imm t` reference - it isn't possible for `y` to outlive its temporary lifetime. When `return_ref` is called
+we borrow `x` as a `ref` again, and this time may not use `x` again until `foo` is dropped.
+
+Going the other way around from `ref` or `mut` to `imm` or `xcl`, however, requires the compiler to show that the reference is
+not mutably aliased. To do this, all possible aliases of the given reference in scope
+must not used while the converted `imm` or `xcl` is in scope:
 
 ```ante
-shared_to_owned (x: &t) =
+shared_to_owned (x: ref t) =
     requires_owned x  // ok, no other alias in scope
 
-requires_owned (y: &own t) = ...
+requires_owned (y: imm t) = ...
 ```
 
-This greatly increases the flexibility of shared references by locally refining them into owned references
-and allowing functions requiring owned references to be called.
+This greatly increases the flexibility of `ref` and `mut` by locally refining them in scopes where we
+can see no mutable alias is used, which allows functions which are normally unsafe in the presence of
+mutable aliasing (such as `Vec.get` without cloning the result) to be called.
 
 This "no alias may be used" restriction is important for preventing use of values which may have been dropped:
 
 ```ante
-invalid_shared_to_owned (x: !Vec t) =
+invalid_shared_to_owned (x: mut Vec t) =
     // Remember that retrieving a reference to a Vec's element requires an owned reference
-    element_ref = x.&[0]
+    element_ref = x.get 0 |> unwrap
     print element_ref  // ok
 
     x.clear ()
@@ -1528,10 +1538,10 @@ invalid_shared_to_owned (x: !Vec t) =
 ```
 
 Because other shared function parameters may alias a given reference, they may not be used either when a shared
-reference is reborrowed as owned:
+reference is used as an exclusive one:
 
 ```ante
-foo (a: !Foo) (b: !Foo): Unit =
+foo (a: mut Foo) (b: mut Foo): Unit =
     a_ref = requires_owned a
     // while `a_ref` is alive we cannot use `a` or `b` since they may alias
     ...
@@ -1542,31 +1552,30 @@ shared reference may be derived from the struct value. Additionally, possibly-cy
 themselves. Otherwise, you could obtain two owned, mutable references to the same value by following the cycle
 back to the original node.
 
-Even with these restrictions, the ability to call functions requiring owning references with shared references
-lets us write more functions which only require shared references rather than owning ones. Consider the following
-function:
+Even with these restrictions, the ability to convert `ref` and `mut` to `imm` and `xcl`
+lets us write more functions with less requirements on the arguments they are called with (since they would
+now accept references which may be mutably aliased). Consider the following function:
 
 ```ante
 type Context = names: HashMap Name NameData
 
 type NameData = uses: U32
 
-Context.use_name (context: !Context) (name: Name) =
-    if context.names.get_mut &name is Some data then
+Context.use_name (context: mut Context) (name: Name) =
+    if context.names.get_mut (ref name) is Some data then
         data.uses += 1
 ```
 
-Because the `HashMap.get_mut` method requires a `!own HashMap a b`, we would normally be required to have an
-owned `Context` as well. Since there are no possible aliases to the context in scope however, we
-can locally treat it as owned and get a `!own NameData` anyway. Users of `Context.use_name` are
+Because the `HashMap.get_mut` method requires a `xcl HashMap a b`, we would normally be required to have a
+`xcl Context` as well. Since there are no possible aliases to the context in scope however, we
+can locally treat it as `xcl` and get a `xcl NameData` anyway. Users of `Context.use_name` are
 now less constrained in how they use their `Context` since they may pass in an owned or shared object.
 
 #### Shared Types
 
-Shared types (not to be confused with shared references) are a way to opt-out of
+Shared types are a way to opt-out of
 ownership rules for a type by automatically wrapping it in a copy-able wrapper.
-These types can be declared via `shared type` or `shared mut type` and also
-do not require explicit boxing (they are always boxed):
+These types can be declared via `shared type` and also do not require explicit boxing (they are always boxed):
 
 ```ante
 // Immutable shared type
@@ -1596,24 +1605,8 @@ Taking the reference of a field of a `shared` type will always yield a shared re
 ```ante
 expr = Expr.Int 3
 
-// Even immutable references into shared types are always shared
-my_ref: &Expr = &expr
-```
-
-Since taking the reference of a tagged-union's field requires an `own`ed reference (tagged-unions do
-not have stable shapes since they may be mutated to a different union variant), when matching on
-`shared` types they are automatically copied:
-
-```ante
-eval1 (e: Expr) =
-    match &e  // Warning: implicit copy occurs here when trying to get a reference to `e`'s fields 
-    | Int x -> x
-    ...
-
-eval2 (e: Expr) =
-    match e  // Ok (copied)
-    | Int x -> x
-    ...
+// We can obtain imm references inside shared types since they may not be mutated
+my_ref: imm Expr = imm expr
 ```
 
 ##### Shared Mutable Types
@@ -1640,25 +1633,51 @@ main () =
     assert_eq alias2 (Int 0)
 ```
 
-Unlike normal shared types, shared mutable types are not thread-safe.
+Unlike normal shared types, shared mutable types allow mutation into their shared contents and are thus not thread-safe.
+
+Since their contents may be mutated while other copies exist, we cannot obtain an `imm` reference to the contents
+of a `shared mut` type. We can however, obtain `ref` or `mut` references:
+
+```ante
+expr = MutExpr.Int 3
+
+ref1: ref Expr = ref expr
+ref2: mut Expr = mut expr
+```
+
+Since taking the reference of a tagged-union's field requires a `imm` or `xcl` reference (tagged-unions do
+not have stable shapes since they may be mutated to a different union variant), when matching on
+`shared mut` types, they are automatically copied:
+
+```ante
+eval1 (e: Expr) =
+    match ref e  // error: Getting a reference to a union's fields requires an `imm` or `xcl` reference
+    | Int x -> x
+    ...
+
+eval2 (e: Expr) =
+    match e  // Ok (copied)
+    | Int x -> x
+    ...
+```
 
 ### Internal Mutability
 
-Since mutating through an immutably borrowed reference `&t` is otherwise impossible,
-Ante provides several types for "internal mutability." `RefCell t` will be
+Since mutating through an immutably borrowed reference `imm t` is otherwise impossible,
+Ante provides several types for internal mutability. `RefCell t` will be
 a familiar sight to those used to Rust, but using this type entails runtime
-checking to uphold the properties of an owned reference (either a mutable reference
+checking to uphold the properties of the `imm`/`xcl` references (either a mutable reference
 can be made or multiple immutable references, but never both at once).
 
 Since Ante natively supports shared references, it is also possibly to obtain a
 shared reference directly through a shared pointer type like an `Rc t`:
 
 ```ante
-as_mut (rc: !own Rc t) : !t = ...
+as_mut (rc: xcl Rc t): mut t = ...
 ```
 
 Note that like most pointer types, we still need an owned reference of the
-pointer itself to obtain a reference to the inside. This is because otherwise,
+pointer itself to obtain a reference to the inside. Otherwise,
 the value would be able to drop out from under us if another shared reference
 to the pointer swapped out the Rc struct itself for another. As a result, mutating
 an `Rc t` often requires cloning the outer Rc to ensure it isn't dropped while the
@@ -1675,10 +1694,6 @@ types to do the pointer-wrapping for you.
 This is essentially how many higher level languages make shared mutability work: by boxing
 each value. When we employ this strategy in Ante however, we don't even need to box every
 value. Just boxing container elements and union data is often sufficient.
-
-If an owned reference `&own t` or `!own t` is ever required however,
-a different type such as `RefCell t` would still need to be used to provide
-the runtime tracking required to enforce this constraint.
 
 ## Thread Safety
 
@@ -2556,7 +2571,7 @@ effect Use a with
     get: fn Unit -> a
     put: fn a -> Unit
 
-state (mut current_state: s) (f: Unit -> a can Use s) : a =
+state (var current_state: s) (f: Unit -> a can Use s) : a =
     handle f ()
     | get () -> resume current_state
     | put new_state ->

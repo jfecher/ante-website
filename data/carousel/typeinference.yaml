@@ -4,20 +4,18 @@ description: >
     <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="c1">// A collection c of elements of type e</span>
 
     <span class="k">trait</span> <span class="kt">Collection c</span> -> <span class="kt">e</span> <span class="k">with</span> 
-        len: <span class="kt">c</span> -> <span class="kt">Usz</span>
-        get: <span class="kt">c</span> -> index:<span class="kt">Usz</span> -> <span class="kt">e</span>
+        len: <span class="k">fn</span> <span class="kt">c</span> -> <span class="kt">Usz</span>
+        get: <span class="k">fn</span> <span class="kt">c</span> (index: <span class="kt">Usz</span>) -> <span class="kt">e</span>
 
-    <span class="k">trait</span> <span class="kt">Show t</span> <span class="k">with</span> to_string: <span class="kt">t</span> -> <span class="kt">String</span>
+    <span class="k">trait</span> <span class="kt">Show t</span> <span class="k">with</span> to_string: <span class="k">fn</span> <span class="kt">t</span> -> <span class="kt">String</span>
 
 
-    <span class="k">effect</span> <span class="kt">Print</span> <span class="k">with</span> print: <span class="kt">String</span> -> <span class="kt">Unit</span>
+    <span class="k">effect</span> <span class="kt">Print</span> <span class="k">with</span> print: <span class="k">fn</span> <span class="kt">String</span> -> <span class="kt">Unit</span>
 
 
     <span class="c1">// Inferred type:
 
-    // elem_to_string: a -> Usz -> String
-
-    //    given Collection a b, Show b
+    // elem_to_string: fn a Usz {Collection a b} {Show b} -> String
 
     //    can Print</span>
 
