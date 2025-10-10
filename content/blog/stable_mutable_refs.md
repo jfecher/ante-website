@@ -607,6 +607,11 @@ main () =
     list.push 1
 ```
 
+The above example relies on the implementation for `shared type` (which is configurable
+in a binary application) supporting cycle collection, otherwise it will leak. If we wanted
+to though, we could manually represent it with `Rc` and `Weak` pointers to break the cycles.
+Either way, mutating these via shared, mutable references is still sound.
+
 ---
 
 # Closing Thoughts
