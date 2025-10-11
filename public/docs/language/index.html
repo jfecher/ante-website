@@ -3533,7 +3533,7 @@ checking to uphold the properties of the <code>imm</code>/<code>uniq</code> refe
 can be made or multiple immutable references, but never both at once).</p>
 <p>Since Ante natively supports shared references, it is also possibly to obtain a
 shared reference directly through a shared pointer type like an <code>Rc t</code>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">as_mut</span> <span class="p">(</span><span class="n">rc</span><span class="o">:</span> <span class="n">uniq</span> <span class="kt">Rc</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">mut</span> <span class="n">t</span> <span class="ow">=</span> <span class="o">...</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">as_mut</span> <span class="p">(</span><span class="n">rc</span><span class="o">:</span> <span class="k">uniq</span> <span class="kt">Rc</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">mut</span> <span class="n">t</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><p>Note that like most pointer types, we still need an owned reference of the
 pointer itself to obtain a reference to the inside. Otherwise,
 the value would be able to drop out from under us if another shared reference
