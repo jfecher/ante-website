@@ -2312,10 +2312,15 @@
 in the sense that types are not boxed by default and programmers can still
 delve down to optimize allocation/representation of memory if desired. A
 central goal of ante however, is to not force this upon users and provide
-sane defaults where possible.
-Compared to other low-level languages, ante is safe like rust but tries
+sane defaults where possible. This can be seen in the ability to opt-out
+of move semantics and even temporary references much of the time by using
+shared types which resemble programming in a garbage-collected language
+with boxed values.</p>
+<p>Compared to other low-level languages, ante is memory safe like rust but tries
 to be easier in general, for example by allowing shared mutability by
-default and avoiding the need for lifetime annotations.</p>
+default. Generally, application-level Ante code is meant to be written with
+shared types to enable high-level code, while libraries are meant to use
+ownership &amp; borrowing internally to improve performance.</p>
 <hr>
 <h1 id="literals">Literals</h1>
 <h2 id="integers">Integers</h2>
@@ -3415,16 +3420,26 @@ if the value is set to <code>None</code>, but notably excludes fields of a struc
 using <code>x</code> as a <code>imm t</code> reference - it isn&rsquo;t possible for <code>y</code> to outlive its temporary lifetime. When <code>return_ref</code> is called
 we borrow <code>x</code> as a <code>ref</code> again, and this time may not use <code>x</code> again until <code>foo</code> is dropped.</p>
 <p>Going the other way around from <code>ref</code> or <code>mut</code> to <code>imm</code> or <code>uniq</code>, however, requires the compiler to show that the reference is
-not mutably aliased. To do this, all possible aliases of the given reference in scope
-must not used while the converted <code>imm</code> or <code>uniq</code> is in scope:</p>
+not mutably aliased. To do this, two restrictions must be imposed on the resulting reference:</p>
+<ol>
+<li>
+<p>All possible aliases of the given reference in scope must not used while the converted <code>imm</code> or <code>uniq</code> is in scope:</p>
+</li>
+<li>
+<p>The converted <code>imm</code> or <code>uniq</code> reference may not be returned from a function. Since the compiler only prevents
+possible aliases in the current scope from being mutated, it&rsquo;d be unsafe to use such a reference in the scope
+of the calling function.</p>
+</li>
+</ol>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">shared_to_owned</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span>
     <span class="n">requires_owned</span> <span class="n">x</span>  <span class="c1">// ok, no other alias in scope</span>
 
 <span class="nf">requires_owned</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="k">imm</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span> <span class="o">...</span>
-</code></pre></div><p>This greatly increases the flexibility of <code>ref</code> and <code>mut</code> by locally refining them in scopes where we
-can see no mutable alias is used, which allows functions which are normally unsafe in the presence of
-mutable aliasing (such as <code>Vec.get</code> without cloning the result) to be called.</p>
-<p>This &ldquo;no alias may be used&rdquo; restriction is important for preventing use of values which may have been dropped:</p>
+
+<span class="nf">upgrade_invalid</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">mut</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">uniq</span> <span class="n">t</span> <span class="ow">=</span>
+    <span class="c1">// error! Cannot return a uniq reference created from a mut reference - it may be aliased by the caller</span>
+    <span class="n">x</span>
+</code></pre></div><p>This &ldquo;no alias may be used&rdquo; restriction is important for preventing use of values which may have been dropped:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">invalid_shared_to_owned</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span>
     <span class="c1">// Remember that retrieving a reference to a Vec&#39;s element requires an owned reference</span>
     <span class="n">element_ref</span> <span class="ow">=</span> <span class="n">x</span><span class="o">.</span><span class="n">get</span> <span class="mi">0</span> <span class="o">|&gt;</span> <span class="n">unwrap</span>
@@ -3446,19 +3461,24 @@ shared reference may be derived from the struct value. Additionally, possibly-cy
 themselves. Otherwise, you could obtain two owned, mutable references to the same value by following the cycle
 back to the original node.</p>
 <p>Even with these restrictions, the ability to convert <code>ref</code> and <code>mut</code> to <code>imm</code> and <code>uniq</code>
-lets us write more functions with less requirements on the arguments they are called with (since they would
-now accept references which may be mutably aliased). Consider the following function:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Context</span> <span class="ow">=</span> <span class="n">names</span><span class="o">:</span> <span class="kt">HashMap</span> <span class="kt">Name</span> <span class="kt">NameData</span>
+lets us write more functions with fewer requirements on the arguments they are called with (since they would
+now accept references which may be mutably aliased, including <code>shared mut</code> types). Consider the following function:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Context</span> <span class="ow">=</span> <span class="n">names</span><span class="o">:</span> <span class="kt">HashMap</span> <span class="kt">String</span> <span class="kt">NameData</span>
 
 <span class="k">type</span> <span class="kt">NameData</span> <span class="ow">=</span> <span class="n">uses</span><span class="o">:</span> <span class="kt">U32</span>
 
-<span class="kt">Context</span><span class="o">.</span><span class="n">use_name</span> <span class="p">(</span><span class="n">context</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Context</span><span class="p">)</span> <span class="p">(</span><span class="n">name</span><span class="o">:</span> <span class="kt">Name</span><span class="p">)</span> <span class="ow">=</span>
-    <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">names</span><span class="o">.</span><span class="n">get_mut</span> <span class="p">(</span><span class="k">ref</span> <span class="n">name</span><span class="p">)</span> <span class="k">is</span> <span class="kt">Some</span> <span class="n">data</span> <span class="k">then</span>
+<span class="kt">Context</span><span class="o">.</span><span class="n">use_name</span> <span class="p">(</span><span class="n">context</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Context</span><span class="p">)</span> <span class="p">(</span><span class="n">name</span><span class="o">:</span> <span class="k">imm</span> <span class="kt">String</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">names</span><span class="o">.</span><span class="n">get_mut</span> <span class="n">name</span> <span class="k">is</span> <span class="kt">Some</span> <span class="n">data</span> <span class="k">then</span>
         <span class="n">data</span><span class="o">.</span><span class="n">uses</span> <span class="o">+=</span> <span class="mi">1</span>
 </code></pre></div><p>Because the <code>HashMap.get_mut</code> method requires a <code>uniq HashMap a b</code>, we would normally be required to have a
 <code>uniq Context</code> as well. Since there are no possible aliases to the context in scope however, we
 can locally treat it as <code>uniq</code> and get a <code>uniq NameData</code> anyway. Users of <code>Context.use_name</code> are
 now less constrained in how they use their <code>Context</code> since they may pass in an owned or shared object.</p>
+<p>Also note the use of <code>name: imm String</code> over <code>name: ref String</code>, this is because <code>context</code> is being converted
+to a <code>uniq Context</code>, which requires no alias of it be mutated. As a <code>ref String</code> could potentially be
+from the <code>Context.names</code> field, we&rsquo;d get an error if we tried using a <code>uniq Context</code> and our <code>name: ref String</code> parameter
+simultaneously. The solution then is either to take <code>name</code> by value or as a reference type such as <code>imm</code> which cannot
+alias with <code>mut</code>/<code>ref</code> references.</p>
 <h4 id="shared-types">Shared Types</h4>
 <p>Shared types are a way to opt-out of
 ownership rules for a type by automatically wrapping it in a copy-able wrapper.

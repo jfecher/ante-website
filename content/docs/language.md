@@ -10,10 +10,16 @@ Ante is a low-level impure functional programming language. It is low-level
 in the sense that types are not boxed by default and programmers can still
 delve down to optimize allocation/representation of memory if desired. A
 central goal of ante however, is to not force this upon users and provide
-sane defaults where possible.
-Compared to other low-level languages, ante is safe like rust but tries
+sane defaults where possible. This can be seen in the ability to opt-out
+of move semantics and even temporary references much of the time by using
+shared types which resemble programming in a garbage-collected language
+with boxed values.
+
+Compared to other low-level languages, ante is memory safe like rust but tries
 to be easier in general, for example by allowing shared mutability by
-default and avoiding the need for lifetime annotations.
+default. Generally, application-level Ante code is meant to be written with
+shared types to enable high-level code, while libraries are meant to use
+ownership & borrowing internally to improve performance.
 
 ---
 # Literals
@@ -1508,19 +1514,24 @@ using `x` as a `imm t` reference - it isn't possible for `y` to outlive its temp
 we borrow `x` as a `ref` again, and this time may not use `x` again until `foo` is dropped.
 
 Going the other way around from `ref` or `mut` to `imm` or `uniq`, however, requires the compiler to show that the reference is
-not mutably aliased. To do this, all possible aliases of the given reference in scope
-must not used while the converted `imm` or `uniq` is in scope:
+not mutably aliased. To do this, two restrictions must be imposed on the resulting reference:
+
+1. All possible aliases of the given reference in scope must not used while the converted `imm` or `uniq` is in scope:
+
+2. The converted `imm` or `uniq` reference may not be returned from a function. Since the compiler only prevents
+possible aliases in the current scope from being mutated, it'd be unsafe to use such a reference in the scope
+of the calling function.
 
 ```ante
 shared_to_owned (x: ref t) =
     requires_owned x  // ok, no other alias in scope
 
 requires_owned (y: imm t) = ...
-```
 
-This greatly increases the flexibility of `ref` and `mut` by locally refining them in scopes where we
-can see no mutable alias is used, which allows functions which are normally unsafe in the presence of
-mutable aliasing (such as `Vec.get` without cloning the result) to be called.
+upgrade_invalid (x: mut t): uniq t =
+    // error! Cannot return a uniq reference created from a mut reference - it may be aliased by the caller
+    x
+```
 
 This "no alias may be used" restriction is important for preventing use of values which may have been dropped:
 
@@ -1553,16 +1564,16 @@ themselves. Otherwise, you could obtain two owned, mutable references to the sam
 back to the original node.
 
 Even with these restrictions, the ability to convert `ref` and `mut` to `imm` and `uniq`
-lets us write more functions with less requirements on the arguments they are called with (since they would
-now accept references which may be mutably aliased). Consider the following function:
+lets us write more functions with fewer requirements on the arguments they are called with (since they would
+now accept references which may be mutably aliased, including `shared mut` types). Consider the following function:
 
 ```ante
-type Context = names: HashMap Name NameData
+type Context = names: HashMap String NameData
 
 type NameData = uses: U32
 
-Context.use_name (context: mut Context) (name: Name) =
-    if context.names.get_mut (ref name) is Some data then
+Context.use_name (context: mut Context) (name: imm String) =
+    if context.names.get_mut name is Some data then
         data.uses += 1
 ```
 
@@ -1570,6 +1581,12 @@ Because the `HashMap.get_mut` method requires a `uniq HashMap a b`, we would nor
 `uniq Context` as well. Since there are no possible aliases to the context in scope however, we
 can locally treat it as `uniq` and get a `uniq NameData` anyway. Users of `Context.use_name` are
 now less constrained in how they use their `Context` since they may pass in an owned or shared object.
+
+Also note the use of `name: imm String` over `name: ref String`, this is because `context` is being converted
+to a `uniq Context`, which requires no alias of it be mutated. As a `ref String` could potentially be
+from the `Context.names` field, we'd get an error if we tried using a `uniq Context` and our `name: ref String` parameter
+simultaneously. The solution then is either to take `name` by value or as a reference type such as `imm` which cannot
+alias with `mut`/`ref` references.
 
 #### Shared Types
 
