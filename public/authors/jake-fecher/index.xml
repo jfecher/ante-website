@@ -6,7 +6,18 @@
     <description>Recent content in Jake Fecher on Ante</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 21 Aug 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://antelang.org/authors/jake-fecher/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 22 Oct 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://antelang.org/authors/jake-fecher/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>A Vision for Future Low-Level Languages</title>
+      <link>https://antelang.org/blog/vision_for_ante/</link>
+      <pubDate>Wed, 22 Oct 2025 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/blog/vision_for_ante/</guid>
+      <description>⚠️ This article is a draft and may still have substantial changes before it is finalized!
+ A Vision for Future Low-Level Languages I&amp;rsquo;ve had this vision in my head for quite a while now on what code written in a low-level language could look like. This vision has shaped my design of Ante and although I&amp;rsquo;ve alluded to it before, I&amp;rsquo;ve never explicitly stated it until now.
+Now, what makes a language low-level is a bit contentious.</description>
+    </item>
+    
     <item>
       <title>Stable, Mutable References</title>
       <link>https://antelang.org/blog/stable_mutable_refs/</link>

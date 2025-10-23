@@ -63,7 +63,7 @@
 
 
 
-<meta property="og:updated_time" content="2025-08-21T00:00:00Z">
+<meta property="og:updated_time" content="2025-10-22T00:00:00Z">
 
 
 
@@ -579,6 +579,72 @@ elem_to_string c i =
                         <div class="top">
                             <div class="image" style="overflow:hidden">
                                 
+                                <img src="/img/banners/anteater3.jpg" class="img-responsive" alt="" >
+                                
+                            </div>
+                            <div class="bg"></div>
+                            <div class="text">
+                                <p class="buttons">
+                                    <a href="https://antelang.org/blog/vision_for_ante/" class="btn btn-template-transparent-primary"><i class="fas fa-link"></i> Read more</a>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="content">
+                            <h4><a href="https://antelang.org/blog/vision_for_ante/">A Vision for Future Low-Level Languages</a></h4>
+                            <p class="author-category">
+			    
+			      By <a href="/authors/jake-fecher">Jake Fecher</a>
+                            
+                            
+                                
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                on 2025-10-22
+                            
+                            </p>
+                            
+                            <p class="intro">⚠️ This article is a draft and may still have substantial changes before it is finalized!
+ A Vision for Future Low-Level Languages I&rsquo;ve had this vision in my head for quite a while now on what code written in a low-level language could look like. This vision has shaped my design of Ante and although I&rsquo;ve alluded to it before, I&rsquo;ve never explicitly stated it until now.
+Now, what makes a language low-level is a bit contentious.</p>
+                            <p class="read-more">
+                              <a href="https://antelang.org/blog/vision_for_ante/" class="btn btn-template-main">Continue reading</a>
+                            </p>
+                            
+                        </div>
+                    </div>
+                    
+
+                </div>
+                
+                <div class="col-md-3 col-sm-6">
+                    <div class="box-image-text blog">
+                        <div class="top">
+                            <div class="image" style="overflow:hidden">
+                                
                                 <img src="/img/banners/antelope_flowers_cropped.jpg" class="img-responsive" alt="" >
                                 
                             </div>
@@ -767,72 +833,6 @@ What is a shape-unstable type?</p>
 
                 </div>
                 
-                <div class="col-md-3 col-sm-6">
-                    <div class="box-image-text blog">
-                        <div class="top">
-                            <div class="image" style="overflow:hidden">
-                                
-                                <img src="/img/banners/anteater2_cropped.jpg" class="img-responsive" alt="" >
-                                
-                            </div>
-                            <div class="bg"></div>
-                            <div class="text">
-                                <p class="buttons">
-                                    <a href="https://antelang.org/blog/effects_ownership_and_borrowing/" class="btn btn-template-transparent-primary"><i class="fas fa-link"></i> Read more</a>
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="content">
-                            <h4><a href="https://antelang.org/blog/effects_ownership_and_borrowing/">Algebraic Effects, Ownership, and Borrowing</a></h4>
-                            <p class="author-category">
-			    
-			      By <a href="/authors/jake-fecher">Jake Fecher</a>
-                            
-                            
-                                
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                on 2024-02-20
-                            
-                            </p>
-                            
-                            <p class="intro">Introduction Algebraic Effects are a useful abstraction for reasoning about effectful programs by letting us leave the interpretation of these effects to callers. However, most existing literature discusses these in the context of a pure functional language with pervasive sharing of values. What restrictions would we need to introduce algebraic effects into a language with ownership and borrowing - particularly Ante?1
- Ownership Consider the following program:
-effect Read a with read : Unit -&gt; a the_value (value: a) (f: Unit -&gt; b can Read a) : b = handle f () | read () -&gt; resume value This seems like it&rsquo;d pass type checking at first glance, but we can easily construct a program that tries to use the same moved value twice:</p>
-                            <p class="read-more">
-                              <a href="https://antelang.org/blog/effects_ownership_and_borrowing/" class="btn btn-template-main">Continue reading</a>
-                            </p>
-                            
-                        </div>
-                    </div>
-                    
-
-                </div>
-                
 
             </div>
             
@@ -867,6 +867,19 @@ effect Read a with read : Unit -&gt; a the_value (value: a) (f: Unit -&gt; b can
                 
                 <div class="item same-height-row clearfix">
                     <div class="image same-height-always">
+                        <a href="https://antelang.org/blog/vision_for_ante/">
+                          
+                            <img src="/img/banners/anteater3.jpg" class="img-responsive" alt="A Vision for Future Low-Level Languages">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/blog/vision_for_ante/">A Vision for Future Low-Level Languages</a></h5>
+                    </div>
+                </div>
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
                         <a href="https://antelang.org/blog/stable_mutable_refs/">
                           
                             <img src="/img/banners/antelope_flowers_cropped.jpg" class="img-responsive" alt="Stable, Mutable References">
@@ -888,19 +901,6 @@ effect Read a with read : Unit -&gt; a the_value (value: a) (f: Unit -&gt; b can
                     </div>
                     <div class="name same-height-always">
                         <h5><a href="https://antelang.org/blog/why_effects/">Why Algebraic Effects?</a></h5>
-                    </div>
-                </div>
-                
-                <div class="item same-height-row clearfix">
-                    <div class="image same-height-always">
-                        <a href="https://antelang.org/blog/simplification_through_addition/">
-                          
-                            <img src="/img/banners/antelope_canyon_cropped.jpg" class="img-responsive" alt="Simplification Through Addition">
-                          
-                        </a>
-                    </div>
-                    <div class="name same-height-always">
-                        <h5><a href="https://antelang.org/blog/simplification_through_addition/">Simplification Through Addition</a></h5>
                     </div>
                 </div>
                 
