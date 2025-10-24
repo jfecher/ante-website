@@ -1,7 +1,7 @@
 +++
 authors = ["Jake Fecher"]
 title = "A Vision for Future Low-Level Languages"
-date = "2025-10-22"
+date = "2025-10-24"
 categories = ["ideals"]
 banner = "img/banners/anteater3.jpg"
 +++
