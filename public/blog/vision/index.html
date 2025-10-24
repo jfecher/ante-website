@@ -35,7 +35,7 @@
 
 
 
-<link href="/css/custom.css" rel="stylesheet">
+<link href="/css/custom.css?1761322724" rel="stylesheet">
 
 
 
@@ -718,8 +718,8 @@ patterns as well:</p>
     <span class="n">next</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="p">(</span><span class="kt">NonEmptyList</span> <span class="n">a</span><span class="p">)</span>
 
 <span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span>
-    <span class="k">var</span> <span class="n">head</span> <span class="ow">=</span> <span class="kt">NonEmptyList</span> <span class="mi">0</span> <span class="kt">None</span>
-    <span class="k">var</span> <span class="n">tail</span> <span class="ow">=</span> <span class="kt">NonEmptyList</span> <span class="mi">1</span> <span class="kt">None</span>
+    <span class="n">var</span> <span class="n">head</span> <span class="ow">=</span> <span class="kt">NonEmptyList</span> <span class="mi">0</span> <span class="kt">None</span>
+    <span class="n">var</span> <span class="n">tail</span> <span class="ow">=</span> <span class="kt">NonEmptyList</span> <span class="mi">1</span> <span class="kt">None</span>
     <span class="n">head</span><span class="o">.</span><span class="n">next</span> <span class="o">:=</span> <span class="kt">Some</span> <span class="n">tail</span>
     <span class="n">tail</span><span class="o">.</span><span class="n">next</span> <span class="o">:=</span> <span class="kt">Some</span> <span class="n">head</span>
 
@@ -748,8 +748,8 @@ or in <a href="/blog/safe-shared-mutability">the blog post where they were first
     <span class="n">next</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="p">(</span><span class="kt">Rc</span> <span class="p">(</span><span class="kt">NonEmptyList</span> <span class="n">a</span><span class="p">))</span>
 
 <span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span>
-    <span class="k">var</span> <span class="n">head</span> <span class="ow">=</span> <span class="kt">Rc</span><span class="o">.</span><span class="n">of</span> <span class="p">(</span><span class="kt">NonEmptyList</span> <span class="mi">0</span> <span class="kt">None</span><span class="p">)</span>
-    <span class="k">var</span> <span class="n">tail</span> <span class="ow">=</span> <span class="kt">Rc</span><span class="o">.</span><span class="n">of</span> <span class="p">(</span><span class="kt">NonEmptyList</span> <span class="mi">1</span> <span class="kt">None</span><span class="p">)</span>
+    <span class="n">var</span> <span class="n">head</span> <span class="ow">=</span> <span class="kt">Rc</span><span class="o">.</span><span class="n">of</span> <span class="p">(</span><span class="kt">NonEmptyList</span> <span class="mi">0</span> <span class="kt">None</span><span class="p">)</span>
+    <span class="n">var</span> <span class="n">tail</span> <span class="ow">=</span> <span class="kt">Rc</span><span class="o">.</span><span class="n">of</span> <span class="p">(</span><span class="kt">NonEmptyList</span> <span class="mi">1</span> <span class="kt">None</span><span class="p">)</span>
     <span class="p">(</span><span class="n">head</span><span class="o">.</span><span class="n">as_mut</span> <span class="p">())</span><span class="o">.</span><span class="n">next</span> <span class="o">:=</span> <span class="kt">Some</span> <span class="n">tail</span>
     <span class="p">(</span><span class="n">tail</span><span class="o">.</span><span class="n">as_mut</span> <span class="p">())</span><span class="o">.</span><span class="n">next</span> <span class="o">:=</span> <span class="kt">Some</span> <span class="n">head</span>
 
@@ -761,7 +761,7 @@ also mutable references which may not be unique (spelled <code>mut</code>), yet 
 <span class="c1">// we can only give out shared references to the contents. Also note that requiring a unique reference</span>
 <span class="c1">// here instead of a shared one ensures the reference count stays at least one while the returned</span>
 <span class="c1">// reference is alive.</span>
-<span class="kt">Rc</span><span class="o">.</span><span class="n">as_mut</span> <span class="p">(</span><span class="n">self</span><span class="o">:</span> <span class="k">uniq</span> <span class="kt">Rc</span> <span class="n">a</span><span class="p">)</span><span class="o">:</span> <span class="k">mut</span> <span class="n">a</span> <span class="ow">=</span> <span class="o">...</span>
+<span class="kt">Rc</span><span class="o">.</span><span class="n">as_mut</span> <span class="p">(</span><span class="n">self</span><span class="o">:</span> <span class="n">uniq</span> <span class="kt">Rc</span> <span class="n">a</span><span class="p">)</span><span class="o">:</span> <span class="k">mut</span> <span class="n">a</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><p>Specifics aside, shared mutability comes with its own fair share of difficulties but is ultimately still important
 for low-level languages today. I&rsquo;m generally of the mind that it should be avoided when possible,
 but when it is needed it can still be simpler than the alternatives. Determining &ldquo;when it is needed&rdquo; is left
@@ -851,7 +851,7 @@ mock objects instead of ad-hoc untracked effects.</p>
 <p>From a language design perspective, Ante uses Rust as a base, adding on rules for shared mutability and effects, among other things.
 Ask many non-Rust programmers though and they&rsquo;ll tell you one of if not the main reason they don&rsquo;t use Rust is because of
 its complexity and therefore difficulty. I want to challenge this equivalence though. On the other end of things, we often
-here of languages being very simple and thus easy to use. Indeed, simplicity is often used as a reason to cut otherwise useful
+hear of languages being very simple and thus easy to use. Indeed, simplicity is often used as a reason to cut otherwise useful
 features out of languages (such as generics in the original version of Go) in pursuit of an idealistic minimal language.
 Taken to its extreme though, its trivial to see that prioritization of simplicity of language design over all else does <em>not</em>
 simplify things for the programmer. Just look at the <a href="https://en.wikipedia.org/wiki/Brainfuck">Brainfuck</a> language - it only

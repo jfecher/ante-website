@@ -383,7 +383,7 @@ mock objects instead of ad-hoc untracked effects.
 From a language design perspective, Ante uses Rust as a base, adding on rules for shared mutability and effects, among other things.
 Ask many non-Rust programmers though and they'll tell you one of if not the main reason they don't use Rust is because of
 its complexity and therefore difficulty. I want to challenge this equivalence though. On the other end of things, we often
-here of languages being very simple and thus easy to use. Indeed, simplicity is often used as a reason to cut otherwise useful 
+hear of languages being very simple and thus easy to use. Indeed, simplicity is often used as a reason to cut otherwise useful 
 features out of languages (such as generics in the original version of Go) in pursuit of an idealistic minimal language.
 Taken to its extreme though, its trivial to see that prioritization of simplicity of language design over all else does _not_
 simplify things for the programmer. Just look at the [Brainfuck](https://en.wikipedia.org/wiki/Brainfuck) language - it only
