@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="robots" content="all,follow">
+<meta name="googlebot" content="index,follow,snippet,archive">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>A Vision for Future Low-Level Languages</title>
+<meta name="author" content="Jake Fecher" />
+
+
+
+
+<meta name="keywords" content="ante, programming, language, antelang, lang">
+
+
+<meta name="description" content="">
+
+<meta name="generator" content="Hugo 0.89.0-DEV" />
+
+
+<link href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800' rel='stylesheet' type='text/css'>
+
+
+<link rel="stylesheet" href="//use.fontawesome.com/releases/v5.11.2/css/all.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+
+<link href="/css/animate.css" rel="stylesheet">
+
+
+
+  <link href="/css/style.red.css" rel="stylesheet" id="theme-stylesheet">
+
+
+
+<link href="/css/custom.css" rel="stylesheet">
+
+
+
+  <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+
+
+<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon" />
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
+
+
+<link href="/css/owl.carousel.css" rel="stylesheet">
+<link href="/css/owl.theme.css" rel="stylesheet">
+
+
+<link rel="alternate" href="https://antelang.org/index.xml" type="application/rss+xml" title="Ante">
+
+
+
+
+
+
+
+
+<meta property="og:locale" content="en_us">
+<meta property="og:site_name" content="Ante">
+<meta property="og:title" content="A Vision for Future Low-Level Languages">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://antelang.org/blog/vision/" />
+<meta property="og:description" content="">
+<meta property="og:image" content="https://antelang.org/img/banners/anteater3.jpg">
+<meta property="og:image:type" content="image/jpg">
+
+
+
+  <meta property="og:image:width" content="960">
+  <meta property="og:image:height" content="638">
+
+
+<meta property="og:updated_time" content="2025-10-24T00:00:00Z">
+
+  
+  
+  <meta property="article:section" content="ideals">
+  
+  
+  <meta property="article:published_time" content="2025-10-24T00:00:00Z">
+  <meta property="article:modified_time" content="2025-10-24T00:00:00Z">
+
+
+
+<meta name="twitter:card" content="summary_large_image">
+
+<meta name="twitter:title" content="A Vision for Future Low-Level Languages">
+
+<meta name="twitter:image" content="https://antelang.org/img/banners/anteater3.jpg">
+
+<meta name="twitter:description" content="">
+
+
+      <meta charset="utf-8">
+  <meta name="robots" content="all,follow">
+  <meta name="googlebot" content="index,follow,snippet,archive">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A Vision for Future Low-Level Languages</title>
+  <meta name="author" content="" />
+
+  <meta name="keywords" content="ante, programming, language, antelang, lang">	
+  <meta name="description" content="For exploring algebraic effects, safe shared mutability, and other novel features">
+
+  <meta name="generator" content="Hugo 0.89.0-DEV" />
+
+  <link href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800' rel='stylesheet' type='text/css'>
+
+  
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+  
+  <link href="https://antelang.org/css/animate.css" rel="stylesheet">
+
+  
+  
+    <link href="https://antelang.org/css/style.red.css" rel="stylesheet" id="theme-stylesheet">
+  
+
+
+  
+  <link href="https://antelang.org/css/custom.css" rel="stylesheet">
+ 
+  
+  <link rel="stylesheet" href="https://antelang.org/css/syntax.css">
+
+  
+  
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  
+
+  
+  <link rel="shortcut icon" href="https://antelang.org/img/favicon.ico" type="image/x-icon" />
+  <link rel="apple-touch-icon" href="https://antelang.org/img/apple-touch-icon.png" />
+  
+
+  <link href="https://antelang.org/css/owl.carousel.css" rel="stylesheet">
+  <link href="https://antelang.org/css/owl.theme.css" rel="stylesheet">
+
+  <link rel="alternate" href="https://antelang.org/index.xml" type="application/rss+xml" title="Ante">
+
+  
+  <meta property="og:title" content="A Vision for Future Low-Level Languages" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://antelang.org/blog/vision//" />
+  <meta property="og:image" content="" />
+
+  </head>
+
+  <body>
+    <div id="all">
+        
+
+        
+
+    <div class="navbar navbar-default yamm" role="navigation" id="navbar">
+
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand home" href="https://antelang.org/">
+                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="A Vision for Future Low-Level Languages" class="hidden-xs hidden-sm">
+                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="A Vision for Future Low-Level Languages" class="visible-xs visible-sm">
+                    <span class="sr-only">A Vision for Future Low-Level Languages - go to homepage</span>
+                </a>
+                
+<div class="navbar-buttons">
+        <div class="navbar-collapse collapse" id="navigation">
+            <ul class="nav navbar-nav navbar-right">
+            
+            <li class="dropdown">
+                <a href="https://antelang.org//docs/language">Tour</a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//docs/ideas">Ideas</a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//docs/roadmap">Roadmap</a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//blog">Blog</a>
+            </li>
+
+            <li class="dropdown">
+                <a href="https://github.com/jfecher/ante"><i class="fa fa-15x fa-github"></i></a>
+            </li>
+            <li class="dropdown">
+                <a href="https://reddit.com/r/ante"><i class="fab fa-15x fa-reddit"></i></a>
+            </li>
+            <li class="dropdown">
+                <a href="https://discord.gg/NPJncGBAws"><i class="fab fa-15x fa-discord"></i></a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//index.xml"><i class="fa fa-15x fa-rss"></i></a>
+            </li>
+
+            </ul>
+        </div>
+        <button type="button" class="navbar-toggle btn-template-main" onclick="document.getElementById('navigation').classList.toggle('collapse')">
+    <span class="sr-only">Toggle Navigation</span>
+        <i class="fa fa-align-justify"></i>
+    </button>
+</div>
+
+            </div>
+            
+
+            
+            
+
+            <div class="collapse clearfix" id="search">
+
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search">
+                        <span class="input-group-btn">
+
+                    <button type="submit" class="btn btn-template-main"><i class="fa fa-search"></i></button>
+
+                </span>
+                    </div>
+                </form>
+
+            </div>
+            
+
+        </div>
+    </div>
+    
+
+
+
+
+
+        <div id="heading-breadcrumbs">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>A Vision for Future Low-Level Languages</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+        <div id="content">
+            <div class="container" id="post-container">
+                <div class="row">
+                    
+
+                    <div class="col-md-3">
+                        
+                        <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>Contents</h1>
+    </div>
+
+    
+    
+    
+    
+    <div class="table-of-contents toc bd-callout">
+        
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                    
+                    
+                    
+                    <a href="/blog/vision/#a-vision-for-future-low-level-languages">
+                        <li>A Vision for Future Low-Level Languages</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                    
+                    
+                    
+                    <a href="/blog/vision/#a-vision-for-ante">
+                        <li>A Vision for Ante</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/blog/vision/#a-high-level-shell">
+                        <li>A High-Level Shell</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/blog/vision/#a-low-level-core">
+                        <li>A Low-level Core</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/blog/vision/#other-ideals">
+                        <li>Other Ideals</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                        <ul class="toc-h3">
+                    
+                    
+                    
+                    
+                    <a href="/blog/vision/#expressivity-shared-mutability">
+                        <li>Expressivity: Shared Mutability</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                        <ul class="toc-h3">
+                    
+                    
+                    
+                    
+                    <a href="/blog/vision/#abstraction-effects">
+                        <li>Abstraction: Effects</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/blog/vision/#complexity">
+                        <li>Complexity</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                    
+                    
+                    
+                    <a href="/blog/vision/#conclusion">
+                        <li>Conclusion</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                
+            
+        
+    </div>
+    
+
+
+    
+  </div>
+</div>
+
+                        
+                    </div>
+                    
+
+                    <div class="col-md-9" id="blog-post">
+
+                        
+                          <p class="text-muted text-uppercase mb-small text-right">
+                            
+			      By <a href="/authors/jake-fecher">Jake Fecher</a>
+                            
+                            
+                            
+                              
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                                  
+                              
+                              2025-10-24
+                            
+                          </p>
+                        
+
+                        <div id="post-content">
+                          <h1 id="a-vision-for-future-low-level-languages">A Vision for Future Low-Level Languages</h1>
+<p>I&rsquo;ve had this vision in my head for quite a while now on what code written in a low-level language <em>could</em>
+look like. This vision has shaped my design of Ante and although I&rsquo;ve alluded to it before, I&rsquo;ve never explicitly
+stated it until now.</p>
+<p>Now, what makes a language low-level is a bit contentious. I&rsquo;m using it here to describe a group of languages
+I have no better descriptor for: C, C++, Rust, and Zig, among others. These are languages which programmers often
+use because they need more control (and thus predictability) of their compiled code<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>. They have
+a reputation of being difficult to use, but must it be this way? Notably, although these languages allow users
+to obtain such control, they don&rsquo;t necessarily always require it<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>. For example, any of these languages can be
+used with one of any number of libraries implementing tracing garbage-collection if so desired. Often the question
+is not what is possible but how practical it is to get what you want done.</p>
+<p>So must a low-level language really be constrained to only low-level code? I don&rsquo;t think so. What I&rsquo;m imagining
+for the future of these languages is for a language to better support both high and low-level use cases.
+One should be able to program in a high-level style without worrying about the details and should
+still be able to program at a lower level when desired - for example when writing tight loops or efficient
+libraries. This is a pattern I call &ldquo;high-level shell, low-level core.&rdquo;
+Such a pattern already occurs in Python, for example, where libraries are often written in C for greater performance.
+I just think it&rsquo;s possible for one language to do both.</p>
+<hr>
+<h1 id="a-vision-for-ante">A Vision for Ante</h1>
+<p>For me that language is Ante. It doesn&rsquo;t have to be of course - perhaps the project will run out of steam or simply
+crawl along too slowly and be outpaced by others. Even so, my hope is that by sharing this vision, more people
+may understand where I&rsquo;m coming from in desiring a new language to fill this gap.</p>
+<blockquote>
+<p>Code snippets in the rest of this article will be written in Ante, which is still in development so any
+code is subject to change in the future. Don&rsquo;t worry too much if you&rsquo;re unfamiliar
+with the language - this post is written so hopefully anyway can follow along. What is important is exploring
+the idea that we can wrap otherwise low-level code in a nice looking bow.</p>
+</blockquote>
+<hr>
+<h2 id="a-high-level-shell">A High-Level Shell</h2>
+<p>Even for otherwise low-level languages, having a high-level shell is important because it decreases friction, allowing
+programmers to spend less time on mundane parts of their program and more time on the actually important parts. It also allows new
+developers to learn a subset of the language more quickly which can help in larger teams where not everyone
+needs to be an expert.</p>
+<p>Can a low-level language even achieve the same kind of ease of use as a higher-level one though? Maybe not entirely,
+but I do think we can get much closer than the state of the art today where there are large usability gaps between the two.
+The first observation is that higher-level languages are often easier to use because their types are boxed by default
+(ie. shared by default) and they have tracing garbage collectors. This already isn&rsquo;t impossible to achieve in a lower-level
+language though - after all those languages can have boxed types as well (<code>Rc&lt;T&gt;</code>, <code>shared_ptr&lt;T&gt;</code>, etc.), and they can
+even have tracing garbage collectors as libraries. That being said, a tracing GC is probably not strictly necessary as long
+as there is some mechanism to free space.<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup></p>
+<p>Now, let&rsquo;s look at the following Ante code:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">shared</span> <span class="k">type</span> <span class="kt">Color</span> <span class="ow">=</span> <span class="o">|</span> <span class="kt">R</span> <span class="o">|</span> <span class="kt">B</span>
+
+<span class="k">shared</span> <span class="k">type</span> <span class="kt">RbTree</span> <span class="n">t</span> <span class="ow">=</span>
+    <span class="o">|</span> <span class="kt">Empty</span>
+    <span class="o">|</span> <span class="kt">Tree</span> <span class="kt">Color</span> <span class="p">(</span><span class="kt">RbTree</span> <span class="n">t</span><span class="p">)</span> <span class="n">t</span> <span class="p">(</span><span class="kt">RbTree</span> <span class="n">t</span><span class="p">)</span>
+
+<span class="nf">balance</span> <span class="p">(</span><span class="n">tree</span><span class="o">:</span> <span class="kt">RbTree</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">RbTree</span> <span class="n">t</span> <span class="ow">=</span>
+    <span class="k">match</span> <span class="n">tree</span>
+    <span class="o">|</span> <span class="kt">Tree</span> <span class="kt">B</span> <span class="p">(</span><span class="kt">Tree</span> <span class="kt">R</span> <span class="p">(</span><span class="kt">Tree</span> <span class="kt">R</span> <span class="n">a</span> <span class="n">x</span> <span class="n">b</span><span class="p">)</span> <span class="n">y</span> <span class="n">c</span><span class="p">)</span> <span class="n">z</span> <span class="n">d</span>
+    <span class="o">|</span> <span class="kt">Tree</span> <span class="kt">B</span> <span class="p">(</span><span class="kt">Tree</span> <span class="kt">R</span> <span class="n">a</span> <span class="n">x</span> <span class="p">(</span><span class="kt">Tree</span> <span class="kt">R</span> <span class="n">b</span> <span class="n">y</span> <span class="n">c</span><span class="p">))</span> <span class="n">z</span> <span class="n">d</span>
+    <span class="o">|</span> <span class="kt">Tree</span> <span class="kt">B</span> <span class="n">a</span> <span class="n">x</span> <span class="p">(</span><span class="kt">Tree</span> <span class="kt">R</span> <span class="p">(</span><span class="kt">Tree</span> <span class="kt">R</span> <span class="n">b</span> <span class="n">y</span> <span class="n">c</span><span class="p">)</span> <span class="n">z</span> <span class="n">d</span><span class="p">)</span>
+    <span class="o">|</span> <span class="kt">Tree</span> <span class="kt">B</span> <span class="n">a</span> <span class="n">x</span> <span class="p">(</span><span class="kt">Tree</span> <span class="kt">R</span> <span class="n">b</span> <span class="n">y</span> <span class="p">(</span><span class="kt">Tree</span> <span class="kt">R</span> <span class="n">c</span> <span class="n">z</span> <span class="n">d</span><span class="p">))</span> <span class="ow">-&gt;</span> <span class="kt">Tree</span> <span class="kt">R</span> <span class="p">(</span><span class="kt">Tree</span> <span class="kt">B</span> <span class="n">a</span> <span class="n">x</span> <span class="n">b</span><span class="p">)</span> <span class="n">y</span> <span class="p">(</span><span class="kt">Tree</span> <span class="kt">B</span> <span class="n">c</span> <span class="n">z</span> <span class="n">d</span><span class="p">)</span>
+    <span class="o">|</span> <span class="n">other</span> <span class="ow">-&gt;</span> <span class="n">other</span>
+</code></pre></div><p>The code above almost exactly matches the red-black tree balancing function you&rsquo;d find in a textbook. It has no
+mention of ownership, borrowing, allocations, etc. Aside from syntactical differences, the only oddity we&rsquo;d find is this <code>shared</code>
+keyword in front of the type definition - we&rsquo;ll get to what this means later. I will emphasize though that there&rsquo;s
+no magic going on here. This is all code you&rsquo;d be able to write in Rust, C++, Zig, etc., just with a bit more ceremony.</p>
+<p>Speaking of which, let&rsquo;s compare this to some roughly equivalent Rust code:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="k">use</span><span class="w"> </span><span class="n">std</span>::<span class="n">sync</span>::<span class="n">Arc</span><span class="p">;</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="cp">#[derive(Copy, Clone)]</span><span class="w">
+</span><span class="w"></span><span class="k">enum</span> <span class="nc">Color</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">R</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="k">enum</span> <span class="nc">RbTree</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="n">Empty</span><span class="p">,</span><span class="w">
+</span><span class="w">    </span><span class="n">Tree</span><span class="p">(</span><span class="n">Color</span><span class="p">,</span><span class="w"> </span><span class="n">Arc</span><span class="o">&lt;</span><span class="n">RbTree</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">Arc</span><span class="o">&lt;</span><span class="n">RbTree</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span><span class="p">),</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="k">fn</span> <span class="nf">balance</span><span class="o">&lt;</span><span class="n">T</span>: <span class="nb">Copy</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tree</span>: <span class="nc">Arc</span><span class="o">&lt;</span><span class="n">RbTree</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Arc</span><span class="o">&lt;</span><span class="n">RbTree</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">make_tree</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">|</span><span class="n">a</span>: <span class="kp">&amp;</span><span class="nc">Arc</span><span class="o">&lt;</span><span class="n">RbTree</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">b</span>: <span class="kp">&amp;</span><span class="nc">Arc</span><span class="o">&lt;</span><span class="n">RbTree</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">c</span>: <span class="kp">&amp;</span><span class="nc">Arc</span><span class="o">&lt;</span><span class="n">RbTree</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">z</span><span class="p">,</span><span class="w"> </span><span class="n">d</span>: <span class="kp">&amp;</span><span class="nc">Arc</span><span class="o">&lt;</span><span class="n">RbTree</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;|</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">clone</span><span class="p">();</span><span class="w">
+</span><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">clone</span><span class="p">();</span><span class="w">
+</span><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">clone</span><span class="p">();</span><span class="w">
+</span><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="n">clone</span><span class="p">();</span><span class="w">
+</span><span class="w">        </span><span class="n">Arc</span>::<span class="n">new</span><span class="p">(</span><span class="n">RbTree</span>::<span class="n">Tree</span><span class="p">(</span><span class="n">Color</span>::<span class="n">R</span><span class="p">,</span><span class="w"> </span><span class="n">Arc</span>::<span class="n">new</span><span class="p">(</span><span class="n">RbTree</span>::<span class="n">Tree</span><span class="p">(</span><span class="n">Color</span>::<span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">)),</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">Arc</span>::<span class="n">new</span><span class="p">(</span><span class="n">RbTree</span>::<span class="n">Tree</span><span class="p">(</span><span class="n">Color</span>::<span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">z</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="p">))))</span><span class="w">
+</span><span class="w">    </span><span class="p">};</span><span class="w">
+</span><span class="w">
+</span><span class="w">    </span><span class="k">match</span><span class="w"> </span><span class="n">tree</span><span class="p">.</span><span class="n">as_ref</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">        </span><span class="n">RbTree</span>::<span class="n">Tree</span><span class="p">(</span><span class="n">Color</span>::<span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">l_tree</span><span class="p">,</span><span class="w"> </span><span class="n">elem</span><span class="p">,</span><span class="w"> </span><span class="n">r_tree</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">            </span><span class="k">match</span><span class="w"> </span><span class="p">(</span><span class="n">l_tree</span><span class="p">.</span><span class="n">as_ref</span><span class="p">(),</span><span class="w"> </span><span class="n">r_tree</span><span class="p">.</span><span class="n">as_ref</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">                </span><span class="p">(</span><span class="n">RbTree</span>::<span class="n">Tree</span><span class="p">(</span><span class="n">Color</span>::<span class="n">R</span><span class="p">,</span><span class="w"> </span><span class="n">ll_tree</span><span class="p">,</span><span class="w"> </span><span class="n">l_elem</span><span class="p">,</span><span class="w"> </span><span class="n">lr_tree</span><span class="p">),</span><span class="w"> </span><span class="n">_</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">                    </span><span class="k">match</span><span class="w"> </span><span class="p">(</span><span class="n">ll_tree</span><span class="p">.</span><span class="n">as_ref</span><span class="p">(),</span><span class="w"> </span><span class="n">lr_tree</span><span class="p">.</span><span class="n">as_ref</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">                        </span><span class="p">(</span><span class="n">RbTree</span>::<span class="n">Tree</span><span class="p">(</span><span class="n">Color</span>::<span class="n">R</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">),</span><span class="w"> </span><span class="n">_</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">make_tree</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">l_elem</span><span class="p">,</span><span class="w"> </span><span class="n">lr_tree</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">elem</span><span class="p">,</span><span class="w"> </span><span class="n">r_tree</span><span class="p">),</span><span class="w">
+</span><span class="w">                        </span><span class="p">(</span><span class="n">_</span><span class="p">,</span><span class="w"> </span><span class="n">RbTree</span>::<span class="n">Tree</span><span class="p">(</span><span class="n">Color</span>::<span class="n">R</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">))</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">make_tree</span><span class="p">(</span><span class="n">ll_tree</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">l_elem</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">elem</span><span class="p">,</span><span class="w"> </span><span class="n">r_tree</span><span class="p">),</span><span class="w">
+</span><span class="w">                        </span><span class="n">_</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">tree</span><span class="p">,</span><span class="w">
+</span><span class="w">                    </span><span class="p">}</span><span class="w">
+</span><span class="w">                </span><span class="p">}</span><span class="w">
+</span><span class="w">                </span><span class="p">(</span><span class="n">_</span><span class="p">,</span><span class="w"> </span><span class="n">RbTree</span>::<span class="n">Tree</span><span class="p">(</span><span class="n">Color</span>::<span class="n">R</span><span class="p">,</span><span class="w"> </span><span class="n">rl_tree</span><span class="p">,</span><span class="w"> </span><span class="n">r_elem</span><span class="p">,</span><span class="w"> </span><span class="n">rr_tree</span><span class="p">))</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">                    </span><span class="k">match</span><span class="w"> </span><span class="p">(</span><span class="n">rl_tree</span><span class="p">.</span><span class="n">as_ref</span><span class="p">(),</span><span class="w"> </span><span class="n">rr_tree</span><span class="p">.</span><span class="n">as_ref</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">                        </span><span class="p">(</span><span class="n">RbTree</span>::<span class="n">Tree</span><span class="p">(</span><span class="n">Color</span>::<span class="n">R</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">),</span><span class="w"> </span><span class="n">_</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">make_tree</span><span class="p">(</span><span class="n">l_tree</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">elem</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">r_elem</span><span class="p">,</span><span class="w"> </span><span class="n">rr_tree</span><span class="p">),</span><span class="w">
+</span><span class="w">                        </span><span class="p">(</span><span class="n">_</span><span class="p">,</span><span class="w"> </span><span class="n">RbTree</span>::<span class="n">Tree</span><span class="p">(</span><span class="n">Color</span>::<span class="n">R</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">z</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="p">))</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">make_tree</span><span class="p">(</span><span class="n">l_tree</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">elem</span><span class="p">,</span><span class="w"> </span><span class="n">rl_tree</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">r_elem</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">z</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="p">),</span><span class="w">
+</span><span class="w">                        </span><span class="n">_</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">tree</span><span class="p">,</span><span class="w">
+</span><span class="w">                    </span><span class="p">}</span><span class="w">
+</span><span class="w">                </span><span class="p">}</span><span class="w">
+</span><span class="w">                </span><span class="n">_</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">tree</span><span class="p">,</span><span class="w">
+</span><span class="w">            </span><span class="p">}</span><span class="w">
+</span><span class="w">        </span><span class="p">}</span><span class="w">
+</span><span class="w">        </span><span class="n">_</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">tree</span><span class="p">,</span><span class="w">
+</span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span></code></pre></div><p>This version was <em>significantly</em> more difficult for me to write, and I&rsquo;d wager it&rsquo;d be significantly more difficult to find bugs in as well.
+When I have a limited amount of time per day spent programming, more time spent writing the code leaves me less time for other important things like designing
+and testing. True to form, as a low-level language, Rust requires we specify in more detail exactly what we want. Notably, we must specify
+the pointer wrapper type <code>Arc</code>, and this causes our <code>match</code> to be split into 3 since Rust cannot currently match through <code>Arc</code> directly. What
+Rust does not allow us to do is to opt out of this in any way. Rust doesn&rsquo;t just <em>let</em> the programmer specify in more detail what they want,
+it <em>requires</em> it. This is great for parts of our codebase which actually that level of control, but can unnecessarily slow down the programmer
+in parts of the codebase which don&rsquo;t.</p>
+<p>Anyways, this isn&rsquo;t meant to be a dig on Rust - I didn&rsquo;t even try writing this with <code>std::variant</code> in C++ after all. It&rsquo;s meant to call attention
+to the things developers using these languages put up with that they shouldn&rsquo;t need to.</p>
+<hr>
+<h2 id="a-low-level-core">A Low-level Core</h2>
+<p>Even if the majority of code is expected to be written in a high-level style, a flexible language must still
+be able to reason about the same code in a lower-level way so that it can call into code already written
+in a low-level style, or vice-versa. Otherwise, the ecosystem would be split in two. At its core, Ante is a
+language with ownership and borrowing allowing users to control where allocations and deallocations occur, yet
+each of the examples above still translate into code which follows these rules. For example,
+the red-black tree balance example uses <code>shared</code> types which can be thought of as a wrapper over atomic reference-counting
+(while <code>shared mut</code> types can be thought of as a wrapper over non-atomic reference-counting):</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">derive</span> <span class="kt">Copy</span>
+<span class="k">type</span> <span class="kt">Color</span> <span class="ow">=</span> <span class="o">|</span> <span class="kt">R</span> <span class="o">|</span> <span class="kt">B</span>
+
+<span class="k">type</span> <span class="kt">RbTree</span> <span class="n">t</span> <span class="ow">=</span>
+    <span class="o">|</span> <span class="kt">Empty</span>
+    <span class="o">|</span> <span class="kt">Tree</span> <span class="kt">Color</span> <span class="p">(</span><span class="kt">Arc</span> <span class="p">(</span><span class="kt">RbTree</span> <span class="n">t</span><span class="p">))</span> <span class="n">t</span> <span class="p">(</span><span class="kt">Arc</span> <span class="p">(</span><span class="kt">RbTree</span> <span class="n">t</span><span class="p">))</span>
+
+<span class="c1">// The inferred `Copy t` constraint was hidden before but is shown here</span>
+<span class="nf">balance</span> <span class="p">(</span><span class="n">tree</span><span class="o">:</span> <span class="kt">Arc</span> <span class="p">(</span><span class="kt">RbTree</span> <span class="n">t</span><span class="p">))</span> <span class="p">{</span><span class="kt">Copy</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="kt">Arc</span> <span class="p">(</span><span class="kt">RbTree</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="k">match</span> <span class="n">tree</span>
+    <span class="c1">// Arc.as_ref is pure so we know it should be safe to match through</span>
+    <span class="o">|</span> <span class="kt">Tree</span> <span class="kt">B</span> <span class="p">(</span><span class="kt">Tree</span> <span class="kt">R</span> <span class="p">(</span><span class="kt">Tree</span> <span class="kt">R</span> <span class="n">a</span> <span class="n">x</span> <span class="n">b</span><span class="p">)</span> <span class="n">y</span> <span class="n">c</span><span class="p">)</span> <span class="n">z</span> <span class="n">d</span>
+    <span class="o">|</span> <span class="kt">Tree</span> <span class="kt">B</span> <span class="p">(</span><span class="kt">Tree</span> <span class="kt">R</span> <span class="n">a</span> <span class="n">x</span> <span class="p">(</span><span class="kt">Tree</span> <span class="kt">R</span> <span class="n">b</span> <span class="n">y</span> <span class="n">c</span><span class="p">))</span> <span class="n">z</span> <span class="n">d</span>
+    <span class="o">|</span> <span class="kt">Tree</span> <span class="kt">B</span> <span class="n">a</span> <span class="n">x</span> <span class="p">(</span><span class="kt">Tree</span> <span class="kt">R</span> <span class="p">(</span><span class="kt">Tree</span> <span class="kt">R</span> <span class="n">b</span> <span class="n">y</span> <span class="n">c</span><span class="p">)</span> <span class="n">z</span> <span class="n">d</span><span class="p">)</span>
+    <span class="c1">// `Arc` implements Copy, so no need to explicitly clone each field</span>
+    <span class="o">|</span> <span class="kt">Tree</span> <span class="kt">B</span> <span class="n">a</span> <span class="n">x</span> <span class="p">(</span><span class="kt">Tree</span> <span class="kt">R</span> <span class="n">b</span> <span class="n">y</span> <span class="p">(</span><span class="kt">Tree</span> <span class="kt">R</span> <span class="n">c</span> <span class="n">z</span> <span class="n">d</span><span class="p">))</span> <span class="ow">-&gt;</span> <span class="kt">Arc</span><span class="o">.</span><span class="n">of</span> <span class="p">(</span><span class="kt">Tree</span> <span class="kt">R</span> <span class="p">(</span><span class="kt">Arc</span><span class="o">.</span><span class="n">of</span> <span class="p">(</span><span class="kt">Tree</span> <span class="kt">B</span> <span class="n">a</span> <span class="n">x</span> <span class="n">b</span><span class="p">))</span> <span class="n">y</span> <span class="p">(</span><span class="kt">Arc</span><span class="o">.</span><span class="n">of</span> <span class="p">(</span><span class="kt">Tree</span> <span class="kt">B</span> <span class="n">c</span> <span class="n">z</span> <span class="n">d</span><span class="p">)))</span>
+    <span class="o">|</span> <span class="n">other</span> <span class="ow">-&gt;</span> <span class="n">other</span>
+</code></pre></div><p>That&rsquo;s a lot of <code>Arc</code>-wrapping! It does however help illustrate how close the higher-level shell really is to
+languages like Java where nearly everything is wrapped in a pointer and cleaned up for us automatically. How
+should a low-level language get closer to a higher-level one? Auto-box more things. Sure, this can be inefficient,
+but it also isn&rsquo;t as much of an issue when users must explicitly opt-into doing so.</p>
+<p>Also - what happens if a user actually wants some other pointer type to represent their shared types? Or maybe
+they don&rsquo;t want pointers at all and would prefer indices?</p>
+<p>While the representation of shared types can be customized, if a user needs to guarantee a specific representation,
+they should not be using shared types to begin with. Such a user wants low-level predictability but is using a high-level
+solution. To solve this, they can delve into the low-level depths and simply write the above code using their
+preferred pointer or index type directly, no need to use shared types at all. Put another way - want a
+type to use <code>MyPtr</code>? Then just explicitly wrap it with <code>MyPtr</code>.</p>
+<p>Anyways, my point is that while all this code is <em>possible</em> to write in existing languages,
+it isn&rsquo;t always <em>easy</em>. Developers deserve more control over not just what they make but also how easily
+they want to be able to make it, and they should be able to do so without needing to switch to an entirely
+different language for different parts of their application.</p>
+<hr>
+<h2 id="other-ideals">Other Ideals</h2>
+<p>While I&rsquo;m talking about ideals shaping Ante&rsquo;s design, I should mention a few more things:</p>
+<hr>
+<h3 id="expressivity-shared-mutability">Expressivity: Shared Mutability</h3>
+<p>A language&rsquo;s strength is often in its expressivity, or how easy it is to express what a programmer wants to write.
+When a programmer tries to write code one way but gets an error from the compiler and must do it a different way, this causes
+friction. Rust is infamous for this, particularly when programmers are used to using cyclic references and shared mutability,
+they must now learn how to restructure their program not to use these things.</p>
+<p>Yet even in Rust, creating such programs isn&rsquo;t <em>truly</em> impossible. There are tools like internal mutability to often achieve
+what you want anyway. It&rsquo;s just that using these tools is often cumbersome (or comes with runtime errors) which steer
+away programmers from these patterns. We can debate on how often programs <em>should</em> make use of such features, but the reality
+is that the amount is still likely non-zero (even Haskell has <code>IORef</code>). So our language should be able to express these
+patterns as well:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">shared</span> <span class="k">mut</span> <span class="k">type</span> <span class="kt">NonEmptyList</span> <span class="n">a</span> <span class="ow">=</span>
+    <span class="n">value</span><span class="o">:</span> <span class="n">a</span>
+    <span class="n">next</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="p">(</span><span class="kt">NonEmptyList</span> <span class="n">a</span><span class="p">)</span>
+
+<span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span>
+    <span class="k">var</span> <span class="n">head</span> <span class="ow">=</span> <span class="kt">NonEmptyList</span> <span class="mi">0</span> <span class="kt">None</span>
+    <span class="k">var</span> <span class="n">tail</span> <span class="ow">=</span> <span class="kt">NonEmptyList</span> <span class="mi">1</span> <span class="kt">None</span>
+    <span class="n">head</span><span class="o">.</span><span class="n">next</span> <span class="o">:=</span> <span class="kt">Some</span> <span class="n">tail</span>
+    <span class="n">tail</span><span class="o">.</span><span class="n">next</span> <span class="o">:=</span> <span class="kt">Some</span> <span class="n">head</span>
+
+    <span class="n">print</span> <span class="n">head</span>  <span class="c1">// prints: NonEmptyList 0 (Some (NonEmptyList 1 (Some (NonEmptyList 0 (Some ...)))))</span>
+</code></pre></div><p>Shared mutability, while a possible source of bugs, also enables patterns like the observer pattern and makes certain
+classes of applications, such as UI development, easier (citation needed).</p>
+<p>In general, I often think a high-level language&rsquo;s ease of use is related to how easily it can express the patterns
+developers want to use to create their programs. In this respect, supporting shared mutability can be advantageous even
+if its use is discouraged. This is actually the case for Ante as well, which markets itself as a functional language in spite
+of its many non-functional features. Immutability is encouraged when possible, but even immutability directly benefits
+from mutability. Other languages may encourage a functional-but-in-place (<a href="https://xnning.github.io/papers/perceus.pdf">FBIP</a>)
+style where <code>if reference_count == 1 then mutate else immutable_fallback</code>
+checks are automatically added as an optimization, but this alone is not always sufficient. By directly supporting
+mutability, developers are able to create their own immutable data types using mutability internally for efficiency.
+An example of such a type is a <a href="https://trout.me.uk/lisp/vlist.pdf">vlist</a> which is a kind of vector-list hybrid that
+is persistent but is closer to a vector than a linked list in terms of performance.</p>
+<p>I mentioned in the previous section that Ante is a language with ownership &amp; borrowing - doesn&rsquo;t shared
+mutability break borrowing rules?</p>
+<p>Well yes, but actually no. It breaks Rust&rsquo;s borrowing rules, but not Ante&rsquo;s. The short of it is that Ante
+extends Rust&rsquo;s borrowing rules to allow shared mutability based on Rust&rsquo;s <code>Cell&lt;T&gt;</code> type. You can
+read more about it in <a href="/docs/language/#shared-mutability-and-reference-kinds">the documentation for reference kinds</a>
+or in <a href="/blog/safe-shared-mutability">the blog post where they were first introduced</a>.</p>
+<p>We can roughly translate the <code>NonEmptyList</code> example to the following with each <code>shared mut</code> type removed:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">NonEmptyList</span> <span class="n">a</span> <span class="ow">=</span>
+    <span class="n">value</span><span class="o">:</span> <span class="kt">Rc</span> <span class="n">a</span>
+    <span class="n">next</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="p">(</span><span class="kt">Rc</span> <span class="p">(</span><span class="kt">NonEmptyList</span> <span class="n">a</span><span class="p">))</span>
+
+<span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span>
+    <span class="k">var</span> <span class="n">head</span> <span class="ow">=</span> <span class="kt">Rc</span><span class="o">.</span><span class="n">of</span> <span class="p">(</span><span class="kt">NonEmptyList</span> <span class="mi">0</span> <span class="kt">None</span><span class="p">)</span>
+    <span class="k">var</span> <span class="n">tail</span> <span class="ow">=</span> <span class="kt">Rc</span><span class="o">.</span><span class="n">of</span> <span class="p">(</span><span class="kt">NonEmptyList</span> <span class="mi">1</span> <span class="kt">None</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">head</span><span class="o">.</span><span class="n">as_mut</span> <span class="p">())</span><span class="o">.</span><span class="n">next</span> <span class="o">:=</span> <span class="kt">Some</span> <span class="n">tail</span>
+    <span class="p">(</span><span class="n">tail</span><span class="o">.</span><span class="n">as_mut</span> <span class="p">())</span><span class="o">.</span><span class="n">next</span> <span class="o">:=</span> <span class="kt">Some</span> <span class="n">head</span>
+
+    <span class="n">print</span> <span class="n">head</span>  <span class="c1">// prints: NonEmptyList 0 (Some (NonEmptyList 1 (Some (NonEmptyList 0 (Some ...)))))</span>
+</code></pre></div><p>When we do this, we see an <code>Rc.as_mut</code> method. Such a method would not be safe in rust where mutable references must be
+unique, but are safe in Ante which provides not only Rust-style mutable references (spelled <code>uniq</code>), but
+also mutable references which may not be unique (spelled <code>mut</code>), yet are still safe to use:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// This reference-counted pointer may be aliased elsewhere so even if we have a unique reference to it,</span>
+<span class="c1">// we can only give out shared references to the contents. Also note that requiring a unique reference</span>
+<span class="c1">// here instead of a shared one ensures the reference count stays at least one while the returned</span>
+<span class="c1">// reference is alive.</span>
+<span class="kt">Rc</span><span class="o">.</span><span class="n">as_mut</span> <span class="p">(</span><span class="n">self</span><span class="o">:</span> <span class="k">uniq</span> <span class="kt">Rc</span> <span class="n">a</span><span class="p">)</span><span class="o">:</span> <span class="k">mut</span> <span class="n">a</span> <span class="ow">=</span> <span class="o">...</span>
+</code></pre></div><p>Specifics aside, shared mutability comes with its own fair share of difficulties but is ultimately still important
+for low-level languages today. I&rsquo;m generally of the mind that it should be avoided when possible,
+but when it is needed it can still be simpler than the alternatives. Determining &ldquo;when it is needed&rdquo; is left
+as an exercise for the reader.</p>
+<hr>
+<h3 id="abstraction-effects">Abstraction: Effects</h3>
+<p>One of the most important concepts in programming is <em>abstraction</em>. Without abstraction, you&rsquo;re wasting
+time repeating yourself or worrying about often irrelevant details. It is a common and important-enough tool that
+I expect everyone reading this to already be familiar with it. Yet many languages (even high-level ones) fall victim
+to repeating themselves or segmenting their ecosystem implementing features like exceptions, async, or generators
+all separately instead of part of one abstraction.</p>
+<p>&hellip;Yes, this is the segue into effect handlers.</p>
+<p>This won&rsquo;t be an explainer for effect handlers (for that, see <a href="/docs/language/#algebraic-effects">Ante&rsquo;s own documentation on them</a>),
+just an argument why they&rsquo;re useful.</p>
+<p>Effects are pervasive in programming - even in functional programming - and it is useful to have a more structured
+way to reason about them and make use of them. Ad-hoc approaches can lead to problems like
+<a href="https://journal.stuffwithstuff.com/2015/02/01/what-color-is-your-function/">colored functions</a> preventing users from
+writing code abstracting over effects (particularly async, although you can argue Java&rsquo;s checked exceptions lead
+to colored functions to a degree) and preventing the use of otherwise effect-agnostic functions like <code>map</code>.
+<code>map</code> is a simple function though - it should be simple to write too:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Take a function that can emit (yield) something, apply `f` to that thing, and emit it again</span>
+<span class="nf">map</span> <span class="p">(</span><span class="n">emitter</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="n">b</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="n">b</span> <span class="ow">=</span>
+    <span class="k">handle</span> <span class="n">emitter</span> <span class="p">()</span>
+    <span class="o">|</span> <span class="n">emit</span> <span class="n">x</span> <span class="ow">-&gt;</span>
+        <span class="n">emit</span> <span class="p">(</span><span class="n">f</span> <span class="n">x</span><span class="p">)</span>
+        <span class="k">resume</span> <span class="p">()</span>
+</code></pre></div><p>What type should <code>map</code> accept? Any function that can <code>Emit</code> values.
+What type should it collect into, if any? We don&rsquo;t care. What about functions users
+may pass in for <code>f</code> which can throw exceptions or call asynchronous code? We don&rsquo;t care! <code>map</code> is effect agnostic
+and may accept an <code>f</code> with any effects clause. If we did care we could specify <code>f: fn a -&gt; b pure</code> or
+something else, but we don&rsquo;t. High-level code&rsquo;s biggest strength is in letting developers say &ldquo;I don&rsquo;t care,&rdquo;
+and just making the code work anyway. A language missing out on effect handlers then is not as high-level
+as it otherwise <em>could</em> be.</p>
+<p>This isn&rsquo;t meant to be a complete list of cases where effect handlers are useful (far from it), but I do want
+to highlight another example: mocking. Effect handlers enable developers to cleanly mock their
+code without rewiring it to pass around mock objects everywhere. This isn&rsquo;t impossible without effect handlers
+of course. Just like existing low-level languages <em>can</em> make use of high-level patterns,
+it isn&rsquo;t about whether it&rsquo;s possible, it&rsquo;s about how <em>easy</em> it is to actually do so. It&rsquo;s easy to discount ease
+of implementation as unimportant but it has real a real effect on how likely a particular solution is to actually
+be adopted in practice. Even if an alternative will noticeably improve a program in some way, if it is too difficult
+to implement (verbose, obfuscated, conflicts with other goals, etc), it may not be. The right thing to do
+should be the easy thing to do, but most languages just don&rsquo;t have the necessary tools for this when effects are involved.</p>
+<p>Case in point: with traditional mocking, a developer must have mocking in mind and design their functions to use it. With
+effect handlers, the code is just mockable by default.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Original code (no effects or mocking)</span>
+<span class="nf">foo</span> <span class="p">()</span> <span class="ow">=</span>
+    <span class="c1">// Assume this is a language with untracked effects. We must read documentation</span>
+    <span class="c1">// to know `query` queries the database (the name seems obvious but other designs may</span>
+    <span class="c1">// e.g. return an object which we must call `.execute()` or similar on to actually</span>
+    <span class="c1">// execute the query).</span>
+    <span class="kt">MyDb</span><span class="o">.</span><span class="n">query</span> <span class="s">&#34;...&#34;</span>
+    <span class="kt">MyDb</span><span class="o">.</span><span class="n">query</span> <span class="s">&#34;...&#34;</span>
+    <span class="kt">MyDb</span><span class="o">.</span><span class="n">query</span> <span class="s">&#34;...&#34;</span>
+
+<span class="c1">// Mocked code (no effects)</span>
+<span class="c1">// In a real-world program making this change may involve threading `db` through</span>
+<span class="c1">// many functions and even changing trait interfaces.</span>
+<span class="nf">foo</span> <span class="p">(</span><span class="n">db</span><span class="o">:</span> <span class="kt">MyDbWrapper</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">query</span> <span class="s">&#34;...&#34;</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">query</span> <span class="s">&#34;...&#34;</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">query</span> <span class="s">&#34;...&#34;</span>
+
+<span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span> <span class="n">foo</span> <span class="p">(</span><span class="kt">MyDbWrapper</span><span class="o">.</span><span class="n">real_db</span> <span class="p">())</span>
+<span class="nf">test</span> <span class="p">()</span> <span class="ow">=</span>
+    <span class="n">mock_db</span> <span class="ow">=</span> <span class="kt">MyDbWrappper</span><span class="o">.</span><span class="n">mock_db</span> <span class="p">()</span>
+    <span class="n">foo</span> <span class="n">mock_db</span>
+    <span class="n">assert</span> <span class="p">(</span><span class="n">mock_db</span><span class="o">.</span><span class="n">all_is_well</span> <span class="p">())</span>
+
+<span class="c1">/////////////////////////////////////////</span>
+<span class="c1">// Original code &amp; mocked code (effects)</span>
+<span class="nf">foo</span> <span class="p">()</span> <span class="k">can</span> <span class="kt">Db</span> <span class="ow">=</span>
+    <span class="c1">// `MyDb.query` declared as `can Db`, so `foo` must be too</span>
+    <span class="kt">MyDb</span><span class="o">.</span><span class="n">query</span> <span class="s">&#34;...&#34;</span>
+    <span class="kt">MyDb</span><span class="o">.</span><span class="n">query</span> <span class="s">&#34;...&#34;</span>
+    <span class="kt">MyDb</span><span class="o">.</span><span class="n">query</span> <span class="s">&#34;...&#34;</span>
+
+<span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span> <span class="n">foo</span> <span class="p">()</span> <span class="k">with</span> <span class="n">real_db_handler</span>
+<span class="nf">test</span> <span class="p">()</span> <span class="ow">=</span>
+    <span class="n">mock_db</span> <span class="ow">=</span> <span class="n">foo</span> <span class="p">()</span> <span class="k">with</span> <span class="n">mock_db_handler</span>
+    <span class="n">assert</span> <span class="p">(</span><span class="n">mock_db</span><span class="o">.</span><span class="n">all_is_well</span> <span class="p">())</span>
+</code></pre></div><p>The downside? Mocking your effectful code may not have as nice a mocking interface as the mocking code you wrote from scratch,
+particularly if you&rsquo;re using a large effect like <code>IO</code> for a narrower task like a database. Replacing the effectful interface
+with a narrower one for your specific use case though will still be much easier than changing a codebase to use purpose-built
+mock objects instead of ad-hoc untracked effects.</p>
+<hr>
+<h2 id="complexity">Complexity</h2>
+<p>From a language design perspective, Ante uses Rust as a base, adding on rules for shared mutability and effects, among other things.
+Ask many non-Rust programmers though and they&rsquo;ll tell you one of if not the main reason they don&rsquo;t use Rust is because of
+its complexity and therefore difficulty. I want to challenge this equivalence though. On the other end of things, we often
+here of languages being very simple and thus easy to use. Indeed, simplicity is often used as a reason to cut otherwise useful
+features out of languages (such as generics in the original version of Go) in pursuit of an idealistic minimal language.
+Taken to its extreme though, its trivial to see that prioritization of simplicity of language design over all else does <em>not</em>
+simplify things for the programmer. Just look at the <a href="https://en.wikipedia.org/wiki/Brainfuck">Brainfuck</a> language - it only
+has 8 commands, yet writing programs in it is generally considerably more difficult than an equivalent python program (which
+by all accounts is a much more complex language).</p>
+<p>So language simplicity is different from how simple it is to actually use that language. We can&rsquo;t just look at every new
+feature in a language as something more to learn, and therefore negative.</p>
+<p>Bringing things back to Ante, it does add features to Rust but some of the features it adds (shared types &amp; rules for shared mutability)
+are notably ways to fix the paper cuts many developers get when using Rust. Theoretically, if there were an Ante book teaching
+the language, an author would be able to more gradually ease in readers by teaching an easier subset of the language first,
+only graduating them to the full language with ownership &amp; borrowing in later chapters on optimizing programs.</p>
+<hr>
+<h1 id="conclusion">Conclusion</h1>
+<p>Many of the things I&rsquo;ve mentioned in this article are ideals. I don&rsquo;t know how well some of them will turn out in practice,
+but I aim to steer as close as possible to achieving them. Anyways, my hope is that I&rsquo;ve shined some light not necessarily
+on Ante&rsquo;s specific feature set but more importantly on <em>why</em> it has these features and <em>why</em> Ante exists at all.</p>
+<p>If you&rsquo;ve stuck with me this far, thank you! Please consider joining <a href="https://discord.gg/NPJncGBAws">Ante&rsquo;s discord</a>
+to follow the project or ask me questions directly. I&rsquo;m also looking for contributors - the
+compiler is in the middle of a full rewrite so now is a great time to join in (in particular I&rsquo;d welcome someone
+willing to update the old language server to the new incremental compiler)! It makes my day whenever
+I read comments expressing interest or curiosity in the language. There is still a long road ahead but Ante
+has already progressed further than I&rsquo;ve imagined.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>For example, control over where/when/how allocations occur for constrained environments, preventing or
+moving possible pauses in execution for real-time applications, etc.&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>Similarly, higher-level languages like C# or Swift may still allow users to optimize with value types or even
+rust-style borrowing.&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p>Performance of naive reference-counting is often quite a bit lower than a modern tracing GC, but for the purpose
+of this article it doesn&rsquo;t matter which GC implementation is chosen - just that garbage is somehow collected.&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+                        </div>
+                        
+                        
+
+                    </div>
+                    
+
+                    
+
+                    
+                    <div class="col-md-3 right-float"/>
+
+                    
+
+                </div>
+                
+
+            </div>
+            
+        </div>
+        
+
+        <footer id="footer">
+    <div class="container">
+
+        
+
+        <div class="col-md-4 col-sm-6">
+
+            
+            <h4>Recent posts</h4>
+
+            <div class="blog-entries">
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="https://antelang.org/blog/vision/">
+                          
+                            <img src="/img/banners/anteater3.jpg" class="img-responsive" alt="A Vision for Future Low-Level Languages">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/blog/vision/">A Vision for Future Low-Level Languages</a></h5>
+                    </div>
+                </div>
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="https://antelang.org/blog/stable_mutable_refs/">
+                          
+                            <img src="/img/banners/antelope_flowers_cropped.jpg" class="img-responsive" alt="Stable, Mutable References">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/blog/stable_mutable_refs/">Stable, Mutable References</a></h5>
+                    </div>
+                </div>
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="https://antelang.org/blog/why_effects/">
+                          
+                            <img src="/img/banners/lanterns.jpg" class="img-responsive" alt="Why Algebraic Effects?">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/blog/why_effects/">Why Algebraic Effects?</a></h5>
+                    </div>
+                </div>
+                
+            </div>
+
+            <hr class="hidden-md hidden-lg">
+            
+
+        </div>
+        
+
+        
+
+    </div>
+    
+</footer>
+
+
+
+
+
+
+
+<div id="copyright">
+    <div class="container">
+        <div class="col-md-12">
+            
+            <p class="pull-right">
+              Template by <a href="https://bootstrapious.com/p/universal-business-e-commerce-template">Bootstrapious</a>.
+              
+
+              Ported to Hugo by <a href="https://github.com/devcows/hugo-universal-theme">DevCows</a>.
+            </p>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+    </div>
+    
+
+    
+<script src="//code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Counter-Up/1.0/jquery.counterup.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-parallax/1.1.3/jquery-parallax.js"></script>
+
+<script src="https://antelang.org/js/front.js"></script>
+
+
+<script src="https://antelang.org/js/owl.carousel.min.js"></script>
+
+
+  </body>
+</html>
