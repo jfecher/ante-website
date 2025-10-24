@@ -349,64 +349,6 @@
                     
                         <ul class="toc-h2">
                     
-                        <ul class="toc-h3">
-                    
-                    
-                    
-                    
-                    <a href="/blog/vision_for_ante/#shared-mutability">
-                        <li>Shared Mutability</li>
-                    </a>
-                    
-                    
-                        </ul>
-                    
-                        </ul>
-                    
-                        </ul>
-                    
-                
-            
-        
-            
-            
-                
-                    
-                    
-                    
-                        <ul class="toc-h1">
-                    
-                        <ul class="toc-h2">
-                    
-                        <ul class="toc-h3">
-                    
-                    
-                    
-                    
-                    <a href="/blog/vision_for_ante/#effects">
-                        <li>Effects</li>
-                    </a>
-                    
-                    
-                        </ul>
-                    
-                        </ul>
-                    
-                        </ul>
-                    
-                
-            
-        
-            
-            
-                
-                    
-                    
-                    
-                        <ul class="toc-h1">
-                    
-                        <ul class="toc-h2">
-                    
                     
                     
                     
@@ -432,17 +374,96 @@
                     
                         <ul class="toc-h2">
                     
+                    
+                    
+                    
+                    <a href="/blog/vision_for_ante/#other-ideals">
+                        <li>Other Ideals</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
                         <ul class="toc-h3">
                     
                     
                     
                     
-                    <a href="/blog/vision_for_ante/#shared-mutability">
-                        <li>Shared Mutability</li>
+                    <a href="/blog/vision_for_ante/#expressivity-shared-mutability">
+                        <li>Expressivity: Shared Mutability</li>
                     </a>
                     
                     
                         </ul>
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                        <ul class="toc-h3">
+                    
+                    
+                    
+                    
+                    <a href="/blog/vision_for_ante/#abstraction-effects">
+                        <li>Abstraction: Effects</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/blog/vision_for_ante/#complexity">
+                        <li>Complexity</li>
+                    </a>
+                    
                     
                         </ul>
                     
@@ -552,7 +573,8 @@ I just think it&rsquo;s possible for one language to do both.</p>
 crawl along too slowly and be outpaced by others. Even so, my hope is that by sharing this vision, more people
 may understand where I&rsquo;m coming from in desiring a new language to fill this gap.</p>
 <blockquote>
-<p>Code snippets in the rest of this article will be written in Ante. Don&rsquo;t worry too much if you&rsquo;re unfamiliar
+<p>Code snippets in the rest of this article will be written in Ante, which is still in development so any
+code is subject to change in the future. Don&rsquo;t worry too much if you&rsquo;re unfamiliar
 with the language - this post is written so hopefully anyway can follow along. What is important is exploring
 the idea that we can wrap otherwise low-level code in a nice looking bow.</p>
 </blockquote>
@@ -587,7 +609,7 @@ as there is some mechanism to free space.<sup id="fnref:3"><a href="#fn:3" class
 mention of ownership, borrowing, allocations, etc. Aside from syntactical differences, the only oddity we&rsquo;d find is this <code>shared</code>
 keyword in front of the type definition - we&rsquo;ll get to what this means later. I will emphasize though that there&rsquo;s
 no magic going on here. This is all code you&rsquo;d be able to write in Rust, C++, Zig, etc., just with a bit more ceremony.</p>
-<p>Let&rsquo;s compare this to the equivalent Rust code <em>(warning: code gore!)</em>:</p>
+<p>Speaking of which, let&rsquo;s compare this to some roughly equivalent Rust code:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="k">use</span><span class="w"> </span><span class="n">std</span>::<span class="n">sync</span>::<span class="n">Arc</span><span class="p">;</span><span class="w">
 </span><span class="w">
 </span><span class="w"></span><span class="cp">#[derive(Copy, Clone)]</span><span class="w">
@@ -632,106 +654,20 @@ no magic going on here. This is all code you&rsquo;d be able to write in Rust, C
 </span><span class="w"></span><span class="p">}</span><span class="w">
 </span></code></pre></div><p>This version was <em>significantly</em> more difficult for me to write, and I&rsquo;d wager it&rsquo;d be significantly more difficult to find bugs in as well.
 When I have a limited amount of time per day spent programming, more time spent writing the code leaves me less time for other important things like designing
-and testing. Ok, surely we must gain <em>something</em> with all this extra verbosity though? Absolutely - we get more job security through language-enforced obfuscation!</p>
+and testing. True to form, as a low-level language, Rust requires we specify in more detail exactly what we want. Notably, we must specify
+the pointer wrapper type <code>Arc</code>, and this causes our <code>match</code> to be split into 3 since Rust cannot currently match through <code>Arc</code> directly. What
+Rust does not allow us to do is to opt out of this in any way. Rust doesn&rsquo;t just <em>let</em> the programmer specify in more detail what they want,
+it <em>requires</em> it. This is great for parts of our codebase which actually that level of control, but can unnecessarily slow down the programmer
+in parts of the codebase which don&rsquo;t.</p>
 <p>Anyways, this isn&rsquo;t meant to be a dig on Rust - I didn&rsquo;t even try writing this with <code>std::variant</code> in C++ after all. It&rsquo;s meant to call attention
 to the things developers using these languages put up with that they shouldn&rsquo;t need to.</p>
 <hr>
-<h3 id="shared-mutability">Shared Mutability</h3>
-<p>A high-level language&rsquo;s strength is often in its expressivity, or how easy it is to express what a programmer wants to write.
-When a programmer tries to write code one way but gets an error from the compiler and must do it a different way, this causes
-friction. Rust is infamous for this, particularly when programmers are used to using cyclic references and shared mutability,
-they must now learn how to restructure their program not to use these things.</p>
-<p>Yet even in Rust, creating such programs isn&rsquo;t <em>truly</em> impossible. There are tools like internal mutability to often achieve
-what you want anyway. It&rsquo;s just that using these tools is often cumbersome (or comes with runtime errors) which steer
-away programmers from these patterns. We can debate on how often programs <em>should</em> make use of such features, but the reality
-is that the amount is still likely non-zero (even Haskell has <code>IORef</code>). So our high-level shell should be able to express these
-patterns as well:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">shared</span> <span class="k">mut</span> <span class="k">type</span> <span class="kt">NonEmptyList</span> <span class="n">a</span> <span class="ow">=</span>
-    <span class="n">value</span><span class="o">:</span> <span class="n">a</span>
-    <span class="n">next</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="p">(</span><span class="kt">NonEmptyList</span> <span class="n">a</span><span class="p">)</span>
-
-<span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span>
-    <span class="k">var</span> <span class="n">head</span> <span class="ow">=</span> <span class="kt">NonEmptyList</span> <span class="mi">0</span> <span class="kt">None</span>
-    <span class="k">var</span> <span class="n">tail</span> <span class="ow">=</span> <span class="kt">NonEmptyList</span> <span class="mi">1</span> <span class="kt">None</span>
-    <span class="n">head</span><span class="o">.</span><span class="n">next</span> <span class="o">:=</span> <span class="kt">Some</span> <span class="n">tail</span>
-    <span class="n">tail</span><span class="o">.</span><span class="n">next</span> <span class="o">:=</span> <span class="kt">Some</span> <span class="n">head</span>
-
-    <span class="n">print</span> <span class="n">head</span>  <span class="c1">// prints: NonEmptyList 0 (Some (NonEmptyList 1 (Some (NonEmptyList 0 (Some ...)))))</span>
-</code></pre></div><p>Shared mutability, while a possible source of bugs, also enables patterns like the observer pattern and makes certain
-classes of applications, such as UI development, easier (citation needed).</p>
-<hr>
-<h3 id="effects">Effects</h3>
-<p>One of the most important concepts for high-level code is <em>abstraction</em>. Without abstraction, you&rsquo;re wasting
-time repeating yourself or worrying about often irrelevant details. It is a common and important-enough tool that I expect everyone
-reading this to already be familiar with it. Yet many languages (even high-level ones) fall victim to repeating
-themselves implementing features like exceptions, async, or generators all separately instead of part of one abstraction.</p>
-<p>&hellip;Yes, this is the segue into effect handlers.</p>
-<p>This won&rsquo;t be an explainer for effect handlers (for that, see <a href="/docs/language/#algebraic-effects">Ante&rsquo;s own documentation on them</a>),
-just an argument why they&rsquo;re useful.</p>
-<p>Effects are pervasive in programming - even in functional programming - and it is useful to have a more structured
-way to reason about them and make use of them. Ad-hoc approaches can lead to problems like
-<a href="https://journal.stuffwithstuff.com/2015/02/01/what-color-is-your-function/">colored functions</a> preventing users from
-writing high-level code involving effects (particularly async, although you can argue Java&rsquo;s checked exceptions lead
-to colored functions to a degree) and preventing the use of otherwise effect-agnostic functions like <code>map</code>.
-<code>map</code> is a simple function though - it should be simple to write too:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// A Stream is any type s which has a function called `stream` to emit values of type a</span>
-<span class="k">trait</span> <span class="kt">Stream</span> <span class="n">s</span> <span class="n">a</span> <span class="k">with</span>
-    <span class="n">stream</span><span class="o">:</span> <span class="k">fn</span> <span class="n">s</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="n">a</span>
-
-<span class="c1">// This trait-object syntax is non-final</span>
-<span class="nf">map</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">Stream</span> <span class="n">_</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="n">b</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="n">b</span> <span class="ow">=</span>
-    <span class="k">handle</span> <span class="kt">Stream</span><span class="o">.</span><span class="n">stream</span> <span class="n">s</span>
-    <span class="o">|</span> <span class="n">emit</span> <span class="n">x</span> <span class="ow">=</span> <span class="n">emit</span> <span class="p">(</span><span class="n">f</span> <span class="n">x</span><span class="p">)</span>
-</code></pre></div><p>What type should <code>map</code> accept? Anything with a <code>stream</code> method to <code>Emit</code> values.
-What type should it collect into, if any? We don&rsquo;t care. What about functions users
-may pass in for <code>f</code> which can throw exceptions or call asynchronous code? We don&rsquo;t care! <code>map</code> is effect agnostic
-and may accept an <code>f</code> with any effects clause. If we did care we could specify <code>f: fn a -&gt; b pure</code> or
-something else, but we don&rsquo;t. High-level code&rsquo;s biggest strength is in letting developer&rsquo;s say &ldquo;I don&rsquo;t care,&rdquo;
-and just making the code work anyway. A language missing out on effect handlers then is not as high-level
-as it otherwise <em>could</em> be.</p>
-<p>There are other cases effect handlers help with as well. For example, enabling developers to cleanly mock their
-code without rearchitecting it to pass mock objects everywhere. This isn&rsquo;t impossible without effect handlers
-of course. Just like existing low-level languages <em>can</em> make use of high-level patterns,
-it isn&rsquo;t about whether it&rsquo;s possible, it&rsquo;s about how <em>easy</em> it is to actually do so.
-With traditional mocking, a developer must have mocking in mind and design their functions to use it. With
-effect handlers, the code is just mockable by default.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Original code (no effects or mocking)</span>
-<span class="nf">foo</span> <span class="p">()</span> <span class="ow">=</span>
-    <span class="kt">MyDb</span><span class="o">.</span><span class="n">query</span> <span class="s">&#34;...&#34;</span>
-    <span class="kt">MyDb</span><span class="o">.</span><span class="n">query</span> <span class="s">&#34;...&#34;</span>
-    <span class="kt">MyDb</span><span class="o">.</span><span class="n">query</span> <span class="s">&#34;...&#34;</span>
-
-<span class="c1">// Mocked code (no effects)</span>
-<span class="c1">// In a real-world program making this change may involve threading `db` through</span>
-<span class="c1">// many functions and even changing trait interfaces.</span>
-<span class="nf">foo</span> <span class="p">(</span><span class="n">db</span><span class="o">:</span> <span class="kt">MyDbWrapper</span><span class="p">)</span> <span class="ow">=</span>
-    <span class="n">db</span><span class="o">.</span><span class="n">query</span> <span class="s">&#34;...&#34;</span>
-    <span class="n">db</span><span class="o">.</span><span class="n">query</span> <span class="s">&#34;...&#34;</span>
-    <span class="n">db</span><span class="o">.</span><span class="n">query</span> <span class="s">&#34;...&#34;</span>
-
-<span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span> <span class="n">foo</span> <span class="p">(</span><span class="kt">MyDbWrapper</span><span class="o">.</span><span class="n">real_db</span> <span class="p">())</span>
-<span class="nf">test</span> <span class="p">()</span> <span class="ow">=</span>
-    <span class="n">mock_db</span> <span class="ow">=</span> <span class="kt">MyDbWrappper</span><span class="o">.</span><span class="n">mock_db</span> <span class="p">()</span>
-    <span class="n">foo</span> <span class="n">mock_db</span>
-    <span class="n">assert</span> <span class="p">(</span><span class="n">mock_db</span><span class="o">.</span><span class="n">all_is_well</span> <span class="p">())</span>
-
-<span class="c1">/////////////////////////////////////////</span>
-<span class="c1">// Original code &amp; mocked code (effects)</span>
-<span class="nf">foo</span> <span class="p">()</span> <span class="k">can</span> <span class="kt">Db</span> <span class="ow">=</span>
-    <span class="kt">MyDb</span><span class="o">.</span><span class="n">query</span> <span class="s">&#34;...&#34;</span>
-    <span class="kt">MyDb</span><span class="o">.</span><span class="n">query</span> <span class="s">&#34;...&#34;</span>
-    <span class="kt">MyDb</span><span class="o">.</span><span class="n">query</span> <span class="s">&#34;...&#34;</span>
-
-<span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span> <span class="n">foo</span> <span class="p">()</span> <span class="k">with</span> <span class="n">real_db_handler</span>
-<span class="nf">test</span> <span class="p">()</span> <span class="ow">=</span>
-    <span class="n">mock_db</span> <span class="ow">=</span> <span class="n">foo</span> <span class="p">()</span> <span class="k">with</span> <span class="n">mock_db_handler</span>
-    <span class="n">assert</span> <span class="p">(</span><span class="n">mock_db</span><span class="o">.</span><span class="n">all_is_well</span> <span class="p">())</span>
-</code></pre></div><hr>
 <h2 id="a-low-level-core">A Low-level Core</h2>
 <p>Even if the majority of code is expected to be written in a high-level style, a flexible language must still
 be able to reason about the same code in a lower-level way so that it can call into code already written
-in a low-level style, or vice-versa. Otherwise, the ecosystem would be split in two. Each of the
-examples above still translate into code which follows Ante&rsquo;s rules for ownership and borrowing. For example,
+in a low-level style, or vice-versa. Otherwise, the ecosystem would be split in two. At its core, Ante is a
+language with ownership and borrowing allowing users to control where allocations and deallocations occur, yet
+each of the examples above still translate into code which follows these rules. For example,
 the red-black tree balance example uses <code>shared</code> types which can be thought of as a wrapper over atomic reference-counting
 (while <code>shared mut</code> types can be thought of as a wrapper over non-atomic reference-counting):</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">derive</span> <span class="kt">Copy</span>
@@ -756,20 +692,60 @@ languages like Java where nearly everything is wrapped in a pointer and cleaned 
 should a low-level language get closer to a higher-level one? Auto-box more things. Sure, this can be inefficient,
 but it also isn&rsquo;t as much of an issue when users must explicitly opt-into doing so.</p>
 <p>Also - what happens if a user actually wants some other pointer type to represent their shared types? Or maybe
-they don&rsquo;t want pointers at all and just want to clone them manually?</p>
+they don&rsquo;t want pointers at all and would prefer indices?</p>
 <p>While the representation of shared types can be customized, if a user needs to guarantee a specific representation,
 they should not be using shared types to begin with. Such a user wants low-level predictability but is using a high-level
 solution. To solve this, they can delve into the low-level depths and simply write the above code using their
 preferred pointer or index type directly, no need to use shared types at all. Put another way - want a
-type using <code>MyPtr</code>? Then just write the type with <code>MyPtr</code>.</p>
+type to use <code>MyPtr</code>? Then just explicitly wrap it with <code>MyPtr</code>.</p>
+<p>Anyways, my point is that while all this code is <em>possible</em> to write in existing languages,
+it isn&rsquo;t always <em>easy</em>. Developers deserve more control over not just what they make but also how easily
+they want to be able to make it, and they should be able to do so without needing to switch to an entirely
+different language for different parts of their application.</p>
 <hr>
-<h3 id="shared-mutability-1">Shared Mutability</h3>
-<p>What about the shared mutability example? Doesn&rsquo;t that break borrowing rules?</p>
+<h2 id="other-ideals">Other Ideals</h2>
+<p>While I&rsquo;m talking about ideals shaping Ante&rsquo;s design, I should mention a few more things:</p>
+<hr>
+<h3 id="expressivity-shared-mutability">Expressivity: Shared Mutability</h3>
+<p>A language&rsquo;s strength is often in its expressivity, or how easy it is to express what a programmer wants to write.
+When a programmer tries to write code one way but gets an error from the compiler and must do it a different way, this causes
+friction. Rust is infamous for this, particularly when programmers are used to using cyclic references and shared mutability,
+they must now learn how to restructure their program not to use these things.</p>
+<p>Yet even in Rust, creating such programs isn&rsquo;t <em>truly</em> impossible. There are tools like internal mutability to often achieve
+what you want anyway. It&rsquo;s just that using these tools is often cumbersome (or comes with runtime errors) which steer
+away programmers from these patterns. We can debate on how often programs <em>should</em> make use of such features, but the reality
+is that the amount is still likely non-zero (even Haskell has <code>IORef</code>). So our language should be able to express these
+patterns as well:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">shared</span> <span class="k">mut</span> <span class="k">type</span> <span class="kt">NonEmptyList</span> <span class="n">a</span> <span class="ow">=</span>
+    <span class="n">value</span><span class="o">:</span> <span class="n">a</span>
+    <span class="n">next</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="p">(</span><span class="kt">NonEmptyList</span> <span class="n">a</span><span class="p">)</span>
+
+<span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span>
+    <span class="k">var</span> <span class="n">head</span> <span class="ow">=</span> <span class="kt">NonEmptyList</span> <span class="mi">0</span> <span class="kt">None</span>
+    <span class="k">var</span> <span class="n">tail</span> <span class="ow">=</span> <span class="kt">NonEmptyList</span> <span class="mi">1</span> <span class="kt">None</span>
+    <span class="n">head</span><span class="o">.</span><span class="n">next</span> <span class="o">:=</span> <span class="kt">Some</span> <span class="n">tail</span>
+    <span class="n">tail</span><span class="o">.</span><span class="n">next</span> <span class="o">:=</span> <span class="kt">Some</span> <span class="n">head</span>
+
+    <span class="n">print</span> <span class="n">head</span>  <span class="c1">// prints: NonEmptyList 0 (Some (NonEmptyList 1 (Some (NonEmptyList 0 (Some ...)))))</span>
+</code></pre></div><p>Shared mutability, while a possible source of bugs, also enables patterns like the observer pattern and makes certain
+classes of applications, such as UI development, easier (citation needed).</p>
+<p>In general, I often think a high-level language&rsquo;s ease of use is related to how easily it can express the patterns
+developers want to use to create their programs. In this respect, supporting shared mutability can be advantageous even
+if its use is discouraged. This is actually the case for Ante as well, which markets itself as a functional language in spite
+of its many non-functional features. Immutability is encouraged when possible, but even immutability directly benefits
+from mutability. Other languages may encourage a functional-but-in-place (<a href="https://xnning.github.io/papers/perceus.pdf">FBIP</a>)
+style where <code>if reference_count == 1 then mutate else immutable_fallback</code>
+checks are automatically added as an optimization, but this alone is not always sufficient. By directly supporting
+mutability, developers are able to create their own immutable data types using mutability internally for efficiency.
+An example of such a type is a <a href="https://trout.me.uk/lisp/vlist.pdf">vlist</a> which is a kind of vector-list hybrid that
+is persistent but is closer to a vector than a linked list in terms of performance.</p>
+<p>I mentioned in the previous section that Ante is a language with ownership &amp; borrowing - doesn&rsquo;t shared
+mutability break borrowing rules?</p>
 <p>Well yes, but actually no. It breaks Rust&rsquo;s borrowing rules, but not Ante&rsquo;s. The short of it is that Ante
-extend&rsquo;s Rust&rsquo;s borrowing rules to allow shared mutability based on Rust&rsquo;s <code>Cell&lt;T&gt;</code> type. You can
+extends Rust&rsquo;s borrowing rules to allow shared mutability based on Rust&rsquo;s <code>Cell&lt;T&gt;</code> type. You can
 read more about it in <a href="/docs/language/#shared-mutability-and-reference-kinds">the documentation for reference kinds</a>
 or in <a href="/blog/safe-shared-mutability">the blog post where they were first introduced</a>.</p>
-<p>When we look at the <code>NonEmptyList</code> example with each <code>shared mut</code> type translated out:</p>
+<p>We can roughly translate the <code>NonEmptyList</code> example to the following with each <code>shared mut</code> type removed:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">NonEmptyList</span> <span class="n">a</span> <span class="ow">=</span>
     <span class="n">value</span><span class="o">:</span> <span class="kt">Rc</span> <span class="n">a</span>
     <span class="n">next</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="p">(</span><span class="kt">Rc</span> <span class="p">(</span><span class="kt">NonEmptyList</span> <span class="n">a</span><span class="p">))</span>
@@ -777,61 +753,130 @@ or in <a href="/blog/safe-shared-mutability">the blog post where they were first
 <span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span>
     <span class="k">var</span> <span class="n">head</span> <span class="ow">=</span> <span class="kt">Rc</span><span class="o">.</span><span class="n">of</span> <span class="p">(</span><span class="kt">NonEmptyList</span> <span class="mi">0</span> <span class="kt">None</span><span class="p">)</span>
     <span class="k">var</span> <span class="n">tail</span> <span class="ow">=</span> <span class="kt">Rc</span><span class="o">.</span><span class="n">of</span> <span class="p">(</span><span class="kt">NonEmptyList</span> <span class="mi">1</span> <span class="kt">None</span><span class="p">)</span>
-    <span class="n">head_mut</span> <span class="ow">=</span> <span class="n">head</span><span class="o">.</span><span class="n">as_mut</span> <span class="p">()</span>
-    <span class="n">head_mut</span><span class="o">.</span><span class="n">next</span> <span class="o">:=</span> <span class="kt">Some</span> <span class="n">tail</span>
-    <span class="n">tail_mut</span> <span class="ow">=</span> <span class="n">tail</span><span class="o">.</span><span class="n">as_mut</span> <span class="p">()</span>
-    <span class="n">tail</span><span class="o">.</span><span class="n">next</span> <span class="o">:=</span> <span class="kt">Some</span> <span class="n">head</span>
+    <span class="p">(</span><span class="n">head</span><span class="o">.</span><span class="n">as_mut</span> <span class="p">())</span><span class="o">.</span><span class="n">next</span> <span class="o">:=</span> <span class="kt">Some</span> <span class="n">tail</span>
+    <span class="p">(</span><span class="n">tail</span><span class="o">.</span><span class="n">as_mut</span> <span class="p">())</span><span class="o">.</span><span class="n">next</span> <span class="o">:=</span> <span class="kt">Some</span> <span class="n">head</span>
 
     <span class="n">print</span> <span class="n">head</span>  <span class="c1">// prints: NonEmptyList 0 (Some (NonEmptyList 1 (Some (NonEmptyList 0 (Some ...)))))</span>
-</code></pre></div><p>We see an <code>Rc.as_mut</code> method. Such a method would not be safe in rust where mutable references must be
+</code></pre></div><p>When we do this, we see an <code>Rc.as_mut</code> method. Such a method would not be safe in rust where mutable references must be
 unique, but are safe in Ante which provides not only Rust-style mutable references (spelled <code>uniq</code>), but
 also mutable references which may not be unique (spelled <code>mut</code>), yet are still safe to use:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// This reference-counted pointer may be aliased elsewhere so even if we have a unique reference to it,</span>
 <span class="c1">// we can only give out shared references to the contents. Also note that requiring a unique reference</span>
-<span class="c1">// here instead of a shared one ensures the reference count stays at at least one while the returned</span>
+<span class="c1">// here instead of a shared one ensures the reference count stays at least one while the returned</span>
 <span class="c1">// reference is alive.</span>
 <span class="kt">Rc</span><span class="o">.</span><span class="n">as_mut</span> <span class="p">(</span><span class="n">self</span><span class="o">:</span> <span class="k">uniq</span> <span class="kt">Rc</span> <span class="n">a</span><span class="p">)</span><span class="o">:</span> <span class="k">mut</span> <span class="n">a</span> <span class="ow">=</span> <span class="o">...</span>
-</code></pre></div><hr>
-<p>Ok, ok, but what about effects? Surely they can&rsquo;t be directly represented in a low-level core?</p>
-<p>&hellip;Alright you got me. Effects aren&rsquo;t represented in a separate, low-level way using existing concepts.
-If we wanted to, we <em>could</em> model some effects with just closures:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo</span> <span class="n">query_db</span> <span class="ow">=</span>
-    <span class="n">query_db</span> <span class="s">&#34;...&#34;</span>
-    <span class="n">query_db</span> <span class="s">&#34;...&#34;</span>
-    <span class="n">query_db</span> <span class="s">&#34;...&#34;</span>
+</code></pre></div><p>Specifics aside, shared mutability comes with its own fair share of difficulties but is ultimately still important
+for low-level languages today. I&rsquo;m generally of the mind that it should be avoided when possible,
+but when it is needed it can still be simpler than the alternatives. Determining &ldquo;when it is needed&rdquo; is left
+as an exercise for the reader.</p>
+<hr>
+<h3 id="abstraction-effects">Abstraction: Effects</h3>
+<p>One of the most important concepts in programming is <em>abstraction</em>. Without abstraction, you&rsquo;re wasting
+time repeating yourself or worrying about often irrelevant details. It is a common and important-enough tool that
+I expect everyone reading this to already be familiar with it. Yet many languages (even high-level ones) fall victim
+to repeating themselves or segmenting their ecosystem implementing features like exceptions, async, or generators
+all separately instead of part of one abstraction.</p>
+<p>&hellip;Yes, this is the segue into effect handlers.</p>
+<p>This won&rsquo;t be an explainer for effect handlers (for that, see <a href="/docs/language/#algebraic-effects">Ante&rsquo;s own documentation on them</a>),
+just an argument why they&rsquo;re useful.</p>
+<p>Effects are pervasive in programming - even in functional programming - and it is useful to have a more structured
+way to reason about them and make use of them. Ad-hoc approaches can lead to problems like
+<a href="https://journal.stuffwithstuff.com/2015/02/01/what-color-is-your-function/">colored functions</a> preventing users from
+writing code abstracting over effects (particularly async, although you can argue Java&rsquo;s checked exceptions lead
+to colored functions to a degree) and preventing the use of otherwise effect-agnostic functions like <code>map</code>.
+<code>map</code> is a simple function though - it should be simple to write too:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Take a function that can emit (yield) something, apply `f` to that thing, and emit it again</span>
+<span class="nf">map</span> <span class="p">(</span><span class="n">emitter</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="n">b</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="n">b</span> <span class="ow">=</span>
+    <span class="k">handle</span> <span class="n">emitter</span> <span class="p">()</span>
+    <span class="o">|</span> <span class="n">emit</span> <span class="n">x</span> <span class="ow">-&gt;</span>
+        <span class="n">emit</span> <span class="p">(</span><span class="n">f</span> <span class="n">x</span><span class="p">)</span>
+        <span class="k">resume</span> <span class="p">()</span>
+</code></pre></div><p>What type should <code>map</code> accept? Any function that can <code>Emit</code> values.
+What type should it collect into, if any? We don&rsquo;t care. What about functions users
+may pass in for <code>f</code> which can throw exceptions or call asynchronous code? We don&rsquo;t care! <code>map</code> is effect agnostic
+and may accept an <code>f</code> with any effects clause. If we did care we could specify <code>f: fn a -&gt; b pure</code> or
+something else, but we don&rsquo;t. High-level code&rsquo;s biggest strength is in letting developers say &ldquo;I don&rsquo;t care,&rdquo;
+and just making the code work anyway. A language missing out on effect handlers then is not as high-level
+as it otherwise <em>could</em> be.</p>
+<p>This isn&rsquo;t meant to be a complete list of cases where effect handlers are useful (far from it), but I do want
+to highlight another example: mocking. Effect handlers enable developers to cleanly mock their
+code without rewiring it to pass around mock objects everywhere. This isn&rsquo;t impossible without effect handlers
+of course. Just like existing low-level languages <em>can</em> make use of high-level patterns,
+it isn&rsquo;t about whether it&rsquo;s possible, it&rsquo;s about how <em>easy</em> it is to actually do so. It&rsquo;s easy to discount ease
+of implementation as unimportant but it has real a real effect on how likely a particular solution is to actually
+be adopted in practice. Even if an alternative will noticeably improve a program in some way, if it is too difficult
+to implement (verbose, obfuscated, conflicts with other goals, etc), it may not be. The right thing to do
+should be the easy thing to do, but most languages just don&rsquo;t have the necessary tools for this when effects are involved.</p>
+<p>Case in point: with traditional mocking, a developer must have mocking in mind and design their functions to use it. With
+effect handlers, the code is just mockable by default.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Original code (no effects or mocking)</span>
+<span class="nf">foo</span> <span class="p">()</span> <span class="ow">=</span>
+    <span class="c1">// Assume this is a language with untracked effects. We must read documentation</span>
+    <span class="c1">// to know `query` queries the database (the name seems obvious but other designs may</span>
+    <span class="c1">// e.g. return an object which we must call `.execute()` or similar on to actually</span>
+    <span class="c1">// execute the query).</span>
+    <span class="kt">MyDb</span><span class="o">.</span><span class="n">query</span> <span class="s">&#34;...&#34;</span>
+    <span class="kt">MyDb</span><span class="o">.</span><span class="n">query</span> <span class="s">&#34;...&#34;</span>
+    <span class="kt">MyDb</span><span class="o">.</span><span class="n">query</span> <span class="s">&#34;...&#34;</span>
 
-<span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span> <span class="n">foo</span> <span class="kt">MyDb</span><span class="o">.</span><span class="n">query</span>
+<span class="c1">// Mocked code (no effects)</span>
+<span class="c1">// In a real-world program making this change may involve threading `db` through</span>
+<span class="c1">// many functions and even changing trait interfaces.</span>
+<span class="nf">foo</span> <span class="p">(</span><span class="n">db</span><span class="o">:</span> <span class="kt">MyDbWrapper</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">query</span> <span class="s">&#34;...&#34;</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">query</span> <span class="s">&#34;...&#34;</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">query</span> <span class="s">&#34;...&#34;</span>
+
+<span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span> <span class="n">foo</span> <span class="p">(</span><span class="kt">MyDbWrapper</span><span class="o">.</span><span class="n">real_db</span> <span class="p">())</span>
 <span class="nf">test</span> <span class="p">()</span> <span class="ow">=</span>
     <span class="n">mock_db</span> <span class="ow">=</span> <span class="kt">MyDbWrappper</span><span class="o">.</span><span class="n">mock_db</span> <span class="p">()</span>
-    <span class="n">foo</span> <span class="n">mock_db</span><span class="o">.</span><span class="n">query</span>
+    <span class="n">foo</span> <span class="n">mock_db</span>
     <span class="n">assert</span> <span class="p">(</span><span class="n">mock_db</span><span class="o">.</span><span class="n">all_is_well</span> <span class="p">())</span>
-</code></pre></div><p>But this only works for effects which resume in a tail position - it won&rsquo;t work for effects like exceptions
-or async.</p>
-<p>Not all concepts in a language need to have separate representations for shell and core though. Effects
-are already fairly nice to use so they&rsquo;d only need customizability in the even there are requirements they
-are unfit for. This depends largely on their runtime representation though which is currently not set
-in stone. Some applications may find a simple requirement sufficient that when declaring an effect, one may
-specify that it&rsquo;s handler must be tail-resumptive (and thus implementable as a normal closure), but others
-may find this too restrictive and may want effects like async with specific representation requirements
-for them. Collecting all the different requirements users may have for the representation of effects, and how
-to provide for all or most of them is still an open question.</p>
-<h1 id="conclusion">Conclusion</h1>
-<p>Anyways, my point is that while all this code is <em>possible</em> to write in existing languages,
-it isn&rsquo;t always <em>easy</em>. Developers deserve more control over not just what they make but also how easily
-they want to be able to make it, and they should be able to do so without needing to switch to an entirely
-different language for different parts of their application.</p>
-<p>My hope is that this article has shined some light not just on Ante&rsquo;s features but more importantly on <em>why</em> it
-has these features and <em>why</em> Ante exists at all. I could get into more philosophy e.g.
-&ldquo;simpler is not easier&rdquo; (see Brainfuck), but I do think that realizing the ideal of high-level shell, low-level
-core is Ante&rsquo;s most important aspiration.</p>
+
+<span class="c1">/////////////////////////////////////////</span>
+<span class="c1">// Original code &amp; mocked code (effects)</span>
+<span class="nf">foo</span> <span class="p">()</span> <span class="k">can</span> <span class="kt">Db</span> <span class="ow">=</span>
+    <span class="c1">// `MyDb.query` declared as `can Db`, so `foo` must be too</span>
+    <span class="kt">MyDb</span><span class="o">.</span><span class="n">query</span> <span class="s">&#34;...&#34;</span>
+    <span class="kt">MyDb</span><span class="o">.</span><span class="n">query</span> <span class="s">&#34;...&#34;</span>
+    <span class="kt">MyDb</span><span class="o">.</span><span class="n">query</span> <span class="s">&#34;...&#34;</span>
+
+<span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span> <span class="n">foo</span> <span class="p">()</span> <span class="k">with</span> <span class="n">real_db_handler</span>
+<span class="nf">test</span> <span class="p">()</span> <span class="ow">=</span>
+    <span class="n">mock_db</span> <span class="ow">=</span> <span class="n">foo</span> <span class="p">()</span> <span class="k">with</span> <span class="n">mock_db_handler</span>
+    <span class="n">assert</span> <span class="p">(</span><span class="n">mock_db</span><span class="o">.</span><span class="n">all_is_well</span> <span class="p">())</span>
+</code></pre></div><p>The downside? Mocking your effectful code may not have as nice a mocking interface as the mocking code you wrote from scratch,
+particularly if you&rsquo;re using a large effect like <code>IO</code> for a narrower task like a database. Replacing the effectful interface
+with a narrower one for your specific use case though will still be much easier than changing a codebase to use purpose-built
+mock objects instead of ad-hoc untracked effects.</p>
 <hr>
+<h2 id="complexity">Complexity</h2>
+<p>From a language design perspective, Ante uses Rust as a base, adding on rules for shared mutability and effects, among other things.
+Ask many non-Rust programmers though and they&rsquo;ll tell you one of if not the main reason they don&rsquo;t use Rust is because of
+its complexity and therefore difficulty. I want to challenge this equivalence though. On the other end of things, we often
+here of languages being very simple and thus easy to use. Indeed, simplicity is often used as a reason to cut otherwise useful
+features out of languages (such as generics in the original version of Go) in pursuit of an idealistic minimal language.
+Taken to its extreme though, its trivial to see that prioritization of simplicity of language design over all else does <em>not</em>
+simplify things for the programmer. Just look at the <a href="https://en.wikipedia.org/wiki/Brainfuck">Brainfuck</a> language - it only
+has 8 commands, yet writing programs in it is generally considerably more difficult than an equivalent python program (which
+by all accounts is a much more complex language).</p>
+<p>So language simplicity is different from how simple it is to actually use that language. We can&rsquo;t just look at every new
+feature in a language as something more to learn, and therefore negative.</p>
+<p>Bringing things back to Ante, it does add features to Rust but some of the features it adds (shared types &amp; rules for shared mutability)
+are notably ways to fix the paper cuts many developers get when using Rust. Theoretically, if there were an Ante book teaching
+the language, an author would be able to more gradually ease in readers by teaching an easier subset of the language first,
+only graduating them to the full language with ownership &amp; borrowing in later chapters on optimizing programs.</p>
+<hr>
+<h1 id="conclusion">Conclusion</h1>
+<p>Many of the things I&rsquo;ve mentioned in this article are ideals. I don&rsquo;t know how well some of them will turn out in practice,
+but I aim to steer as close as possible to achieving them. Anyways, my hope is that I&rsquo;ve shined some light not necessarily
+on Ante&rsquo;s specific feature set but more importantly on <em>why</em> it has these features and <em>why</em> Ante exists at all.</p>
 <p>If you&rsquo;ve stuck with me this far, thank you! Please consider joining <a href="https://discord.gg/NPJncGBAws">Ante&rsquo;s discord</a>
 to follow the project or ask me questions directly. I&rsquo;m also looking for contributors - the
 compiler is in the middle of a full rewrite so now is a great time to join in (in particular I&rsquo;d welcome someone
 willing to update the old language server to the new incremental compiler)! It makes my day whenever
 I read comments expressing interest or curiosity in the language. There is still a long road ahead but Ante
 has already progressed further than I&rsquo;ve imagined.</p>
-<hr>
 <section class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
