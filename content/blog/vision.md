@@ -38,7 +38,7 @@ may understand where I'm coming from in desiring a new language to fill this gap
 
 > Code snippets in the rest of this article will be written in Ante, which is still in development so any
 > code is subject to change in the future. Don't worry too much if you're unfamiliar
-> with the language - this post is written so hopefully anyway can follow along. What is important is exploring
+> with the language - this post is written so hopefully anyone can follow along. What is important is exploring
 > the idea that we can wrap otherwise low-level code in a nice looking bow.
 
 ---
