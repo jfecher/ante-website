@@ -13,9 +13,8 @@
       <pubDate>Wed, 22 Oct 2025 00:00:00 +0000</pubDate>
       
       <guid>https://antelang.org/blog/vision_for_ante/</guid>
-      <description>⚠️ This article is a draft and may still have substantial changes before it is finalized!
- A Vision for Future Low-Level Languages I&amp;rsquo;ve had this vision in my head for quite a while now on what code written in a low-level language could look like. This vision has shaped my design of Ante and although I&amp;rsquo;ve alluded to it before, I&amp;rsquo;ve never explicitly stated it until now.
-Now, what makes a language low-level is a bit contentious.</description>
+      <description>A Vision for Future Low-Level Languages I&amp;rsquo;ve had this vision in my head for quite a while now on what code written in a low-level language could look like. This vision has shaped my design of Ante and although I&amp;rsquo;ve alluded to it before, I&amp;rsquo;ve never explicitly stated it until now.
+Now, what makes a language low-level is a bit contentious. I&amp;rsquo;m using it here to describe a group of languages I have no better descriptor for: C, C++, Rust, and Zig, among others.</description>
     </item>
     
     <item>

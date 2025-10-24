@@ -6,8 +6,6 @@ categories = ["ideals"]
 banner = "img/banners/anteater3.jpg"
 +++
 
-> ⚠️ This article is a draft and may still have substantial changes before it is finalized!
-
 # A Vision for Future Low-Level Languages
 
 I've had this vision in my head for quite a while now on what code written in a low-level language _could_
