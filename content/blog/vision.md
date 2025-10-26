@@ -133,7 +133,7 @@ When I have a limited amount of time per day spent programming, more time spent 
 and testing. True to form, as a low-level language, Rust requires we specify in more detail exactly what we want. Notably, we must specify
 the pointer wrapper type `Arc`, and this causes our `match` to be split into 3 since Rust cannot currently match through `Arc` directly. What
 Rust does not allow us to do is to opt out of this in any way. Rust doesn't just _let_ the programmer specify in more detail what they want,
-it _requires_ it. This is great for parts of our codebase which actually that level of control, but can unnecessarily slow down the programmer
+it _requires_ it. This is great for parts of our codebase which actually need that level of control, but can unnecessarily slow down the programmer
 in parts of the codebase which don't.
 
 Anyways, this isn't meant to be a dig on Rust - I didn't even try writing this with `std::variant` in C++ after all. It's meant to call attention

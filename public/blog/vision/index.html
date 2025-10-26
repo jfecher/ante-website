@@ -35,7 +35,7 @@
 
 
 
-<link href="/css/custom.css?1761330926" rel="stylesheet">
+<link href="/css/custom.css" rel="stylesheet">
 
 
 
@@ -654,7 +654,7 @@ When I have a limited amount of time per day spent programming, more time spent 
 and testing. True to form, as a low-level language, Rust requires we specify in more detail exactly what we want. Notably, we must specify
 the pointer wrapper type <code>Arc</code>, and this causes our <code>match</code> to be split into 3 since Rust cannot currently match through <code>Arc</code> directly. What
 Rust does not allow us to do is to opt out of this in any way. Rust doesn&rsquo;t just <em>let</em> the programmer specify in more detail what they want,
-it <em>requires</em> it. This is great for parts of our codebase which actually that level of control, but can unnecessarily slow down the programmer
+it <em>requires</em> it. This is great for parts of our codebase which actually need that level of control, but can unnecessarily slow down the programmer
 in parts of the codebase which don&rsquo;t.</p>
 <p>Anyways, this isn&rsquo;t meant to be a dig on Rust - I didn&rsquo;t even try writing this with <code>std::variant</code> in C++ after all. It&rsquo;s meant to call attention
 to the things developers using these languages put up with that they shouldn&rsquo;t need to.</p>
@@ -718,8 +718,8 @@ patterns as well:</p>
     <span class="n">next</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="p">(</span><span class="kt">NonEmptyList</span> <span class="n">a</span><span class="p">)</span>
 
 <span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span>
-    <span class="n">var</span> <span class="n">head</span> <span class="ow">=</span> <span class="kt">NonEmptyList</span> <span class="mi">0</span> <span class="kt">None</span>
-    <span class="n">var</span> <span class="n">tail</span> <span class="ow">=</span> <span class="kt">NonEmptyList</span> <span class="mi">1</span> <span class="kt">None</span>
+    <span class="k">var</span> <span class="n">head</span> <span class="ow">=</span> <span class="kt">NonEmptyList</span> <span class="mi">0</span> <span class="kt">None</span>
+    <span class="k">var</span> <span class="n">tail</span> <span class="ow">=</span> <span class="kt">NonEmptyList</span> <span class="mi">1</span> <span class="kt">None</span>
     <span class="n">head</span><span class="o">.</span><span class="n">next</span> <span class="o">:=</span> <span class="kt">Some</span> <span class="n">tail</span>
     <span class="n">tail</span><span class="o">.</span><span class="n">next</span> <span class="o">:=</span> <span class="kt">Some</span> <span class="n">head</span>
 
@@ -748,8 +748,8 @@ or in <a href="/blog/safe-shared-mutability">the blog post where they were first
     <span class="n">next</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="p">(</span><span class="kt">Rc</span> <span class="p">(</span><span class="kt">NonEmptyList</span> <span class="n">a</span><span class="p">))</span>
 
 <span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span>
-    <span class="n">var</span> <span class="n">head</span> <span class="ow">=</span> <span class="kt">Rc</span><span class="o">.</span><span class="n">of</span> <span class="p">(</span><span class="kt">NonEmptyList</span> <span class="mi">0</span> <span class="kt">None</span><span class="p">)</span>
-    <span class="n">var</span> <span class="n">tail</span> <span class="ow">=</span> <span class="kt">Rc</span><span class="o">.</span><span class="n">of</span> <span class="p">(</span><span class="kt">NonEmptyList</span> <span class="mi">1</span> <span class="kt">None</span><span class="p">)</span>
+    <span class="k">var</span> <span class="n">head</span> <span class="ow">=</span> <span class="kt">Rc</span><span class="o">.</span><span class="n">of</span> <span class="p">(</span><span class="kt">NonEmptyList</span> <span class="mi">0</span> <span class="kt">None</span><span class="p">)</span>
+    <span class="k">var</span> <span class="n">tail</span> <span class="ow">=</span> <span class="kt">Rc</span><span class="o">.</span><span class="n">of</span> <span class="p">(</span><span class="kt">NonEmptyList</span> <span class="mi">1</span> <span class="kt">None</span><span class="p">)</span>
     <span class="p">(</span><span class="n">head</span><span class="o">.</span><span class="n">as_mut</span> <span class="p">())</span><span class="o">.</span><span class="n">next</span> <span class="o">:=</span> <span class="kt">Some</span> <span class="n">tail</span>
     <span class="p">(</span><span class="n">tail</span><span class="o">.</span><span class="n">as_mut</span> <span class="p">())</span><span class="o">.</span><span class="n">next</span> <span class="o">:=</span> <span class="kt">Some</span> <span class="n">head</span>
 
@@ -761,7 +761,7 @@ also mutable references which may not be unique (spelled <code>mut</code>), yet 
 <span class="c1">// we can only give out shared references to the contents. Also note that requiring a unique reference</span>
 <span class="c1">// here instead of a shared one ensures the reference count stays at least one while the returned</span>
 <span class="c1">// reference is alive.</span>
-<span class="kt">Rc</span><span class="o">.</span><span class="n">as_mut</span> <span class="p">(</span><span class="n">self</span><span class="o">:</span> <span class="n">uniq</span> <span class="kt">Rc</span> <span class="n">a</span><span class="p">)</span><span class="o">:</span> <span class="k">mut</span> <span class="n">a</span> <span class="ow">=</span> <span class="o">...</span>
+<span class="kt">Rc</span><span class="o">.</span><span class="n">as_mut</span> <span class="p">(</span><span class="n">self</span><span class="o">:</span> <span class="k">uniq</span> <span class="kt">Rc</span> <span class="n">a</span><span class="p">)</span><span class="o">:</span> <span class="k">mut</span> <span class="n">a</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><p>Specifics aside, shared mutability comes with its own fair share of difficulties but is ultimately still important
 for low-level languages today. I&rsquo;m generally of the mind that it should be avoided when possible,
 but when it is needed it can still be simpler than the alternatives. Determining &ldquo;when it is needed&rdquo; is left
