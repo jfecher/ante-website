@@ -940,7 +940,7 @@ chaining matches is also possible:
 
 ```ante
 print_if_large_product (x: Maybe I32) (y: Maybe I32) =
-    if x is Some x2 and y is Some y2 and x * y > 1000 then
+    if x is Some x2 and y is Some y2 and x2 * y2 > 1000 then
         // x2 and y2 are still in scope
         print (x2 * y2)
 ```
