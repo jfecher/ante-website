@@ -1309,12 +1309,16 @@ print_debug x =
 ---
 # Ownership
 
-Similar to Rust, values in Ante are affine by default (may be used 0 or 1 time
+Values in Ante are affine by default (may be used 0 or 1 time
 before they are dropped and deallocated). These values are called
-"owned" values, in contrast with references which are "borrowed" and may be
-used any amount of times. The only exception to owned values being used
-at most once are types which implement the `Copy` trait. This trait signals
-the type may be trivially copied each time it is referred to:
+"owned" values. If we ever want to use such values more than once, we would
+need to borrow them by creating temporary references to them which can be used
+any amount of times, but prevent the underlying value from being moved until
+any references to it are no longer used.
+
+The only values which may be used more than once without borrowing them are those
+implementing the `Copy` trait. This trait signals a type may be trivially copied
+each time it is referred to:
 
 ```ante
 s: String = "my string"
@@ -1323,13 +1327,13 @@ x: I32 = 42
 // We've moved `s` into `foo`, trying to access it afterwards would give a compile-time error
 foo s x
 
-// Since I32 is a primitive type, we can still refer to `x` after it was passed into `foo`
+// Since there is an implementation for Copy I32, we can still refer to `x` after it was passed into `foo`
 bar x
 ```
 
 ## Borrowing
 
-Like Rust, if a value needs to be used multiple times, we can borrow references
+If a value needs to be used multiple times, we can borrow references
 to it so that we can refer to the value as many times as we need.
 
 ```ante
@@ -1340,7 +1344,9 @@ baz (ref s)
 baz (ref s)
 ```
 
-Mutable references can be borrowed from mutable values using `mut`:
+Creating a temporary reference to a value can be done via a `ref <expr>` expression.
+These references do not allow mutation of the underlying value. If a mutable reference
+is desired, they can be created via `mut <expr>`:
 
 ```ante
 var s = "my string"
@@ -1351,27 +1357,7 @@ qux (mut s)
 print s  //=> "???"
 ```
 
-### Lifetimes
-
-Ante's references are bound by lifetime, similar to Rust. The full form of a reference
-type is `<reference-kind> 'l t` where `'l` is a lifetime and `t` is the element type.
-
-When used in a function signature, lifetimes may be elided. When this happens, each
-variable of a function is assumed to have a possibly different lifetime:
-
-```ante
-concat_foo (foo1: ref Foo) (foo2: ref Foo) : String =
-    foo1.msg ++ foo2.msg
-
-foo_example (param: ref Foo): String =
-    temporary = Foo.new ()
-
-    // `param` and `temporary` have different lifetimes but this call is allowed since
-    // `concat_foo` allows two parameters of differing lifetimes.
-    concat_foo param (ref temporary)
-```
-
-Taking a reference prevents moving the underlying value before the reference is dropped:
+Borrowing prevents the underlying value from being moved while any reference to it is still used:
 
 ```ante
 bad (foo: Foo) =
@@ -1379,41 +1365,80 @@ bad (foo: Foo) =
     bar (ref foo) foo
 ```
 
-#### Returning References
+Trying to move the underlying value while the reference is still alive will result in an error.
+Additionally, we cannot return a reference to an outer scope after the variable it references may be dropped.
+To keep track of when a reference is valid, each reference stores the set of variables it may borrow from in its type.
 
-If a function's signature returns a reference and uses only a single reference parameter,
-we can still elide the lifetimes since there is only one lifetime the return value may
-be referring to (besides the static lifetime):
+### Borrow Sets
 
-```ante
-get_ref (foo: ref Foo) : ref Baz =
-    ref foo.baz
-```
+Each reference in Ante is parameterized by an element type and a borrow set.
+The full form of a reference type is `<reference-kind> s t` where `s` is the borrow set and `t` is the element type.
+The borrow set can often be omitted from the type, in which case the borrow set will either be inferred or
+a fresh borrow set will be used.
 
-However, if we accept multiple references, the lifetime needs to be specified:
-
-```ante
-get_ref2 (foo: ref 'f Foo) (_: ref Bar) : ref 'f Baz =
-    ref foo.baz
-```
-
-If a reference is returned from a function, the referenced input(s)
-can't be moved until the returned reference is dropped.
+The borrow set parameter represents which variable(s) a reference borrows from. In the following example:
 
 ```ante
-example2 (foo: Foo) (bar: Bar) =
-    r = get_ref (ref foo) (ref bar)
-    // Error: Cannot move `foo` while `r` is still alive
-    drop foo
-    print r
+foo = 32
+bar = ref foo
 ```
 
+`bar` will have the type `ref 'foo I32` because it is a reference to the variable `foo` which holds an `I32`.
 
-#### Lifetime-bound Types
+Sometimes, the exact variable a reference borrows from is unknown:
 
-Lifetimes can also be added to type definitions. This is necessary if a type needs
-to hold onto a temporary reference with an unknown lifetime, although most of the time
-users should favor wrapper types such as `Rc t`.
+```ante
+example1 (foo: ref 'foo I32) (bar: ref 'bar I32) =
+    // Is the return type `ref 'foo I32` or `ref 'bar I32`?
+    if random () then foo else bar
+```
+
+This is why references have a borrow _set_ rather than always a single variable. For the
+example above, the reference type returned would be `ref '(foo, bar) I32`. When calling
+`example1`, the returned reference will be valid for only as long as _both_ arguments
+to the function are:
+
+```ante
+example2 (a: ref 'a I32) =
+    b = 1
+    example1 a (ref b)  // error! returned reference borrows from `b` but `b` is dropped here while the reference is still used!
+```
+
+In the example above we call `example1` to return one of the two references but `b` is local
+to `example2` and will be dropped when the function finishes! If this code were allowed we
+would return a dangling reference which will likely lead to a runtime crash when later
+dereferenced. Luckily, Ante prevents this for us with the above error.
+
+When used in a function signature, borrow sets may be elided. When this happens, the following
+rules are used for determining what the borrow set is assumed to be:
+
+- If it is in a parameter, the borrow set is assumed to be a unique, fresh variable.
+- If it is in a return type:
+  - If there is a single borrow set in the parameters, the return type must refer to that same set
+  - If there are multiple possible borrow sets (usually because there are multiple parameters), an error will be issued requiring users to explicitly specify which borrow set to use.
+
+Using these rules, we can rewrite `example1`:
+
+```ante
+example1 (foo: ref I32) (bar: ref I32): ref '(foo, bar) I32 =
+    // Is the return type `ref 'foo I32` or `ref 'bar I32`?
+    if random () then foo else bar
+```
+
+Most of the time, these rules mean we can omit borrow sets unless the function both takes multiple reference parameters
+and returns a reference.
+
+```ante
+concat_foo (foo1: ref Foo) (foo2: ref Foo) : String =
+    foo1.msg ++ foo2.msg
+```
+
+#### Types with Borrow Sets
+
+Borrow sets can also be added to type definitions. This is necessary if a type needs
+to hold onto a temporary reference, although most of the time users should favor
+wrapper types such as `Rc t` as these will generally be easier to work with. Borrow
+set parameters are distinguished from regular type parameters by the `'` sigil:
 
 ```ante
 type Context 'l =
@@ -1510,7 +1535,7 @@ return_ref (y: ref t): ref t = y
 ```
 
 Above we know that `y` is a temporary reference only valid within `requires_ref`, so once the call ends we can continue
-using `x` as a `imm t` reference - it isn't possible for `y` to outlive its temporary lifetime. When `return_ref` is called
+using `x` as an `imm t` reference - it isn't possible for `y` to outlive its temporary lifetime. When `return_ref` is called
 we borrow `x` as a `ref` again, and this time may not use `x` again until `foo` is dropped.
 
 Going the other way around from `ref` or `mut` to `imm` or `uniq`, however, requires the compiler to show that the reference is
