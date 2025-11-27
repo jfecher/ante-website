@@ -1253,8 +1253,8 @@
                     
                     
                     
-                    <a href="/docs/language/#lifetimes">
-                        <li>Lifetimes</li>
+                    <a href="/docs/language/#borrow-sets">
+                        <li>Borrow Sets</li>
                     </a>
                     
                     
@@ -1284,41 +1284,8 @@
                     
                     
                     
-                    <a href="/docs/language/#returning-references">
-                        <li>Returning References</li>
-                    </a>
-                    
-                    
-                        </ul>
-                    
-                        </ul>
-                    
-                        </ul>
-                    
-                        </ul>
-                    
-                
-            
-        
-            
-            
-                
-                    
-                    
-                    
-                        <ul class="toc-h1">
-                    
-                        <ul class="toc-h2">
-                    
-                        <ul class="toc-h3">
-                    
-                        <ul class="toc-h4">
-                    
-                    
-                    
-                    
-                    <a href="/docs/language/#lifetime-bound-types">
-                        <li>Lifetime-bound Types</li>
+                    <a href="/docs/language/#types-with-borrow-sets">
+                        <li>Types with Borrow Sets</li>
                     </a>
                     
                     
@@ -3259,73 +3226,95 @@ that itself is printable and a <code>prefix</code> field that must be a string:<
     <span class="n">print</span> <span class="n">x</span><span class="o">.</span><span class="n">debug</span>
 </code></pre></div><hr>
 <h1 id="ownership">Ownership</h1>
-<p>Similar to Rust, values in Ante are affine by default (may be used 0 or 1 time
+<p>Values in Ante are affine by default (may be used 0 or 1 time
 before they are dropped and deallocated). These values are called
-&ldquo;owned&rdquo; values, in contrast with references which are &ldquo;borrowed&rdquo; and may be
-used any amount of times. The only exception to owned values being used
-at most once are types which implement the <code>Copy</code> trait. This trait signals
-the type may be trivially copied each time it is referred to:</p>
+&ldquo;owned&rdquo; values. If we ever want to use such values more than once, we would
+need to borrow them by creating temporary references to them which can be used
+any amount of times, but prevent the underlying value from being moved until
+any references to it are no longer used.</p>
+<p>The only values which may be used more than once without borrowing them are those
+implementing the <code>Copy</code> trait. This trait signals a type may be trivially copied
+each time it is referred to:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">s</span><span class="o">:</span> <span class="kt">String</span> <span class="ow">=</span> <span class="s">&#34;my string&#34;</span>
 <span class="nf">x</span><span class="o">:</span> <span class="kt">I32</span> <span class="ow">=</span> <span class="mi">42</span>
 
 <span class="c1">// We&#39;ve moved `s` into `foo`, trying to access it afterwards would give a compile-time error</span>
 <span class="nf">foo</span> <span class="n">s</span> <span class="n">x</span>
 
-<span class="c1">// Since I32 is a primitive type, we can still refer to `x` after it was passed into `foo`</span>
+<span class="c1">// Since there is an implementation for Copy I32, we can still refer to `x` after it was passed into `foo`</span>
 <span class="nf">bar</span> <span class="n">x</span>
 </code></pre></div><h2 id="borrowing">Borrowing</h2>
-<p>Like Rust, if a value needs to be used multiple times, we can borrow references
+<p>If a value needs to be used multiple times, we can borrow references
 to it so that we can refer to the value as many times as we need.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">s</span> <span class="ow">=</span> <span class="s">&#34;my string&#34;</span>
 
 <span class="c1">// References can be used as many times as needed</span>
 <span class="nf">baz</span> <span class="p">(</span><span class="k">ref</span> <span class="n">s</span><span class="p">)</span>
 <span class="nf">baz</span> <span class="p">(</span><span class="k">ref</span> <span class="n">s</span><span class="p">)</span>
-</code></pre></div><p>Mutable references can be borrowed from mutable values using <code>mut</code>:</p>
+</code></pre></div><p>Creating a temporary reference to a value can be done via a <code>ref &lt;expr&gt;</code> expression.
+These references do not allow mutation of the underlying value. If a mutable reference
+is desired, they can be created via <code>mut &lt;expr&gt;</code>:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">var</span> <span class="n">s</span> <span class="ow">=</span> <span class="s">&#34;my string&#34;</span>
 
 <span class="c1">// This function call may modify our string</span>
 <span class="nf">qux</span> <span class="p">(</span><span class="k">mut</span> <span class="n">s</span><span class="p">)</span>
 
 <span class="nf">print</span> <span class="n">s</span>  <span class="c1">//=&gt; &#34;???&#34;</span>
-</code></pre></div><h3 id="lifetimes">Lifetimes</h3>
-<p>Ante&rsquo;s references are bound by lifetime, similar to Rust. The full form of a reference
-type is <code>&lt;reference-kind&gt; 'l t</code> where <code>'l</code> is a lifetime and <code>t</code> is the element type.</p>
-<p>When used in a function signature, lifetimes may be elided. When this happens, each
-variable of a function is assumed to have a possibly different lifetime:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">concat_foo</span> <span class="p">(</span><span class="n">foo1</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Foo</span><span class="p">)</span> <span class="p">(</span><span class="n">foo2</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Foo</span><span class="p">)</span> <span class="o">:</span> <span class="kt">String</span> <span class="ow">=</span>
-    <span class="n">foo1</span><span class="o">.</span><span class="n">msg</span> <span class="o">++</span> <span class="n">foo2</span><span class="o">.</span><span class="n">msg</span>
-
-<span class="nf">foo_example</span> <span class="p">(</span><span class="n">param</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Foo</span><span class="p">)</span><span class="o">:</span> <span class="kt">String</span> <span class="ow">=</span>
-    <span class="n">temporary</span> <span class="ow">=</span> <span class="kt">Foo</span><span class="o">.</span><span class="n">new</span> <span class="p">()</span>
-
-    <span class="c1">// `param` and `temporary` have different lifetimes but this call is allowed since</span>
-    <span class="c1">// `concat_foo` allows two parameters of differing lifetimes.</span>
-    <span class="n">concat_foo</span> <span class="n">param</span> <span class="p">(</span><span class="k">ref</span> <span class="n">temporary</span><span class="p">)</span>
-</code></pre></div><p>Taking a reference prevents moving the underlying value before the reference is dropped:</p>
+</code></pre></div><p>Borrowing prevents the underlying value from being moved while any reference to it is still used:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">bad</span> <span class="p">(</span><span class="n">foo</span><span class="o">:</span> <span class="kt">Foo</span><span class="p">)</span> <span class="ow">=</span>
     <span class="c1">// Error: Cannot move `foo` while the borrowed reference `ref foo` is still alive</span>
     <span class="n">bar</span> <span class="p">(</span><span class="k">ref</span> <span class="n">foo</span><span class="p">)</span> <span class="n">foo</span>
-</code></pre></div><h4 id="returning-references">Returning References</h4>
-<p>If a function&rsquo;s signature returns a reference and uses only a single reference parameter,
-we can still elide the lifetimes since there is only one lifetime the return value may
-be referring to (besides the static lifetime):</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">get_ref</span> <span class="p">(</span><span class="n">foo</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Foo</span><span class="p">)</span> <span class="o">:</span> <span class="k">ref</span> <span class="kt">Baz</span> <span class="ow">=</span>
-    <span class="k">ref</span> <span class="n">foo</span><span class="o">.</span><span class="n">baz</span>
-</code></pre></div><p>However, if we accept multiple references, the lifetime needs to be specified:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">get_ref2</span> <span class="p">(</span><span class="n">foo</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;f</span> <span class="kt">Foo</span><span class="p">)</span> <span class="p">(</span><span class="n">_</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Bar</span><span class="p">)</span> <span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;f</span> <span class="kt">Baz</span> <span class="ow">=</span>
-    <span class="k">ref</span> <span class="n">foo</span><span class="o">.</span><span class="n">baz</span>
-</code></pre></div><p>If a reference is returned from a function, the referenced input(s)
-can&rsquo;t be moved until the returned reference is dropped.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">example2</span> <span class="p">(</span><span class="n">foo</span><span class="o">:</span> <span class="kt">Foo</span><span class="p">)</span> <span class="p">(</span><span class="n">bar</span><span class="o">:</span> <span class="kt">Bar</span><span class="p">)</span> <span class="ow">=</span>
-    <span class="n">r</span> <span class="ow">=</span> <span class="n">get_ref</span> <span class="p">(</span><span class="k">ref</span> <span class="n">foo</span><span class="p">)</span> <span class="p">(</span><span class="k">ref</span> <span class="n">bar</span><span class="p">)</span>
-    <span class="c1">// Error: Cannot move `foo` while `r` is still alive</span>
-    <span class="n">drop</span> <span class="n">foo</span>
-    <span class="n">print</span> <span class="n">r</span>
-</code></pre></div><h4 id="lifetime-bound-types">Lifetime-bound Types</h4>
-<p>Lifetimes can also be added to type definitions. This is necessary if a type needs
-to hold onto a temporary reference with an unknown lifetime, although most of the time
-users should favor wrapper types such as <code>Rc t</code>.</p>
+</code></pre></div><p>Trying to move the underlying value while the reference is still alive will result in an error.
+Additionally, we cannot return a reference to an outer scope after the variable it references may be dropped.
+To keep track of when a reference is valid, each reference stores the set of variables it may borrow from in its type.</p>
+<h3 id="borrow-sets">Borrow Sets</h3>
+<p>Each reference in Ante is parameterized by an element type and a borrow set.
+The full form of a reference type is <code>&lt;reference-kind&gt; s t</code> where <code>s</code> is the borrow set and <code>t</code> is the element type.
+The borrow set can often be omitted from the type, in which case the borrow set will either be inferred or
+a fresh borrow set will be used.</p>
+<p>The borrow set parameter represents which variable(s) a reference borrows from. In the following example:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo</span> <span class="ow">=</span> <span class="mi">32</span>
+<span class="nf">bar</span> <span class="ow">=</span> <span class="k">ref</span> <span class="n">foo</span>
+</code></pre></div><p><code>bar</code> will have the type <code>ref 'foo I32</code> because it is a reference to the variable <code>foo</code> which holds an <code>I32</code>.</p>
+<p>Sometimes, the exact variable a reference borrows from is unknown:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">example1</span> <span class="p">(</span><span class="n">foo</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;foo</span> <span class="kt">I32</span><span class="p">)</span> <span class="p">(</span><span class="n">bar</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;bar</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="c1">// Is the return type `ref &#39;foo I32` or `ref &#39;bar I32`?</span>
+    <span class="k">if</span> <span class="n">random</span> <span class="p">()</span> <span class="k">then</span> <span class="n">foo</span> <span class="k">else</span> <span class="n">bar</span>
+</code></pre></div><p>This is why references have a borrow <em>set</em> rather than always a single variable. For the
+example above, the reference type returned would be <code>ref '(foo, bar) I32</code>. When calling
+<code>example1</code>, the returned reference will be valid for only as long as <em>both</em> arguments
+to the function are:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">example2</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;a</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="n">b</span> <span class="ow">=</span> <span class="mi">1</span>
+    <span class="n">example1</span> <span class="n">a</span> <span class="p">(</span><span class="k">ref</span> <span class="n">b</span><span class="p">)</span>  <span class="c1">// error! returned reference borrows from `b` but `b` is dropped here while the reference is still used!</span>
+</code></pre></div><p>In the example above we call <code>example1</code> to return one of the two references but <code>b</code> is local
+to <code>example2</code> and will be dropped when the function finishes! If this code were allowed we
+would return a dangling reference which will likely lead to a runtime crash when later
+dereferenced. Luckily, Ante prevents this for us with the above error.</p>
+<p>When used in a function signature, borrow sets may be elided. When this happens, the following
+rules are used for determining what the borrow set is assumed to be:</p>
+<ul>
+<li>If it is in a parameter, the borrow set is assumed to be a unique, fresh variable.</li>
+<li>If it is in a return type:
+<ul>
+<li>If there is a single borrow set in the parameters, the return type must refer to that same set</li>
+<li>If there are multiple possible borrow sets (usually because there are multiple parameters), an error will be issued requiring users to explicitly specify which borrow set to use.</li>
+</ul>
+</li>
+</ul>
+<p>Using these rules, we can rewrite <code>example1</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">example1</span> <span class="p">(</span><span class="n">foo</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">I32</span><span class="p">)</span> <span class="p">(</span><span class="n">bar</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">I32</span><span class="p">)</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">&#39;(foo, bar)</span> <span class="kt">I32</span> <span class="ow">=</span>
+    <span class="c1">// Is the return type `ref &#39;foo I32` or `ref &#39;bar I32`?</span>
+    <span class="k">if</span> <span class="n">random</span> <span class="p">()</span> <span class="k">then</span> <span class="n">foo</span> <span class="k">else</span> <span class="n">bar</span>
+</code></pre></div><p>Most of the time, these rules mean we can omit borrow sets unless the function both takes multiple reference parameters
+and returns a reference.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">concat_foo</span> <span class="p">(</span><span class="n">foo1</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Foo</span><span class="p">)</span> <span class="p">(</span><span class="n">foo2</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Foo</span><span class="p">)</span> <span class="o">:</span> <span class="kt">String</span> <span class="ow">=</span>
+    <span class="n">foo1</span><span class="o">.</span><span class="n">msg</span> <span class="o">++</span> <span class="n">foo2</span><span class="o">.</span><span class="n">msg</span>
+</code></pre></div><h4 id="types-with-borrow-sets">Types with Borrow Sets</h4>
+<p>Borrow sets can also be added to type definitions. This is necessary if a type needs
+to hold onto a temporary reference, although most of the time users should favor
+wrapper types such as <code>Rc t</code> as these will generally be easier to work with. Borrow
+set parameters are distinguished from regular type parameters by the <code>'</code> sigil:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Context</span> <span class="n">&#39;l</span> <span class="ow">=</span>
     <span class="n">global_context</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;l</span> <span class="kt">GlobalContext</span>
 </code></pre></div><hr>
@@ -3417,7 +3406,7 @@ if the value is set to <code>None</code>, but notably excludes fields of a struc
 <span class="nf">requires_ref</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span> <span class="o">...</span>
 <span class="nf">return_ref</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span> <span class="ow">=</span> <span class="n">y</span>
 </code></pre></div><p>Above we know that <code>y</code> is a temporary reference only valid within <code>requires_ref</code>, so once the call ends we can continue
-using <code>x</code> as a <code>imm t</code> reference - it isn&rsquo;t possible for <code>y</code> to outlive its temporary lifetime. When <code>return_ref</code> is called
+using <code>x</code> as an <code>imm t</code> reference - it isn&rsquo;t possible for <code>y</code> to outlive its temporary lifetime. When <code>return_ref</code> is called
 we borrow <code>x</code> as a <code>ref</code> again, and this time may not use <code>x</code> again until <code>foo</code> is dropped.</p>
 <p>Going the other way around from <code>ref</code> or <code>mut</code> to <code>imm</code> or <code>uniq</code>, however, requires the compiler to show that the reference is
 not mutably aliased. To do this, two restrictions must be imposed on the resulting reference:</p>
