@@ -1421,7 +1421,6 @@ Using these rules, we can rewrite `example1`:
 
 ```ante
 example1 (foo: ref I32) (bar: ref I32): ref '(foo, bar) I32 =
-    // Is the return type `ref 'foo I32` or `ref 'bar I32`?
     if random () then foo else bar
 ```
 

@@ -35,7 +35,8 @@ effect Read a with read : Unit -&amp;gt; a the_value (value: a) (f: Unit -&amp;g
       
       <guid>https://antelang.org/blog/safe_shared_mutability/</guid>
       <description>This is part of Ante&amp;rsquo;s goal to loosen restrictions on low-level programming while remaining fast, memory-safe, and thread-safe.
- Background  When writing low-level, memory-safe, and thread-safe programs, a nice feature that lets us achieve all of these is an ownership model. Ownership models have been used by quite a few languages, but the language which popularized them was Rust. In Rust, the compiler will check our code to ensure we have no dangling references and cannot access already-freed memory (among other errors).</description>
+ Update: The syntax of Ante code snippets has been updated to reflect Ante&amp;rsquo;s current syntax.
+  Background  When writing low-level, memory-safe, and thread-safe programs, a nice feature that lets us achieve all of these is an ownership model. Ownership models have been used by quite a few languages, but the language which popularized them was Rust.</description>
     </item>
     
   </channel>

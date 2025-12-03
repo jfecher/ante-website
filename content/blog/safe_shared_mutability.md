@@ -9,6 +9,8 @@ banner = "img/banners/antelope_bird_cropped.jpg"
 This is part of Ante's goal to loosen restrictions on low-level programming while remaining
 fast, memory-safe, and thread-safe.
 
+> Update: The syntax of Ante code snippets has been updated to reflect Ante's current syntax.
+
 ---
 
 # Background
@@ -106,49 +108,50 @@ Ante's system for ensuring memory & thread safety uses Rust as a foundation. Any
 value is seen, it is an owned value. Similarly, anytime `&t` or `&mut t` are seen, these are borrowed
 references.
 
-The most important change from Rust's system is that in addition to being tagged with whether they
-are `mut`able or not, references are also tagged with whether they are `own`ed, or whether they
-are `shared` (able to be mutably aliased). For example, when we take multiple mutable references
-to the same value, they are all inferred to be shared:
+The most important change from Rust's system is that in addition to Rust's single-owners style references
+(`imm` and `uniq` in Ante), there are also reference kinds which do allow shared mutability: `ref` and `mut`.
+These references are sometimes called shared references since they allow for shared mutability, to contrast
+with `imm` and `uniq` which are sometimes called single-owner references.
+For example, when we take multiple mutable references to the same value, we can use the new `mut` reference kind:
 ```ante
-my_tuple = mut (1, 2)
-elem1 = &mut my_tuple.0
-also_elem1 = &mut my_tuple.0
+var my_tuple = (1, 2)
+elem1 = mut my_tuple.0
+also_elem1 = mut my_tuple.0
 
 print elem1  // Outputs 1
 print also_elem1  // Outputs 1
 ```
-The type of `elem1` and `also_elem1` here is `&shared mut I32`.
+The type of `elem1` and `also_elem1` here is `mut I32`.
 
 We can also mutate through these shared references:
 ```ante
-my_tuple = mut (1, 2)
-elem1 = &mut my_tuple.0
-also_elem1 = &mut my_tuple.0
+var my_tuple = (1, 2)
+elem1 = mut my_tuple.0
+also_elem1 = mut my_tuple.0
 
 also_elem1 := 3
 
 print elem1  // Outputs 3
 ```
 
-This is because unadorned references (`&` and `&mut`) are polymorphic in whether they are `own`ed
-or `shared`. These polymorphic references have the capabilities of `shared` references since anywhere
-a `shared` reference is valid, an `own`ed reference would be as well.
-This polymorphism comes in handy when returning a reference. If you passed in an
-owned reference, you'll get an owned one back. This would not be the case if Ante were designed to use
-reference subtyping here instead. Most importantly, this polymorphism allows most code with references
-to be written in a familiar style, ignoring the fact that `shared` or `own` exist:
+Note that shared references are a weaker guarantee than single-owner ones. So if we have a function which
+only requires a shared reference, we can still pass a single-owner reference to it, as long as the mutability
+matches:
 
 ```ante
-log_foo (foo: &Foo) (context: &mut Context) : Unit =
+log_foo (foo: ref Foo) (context: mut Context) : Unit =
     if context.logging_enabled then
         log "Found foo: ${foo}"
         context.logs += 1
+
+main () =
+    foo: imm Foo = ...
+    context: uniq Context = ...
+    log_foo foo context  // ok!
 ```
 
-It is also important to note that any `shared` references (or polymorphic/unadorned references which
-may be shared) do not implement `Send` to be able to be sent across other threads. Since they inherently
-allow for shared mutability, this would not be safe to allow.
+It is also important to note that any shared references do not implement `Send` to be able to be sent
+across other threads. Since they inherently allow for shared mutability, this would not be safe to allow.
 
 How then, does Ante prevent holding onto references of things that may change out from under themselves,
 such as vector elements or union fields?
@@ -157,53 +160,33 @@ such as vector elements or union fields?
 
 ## Preventing Borrows When a Type's Shape Is Not Stable
 
-These cases are simply marked as requiring owning references:
+These cases are simply marked as requiring single-owner references:
 ```ante
-get (v: &own Vec t) (index: Usz) : &own t can Fail = ...
+get (v: imm Vec t) (index: Usz) : imm t can Fail = ...
 ```
 
 (`Fail` is an [Algebraic Effect](/docs/language/#algebraic-effects). In this example, it is used
 to signal to the caller if the index was out of bounds)
 
 This function signature states that in order to return a reference to a vector's elements,
-it needs an owned, though immutable, reference to the Vec. Note that "owned" here still allows
-multiple immutable references. A type is only considered to be shared when there is a mutable
-reference to it and at least one other reference to it of any kind.
-When we try to call `get` with a shared vector, we'll get an error:
+it needs an immutable reference to the Vec, and `imm` references are like `&T` references in Rust
+where they may not be aliased by mutable references. 
+When we try to call `get` with a vector that is mutably shared, we'll get an error:
 
 ```ante
-v = mut Vec.of [1, 2, 3]
+var v = Vec.of [1, 2, 3]
 
-v_ref1 = &mut v
-v_ref2 = &v
-
-// error: Expected an owned reference, but `v_ref1` is shared with `v_ref2`
-v_elem = get v_ref1 3
-
-print v_ref1
-print v_ref2
-```
-
-Similarly, if we try to explicitly grab an owned reference for `v_ref1`, we'll move the error
-up to when `v_ref2` is borrowed:
-
-```ante
-v = mut Vec.of [1, 2, 3]
-
-// note: Owning reference to `v` created here
-v_ref1 = &own mut v
-
-// error: Cannot borrow `v`, there is already an owning reference to it
-v_ref2 = &v
+v_ref1 = mut v
+v_ref2 = imm v // error: `v` cannot be immutably borrowed while `mut` reference `v_ref1` is still used
 
 v_elem = get v_ref2 3
 
-print v_ref1
+print v_ref1  // note: `v_ref1` later used here
 print v_ref2
 ```
 
-Taking the reference of a tagged union's fields also requires an owned reference, although this
-must be built into the language.
+Taking the reference of a tagged union's fields also requires a single-owner reference, although this
+restriction must be built into the language.
 
 Another operation that would be unsafe with shared mutable references would be obtaining a reference
 through a pointer boundary:
@@ -213,25 +196,25 @@ type Foo =
     ptr: Box Bar
 
 // If we had the following function, we could create a dangling reference:
-as_ref (box: &Box t) : &t
+Box.as_ref (box: ref Box t): ref t
 
-foo = mut Foo (Box.new my_bar)
+var foo = Foo (Box.new my_bar)
 
-foo_mut_ref = &mut foo
+foo_mut_ref = mut foo
 
-bar_ref = as_ref (foo.&ptr)
+bar_ref = foo.ptr.as_ref ()
 
 // Reassign `ptr`, causing the old value to be dropped
-foo_mut_ref.&ptr := Box.new other_bar
+foo_mut_ref.ptr := Box.new other_bar
 
 // Now bar_ref refers to a dropped value!
 print bar_ref
 ```
 
-For this reason, to obtain a reference past a pointer boundary like this, we need an owned reference:
+For this reason, to obtain a reference past a pointer boundary like this, we need a single-owner reference:
 
 ```ante
-as_ref (box: &own Box t) : &own t
+Box.as_ref (box: imm Box t): imm t
 ```
 
 This can seem like a fairly serious limitation but it is helpful to take a step back and consider
@@ -239,8 +222,8 @@ when `Box<T>` and similar pointer types are typically used in today's Rust progr
 experience, these are most often used to wrap recursive data types when using an enumeration.
 When using shared mutability in Ante, these cases would already likely use an `Rc t`
 or similar around each element to reduce the cloning costs of enumerations (more on this later). Through
-`as_mut: &own mut Rc t -> &shared mut t`, shared mutability is preserved but we would occasionally
-need to clone the reference-counted pointer to obtain the owned reference. If the cost of
+`Rc.as_mut: uniq Rc t -> mut t`, shared mutability is preserved but we would occasionally
+need to clone the reference-counted pointer to obtain the `uniq` reference. If the cost of
 incrementing reference counts is a deal breaker (and if there is no other suitable pointer type)
 then an application can always decide to go back to `Box t` and owned mutability instead.
 
@@ -257,24 +240,24 @@ perfectly fine to use in a shared, mutable context. As long as we don't give out
 we are fine:
 
 ```ante
-// Reference-polymorphic, great!
-len (v: &Vec t) : Usz = ...
+// Can call this with ref, imm, mut, or uniq, great!
+Vec.len (v: ref Vec t): Usz = ...
 
 // Also great!
-push (v: &mut Vec t) (elem: t) : Unit = ...
+Vec.push (v: mut Vec t) (elem: t): Unit = ...
 
 // Fantastic!
-pop (v: &mut Vec t) : t can Fail = ...
+Vec.pop (v: mut Vec t): t can Fail = ...
 ```
 
 Alright, alright but that still never solved the issue of actually accessing the elements without
-removing them from the Vec. It turns out however, we can do that too:
+removing them from the `Vec`. It turns out however, we can do that too:
 
 ```ante
-get_cloned (v: &Vec t) (index: Usz) : t can Fail given Clone t = ...
+Vec.get_cloned (v: ref Vec t) (index: Usz) {Clone t}: t can Fail = ...
 ```
 
-(`given Clone t` is Ante's way of writing trait constraints)
+(`{Clone t}` is Ante's way of writing trait constraints)
 
 As long as we don't return a reference to an element, the API itself is safe.
 Note that since this requires cloning each value, this will be fine for small,
@@ -282,10 +265,11 @@ primitive types, but will be expensive for vectors with more complex element typ
 To work around this, we can instead have a vector of pointer types to reduce the
 cost of cloning: `Vec (Rc MyStruct)`.
 
-Eagle-eyed Rust users will note that `&shared mut t` is fairly similar to `Cell<T>`
-in Rust (although a more direct comparison would be `Mut t` in the next section).
-Most of the key differences come in ergonomics and usability. `&shared t` and its
-mutable variant are built-into the language and thus able to be projected to struct
+Eagle-eyed Rust users will note that `mut t` is fairly similar to `Cell<T>`
+in Rust. After all, both types allow safe, shared mutability by preventing projection
+into shape-unstable types.
+Most of the key differences come in ergonomics and usability. `ref t` and `mut t`
+are built-into the language and thus are able to be projected to struct
 fields and provide better interop with other reference types. This reduces the required
 number of conversions, enables tailored compiler errors, and importantly allows arbitrary
 owned values to use shared mutation without requiring converting back and forth between
@@ -300,20 +284,20 @@ Since Ante includes shared mutability as a builtin, certain types which can only
 immutable references in Rust can be accessed mutably in Ante. For example, `Rc t`:
 
 ```ante
-as_mut (rc: &own mut Rc t) : &shared mut t = ...
+Rc.as_mut (rc: uniq Rc t): mut t = ...
 ```
 
-Note that like the `Box t` example earlier, this still requires an owned reference to
-project inside the Rc. In practice this means to use this to mutate inside an Rc you'll
-often need to clone it first. Otherwise another shared reference to the Rc could swap
+Note that like the `Box t` example earlier, this still requires a `uniq` reference to
+project inside the `Rc`. In practice this means to use this to mutate inside an `Rc` you'll
+often need to clone it first. Otherwise another shared reference to the `Rc` could swap
 out the `Rc` for another, potentially dropping the original while we held a reference to it.
 
 Compared to `Rc<RefCell<T>>` in Rust, a `Rc t` in Ante can lend out shared references directly
 without a wrapper type. The runtime cost is also different: `Rc<RefCell<T>>` performs reference
 counting for the outer `Rc` and the inner `Ref`s handed out by the `RefCell`. An `Rc t` in Ante
-only needs to perform the out `Rc`. Any `&shared mut t` that are handed out can
+only needs to perform the out `Rc`. Any `mut t` that are handed out can
 be copied/aliased freely. Moreover, `RefCell<T>` introduces a possible panic to the code if
-a `RefMut` is ever aliased at runtime, this is not possible with `&shared mut` in Ante.
+a `RefMut` is ever aliased at runtime, this is not possible with `mut t` in Ante.
 
 If we ever do need interior mutability to lend out owned references without cloning, then we'd
 still need to resort to a `RefCell t` or similar interior mutability type inherited from Rust.
@@ -330,7 +314,7 @@ type Shape =
    | Triangle (width: U32) (height: U32)
    | Square (height: U32)
 
-height (s: &Shape) : U32 =
+height (s: ref Shape): U32 =
     match clone s
     | Triangle _ height -> height
     | Square height -> height
@@ -340,7 +324,7 @@ But how can we implement `Clone Shape` if we can't access a tagged union's field
 
 ```ante
 impl Clone Shape with
-    clone (s: &Shape) =
+    clone (s: ref Shape) =
         match s  // Error here
         | Triangle w h -> Triangle @w @h
         | Square h -> Square @h
@@ -356,8 +340,8 @@ type Foo =
 
 impl Clone Foo with
     clone foo =
-        vec = mut clone foo.&vec
-        mut_vec: &shared mut Vec Foo = as_mut &vec
+        var vec = clone (ref foo.vec)
+        mut_vec: mut Vec Foo = vec.as_mut ()
 
         // If this clone impl was invoked from `Clone (Vec Foo)`
         // with the outer Vec being obtained from a reference into
@@ -373,8 +357,8 @@ Unfortunately, writing a custom impl for `Clone` is inherently unsafe. For this 
 now require the `unsafe` keyword.
 
 ```ante
-unsafe impl Clone Foo with
-    clone foo = Foo (clone foo.&vec)
+unsafe impl clone_foo: Clone Foo with
+    clone foo = Foo (clone (ref foo.vec))
 ```
 
 Thankfully, writing custom `Clone` impls is uncommon and code like this which goes out of its
@@ -403,7 +387,7 @@ a helpful message suggesting to use `get_cloned` as an alternative. Tutorials fo
 as well by using pointer types more often at first, until introducing owning references later on as
 a method of reducing boxing. Compared to the Rust approach, this requires a one-time change
 in data types (if not done already / copied from a tutorial), and in return new users are much less likely
-to encounter AxM related errors. Comparing the runtime costs of the two work arounds, excessive cloning has the
+to encounter AxM related errors. Comparing the runtime costs of the two workarounds, excessive cloning has the
 potential to degrade performance considerably when using larger types, but extra boxing in collection types
 and tagged unions won't generally have as drastic a performance impact.
 

@@ -3304,7 +3304,6 @@ rules are used for determining what the borrow set is assumed to be:</p>
 </ul>
 <p>Using these rules, we can rewrite <code>example1</code>:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">example1</span> <span class="p">(</span><span class="n">foo</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">I32</span><span class="p">)</span> <span class="p">(</span><span class="n">bar</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">I32</span><span class="p">)</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">&#39;(foo, bar)</span> <span class="kt">I32</span> <span class="ow">=</span>
-    <span class="c1">// Is the return type `ref &#39;foo I32` or `ref &#39;bar I32`?</span>
     <span class="k">if</span> <span class="n">random</span> <span class="p">()</span> <span class="k">then</span> <span class="n">foo</span> <span class="k">else</span> <span class="n">bar</span>
 </code></pre></div><p>Most of the time, these rules mean we can omit borrow sets unless the function both takes multiple reference parameters
 and returns a reference.</p>
