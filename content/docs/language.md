@@ -1637,11 +1637,11 @@ You can think of these types as always being wrapped in a reference-counted poin
 meant to be used when efficiency is less of a concern over code clarity. For example when
 gradually transitioning new users to use ownership rules it can be helpful if they have to worry
 about it for fewer types - even if they still need to handle it for built-in types like `Vec a`.
-These are also useful in cases when types need to be recursively boxed (like `Expr` above) anyway,
-or patterns where shared mutability is inherently necessary like the observer pattern.
+These are also useful in cases when types need to be boxed anyway, such as `Expr` above or
+the various shared, immutable container types.
 
 Taking the reference of a field of a `shared` type will always yield a shared reference back
-(similar to a `Rc t`) since the shared type may be cloned and shared elsewhere.
+(similar to a `Arc t`) since the shared type may be cloned and shared elsewhere.
 
 ```ante
 expr = Expr.Int 3
@@ -1656,7 +1656,6 @@ In addition to `shared type`, which declares a shared, but immutable type, we ca
 via `shared mut type`:
 
 ```ante
-// Mutable shared type
 shared mut type MutExpr =
     | Int I32
     | Var String
@@ -1666,7 +1665,7 @@ main () =
     my_expr = MutExpr.Add (Int 3) (Var "foo")
 
     // We can freely copy and mutate any shared mutable type
-    mut alias1 = my_expr
+    var alias1 = my_expr
     alias2 = my_expr
 
     alias1 := Int 0
