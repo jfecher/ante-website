@@ -3079,11 +3079,11 @@ particularly hurting nested matches which now have to go through an additional s
 
 <span class="nf">simplify</span> <span class="p">(</span><span class="n">expr</span><span class="o">:</span> <span class="kt">Expr</span><span class="p">)</span><span class="o">:</span> <span class="kt">Expr</span> <span class="ow">=</span>
     <span class="k">match</span> <span class="n">expr</span><span class="o">.</span><span class="n">inner</span>
-    <span class="o">|</span> <span class="kt">Int</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="kt">Int</span> <span class="n">x</span>
-    <span class="o">|</span> <span class="kt">Var</span> <span class="n">s</span> <span class="ow">-&gt;</span> <span class="kt">Var</span> <span class="n">s</span>
+    <span class="o">|</span> <span class="kt">Int</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="kt">Expr</span> <span class="p">(</span><span class="kt">Int</span> <span class="n">x</span><span class="p">)</span> <span class="n">expr</span><span class="o">.</span><span class="n">location</span>
+    <span class="o">|</span> <span class="kt">Var</span> <span class="n">s</span> <span class="ow">-&gt;</span> <span class="kt">Expr</span> <span class="p">(</span><span class="kt">Var</span> <span class="n">s</span><span class="p">)</span> <span class="n">expr</span><span class="o">.</span><span class="n">location</span>
     <span class="o">|</span> <span class="kt">Add</span> <span class="p">(</span><span class="kt">Expr</span> <span class="p">(</span><span class="kt">Int</span> <span class="mi">0</span><span class="p">)</span> <span class="n">_lhs_loc</span><span class="p">)</span> <span class="n">rhs</span> <span class="ow">-&gt;</span> <span class="n">rhs</span>
     <span class="o">|</span> <span class="kt">Add</span> <span class="n">lhs</span> <span class="p">(</span><span class="kt">Expr</span> <span class="p">(</span><span class="kt">Int</span> <span class="mi">0</span><span class="p">)</span> <span class="n">_rhs_loc</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="n">lhs</span>
-    <span class="o">|</span> <span class="kt">Add</span> <span class="n">lhs</span> <span class="n">rhs</span> <span class="ow">-&gt;</span> <span class="kt">Add</span> <span class="p">(</span><span class="n">simplify</span> <span class="n">lhs</span><span class="p">)</span> <span class="p">(</span><span class="n">simplify</span> <span class="n">rhs</span><span class="p">)</span>
+    <span class="o">|</span> <span class="kt">Add</span> <span class="n">lhs</span> <span class="n">rhs</span> <span class="ow">-&gt;</span> <span class="kt">Expr</span> <span class="p">(</span><span class="kt">Add</span> <span class="p">(</span><span class="n">simplify</span> <span class="n">lhs</span><span class="p">)</span> <span class="p">(</span><span class="n">simplify</span> <span class="n">rhs</span><span class="p">))</span> <span class="n">expr</span><span class="o">.</span><span class="n">location</span>
 </code></pre></div><p>This pattern can be improved with the <code>with</code> keyword which will include a given list of fields
 in all union variants, eliminating the need for a wrapper struct.
 These extra fields are placed at the end of each variant&rsquo;s list of fields.</p>
@@ -3095,22 +3095,27 @@ These extra fields are placed at the end of each variant&rsquo;s list of fields.
 
 <span class="nf">simplify</span> <span class="p">(</span><span class="n">expr</span><span class="o">:</span> <span class="kt">Expr</span><span class="p">)</span><span class="o">:</span> <span class="kt">Expr</span> <span class="ow">=</span>
     <span class="k">match</span> <span class="n">expr</span>
-    <span class="o">|</span> <span class="kt">Int</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="kt">Int</span> <span class="n">x</span>
-    <span class="o">|</span> <span class="kt">Var</span> <span class="n">s</span> <span class="ow">-&gt;</span> <span class="kt">Var</span> <span class="n">s</span>
-    <span class="o">|</span> <span class="kt">Add</span> <span class="p">(</span><span class="kt">Int</span> <span class="mi">0</span> <span class="n">_lhs_loc</span><span class="p">)</span> <span class="n">rhs</span> <span class="ow">-&gt;</span> <span class="n">rhs</span>
-    <span class="o">|</span> <span class="kt">Add</span> <span class="n">lhs</span> <span class="p">(</span><span class="kt">Int</span> <span class="mi">0</span> <span class="n">_rhs_loc</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="n">lhs</span>
-    <span class="o">|</span> <span class="kt">Add</span> <span class="n">lhs</span> <span class="n">rhs</span> <span class="ow">-&gt;</span> <span class="kt">Add</span> <span class="p">(</span><span class="n">simplify</span> <span class="n">lhs</span><span class="p">)</span> <span class="p">(</span><span class="n">simplify</span> <span class="n">rhs</span><span class="p">)</span>
-</code></pre></div><p><code>_lhs_loc</code> and <code>_rhs_loc</code> were written explicitly here to show where they would go, but if
+    <span class="o">|</span> <span class="kt">Int</span> <span class="n">x</span> <span class="n">loc</span> <span class="ow">-&gt;</span> <span class="kt">Int</span> <span class="n">x</span> <span class="n">loc</span>
+    <span class="o">|</span> <span class="kt">Var</span> <span class="n">s</span> <span class="n">loc</span> <span class="ow">-&gt;</span> <span class="kt">Var</span> <span class="n">s</span> <span class="n">loc</span>
+    <span class="o">|</span> <span class="kt">Add</span> <span class="p">(</span><span class="kt">Int</span> <span class="mi">0</span> <span class="n">_lhs_loc</span><span class="p">)</span> <span class="n">rhs</span> <span class="n">_loc</span> <span class="ow">-&gt;</span> <span class="n">rhs</span>
+    <span class="o">|</span> <span class="kt">Add</span> <span class="n">lhs</span> <span class="p">(</span><span class="kt">Int</span> <span class="mi">0</span> <span class="n">_rhs_loc</span><span class="p">)</span> <span class="n">_loc</span> <span class="ow">-&gt;</span> <span class="n">lhs</span>
+    <span class="o">|</span> <span class="kt">Add</span> <span class="n">lhs</span> <span class="n">rhs</span> <span class="n">loc</span> <span class="ow">-&gt;</span> <span class="kt">Add</span> <span class="p">(</span><span class="n">simplify</span> <span class="n">lhs</span><span class="p">)</span> <span class="p">(</span><span class="n">simplify</span> <span class="n">rhs</span><span class="p">)</span> <span class="n">loc</span>
+</code></pre></div><p>Each of the locations in the first two <code>Add</code> cases were written explicitly here to show where they would go, but if
 these fields are unneeded in a pattern match they can also be excluded with <code>..</code> which will
 automatically fill in an remaining fields in a pattern:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">simplify</span> <span class="p">(</span><span class="n">expr</span><span class="o">:</span> <span class="kt">Expr</span><span class="p">)</span><span class="o">:</span> <span class="kt">Expr</span> <span class="ow">=</span>
     <span class="k">match</span> <span class="n">expr</span>
-    <span class="o">|</span> <span class="kt">Int</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="kt">Int</span> <span class="n">x</span>
-    <span class="o">|</span> <span class="kt">Var</span> <span class="n">s</span> <span class="ow">-&gt;</span> <span class="kt">Var</span> <span class="n">s</span>
+    <span class="o">|</span> <span class="kt">Int</span> <span class="n">x</span> <span class="o">..</span> <span class="ow">-&gt;</span> <span class="kt">Int</span> <span class="n">x</span>
+    <span class="o">|</span> <span class="kt">Var</span> <span class="n">s</span> <span class="o">..</span> <span class="ow">-&gt;</span> <span class="kt">Var</span> <span class="n">s</span>
     <span class="o">|</span> <span class="kt">Add</span> <span class="p">(</span><span class="kt">Int</span> <span class="mi">0</span><span class="o">..</span><span class="p">)</span> <span class="n">rhs</span> <span class="ow">-&gt;</span> <span class="n">rhs</span>
     <span class="o">|</span> <span class="kt">Add</span> <span class="n">lhs</span> <span class="p">(</span><span class="kt">Int</span> <span class="mi">0</span><span class="o">..</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="n">lhs</span>
     <span class="o">|</span> <span class="kt">Add</span> <span class="n">lhs</span> <span class="n">rhs</span> <span class="ow">-&gt;</span> <span class="kt">Add</span> <span class="p">(</span><span class="n">simplify</span> <span class="n">lhs</span><span class="p">)</span> <span class="p">(</span><span class="n">simplify</span> <span class="n">rhs</span><span class="p">)</span>
-</code></pre></div><p>Because these extra fields are included on every variant, they can also be accessed on the
+</code></pre></div><p>Here the difference between ignoring a single field with <code>_</code> and multiple fields with <code>..</code> is minimal because there is only
+one ignored field, but the difference will be larger when more ignored fields are involved:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">is_int</span> <span class="p">(</span><span class="n">expr</span><span class="o">:</span> <span class="kt">Expr</span><span class="p">)</span><span class="o">:</span> <span class="kt">Bool</span> <span class="ow">=</span>
+    <span class="c1">// Ignore the `I32` and `Location` fields</span>
+    <span class="n">expr</span> <span class="k">is</span> <span class="kt">Int</span> <span class="o">..</span>
+</code></pre></div><p>Because the extra fields added by <code>with</code> are included on every variant, they can also be accessed on the
 tagged union itself as if it were a struct type:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Expr</span><span class="o">.</span><span class="n">file</span> <span class="p">(</span><span class="n">e</span><span class="o">:</span> <span class="kt">Expr</span><span class="p">)</span><span class="o">:</span> <span class="kt">File</span> <span class="ow">=</span>
     <span class="c1">// No need to match on each variant</span>
@@ -3131,8 +3136,8 @@ can be accessed in the namespace of the tagged union:</p>
 <span class="kt">Shape</span><span class="o">.</span><span class="kt">Square</span><span class="o">.</span><span class="n">area</span> <span class="n">self</span><span class="o">:</span> <span class="kt">U32</span> <span class="ow">=</span>
     <span class="n">self</span><span class="o">.</span><span class="n">length</span> <span class="o">*</span> <span class="n">self</span><span class="o">.</span><span class="n">length</span>
 </code></pre></div><p>Normally when matching on tagged unions, you will need to match on each field of
-each variant. To get a value of the variant type instead need to collect all fields
-to a single variable using <code>..</code>:</p>
+each variant. To get a value of the variant type instead, you can collect all fields
+to a single variable by placing <code>..</code> immediately after the variant name:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Shape</span><span class="o">.</span><span class="n">area</span> <span class="n">self</span><span class="o">:</span> <span class="kt">U32</span> <span class="ow">=</span>
     <span class="k">match</span> <span class="n">self</span>
     <span class="o">|</span> <span class="kt">Circle</span> <span class="o">..</span><span class="n">c</span> <span class="ow">-&gt;</span> <span class="n">area_circle</span> <span class="n">c</span>
@@ -3146,7 +3151,7 @@ for each individual variant like <code>Shape.Square.area</code>, <code>Shape.Cir
 types need to be manually specified. For these cases, the <code>x : t</code>
 type annotation syntax can be used. This is valid anywhere an expression
 or irrefutable pattern is expected. It is often used in practice
-for annotatiing parameter types and for deciding an unbounded generic
+for annotating parameter types and for deciding an unbounded generic
 type - for example when parsing a value from a string then printing it.
 Both operations are generic so we&rsquo;ll need to specify what type we should
 parse out of the string:</p>

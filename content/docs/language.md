@@ -1089,11 +1089,11 @@ type Expr =
 
 simplify (expr: Expr): Expr =
     match expr.inner
-    | Int x -> Int x
-    | Var s -> Var s
+    | Int x -> Expr (Int x) expr.location
+    | Var s -> Expr (Var s) expr.location
     | Add (Expr (Int 0) _lhs_loc) rhs -> rhs
     | Add lhs (Expr (Int 0) _rhs_loc) -> lhs
-    | Add lhs rhs -> Add (simplify lhs) (simplify rhs)
+    | Add lhs rhs -> Expr (Add (simplify lhs) (simplify rhs)) expr.location
 ```
 
 This pattern can be improved with the `with` keyword which will include a given list of fields
@@ -1109,28 +1109,37 @@ shared type Expr =
 
 simplify (expr: Expr): Expr =
     match expr
-    | Int x -> Int x
-    | Var s -> Var s
-    | Add (Int 0 _lhs_loc) rhs -> rhs
-    | Add lhs (Int 0 _rhs_loc) -> lhs
-    | Add lhs rhs -> Add (simplify lhs) (simplify rhs)
+    | Int x loc -> Int x loc
+    | Var s loc -> Var s loc
+    | Add (Int 0 _lhs_loc) rhs _loc -> rhs
+    | Add lhs (Int 0 _rhs_loc) _loc -> lhs
+    | Add lhs rhs loc -> Add (simplify lhs) (simplify rhs) loc
 ```
 
-`_lhs_loc` and `_rhs_loc` were written explicitly here to show where they would go, but if
+Each of the locations in the first two `Add` cases were written explicitly here to show where they would go, but if
 these fields are unneeded in a pattern match they can also be excluded with `..` which will
 automatically fill in an remaining fields in a pattern:
 
 ```ante
 simplify (expr: Expr): Expr =
     match expr
-    | Int x -> Int x
-    | Var s -> Var s
+    | Int x .. -> Int x
+    | Var s .. -> Var s
     | Add (Int 0..) rhs -> rhs
     | Add lhs (Int 0..) -> lhs
     | Add lhs rhs -> Add (simplify lhs) (simplify rhs)
 ```
 
-Because these extra fields are included on every variant, they can also be accessed on the
+Here the difference between ignoring a single field with `_` and multiple fields with `..` is minimal because there is only
+one ignored field, but the difference will be larger when more ignored fields are involved:
+
+```ante
+is_int (expr: Expr): Bool =
+    // Ignore the `I32` and `Location` fields
+    expr is Int ..
+```
+
+Because the extra fields added by `with` are included on every variant, they can also be accessed on the
 tagged union itself as if it were a struct type:
 
 ```ante
@@ -1160,8 +1169,8 @@ Shape.Square.area self: U32 =
 ```
 
 Normally when matching on tagged unions, you will need to match on each field of
-each variant. To get a value of the variant type instead need to collect all fields
-to a single variable using `..`:
+each variant. To get a value of the variant type instead, you can collect all fields
+to a single variable by placing `..` immediately after the variant name:
 
 ```ante
 Shape.area self: U32 =
@@ -1181,7 +1190,7 @@ Even with global type inference, there are still situations where
 types need to be manually specified. For these cases, the `x : t`
 type annotation syntax can be used. This is valid anywhere an expression
 or irrefutable pattern is expected. It is often used in practice
-for annotatiing parameter types and for deciding an unbounded generic
+for annotating parameter types and for deciding an unbounded generic
 type - for example when parsing a value from a string then printing it.
 Both operations are generic so we'll need to specify what type we should
 parse out of the string:
