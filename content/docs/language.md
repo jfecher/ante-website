@@ -1527,7 +1527,7 @@ which project the reference value into a value which may be dropped if its paren
 is mutated. This includes something like the `a` in `Maybe a` which would be dropped
 if the value is set to `None`, but notably excludes fields of a struct.
 
-#### Shared Conversions
+#### Reference Promotions
 
 Converting from a reference which does not allow shared mutability (`imm` or `uniq`) to one that does (`ref` or `mut`) is trivial and is always allowed:
 
@@ -1591,13 +1591,20 @@ foo (a: mut Foo) (b: mut Foo): Unit =
     ...
 ```
 
-Struct types which may contain the aliased type are also conservatively counted as possible aliases since the
-shared reference may be derived from the struct value. Additionally, possibly-cyclic types count as aliases to
-themselves. Otherwise, you could obtain two owned, mutable references to the same value by following the cycle
+Specifically, when a reference with element type `a` is promoted, and a value of type `b` is used while the promoted
+reference is still alive (and this value was in scope before the promoted reference was created), the compiler
+looks for an implementation of `Distinct a b` in scope. `Distinct c d` is an trait that is automatically implemented
+when `d` does not contain `c` anywhere within and `c` does not contain itself.
+
+This last "`c` does not contain itself" rule is to prevent the promotion of references to cyclic types.
+Otherwise, you could obtain two owned, mutable references to the same value by following the cycle
 back to the original node.
 
+In practice, this means common types like `ref String` are more difficult to use with other variables while promoted
+since `String`s are likely to be found within these other variables as well.
+
 Even with these restrictions, the ability to convert `ref` and `mut` to `imm` and `uniq`
-lets us write more functions with fewer requirements on the arguments they are called with (since they would
+enables us write more functions with fewer requirements on the arguments they are called with (since they would
 now accept references which may be mutably aliased, including `shared mut` types). Consider the following function:
 
 ```ante
@@ -1606,20 +1613,14 @@ type Context = names: HashMap String NameData
 type NameData = uses: U32
 
 Context.use_name (context: mut Context) (name: imm String) =
-    if context.names.get_mut name is Some data then
+    if context.names.get_uniq name is Some data then
         data.uses += 1
 ```
 
-Because the `HashMap.get_mut` method requires a `uniq HashMap a b`, we would normally be required to have a
+Because the `HashMap.get_uniq` method requires a `uniq HashMap a b`, we would normally be required to have a
 `uniq Context` as well. Since there are no possible aliases to the context in scope however, we
 can locally treat it as `uniq` and get a `uniq NameData` anyway. Users of `Context.use_name` are
 now less constrained in how they use their `Context` since they may pass in an owned or shared object.
-
-Also note the use of `name: imm String` over `name: ref String`, this is because `context` is being converted
-to a `uniq Context`, which requires no alias of it be mutated. As a `ref String` could potentially be
-from the `Context.names` field, we'd get an error if we tried using a `uniq Context` and our `name: ref String` parameter
-simultaneously. The solution then is either to take `name` by value or as a reference type such as `imm` which cannot
-alias with `mut`/`ref` references.
 
 #### Shared Types
 

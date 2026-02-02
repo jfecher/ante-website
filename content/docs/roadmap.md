@@ -4,6 +4,12 @@ date = "2022-06-25"
 categories = ["docs"]
 +++
 
+> Ante's compiler is currently undergoing a from-scratch rewrite! The roadmap here
+> still covers the master branch rather than the rewrite branch. The rewrite has already
+> accomplished its main goals of being fully incremental and concurrent while removing tech debt,
+> but compared to master is notably missing closure conversion, effect handlers, polymorphic
+> integer and float literals, and anonymous struct types, among other features.
+
 This page is for an in-depth roadmap of ante to show what is currently implemented
 in the compiler. Note that the basic compiler passes from lexing, parsing, etc through
 (llvm) codegen have been implemented for quite some time so readers can assume the basic

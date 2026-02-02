@@ -1346,8 +1346,8 @@
                     
                     
                     
-                    <a href="/docs/language/#shared-conversions">
-                        <li>Shared Conversions</li>
+                    <a href="/docs/language/#reference-promotions">
+                        <li>Reference Promotions</li>
                     </a>
                     
                     
@@ -3399,7 +3399,7 @@ want to wrap each element in a pointer type to reduce the cost of cloning: <code
 which project the reference value into a value which may be dropped if its parent reference
 is mutated. This includes something like the <code>a</code> in <code>Maybe a</code> which would be dropped
 if the value is set to <code>None</code>, but notably excludes fields of a struct.</p>
-<h4 id="shared-conversions">Shared Conversions</h4>
+<h4 id="reference-promotions">Reference Promotions</h4>
 <p>Converting from a reference which does not allow shared mutability (<code>imm</code> or <code>uniq</code>) to one that does (<code>ref</code> or <code>mut</code>) is trivial and is always allowed:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// This works with uniq to mut as well</span>
 <span class="nf">imm_to_ref</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">imm</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span>
@@ -3449,29 +3449,29 @@ reference is used as an exclusive one:</p>
     <span class="n">a_ref</span> <span class="ow">=</span> <span class="n">requires_owned</span> <span class="n">a</span>
     <span class="c1">// while `a_ref` is alive we cannot use `a` or `b` since they may alias</span>
     <span class="o">...</span>
-</code></pre></div><p>Struct types which may contain the aliased type are also conservatively counted as possible aliases since the
-shared reference may be derived from the struct value. Additionally, possibly-cyclic types count as aliases to
-themselves. Otherwise, you could obtain two owned, mutable references to the same value by following the cycle
+</code></pre></div><p>Specifically, when a reference with element type <code>a</code> is promoted, and a value of type <code>b</code> is used while the promoted
+reference is still alive (and this value was in scope before the promoted reference was created), the compiler
+looks for an implementation of <code>Distinct a b</code> in scope. <code>Distinct c d</code> is an trait that is automatically implemented
+when <code>d</code> does not contain <code>c</code> anywhere within and <code>c</code> does not contain itself.</p>
+<p>This last &ldquo;<code>c</code> does not contain itself&rdquo; rule is to prevent the promotion of references to cyclic types.
+Otherwise, you could obtain two owned, mutable references to the same value by following the cycle
 back to the original node.</p>
+<p>In practice, this means common types like <code>ref String</code> are more difficult to use with other variables while promoted
+since <code>String</code>s are likely to be found within these other variables as well.</p>
 <p>Even with these restrictions, the ability to convert <code>ref</code> and <code>mut</code> to <code>imm</code> and <code>uniq</code>
-lets us write more functions with fewer requirements on the arguments they are called with (since they would
+enables us write more functions with fewer requirements on the arguments they are called with (since they would
 now accept references which may be mutably aliased, including <code>shared mut</code> types). Consider the following function:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Context</span> <span class="ow">=</span> <span class="n">names</span><span class="o">:</span> <span class="kt">HashMap</span> <span class="kt">String</span> <span class="kt">NameData</span>
 
 <span class="k">type</span> <span class="kt">NameData</span> <span class="ow">=</span> <span class="n">uses</span><span class="o">:</span> <span class="kt">U32</span>
 
 <span class="kt">Context</span><span class="o">.</span><span class="n">use_name</span> <span class="p">(</span><span class="n">context</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Context</span><span class="p">)</span> <span class="p">(</span><span class="n">name</span><span class="o">:</span> <span class="k">imm</span> <span class="kt">String</span><span class="p">)</span> <span class="ow">=</span>
-    <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">names</span><span class="o">.</span><span class="n">get_mut</span> <span class="n">name</span> <span class="k">is</span> <span class="kt">Some</span> <span class="n">data</span> <span class="k">then</span>
+    <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">names</span><span class="o">.</span><span class="n">get_uniq</span> <span class="n">name</span> <span class="k">is</span> <span class="kt">Some</span> <span class="n">data</span> <span class="k">then</span>
         <span class="n">data</span><span class="o">.</span><span class="n">uses</span> <span class="o">+=</span> <span class="mi">1</span>
-</code></pre></div><p>Because the <code>HashMap.get_mut</code> method requires a <code>uniq HashMap a b</code>, we would normally be required to have a
+</code></pre></div><p>Because the <code>HashMap.get_uniq</code> method requires a <code>uniq HashMap a b</code>, we would normally be required to have a
 <code>uniq Context</code> as well. Since there are no possible aliases to the context in scope however, we
 can locally treat it as <code>uniq</code> and get a <code>uniq NameData</code> anyway. Users of <code>Context.use_name</code> are
 now less constrained in how they use their <code>Context</code> since they may pass in an owned or shared object.</p>
-<p>Also note the use of <code>name: imm String</code> over <code>name: ref String</code>, this is because <code>context</code> is being converted
-to a <code>uniq Context</code>, which requires no alias of it be mutated. As a <code>ref String</code> could potentially be
-from the <code>Context.names</code> field, we&rsquo;d get an error if we tried using a <code>uniq Context</code> and our <code>name: ref String</code> parameter
-simultaneously. The solution then is either to take <code>name</code> by value or as a reference type such as <code>imm</code> which cannot
-alias with <code>mut</code>/<code>ref</code> references.</p>
 <h4 id="shared-types">Shared Types</h4>
 <p>Shared types are a way to opt-out of
 ownership rules for a type by automatically wrapping it in a copy-able wrapper.

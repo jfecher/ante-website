@@ -13,8 +13,8 @@
       <pubDate>Sat, 25 Jun 2022 00:00:00 +0000</pubDate>
       
       <guid>https://antelang.org/docs/roadmap/</guid>
-      <description>This page is for an in-depth roadmap of ante to show what is currently implemented in the compiler. Note that the basic compiler passes from lexing, parsing, etc through (llvm) codegen have been implemented for quite some time so readers can assume the basic inner workings of the compiler are working.
-All designs in the ideas page are not implemented as their design is still non-final and may not be selected at all.</description>
+      <description>Ante&amp;rsquo;s compiler is currently undergoing a from-scratch rewrite! The roadmap here still covers the master branch rather than the rewrite branch. The rewrite has already accomplished its main goals of being fully incremental and concurrent while removing tech debt, but compared to master is notably missing closure conversion, effect handlers, polymorphic integer and float literals, and anonymous struct types, among other features.
+ This page is for an in-depth roadmap of ante to show what is currently implemented in the compiler.</description>
     </item>
     
     <item>
