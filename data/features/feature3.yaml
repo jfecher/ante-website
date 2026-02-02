@@ -1,5 +1,5 @@
 weight: 3
-name: "Simple Module System"
+name: "Algebraic Effects"
 icon: "fa fa-cube"
-description: "Ante’s module system mirrors the file tree and is easy to understand and easy to build as a result."
-link: "docs/language/#modules"
+description: "Algebraic effects provide great code reuse and can even provide convenient ways to optimize code, such as swapping out the Allocator by handling the Allocator effect."
+link: "docs/language/#algebraic-effects"

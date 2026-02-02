@@ -1,5 +1,5 @@
 weight: 6
-name: "No Lifetime Variables"
+name: "Easier Lifetime Variables"
 icon: "fa fa-trash"
-description: "Ante's simplified reference rules mean you never need to write another lifetime variable again."
-link: "docs/language/#borrowing"
+description: "Instead of abstract or numbered names, Ante's lifetime variables are named after the variable(s) they borrow, making error messages more clear"
+link: "docs/language/#borrow-sets"
