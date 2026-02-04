@@ -1374,8 +1374,6 @@
                     
                         <ul class="toc-h3">
                     
-                        <ul class="toc-h4">
-                    
                     
                     
                     
@@ -1383,8 +1381,6 @@
                         <li>Shared Types</li>
                     </a>
                     
-                    
-                        </ul>
                     
                         </ul>
                     
@@ -1409,8 +1405,6 @@
                     
                         <ul class="toc-h4">
                     
-                        <ul class="toc-h5">
-                    
                     
                     
                     
@@ -1418,8 +1412,6 @@
                         <li>Shared Mutable Types</li>
                     </a>
                     
-                    
-                        </ul>
                     
                         </ul>
                     
@@ -3400,6 +3392,9 @@ which project the reference value into a value which may be dropped if its paren
 is mutated. This includes something like the <code>a</code> in <code>Maybe a</code> which would be dropped
 if the value is set to <code>None</code>, but notably excludes fields of a struct.</p>
 <h4 id="reference-promotions">Reference Promotions</h4>
+<blockquote>
+<p>These rules are a work in progress!</p>
+</blockquote>
 <p>Converting from a reference which does not allow shared mutability (<code>imm</code> or <code>uniq</code>) to one that does (<code>ref</code> or <code>mut</code>) is trivial and is always allowed:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// This works with uniq to mut as well</span>
 <span class="nf">imm_to_ref</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">imm</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span>
@@ -3412,17 +3407,23 @@ if the value is set to <code>None</code>, but notably excludes fields of a struc
 </code></pre></div><p>Above we know that <code>y</code> is a temporary reference only valid within <code>requires_ref</code>, so once the call ends we can continue
 using <code>x</code> as an <code>imm t</code> reference - it isn&rsquo;t possible for <code>y</code> to outlive its temporary lifetime. When <code>return_ref</code> is called
 we borrow <code>x</code> as a <code>ref</code> again, and this time may not use <code>x</code> again until <code>foo</code> is dropped.</p>
-<p>Going the other way around from <code>ref</code> or <code>mut</code> to <code>imm</code> or <code>uniq</code>, however, requires the compiler to show that the reference is
-not mutably aliased. To do this, two restrictions must be imposed on the resulting reference:</p>
+<p>Weakening references like is done above is very simple, but going the other way around from <code>ref</code> to <code>imm</code> or from <code>mut</code> to
+<code>uniq</code> is more difficult. This type of conversion is called a &ldquo;reference promotion&rdquo; since the resulting reference
+is more powerful than the original.</p>
+<blockquote>
+<p>Reference promotions are meant as an optimization tool to avoid clones and provide more code reuse by
+enabling <code>ref</code> and <code>mut</code> to be used in more function parameters. This lowers requirements for callers
+who are now free to pass owned (<code>imm</code>, <code>uniq</code>) or mutably shared (<code>ref</code>, <code>mut</code>) data.</p>
+</blockquote>
+<p>Promoting a reference generally requires us to show the compiler that our converted reference isn&rsquo;t <em>locally</em>
+mutably aliased, and thus the resulting reference won&rsquo;t be dropped from another value being mutated. <em>Locally</em>
+here means we don&rsquo;t have to show the reference isn&rsquo;t aliased anywhere, we must only show it isn&rsquo;t
+used with any possible aliases while the promoted reference is alive.</p>
+<p>Aside from the requirement to show a variable is not locally mutably aliased, there are two notable restrictions to promotions:</p>
 <ol>
-<li>
-<p>All possible aliases of the given reference in scope must not used while the converted <code>imm</code> or <code>uniq</code> is in scope:</p>
-</li>
-<li>
-<p>The converted <code>imm</code> or <code>uniq</code> reference may not be returned from a function. Since the compiler only prevents
-possible aliases in the current scope from being mutated, it&rsquo;d be unsafe to use such a reference in the scope
-of the calling function.</p>
-</li>
+<li>Possibly cyclic types are counted as possible mutable aliases to themselves and are thus barred from promotions.</li>
+<li>Since the analysis is a local one, the promoted reference may not be returned from the function it was created in.
+Otherwise, it could be used with possible mutable aliases in another scope.</li>
 </ol>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">shared_to_owned</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span>
     <span class="n">requires_owned</span> <span class="n">x</span>  <span class="c1">// ok, no other alias in scope</span>
@@ -3430,34 +3431,46 @@ of the calling function.</p>
 <span class="nf">requires_owned</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="k">imm</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span> <span class="o">...</span>
 
 <span class="nf">upgrade_invalid</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">mut</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">uniq</span> <span class="n">t</span> <span class="ow">=</span>
-    <span class="c1">// error! Cannot return a uniq reference created from a mut reference - it may be aliased by the caller</span>
+    <span class="c1">// error! Cannot return a uniq reference promoted from a mut reference - it may be aliased by the caller</span>
     <span class="n">x</span>
-</code></pre></div><p>This &ldquo;no alias may be used&rdquo; restriction is important for preventing use of values which may have been dropped:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">invalid_shared_to_owned</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span>
-    <span class="c1">// Remember that retrieving a reference to a Vec&#39;s element requires an owned reference</span>
-    <span class="n">element_ref</span> <span class="ow">=</span> <span class="n">x</span><span class="o">.</span><span class="n">get</span> <span class="mi">0</span> <span class="o">|&gt;</span> <span class="n">unwrap</span>
+</code></pre></div><p>The way the compiler proves a variable is not mutably aliased locally is by requiring a <code>Distinct a b</code> trait constraint
+whenever a mutable variable of type <code>b</code> is used while a promoted reference to a type <code>a</code> is still alive. This trait is automatically
+implemented by the compiler when the type <code>a</code> is not contained within the type <code>b</code>. For example, in
+the following code, we&rsquo;d expect a constraint for <code>Distinct String I32</code> to be issued (and solved):</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">convert_string_ref</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">String</span><span class="p">)</span> <span class="p">(</span><span class="n">i</span><span class="o">:</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="n">promotion</span><span class="o">:</span> <span class="k">uniq</span> <span class="kt">String</span> <span class="ow">=</span> <span class="n">s</span>
+    <span class="n">print</span> <span class="n">i</span>  <span class="c1">// i is used while `promotion` is still used</span>
+    <span class="n">print</span> <span class="n">promotion</span>
+</code></pre></div><p>This constraint is important for preventing use of values which may have been dropped:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">invalid_shared_to_owned</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="c1">// Promote x so we can obtain a reference to an element without cloning</span>
+    <span class="n">v</span><span class="o">:</span> <span class="k">uniq</span> <span class="kt">Vec</span> <span class="n">t</span> <span class="ow">=</span> <span class="n">x</span>
+    <span class="n">element_ref</span> <span class="ow">=</span> <span class="n">v</span><span class="o">.</span><span class="n">get</span> <span class="mi">0</span> <span class="o">|&gt;</span> <span class="n">unwrap</span>
     <span class="n">print</span> <span class="n">element_ref</span>  <span class="c1">// ok</span>
 
-    <span class="n">x</span><span class="o">.</span><span class="n">clear</span> <span class="p">()</span>
+    <span class="n">y</span><span class="o">.</span><span class="n">clear</span> <span class="p">()</span>  <span class="c1">// Error! Using `y: mut Vec t` may mutate the promoted reference `v: uniq Vec t`</span>
+                <span class="c1">// causing any references derived from `v` to be dropped!</span>
+                <span class="c1">// Note: No impl found for `Distinct (Vec t) (Vec t)`, so the compiler inferred these values may alias</span>
 
-    <span class="c1">// If the following line is uncommented, we&#39;d get an error on the line above stating we cannot call</span>
-    <span class="c1">// `x.clear` because it&#39;d mutate `x` while `element_ref` is still used, which may cause it to be dropped.</span>
-    <span class="c1">// print element_ref</span>
-</code></pre></div><p>Because other shared function parameters may alias a given reference, they may not be used either when a shared
-reference is used as an exclusive one:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Foo</span><span class="p">)</span> <span class="p">(</span><span class="n">b</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Foo</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span>
-    <span class="n">a_ref</span> <span class="ow">=</span> <span class="n">requires_owned</span> <span class="n">a</span>
-    <span class="c1">// while `a_ref` is alive we cannot use `a` or `b` since they may alias</span>
-    <span class="o">...</span>
-</code></pre></div><p>Specifically, when a reference with element type <code>a</code> is promoted, and a value of type <code>b</code> is used while the promoted
-reference is still alive (and this value was in scope before the promoted reference was created), the compiler
-looks for an implementation of <code>Distinct a b</code> in scope. <code>Distinct c d</code> is an trait that is automatically implemented
-when <code>d</code> does not contain <code>c</code> anywhere within and <code>c</code> does not contain itself.</p>
-<p>This last &ldquo;<code>c</code> does not contain itself&rdquo; rule is to prevent the promotion of references to cyclic types.
-Otherwise, you could obtain two owned, mutable references to the same value by following the cycle
-back to the original node.</p>
-<p>In practice, this means common types like <code>ref String</code> are more difficult to use with other variables while promoted
-since <code>String</code>s are likely to be found within these other variables as well.</p>
+    <span class="n">print</span> <span class="n">element_ref</span>
+</code></pre></div><p>If we passed the same vector for both parameters to <code>invalid_shared_to_owned</code> we would be clearing the same vector we&rsquo;re
+still holding an element reference from. Luckily, this code does not compile because the compiler rightly cannot
+assume <code>x</code> and <code>y</code> are distinct.</p>
+<p>Note that this is only an issue because <code>y.clear()</code> is called while <code>element_ref</code> is still used later. If we remove
+the final <code>print</code> or move <code>y.clear()</code> after it, we no longer get any errors. The alias restriction can be as local
+as we like, so as long as we can make a block of code where <code>v</code> isn&rsquo;t used at the same time as <code>y</code>, we are all good!</p>
+<p>The <code>Distinct a b</code> constraint is only issued when we use variables that may be mutated, which includes mutable
+references and moved values. Notably, this allows us convert many variables of the same type from <code>ref</code> to <code>imm</code> easily.
+Since they are not mutable, they don&rsquo;t require a <code>Distinct a b</code> restriction, letting us alias the resulting <code>imm</code>
+references as well:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">promote_to_imm</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">ref</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="k">ref</span> <span class="n">b</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span>
+    <span class="n">requires_imm</span> <span class="n">x</span> <span class="n">y</span>
+
+<span class="nf">requires_imm</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">imm</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="k">imm</span> <span class="n">b</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span> <span class="o">...</span>
+</code></pre></div><p>Although we promoted two generic types above, there is no need to require a <code>Distinct a b</code> or <code>Distinct b a</code>
+constraint since they are both used immutably!</p>
+<p>One downside of the <code>Distinct a b</code> check is that promoting common types like <code>ref String</code> are more difficult to
+use with other variables in scope since <code>String</code>s are likely to be found within these other variables as well.</p>
 <p>Even with these restrictions, the ability to convert <code>ref</code> and <code>mut</code> to <code>imm</code> and <code>uniq</code>
 enables us write more functions with fewer requirements on the arguments they are called with (since they would
 now accept references which may be mutably aliased, including <code>shared mut</code> types). Consider the following function:</p>
@@ -3466,13 +3479,15 @@ now accept references which may be mutably aliased, including <code>shared mut</
 <span class="k">type</span> <span class="kt">NameData</span> <span class="ow">=</span> <span class="n">uses</span><span class="o">:</span> <span class="kt">U32</span>
 
 <span class="kt">Context</span><span class="o">.</span><span class="n">use_name</span> <span class="p">(</span><span class="n">context</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Context</span><span class="p">)</span> <span class="p">(</span><span class="n">name</span><span class="o">:</span> <span class="k">imm</span> <span class="kt">String</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="c1">// Strings are contained within `Context`, but the `Distinct Context String` requirement is one-way.</span>
+    <span class="c1">// Standard borrowing rules will prevent callers from calling this method with a `name` borrowed from `context`</span>
     <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">names</span><span class="o">.</span><span class="n">get_uniq</span> <span class="n">name</span> <span class="k">is</span> <span class="kt">Some</span> <span class="n">data</span> <span class="k">then</span>
         <span class="n">data</span><span class="o">.</span><span class="n">uses</span> <span class="o">+=</span> <span class="mi">1</span>
 </code></pre></div><p>Because the <code>HashMap.get_uniq</code> method requires a <code>uniq HashMap a b</code>, we would normally be required to have a
 <code>uniq Context</code> as well. Since there are no possible aliases to the context in scope however, we
 can locally treat it as <code>uniq</code> and get a <code>uniq NameData</code> anyway. Users of <code>Context.use_name</code> are
 now less constrained in how they use their <code>Context</code> since they may pass in an owned or shared object.</p>
-<h4 id="shared-types">Shared Types</h4>
+<h3 id="shared-types">Shared Types</h3>
 <p>Shared types are a way to opt-out of
 ownership rules for a type by automatically wrapping it in a copy-able wrapper.
 These types can be declared via <code>shared type</code> and also do not require explicit boxing (they are always boxed):</p>
@@ -3500,7 +3515,7 @@ the various shared, immutable container types.</p>
 
 <span class="c1">// We can obtain imm references inside shared types since they may not be mutated</span>
 <span class="nf">my_ref</span><span class="o">:</span> <span class="k">imm</span> <span class="kt">Expr</span> <span class="ow">=</span> <span class="k">imm</span> <span class="n">expr</span>
-</code></pre></div><h5 id="shared-mutable-types">Shared Mutable Types</h5>
+</code></pre></div><h4 id="shared-mutable-types">Shared Mutable Types</h4>
 <p>In addition to <code>shared type</code>, which declares a shared, but immutable type, we can declare a shared, mutable type
 via <code>shared mut type</code>:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">shared</span> <span class="k">mut</span> <span class="k">type</span> <span class="kt">MutExpr</span> <span class="ow">=</span>

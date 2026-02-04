@@ -1529,6 +1529,8 @@ if the value is set to `None`, but notably excludes fields of a struct.
 
 #### Reference Promotions
 
+> These rules are a work in progress!
+
 Converting from a reference which does not allow shared mutability (`imm` or `uniq`) to one that does (`ref` or `mut`) is trivial and is always allowed:
 
 ```ante
@@ -1546,14 +1548,23 @@ Above we know that `y` is a temporary reference only valid within `requires_ref`
 using `x` as an `imm t` reference - it isn't possible for `y` to outlive its temporary lifetime. When `return_ref` is called
 we borrow `x` as a `ref` again, and this time may not use `x` again until `foo` is dropped.
 
-Going the other way around from `ref` or `mut` to `imm` or `uniq`, however, requires the compiler to show that the reference is
-not mutably aliased. To do this, two restrictions must be imposed on the resulting reference:
+Weakening references like is done above is very simple, but going the other way around from `ref` to `imm` or from `mut` to
+`uniq` is more difficult. This type of conversion is called a "reference promotion" since the resulting reference
+is more powerful than the original.
 
-1. All possible aliases of the given reference in scope must not used while the converted `imm` or `uniq` is in scope:
+> Reference promotions are meant as an optimization tool to avoid clones and provide more code reuse by
+> enabling `ref` and `mut` to be used in more function parameters. This lowers requirements for callers
+> who are now free to pass owned (`imm`, `uniq`) or mutably shared (`ref`, `mut`) data.
 
-2. The converted `imm` or `uniq` reference may not be returned from a function. Since the compiler only prevents
-possible aliases in the current scope from being mutated, it'd be unsafe to use such a reference in the scope
-of the calling function.
+Promoting a reference generally requires us to show the compiler that our converted reference isn't _locally_
+mutably aliased, and thus the resulting reference won't be dropped from another value being mutated. _Locally_
+here means we don't have to show the reference isn't aliased anywhere, we must only show it isn't
+used with any possible aliases while the promoted reference is alive.
+
+Aside from the requirement to show a variable is not locally mutably aliased, there are two notable restrictions to promotions:
+1. Possibly cyclic types are counted as possible mutable aliases to themselves and are thus barred from promotions.
+2. Since the analysis is a local one, the promoted reference may not be returned from the function it was created in.
+Otherwise, it could be used with possible mutable aliases in another scope.
 
 ```ante
 shared_to_owned (x: ref t) =
@@ -1562,46 +1573,63 @@ shared_to_owned (x: ref t) =
 requires_owned (y: imm t) = ...
 
 upgrade_invalid (x: mut t): uniq t =
-    // error! Cannot return a uniq reference created from a mut reference - it may be aliased by the caller
+    // error! Cannot return a uniq reference promoted from a mut reference - it may be aliased by the caller
     x
 ```
 
-This "no alias may be used" restriction is important for preventing use of values which may have been dropped:
+The way the compiler proves a variable is not mutably aliased locally is by requiring a `Distinct a b` trait constraint
+whenever a mutable variable of type `b` is used while a promoted reference to a type `a` is still alive. This trait is automatically
+implemented by the compiler when the type `a` is not contained within the type `b`. For example, in
+the following code, we'd expect a constraint for `Distinct String I32` to be issued (and solved):
 
 ```ante
-invalid_shared_to_owned (x: mut Vec t) =
-    // Remember that retrieving a reference to a Vec's element requires an owned reference
-    element_ref = x.get 0 |> unwrap
+convert_string_ref (s: mut String) (i: I32) =
+    promotion: uniq String = s
+    print i  // i is used while `promotion` is still used
+    print promotion
+```
+
+This constraint is important for preventing use of values which may have been dropped:
+
+```ante
+invalid_shared_to_owned (x: mut Vec t) (y: mut Vec t) =
+    // Promote x so we can obtain a reference to an element without cloning
+    v: uniq Vec t = x
+    element_ref = v.get 0 |> unwrap
     print element_ref  // ok
 
-    x.clear ()
+    y.clear ()  // Error! Using `y: mut Vec t` may mutate the promoted reference `v: uniq Vec t`
+                // causing any references derived from `v` to be dropped!
+                // Note: No impl found for `Distinct (Vec t) (Vec t)`, so the compiler inferred these values may alias
 
-    // If the following line is uncommented, we'd get an error on the line above stating we cannot call
-    // `x.clear` because it'd mutate `x` while `element_ref` is still used, which may cause it to be dropped.
-    // print element_ref
+    print element_ref
 ```
 
-Because other shared function parameters may alias a given reference, they may not be used either when a shared
-reference is used as an exclusive one:
+If we passed the same vector for both parameters to `invalid_shared_to_owned` we would be clearing the same vector we're
+still holding an element reference from. Luckily, this code does not compile because the compiler rightly cannot
+assume `x` and `y` are distinct.
+
+Note that this is only an issue because `y.clear()` is called while `element_ref` is still used later. If we remove
+the final `print` or move `y.clear()` after it, we no longer get any errors. The alias restriction can be as local
+as we like, so as long as we can make a block of code where `v` isn't used at the same time as `y`, we are all good!
+
+The `Distinct a b` constraint is only issued when we use variables that may be mutated, which includes mutable
+references and moved values. Notably, this allows us convert many variables of the same type from `ref` to `imm` easily.
+Since they are not mutable, they don't require a `Distinct a b` restriction, letting us alias the resulting `imm`
+references as well:
 
 ```ante
-foo (a: mut Foo) (b: mut Foo): Unit =
-    a_ref = requires_owned a
-    // while `a_ref` is alive we cannot use `a` or `b` since they may alias
-    ...
+promote_to_imm (x: ref a) (y: ref b): Unit =
+    requires_imm x y
+
+requires_imm (x: imm a) (y: imm b): Unit = ...
 ```
 
-Specifically, when a reference with element type `a` is promoted, and a value of type `b` is used while the promoted
-reference is still alive (and this value was in scope before the promoted reference was created), the compiler
-looks for an implementation of `Distinct a b` in scope. `Distinct c d` is an trait that is automatically implemented
-when `d` does not contain `c` anywhere within and `c` does not contain itself.
+Although we promoted two generic types above, there is no need to require a `Distinct a b` or `Distinct b a`
+constraint since they are both used immutably!
 
-This last "`c` does not contain itself" rule is to prevent the promotion of references to cyclic types.
-Otherwise, you could obtain two owned, mutable references to the same value by following the cycle
-back to the original node.
-
-In practice, this means common types like `ref String` are more difficult to use with other variables while promoted
-since `String`s are likely to be found within these other variables as well.
+One downside of the `Distinct a b` check is that promoting common types like `ref String` are more difficult to
+use with other variables in scope since `String`s are likely to be found within these other variables as well.
 
 Even with these restrictions, the ability to convert `ref` and `mut` to `imm` and `uniq`
 enables us write more functions with fewer requirements on the arguments they are called with (since they would
@@ -1613,6 +1641,8 @@ type Context = names: HashMap String NameData
 type NameData = uses: U32
 
 Context.use_name (context: mut Context) (name: imm String) =
+    // Strings are contained within `Context`, but the `Distinct Context String` requirement is one-way.
+    // Standard borrowing rules will prevent callers from calling this method with a `name` borrowed from `context`
     if context.names.get_uniq name is Some data then
         data.uses += 1
 ```
@@ -1622,7 +1652,7 @@ Because the `HashMap.get_uniq` method requires a `uniq HashMap a b`, we would no
 can locally treat it as `uniq` and get a `uniq NameData` anyway. Users of `Context.use_name` are
 now less constrained in how they use their `Context` since they may pass in an owned or shared object.
 
-#### Shared Types
+### Shared Types
 
 Shared types are a way to opt-out of
 ownership rules for a type by automatically wrapping it in a copy-able wrapper.
@@ -1660,7 +1690,7 @@ expr = Expr.Int 3
 my_ref: imm Expr = imm expr
 ```
 
-##### Shared Mutable Types
+#### Shared Mutable Types
 
 In addition to `shared type`, which declares a shared, but immutable type, we can declare a shared, mutable type
 via `shared mut type`:
