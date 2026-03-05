@@ -1556,29 +1556,34 @@ is more powerful than the original.
 > enabling `ref` and `mut` to be used in more function parameters. This lowers requirements for callers
 > who are now free to pass owned (`imm`, `uniq`) or mutably shared (`ref`, `mut`) data.
 
-Promoting a reference generally requires us to show the compiler that our converted reference isn't _locally_
-mutably aliased, and thus the resulting reference won't be dropped from another value being mutated. _Locally_
-here means we don't have to show the reference isn't aliased anywhere, we must only show it isn't
-used with any possible aliases while the promoted reference is alive.
+A reference promotion occurs when a `imm` or `uniq` reference is required but only a `ref` or `mut` reference
+is provided. When promoting a reference, instead of getting a `imm t` or `uniq t`, an `unstable imm t`
+or `unstable uniq t` is received instead. Compared to the non-unstable versions, unstable references
+require us to show to the compiler that the reference is not _locally_ mutably aliased. In other words,
+a `unstable uniq t` doesn't need to be unique globally, it only needs to be unique while it is still being used.
 
-Aside from the requirement to show a variable is not locally mutably aliased, there are two notable restrictions to promotions:
-1. Possibly cyclic types are counted as possible mutable aliases to themselves and are thus barred from promotions.
-2. Since the analysis is a local one, the promoted reference may not be returned from the function it was created in.
-Otherwise, it could be used with possible mutable aliases in another scope.
+Note that in the case of cyclic types, a variable is counted as a possible alias to itself and thus cannot be
+promoted.
+
 
 ```ante
 shared_to_owned (x: ref t) =
-    requires_owned x  // ok, no other alias in scope
+    requires_owned x 0  // ok! `x` is not used with any possible mutable aliases
 
-requires_owned (y: imm t) = ...
+requires_owned (y: imm t) (z: I32) = ...
 
-upgrade_invalid (x: mut t): uniq t =
+promote_invalid (x: mut t): uniq t =
+    // Converting to `uniq t` is okay - but we can't return these without keeping the `unstable` part
     // error! Cannot return a uniq reference promoted from a mut reference - it may be aliased by the caller
+    x
+
+promote_valid (x: mut t): unstable uniq t =
+    // ok! Using this in the calling scope will come with the restrictions `unstable` provides
     x
 ```
 
 The way the compiler proves a variable is not mutably aliased locally is by requiring a `Distinct a b` trait constraint
-whenever a mutable variable of type `b` is used while a promoted reference to a type `a` is still alive. This trait is automatically
+whenever a mutable variable of type `b` is used while an `unstable` reference to a type `a` is still alive. This trait is automatically
 implemented by the compiler when the type `a` is not contained within the type `b`. For example, in
 the following code, we'd expect a constraint for `Distinct String I32` to be issued (and solved):
 
@@ -1593,13 +1598,12 @@ This constraint is important for preventing use of values which may have been dr
 
 ```ante
 invalid_shared_to_owned (x: mut Vec t) (y: mut Vec t) =
-    // Promote x so we can obtain a reference to an element without cloning
-    v: uniq Vec t = x
+    // `get` requires an `imm` reference so this must promote to `unstable imm Vec t`
     element_ref = v.get 0 |> unwrap
     print element_ref  // ok
 
-    y.clear ()  // Error! Using `y: mut Vec t` may mutate the promoted reference `v: uniq Vec t`
-                // causing any references derived from `v` to be dropped!
+    y.clear ()  // Error! Using `y: mut Vec t` may mutate the promoted reference from `v.get 0`
+                // causing any references derived from this `v` to be dropped!
                 // Note: No impl found for `Distinct (Vec t) (Vec t)`, so the compiler inferred these values may alias
 
     print element_ref

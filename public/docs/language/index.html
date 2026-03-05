@@ -3415,26 +3415,28 @@ is more powerful than the original.</p>
 enabling <code>ref</code> and <code>mut</code> to be used in more function parameters. This lowers requirements for callers
 who are now free to pass owned (<code>imm</code>, <code>uniq</code>) or mutably shared (<code>ref</code>, <code>mut</code>) data.</p>
 </blockquote>
-<p>Promoting a reference generally requires us to show the compiler that our converted reference isn&rsquo;t <em>locally</em>
-mutably aliased, and thus the resulting reference won&rsquo;t be dropped from another value being mutated. <em>Locally</em>
-here means we don&rsquo;t have to show the reference isn&rsquo;t aliased anywhere, we must only show it isn&rsquo;t
-used with any possible aliases while the promoted reference is alive.</p>
-<p>Aside from the requirement to show a variable is not locally mutably aliased, there are two notable restrictions to promotions:</p>
-<ol>
-<li>Possibly cyclic types are counted as possible mutable aliases to themselves and are thus barred from promotions.</li>
-<li>Since the analysis is a local one, the promoted reference may not be returned from the function it was created in.
-Otherwise, it could be used with possible mutable aliases in another scope.</li>
-</ol>
+<p>A reference promotion occurs when a <code>imm</code> or <code>uniq</code> reference is required but only a <code>ref</code> or <code>mut</code> reference
+is provided. When promoting a reference, instead of getting a <code>imm t</code> or <code>uniq t</code>, an <code>unstable imm t</code>
+or <code>unstable uniq t</code> is received instead. Compared to the non-unstable versions, unstable references
+require us to show to the compiler that the reference is not <em>locally</em> mutably aliased. In other words,
+a <code>unstable uniq t</code> doesn&rsquo;t need to be unique globally, it only needs to be unique while it is still being used.</p>
+<p>Note that in the case of cyclic types, a variable is counted as a possible alias to itself and thus cannot be
+promoted.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">shared_to_owned</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span>
-    <span class="n">requires_owned</span> <span class="n">x</span>  <span class="c1">// ok, no other alias in scope</span>
+    <span class="n">requires_owned</span> <span class="n">x</span> <span class="mi">0</span>  <span class="c1">// ok! `x` is not used with any possible mutable aliases</span>
 
-<span class="nf">requires_owned</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="k">imm</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span> <span class="o">...</span>
+<span class="nf">requires_owned</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="k">imm</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">z</span><span class="o">:</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span> <span class="o">...</span>
 
-<span class="nf">upgrade_invalid</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">mut</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">uniq</span> <span class="n">t</span> <span class="ow">=</span>
+<span class="nf">promote_invalid</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">mut</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">uniq</span> <span class="n">t</span> <span class="ow">=</span>
+    <span class="c1">// Converting to `uniq t` is okay - but we can&#39;t return these without keeping the `unstable` part</span>
     <span class="c1">// error! Cannot return a uniq reference promoted from a mut reference - it may be aliased by the caller</span>
     <span class="n">x</span>
+
+<span class="nf">promote_valid</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">mut</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="n">unstable</span> <span class="k">uniq</span> <span class="n">t</span> <span class="ow">=</span>
+    <span class="c1">// ok! Using this in the calling scope will come with the restrictions `unstable` provides</span>
+    <span class="n">x</span>
 </code></pre></div><p>The way the compiler proves a variable is not mutably aliased locally is by requiring a <code>Distinct a b</code> trait constraint
-whenever a mutable variable of type <code>b</code> is used while a promoted reference to a type <code>a</code> is still alive. This trait is automatically
+whenever a mutable variable of type <code>b</code> is used while an <code>unstable</code> reference to a type <code>a</code> is still alive. This trait is automatically
 implemented by the compiler when the type <code>a</code> is not contained within the type <code>b</code>. For example, in
 the following code, we&rsquo;d expect a constraint for <code>Distinct String I32</code> to be issued (and solved):</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">convert_string_ref</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">String</span><span class="p">)</span> <span class="p">(</span><span class="n">i</span><span class="o">:</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
@@ -3443,13 +3445,12 @@ the following code, we&rsquo;d expect a constraint for <code>Distinct String I32
     <span class="n">print</span> <span class="n">promotion</span>
 </code></pre></div><p>This constraint is important for preventing use of values which may have been dropped:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">invalid_shared_to_owned</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span>
-    <span class="c1">// Promote x so we can obtain a reference to an element without cloning</span>
-    <span class="n">v</span><span class="o">:</span> <span class="k">uniq</span> <span class="kt">Vec</span> <span class="n">t</span> <span class="ow">=</span> <span class="n">x</span>
+    <span class="c1">// `get` requires an `imm` reference so this must promote to `unstable imm Vec t`</span>
     <span class="n">element_ref</span> <span class="ow">=</span> <span class="n">v</span><span class="o">.</span><span class="n">get</span> <span class="mi">0</span> <span class="o">|&gt;</span> <span class="n">unwrap</span>
     <span class="n">print</span> <span class="n">element_ref</span>  <span class="c1">// ok</span>
 
-    <span class="n">y</span><span class="o">.</span><span class="n">clear</span> <span class="p">()</span>  <span class="c1">// Error! Using `y: mut Vec t` may mutate the promoted reference `v: uniq Vec t`</span>
-                <span class="c1">// causing any references derived from `v` to be dropped!</span>
+    <span class="n">y</span><span class="o">.</span><span class="n">clear</span> <span class="p">()</span>  <span class="c1">// Error! Using `y: mut Vec t` may mutate the promoted reference from `v.get 0`</span>
+                <span class="c1">// causing any references derived from this `v` to be dropped!</span>
                 <span class="c1">// Note: No impl found for `Distinct (Vec t) (Vec t)`, so the compiler inferred these values may alias</span>
 
     <span class="n">print</span> <span class="n">element_ref</span>
