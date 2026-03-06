@@ -1497,11 +1497,11 @@ print ref2                     // "Hello, World!"
 ```
 
 The `imm` and `uniq` reference kinds are used prevent operations that would be unsafe
-on references which may be mutably shared. A common theme of these operations is that they hand
-out references inside of a type with an unstable shape. For example, handing out
-a reference to a `Vec` element would be unsafe in a shared context since the `Vec`'s contents
-may be reallocated by another reference. To prevent this, `Vec.get` requires
-an immutable reference:
+on references which may be mutably shared. A common indication of when an operation may
+be unsafe if it is mutably shared is if they hand out references inside of a type with
+an unstable shape. For example, handing out a reference to a `Vec` element would be unsafe
+in a shared context since the `Vec`'s contents may be reallocated by another reference.
+To prevent this, `Vec.get` requires an immutable reference:
 
 ```ante
 // Raises Fail if the index is out of bounds
@@ -1557,13 +1557,15 @@ is more powerful than the original.
 > who are now free to pass owned (`imm`, `uniq`) or mutably shared (`ref`, `mut`) data.
 
 A reference promotion occurs when a `imm` or `uniq` reference is required but only a `ref` or `mut` reference
-is provided. When promoting a reference, instead of getting a `imm t` or `uniq t`, an `unstable imm t`
-or `unstable uniq t` is received instead. Compared to the non-unstable versions, unstable references
+is provided. When promoting a reference, instead of getting a `imm t` or `uniq t`, a `local imm t`
+or `local uniq t` is received instead. Compared to the non-local versions, local references only
 require us to show to the compiler that the reference is not _locally_ mutably aliased. In other words,
-a `unstable uniq t` doesn't need to be unique globally, it only needs to be unique while it is still being used.
+a `local uniq t` doesn't need to be unique globally, it only needs to be unique while it is still being used.
+This allows for aliases to exist further up the call stack as long as they aren't accessed while the local
+reference is alive.
 
-Note that in the case of cyclic types, a variable is counted as a possible alias to itself and thus cannot be
-promoted.
+Note that in the case of cyclic types, a variable is counted as a possible alias to itself and thus cannot
+be promoted.
 
 
 ```ante
@@ -1573,24 +1575,24 @@ shared_to_owned (x: ref t) =
 requires_owned (y: imm t) (z: I32) = ...
 
 promote_invalid (x: mut t): uniq t =
-    // Converting to `uniq t` is okay - but we can't return these without keeping the `unstable` part
+    // Converting to `uniq t` is okay - but we can't return these without keeping the `local` part
     // error! Cannot return a uniq reference promoted from a mut reference - it may be aliased by the caller
     x
 
-promote_valid (x: mut t): unstable uniq t =
-    // ok! Using this in the calling scope will come with the restrictions `unstable` provides
+promote_valid (x: mut t): local uniq t =
+    // ok! Using this in the calling scope will come with the restrictions `local` provides
     x
 ```
 
 The way the compiler proves a variable is not mutably aliased locally is by requiring a `Distinct a b` trait constraint
-whenever a mutable variable of type `b` is used while an `unstable` reference to a type `a` is still alive. This trait is automatically
+whenever a mutable variable of type `b` is used while a `local` reference to a type `a` is still alive. This trait is automatically
 implemented by the compiler when the type `a` is not contained within the type `b`. For example, in
 the following code, we'd expect a constraint for `Distinct String I32` to be issued (and solved):
 
 ```ante
 convert_string_ref (s: mut String) (i: I32) =
     promotion: uniq String = s
-    print i  // i is used while `promotion` is still used
+    print i  // i is used while `promotion` is still used, `Distinct String I32` is searched for & satisfied
     print promotion
 ```
 
@@ -1598,7 +1600,7 @@ This constraint is important for preventing use of values which may have been dr
 
 ```ante
 invalid_shared_to_owned (x: mut Vec t) (y: mut Vec t) =
-    // `get` requires an `imm` reference so this must promote to `unstable imm Vec t`
+    // `get` requires an `imm` reference so this must promote to `local imm Vec t`
     element_ref = v.get 0 |> unwrap
     print element_ref  // ok
 

@@ -35,7 +35,7 @@
 
 
 
-<link href="/css/custom.css" rel="stylesheet">
+<link href="/css/custom.css?1772818622" rel="stylesheet">
 
 
 
@@ -2369,7 +2369,7 @@ This is because ante has global <a href="#type-inference">type inference</a>.</p
 </code></pre></div><h2 id="mutability">Mutability</h2>
 <p>A variable can be made mutable by using the <code>var</code> keyword when defining the variable:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Mutable variables can be created with `var`:</span>
-<span class="k">var</span> <span class="n">pet_name</span> <span class="ow">=</span> <span class="s">&#34;Ember&#34;</span>
+<span class="nf">var</span> <span class="n">pet_name</span> <span class="ow">=</span> <span class="s">&#34;Ember&#34;</span>
 <span class="nf">print</span> <span class="n">pet_name</span>  <span class="c1">//=&gt; Ember</span>
 
 <span class="c1">// And can be mutated with `:=`</span>
@@ -2378,11 +2378,11 @@ This is because ante has global <a href="#type-inference">type inference</a>.</p
 </code></pre></div><p>Here&rsquo;s another example showing a function that can mutate the passed in parameter using a
 temporary mutable reference (<code>mut</code>):</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">count_evens</span> <span class="n">array</span> <span class="n">counter</span> <span class="ow">=</span>
-    <span class="n">for</span> <span class="n">array</span> <span class="k">fn</span> <span class="n">elem</span> <span class="ow">-&gt;</span>
+    <span class="k">for</span> <span class="n">array</span> <span class="k">fn</span> <span class="n">elem</span> <span class="ow">-&gt;</span>
         <span class="k">if</span> <span class="n">even</span> <span class="n">elem</span> <span class="k">then</span>
             <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
 
-<span class="k">var</span> <span class="n">counter</span> <span class="ow">=</span> <span class="mi">0</span>
+<span class="nf">var</span> <span class="n">counter</span> <span class="ow">=</span> <span class="mi">0</span>
 <span class="nf">count_evens</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span> <span class="p">(</span><span class="k">mut</span> <span class="n">counter</span><span class="p">)</span>
 
 <span class="nf">print</span> <span class="n">counter</span>  <span class="c1">//=&gt; 2</span>
@@ -2391,7 +2391,7 @@ on the right-hand side. In the case of variables and struct fields, this referen
 to the existing value, and will require the original variable to be mutable. In the case of
 other values, such as those returned from a function, a temporary mutable reference is still
 obtained.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">var</span> <span class="n">my_pair</span> <span class="ow">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">var</span> <span class="n">my_pair</span> <span class="ow">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span>
 <span class="nf">my_pair</span><span class="o">.</span><span class="n">first</span> <span class="o">:=</span> <span class="mi">3</span>
 
 <span class="c1">// Without the `mut` this would copy the `second` field into a new variable</span>
@@ -2449,7 +2449,7 @@ methods on it like so:</p>
 <span class="p">(</span><span class="kt">Vec</span> <span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">push</span> <span class="p">(</span><span class="k">mut</span> <span class="n">self</span><span class="p">)</span> <span class="p">(</span><span class="n">elem</span><span class="o">:</span> <span class="n">a</span><span class="p">)</span> <span class="ow">=</span> <span class="o">...</span>
 
 <span class="c1">// Call the methods. This can be done without explicitly importing `Vec.new` or `Vec.push`:</span>
-<span class="k">var</span> <span class="n">vec</span> <span class="ow">=</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">new</span> <span class="p">()</span>
+<span class="nf">var</span> <span class="n">vec</span> <span class="ow">=</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">new</span> <span class="p">()</span>
 <span class="nf">vec</span><span class="o">.</span><span class="n">push</span> <span class="s">&#34;called&#34;</span>
 <span class="nf">vec</span><span class="o">.</span><span class="n">push</span> <span class="s">&#34;a&#34;</span>
 <span class="nf">vec</span><span class="o">.</span><span class="n">push</span> <span class="s">&#34;method!&#34;</span>
@@ -2610,7 +2610,7 @@ argument that is a collection with 1 element <code>i</code>.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo</span> <span class="n">array</span><span class="o">.</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 </code></pre></div><p>Additionally, references to elements can be retrieved using the subscript operator
 with a reference kind:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">print</span> <span class="p">(</span><span class="k">ref</span> <span class="n">my_array</span><span class="o">.</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">print</span> <span class="p">(</span><span class="n">ref</span> <span class="n">my_array</span><span class="o">.</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
 <span class="nf">mutate</span> <span class="p">(</span><span class="k">mut</span> <span class="n">my_array</span><span class="o">.</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 </code></pre></div><h2 id="dereference-operator">Dereference Operator</h2>
@@ -2673,7 +2673,7 @@ Lets compare the task of converting a tuple to a string with doing the same for 
 With tuples we must <a href="https://hackage.haskell.org/package/base-4.14.1.0/docs/src/GHC.Show.html#line-268">create a different impl for every possible tuple size</a>.
 with pairs on the other hand the simple implementation works for all sizes:</li>
 </ol>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">cast_pair_string</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Cast</span> <span class="p">(</span><span class="kt">Pair</span> <span class="n">a</span> <span class="n">b</span><span class="p">)</span> <span class="kt">String</span> <span class="k">via</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">cast_pair_string</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Cast</span> <span class="p">(</span><span class="kt">Pair</span> <span class="n">a</span> <span class="n">b</span><span class="p">)</span> <span class="kt">String</span> <span class="n">via</span>
     <span class="n">cast</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="ow">=</span> <span class="s">&#34;$a, $b&#34;</span>
 </code></pre></div><ol start="3">
 <li>
@@ -2728,12 +2728,12 @@ of parenthesis but in ante since tuples are just nested pairs you can just add a
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">pairs</span> <span class="ow">=</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)]</span>
 
 <span class="c1">// Other languages require deconstructing with nested parenthesis:</span>
-<span class="nf">for</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">pairs</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">one</span><span class="p">,</span> <span class="n">two</span><span class="p">))</span> <span class="ow">-&gt;</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">pairs</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">one</span><span class="p">,</span> <span class="n">two</span><span class="p">))</span> <span class="ow">-&gt;</span>
     <span class="n">print</span> <span class="s">&#34;Iteration $i: sum = ${one + two}&#34;</span>
 
 <span class="c1">// But since `,` is just a normal operator,</span>
 <span class="c1">// the following version is equally valid</span>
-<span class="nf">for</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">pairs</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">one</span><span class="p">,</span> <span class="n">two</span><span class="p">)</span> <span class="ow">-&gt;</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">pairs</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">one</span><span class="p">,</span> <span class="n">two</span><span class="p">)</span> <span class="ow">-&gt;</span>
     <span class="n">print</span> <span class="s">&#34;Iteration $i: sum = ${one + two}&#34;</span>
 </code></pre></div><p>Finally, its necessary to mention that the earlier <code>Cast</code> example printed nested
 pairs as <code>1, 2, 3</code> where as the <code>Show</code> instances in haskell printed tuples as <code>(1, 2, 3)</code>.
@@ -2815,9 +2815,9 @@ or else branch can either be single expressions or an indented block expression.
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// The type of for is:</span>
 <span class="c1">// for: fn a (elem -&gt; Unit) {Iterator a elem} -&gt; Unit</span>
 
-<span class="nf">for</span> <span class="p">(</span><span class="mi">0</span><span class="o">..</span><span class="mi">10</span><span class="p">)</span> <span class="n">print</span>   <span class="c1">// prints 0-9 inclusive</span>
+<span class="k">for</span> <span class="p">(</span><span class="mi">0</span><span class="o">..</span><span class="mi">10</span><span class="p">)</span> <span class="n">print</span>   <span class="c1">// prints 0-9 inclusive</span>
 
-<span class="nf">for</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">array</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">elem</span><span class="p">)</span> <span class="ow">-&gt;</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">array</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">elem</span><span class="p">)</span> <span class="ow">-&gt;</span>
     <span class="c1">// do something more complex...</span>
     <span class="n">print</span> <span class="n">result</span>
 </code></pre></div><p>You may notice that there is no way to break or continue out of the <code>for</code> function. Moreover if you need a more complex loop that a while loop may traditionally provide in other languages, there likely isn’t an already existing iterate function that would suit your need. Other functional languages usually use helper functions with recursion to address this problem:</p>
@@ -3246,12 +3246,12 @@ to it so that we can refer to the value as many times as we need.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">s</span> <span class="ow">=</span> <span class="s">&#34;my string&#34;</span>
 
 <span class="c1">// References can be used as many times as needed</span>
-<span class="nf">baz</span> <span class="p">(</span><span class="k">ref</span> <span class="n">s</span><span class="p">)</span>
-<span class="nf">baz</span> <span class="p">(</span><span class="k">ref</span> <span class="n">s</span><span class="p">)</span>
+<span class="nf">baz</span> <span class="p">(</span><span class="n">ref</span> <span class="n">s</span><span class="p">)</span>
+<span class="nf">baz</span> <span class="p">(</span><span class="n">ref</span> <span class="n">s</span><span class="p">)</span>
 </code></pre></div><p>Creating a temporary reference to a value can be done via a <code>ref &lt;expr&gt;</code> expression.
 These references do not allow mutation of the underlying value. If a mutable reference
 is desired, they can be created via <code>mut &lt;expr&gt;</code>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">var</span> <span class="n">s</span> <span class="ow">=</span> <span class="s">&#34;my string&#34;</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">var</span> <span class="n">s</span> <span class="ow">=</span> <span class="s">&#34;my string&#34;</span>
 
 <span class="c1">// This function call may modify our string</span>
 <span class="nf">qux</span> <span class="p">(</span><span class="k">mut</span> <span class="n">s</span><span class="p">)</span>
@@ -3260,7 +3260,7 @@ is desired, they can be created via <code>mut &lt;expr&gt;</code>:</p>
 </code></pre></div><p>Borrowing prevents the underlying value from being moved while any reference to it is still used:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">bad</span> <span class="p">(</span><span class="n">foo</span><span class="o">:</span> <span class="kt">Foo</span><span class="p">)</span> <span class="ow">=</span>
     <span class="c1">// Error: Cannot move `foo` while the borrowed reference `ref foo` is still alive</span>
-    <span class="n">bar</span> <span class="p">(</span><span class="k">ref</span> <span class="n">foo</span><span class="p">)</span> <span class="n">foo</span>
+    <span class="n">bar</span> <span class="p">(</span><span class="n">ref</span> <span class="n">foo</span><span class="p">)</span> <span class="n">foo</span>
 </code></pre></div><p>Trying to move the underlying value while the reference is still alive will result in an error.
 Additionally, we cannot return a reference to an outer scope after the variable it references may be dropped.
 To keep track of when a reference is valid, each reference stores the set of variables it may borrow from in its type.</p>
@@ -3271,19 +3271,19 @@ The borrow set can often be omitted from the type, in which case the borrow set 
 a fresh borrow set will be used.</p>
 <p>The borrow set parameter represents which variable(s) a reference borrows from. In the following example:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo</span> <span class="ow">=</span> <span class="mi">32</span>
-<span class="nf">bar</span> <span class="ow">=</span> <span class="k">ref</span> <span class="n">foo</span>
+<span class="nf">bar</span> <span class="ow">=</span> <span class="n">ref</span> <span class="n">foo</span>
 </code></pre></div><p><code>bar</code> will have the type <code>ref 'foo I32</code> because it is a reference to the variable <code>foo</code> which holds an <code>I32</code>.</p>
 <p>Sometimes, the exact variable a reference borrows from is unknown:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">example1</span> <span class="p">(</span><span class="n">foo</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;foo</span> <span class="kt">I32</span><span class="p">)</span> <span class="p">(</span><span class="n">bar</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;bar</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">example1</span> <span class="p">(</span><span class="n">foo</span><span class="o">:</span> <span class="n">ref</span> <span class="n">&#39;foo</span> <span class="kt">I32</span><span class="p">)</span> <span class="p">(</span><span class="n">bar</span><span class="o">:</span> <span class="n">ref</span> <span class="n">&#39;bar</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
     <span class="c1">// Is the return type `ref &#39;foo I32` or `ref &#39;bar I32`?</span>
     <span class="k">if</span> <span class="n">random</span> <span class="p">()</span> <span class="k">then</span> <span class="n">foo</span> <span class="k">else</span> <span class="n">bar</span>
 </code></pre></div><p>This is why references have a borrow <em>set</em> rather than always a single variable. For the
 example above, the reference type returned would be <code>ref '(foo, bar) I32</code>. When calling
 <code>example1</code>, the returned reference will be valid for only as long as <em>both</em> arguments
 to the function are:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">example2</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;a</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">example2</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="n">ref</span> <span class="n">&#39;a</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
     <span class="n">b</span> <span class="ow">=</span> <span class="mi">1</span>
-    <span class="n">example1</span> <span class="n">a</span> <span class="p">(</span><span class="k">ref</span> <span class="n">b</span><span class="p">)</span>  <span class="c1">// error! returned reference borrows from `b` but `b` is dropped here while the reference is still used!</span>
+    <span class="n">example1</span> <span class="n">a</span> <span class="p">(</span><span class="n">ref</span> <span class="n">b</span><span class="p">)</span>  <span class="c1">// error! returned reference borrows from `b` but `b` is dropped here while the reference is still used!</span>
 </code></pre></div><p>In the example above we call <code>example1</code> to return one of the two references but <code>b</code> is local
 to <code>example2</code> and will be dropped when the function finishes! If this code were allowed we
 would return a dangling reference which will likely lead to a runtime crash when later
@@ -3300,11 +3300,11 @@ rules are used for determining what the borrow set is assumed to be:</p>
 </li>
 </ul>
 <p>Using these rules, we can rewrite <code>example1</code>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">example1</span> <span class="p">(</span><span class="n">foo</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">I32</span><span class="p">)</span> <span class="p">(</span><span class="n">bar</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">I32</span><span class="p">)</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">&#39;(foo, bar)</span> <span class="kt">I32</span> <span class="ow">=</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">example1</span> <span class="p">(</span><span class="n">foo</span><span class="o">:</span> <span class="n">ref</span> <span class="kt">I32</span><span class="p">)</span> <span class="p">(</span><span class="n">bar</span><span class="o">:</span> <span class="n">ref</span> <span class="kt">I32</span><span class="p">)</span><span class="o">:</span> <span class="n">ref</span> <span class="kt">&#39;(foo, bar)</span> <span class="kt">I32</span> <span class="ow">=</span>
     <span class="k">if</span> <span class="n">random</span> <span class="p">()</span> <span class="k">then</span> <span class="n">foo</span> <span class="k">else</span> <span class="n">bar</span>
 </code></pre></div><p>Most of the time, these rules mean we can omit borrow sets unless the function both takes multiple reference parameters
 and returns a reference.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">concat_foo</span> <span class="p">(</span><span class="n">foo1</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Foo</span><span class="p">)</span> <span class="p">(</span><span class="n">foo2</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Foo</span><span class="p">)</span> <span class="o">:</span> <span class="kt">String</span> <span class="ow">=</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">concat_foo</span> <span class="p">(</span><span class="n">foo1</span><span class="o">:</span> <span class="n">ref</span> <span class="kt">Foo</span><span class="p">)</span> <span class="p">(</span><span class="n">foo2</span><span class="o">:</span> <span class="n">ref</span> <span class="kt">Foo</span><span class="p">)</span> <span class="o">:</span> <span class="kt">String</span> <span class="ow">=</span>
     <span class="n">foo1</span><span class="o">.</span><span class="n">msg</span> <span class="o">++</span> <span class="n">foo2</span><span class="o">.</span><span class="n">msg</span>
 </code></pre></div><h4 id="types-with-borrow-sets">Types with Borrow Sets</h4>
 <p>Borrow sets can also be added to type definitions. This is necessary if a type needs
@@ -3312,7 +3312,7 @@ to hold onto a temporary reference, although most of the time users should favor
 wrapper types such as <code>Rc t</code> as these will generally be easier to work with. Borrow
 set parameters are distinguished from regular type parameters by the <code>'</code> sigil:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Context</span> <span class="n">&#39;l</span> <span class="ow">=</span>
-    <span class="n">global_context</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;l</span> <span class="kt">GlobalContext</span>
+    <span class="n">global_context</span><span class="o">:</span> <span class="n">ref</span> <span class="n">&#39;l</span> <span class="kt">GlobalContext</span>
 </code></pre></div><hr>
 <h3 id="shared-mutability-and-reference-kinds">Shared Mutability and Reference Kinds</h3>
 <p>Although largely built-upon Rust, Ante&rsquo;s borrowing semantics differ in that it
@@ -3360,7 +3360,7 @@ equivalent in Rust but can be thought of as similar to <code>&amp;Cell&lt;T&gt;<
 references to the same value at the same time. If we have a <code>imm</code> reference, there may only be other <code>imm</code>
 references to the same value. Finally, if we have an exclusive reference (<code>uniq</code>), there will not
 be any other reference of any kind to the same value while we hold the exclusive reference.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">var</span> <span class="n">message</span> <span class="ow">=</span> <span class="s">&#34;Hello&#34;</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">var</span> <span class="n">message</span> <span class="ow">=</span> <span class="s">&#34;Hello&#34;</span>
 
 <span class="c1">// Create two shared, mutable references to the same string value</span>
 <span class="nf">ref1</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">String</span> <span class="ow">=</span> <span class="k">mut</span> <span class="n">message</span>
@@ -3371,11 +3371,11 @@ be any other reference of any kind to the same value while we hold the exclusive
 <span class="nf">ref2</span><span class="o">.</span><span class="n">replace</span> <span class="s">&#34;Z&#34;</span> <span class="s">&#34;l&#34;</span>
 <span class="nf">print</span> <span class="n">ref2</span>                     <span class="c1">// &#34;Hello, World!&#34;</span>
 </code></pre></div><p>The <code>imm</code> and <code>uniq</code> reference kinds are used prevent operations that would be unsafe
-on references which may be mutably shared. A common theme of these operations is that they hand
-out references inside of a type with an unstable shape. For example, handing out
-a reference to a <code>Vec</code> element would be unsafe in a shared context since the <code>Vec</code>&rsquo;s contents
-may be reallocated by another reference. To prevent this, <code>Vec.get</code> requires
-an immutable reference:</p>
+on references which may be mutably shared. A common indication of when an operation may
+be unsafe if it is mutably shared is if they hand out references inside of a type with
+an unstable shape. For example, handing out a reference to a <code>Vec</code> element would be unsafe
+in a shared context since the <code>Vec</code>&rsquo;s contents may be reallocated by another reference.
+To prevent this, <code>Vec.get</code> requires an immutable reference:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Raises Fail if the index is out of bounds</span>
 <span class="nf">get</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">imm</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="k">imm</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span>
 </code></pre></div><p>Other Vec functions like <code>push</code> or <code>pop</code> would still be safe to call on shared <code>mut</code>
@@ -3383,7 +3383,7 @@ references to Vecs since they do not hand out references to elements. If we ever
 need a Vec element when all we have is a <code>ref Vec t</code>, we can still retrieve
 an element through something like <code>Vec.get_cloned</code>:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Raises Fail if the index is out of bounds</span>
-<span class="nf">get_cloned</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="p">{</span><span class="kt">Clone</span> <span class="n">t</span><span class="p">}</span> <span class="o">:</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span>
+<span class="nf">get_cloned</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="n">ref</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="p">{</span><span class="kt">Clone</span> <span class="n">t</span><span class="p">}</span> <span class="o">:</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span>
 </code></pre></div><p>As a result, if you know you&rsquo;re going to be working with mutably shared Vecs
 or other container types, and your element type is expensive to clone, you may
 want to wrap each element in a pointer type to reduce the cost of cloning: <code>Vec (Rc t)</code>.</p>
@@ -3402,8 +3402,8 @@ if the value is set to <code>None</code>, but notably excludes fields of a struc
     <span class="n">foo</span> <span class="ow">=</span> <span class="n">return_ref</span> <span class="n">x</span>  <span class="c1">// ok</span>
     <span class="o">...</span>
 
-<span class="nf">requires_ref</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span> <span class="o">...</span>
-<span class="nf">return_ref</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span> <span class="ow">=</span> <span class="n">y</span>
+<span class="nf">requires_ref</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="n">ref</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span> <span class="o">...</span>
+<span class="nf">return_ref</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="n">ref</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="n">ref</span> <span class="n">t</span> <span class="ow">=</span> <span class="n">y</span>
 </code></pre></div><p>Above we know that <code>y</code> is a temporary reference only valid within <code>requires_ref</code>, so once the call ends we can continue
 using <code>x</code> as an <code>imm t</code> reference - it isn&rsquo;t possible for <code>y</code> to outlive its temporary lifetime. When <code>return_ref</code> is called
 we borrow <code>x</code> as a <code>ref</code> again, and this time may not use <code>x</code> again until <code>foo</code> is dropped.</p>
@@ -3416,36 +3416,38 @@ enabling <code>ref</code> and <code>mut</code> to be used in more function param
 who are now free to pass owned (<code>imm</code>, <code>uniq</code>) or mutably shared (<code>ref</code>, <code>mut</code>) data.</p>
 </blockquote>
 <p>A reference promotion occurs when a <code>imm</code> or <code>uniq</code> reference is required but only a <code>ref</code> or <code>mut</code> reference
-is provided. When promoting a reference, instead of getting a <code>imm t</code> or <code>uniq t</code>, an <code>unstable imm t</code>
-or <code>unstable uniq t</code> is received instead. Compared to the non-unstable versions, unstable references
+is provided. When promoting a reference, instead of getting a <code>imm t</code> or <code>uniq t</code>, a <code>local imm t</code>
+or <code>local uniq t</code> is received instead. Compared to the non-local versions, local references only
 require us to show to the compiler that the reference is not <em>locally</em> mutably aliased. In other words,
-a <code>unstable uniq t</code> doesn&rsquo;t need to be unique globally, it only needs to be unique while it is still being used.</p>
-<p>Note that in the case of cyclic types, a variable is counted as a possible alias to itself and thus cannot be
-promoted.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">shared_to_owned</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span>
+a <code>local uniq t</code> doesn&rsquo;t need to be unique globally, it only needs to be unique while it is still being used.
+This allows for aliases to exist further up the call stack as long as they aren&rsquo;t accessed while the local
+reference is alive.</p>
+<p>Note that in the case of cyclic types, a variable is counted as a possible alias to itself and thus cannot
+be promoted.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">shared_to_owned</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="n">ref</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span>
     <span class="n">requires_owned</span> <span class="n">x</span> <span class="mi">0</span>  <span class="c1">// ok! `x` is not used with any possible mutable aliases</span>
 
 <span class="nf">requires_owned</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="k">imm</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">z</span><span class="o">:</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span> <span class="o">...</span>
 
-<span class="nf">promote_invalid</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">mut</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">uniq</span> <span class="n">t</span> <span class="ow">=</span>
-    <span class="c1">// Converting to `uniq t` is okay - but we can&#39;t return these without keeping the `unstable` part</span>
+<span class="nf">promote_invalid</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">mut</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="n">uniq</span> <span class="n">t</span> <span class="ow">=</span>
+    <span class="c1">// Converting to `uniq t` is okay - but we can&#39;t return these without keeping the `local` part</span>
     <span class="c1">// error! Cannot return a uniq reference promoted from a mut reference - it may be aliased by the caller</span>
     <span class="n">x</span>
 
-<span class="nf">promote_valid</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">mut</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="n">unstable</span> <span class="k">uniq</span> <span class="n">t</span> <span class="ow">=</span>
-    <span class="c1">// ok! Using this in the calling scope will come with the restrictions `unstable` provides</span>
+<span class="nf">promote_valid</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">mut</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">local</span> <span class="n">uniq</span> <span class="n">t</span> <span class="ow">=</span>
+    <span class="c1">// ok! Using this in the calling scope will come with the restrictions `local` provides</span>
     <span class="n">x</span>
 </code></pre></div><p>The way the compiler proves a variable is not mutably aliased locally is by requiring a <code>Distinct a b</code> trait constraint
-whenever a mutable variable of type <code>b</code> is used while an <code>unstable</code> reference to a type <code>a</code> is still alive. This trait is automatically
+whenever a mutable variable of type <code>b</code> is used while a <code>local</code> reference to a type <code>a</code> is still alive. This trait is automatically
 implemented by the compiler when the type <code>a</code> is not contained within the type <code>b</code>. For example, in
 the following code, we&rsquo;d expect a constraint for <code>Distinct String I32</code> to be issued (and solved):</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">convert_string_ref</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">String</span><span class="p">)</span> <span class="p">(</span><span class="n">i</span><span class="o">:</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
-    <span class="n">promotion</span><span class="o">:</span> <span class="k">uniq</span> <span class="kt">String</span> <span class="ow">=</span> <span class="n">s</span>
-    <span class="n">print</span> <span class="n">i</span>  <span class="c1">// i is used while `promotion` is still used</span>
+    <span class="n">promotion</span><span class="o">:</span> <span class="n">uniq</span> <span class="kt">String</span> <span class="ow">=</span> <span class="n">s</span>
+    <span class="n">print</span> <span class="n">i</span>  <span class="c1">// i is used while `promotion` is still used, `Distinct String I32` is searched for &amp; satisfied</span>
     <span class="n">print</span> <span class="n">promotion</span>
 </code></pre></div><p>This constraint is important for preventing use of values which may have been dropped:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">invalid_shared_to_owned</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span>
-    <span class="c1">// `get` requires an `imm` reference so this must promote to `unstable imm Vec t`</span>
+    <span class="c1">// `get` requires an `imm` reference so this must promote to `local imm Vec t`</span>
     <span class="n">element_ref</span> <span class="ow">=</span> <span class="n">v</span><span class="o">.</span><span class="n">get</span> <span class="mi">0</span> <span class="o">|&gt;</span> <span class="n">unwrap</span>
     <span class="n">print</span> <span class="n">element_ref</span>  <span class="c1">// ok</span>
 
@@ -3464,7 +3466,7 @@ as we like, so as long as we can make a block of code where <code>v</code> isn&r
 references and moved values. Notably, this allows us convert many variables of the same type from <code>ref</code> to <code>imm</code> easily.
 Since they are not mutable, they don&rsquo;t require a <code>Distinct a b</code> restriction, letting us alias the resulting <code>imm</code>
 references as well:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">promote_to_imm</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">ref</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="k">ref</span> <span class="n">b</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">promote_to_imm</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="n">ref</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="n">ref</span> <span class="n">b</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span>
     <span class="n">requires_imm</span> <span class="n">x</span> <span class="n">y</span>
 
 <span class="nf">requires_imm</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">imm</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="k">imm</span> <span class="n">b</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span> <span class="o">...</span>
@@ -3528,7 +3530,7 @@ via <code>shared mut type</code>:</p>
     <span class="n">my_expr</span> <span class="ow">=</span> <span class="kt">MutExpr</span><span class="o">.</span><span class="kt">Add</span> <span class="p">(</span><span class="kt">Int</span> <span class="mi">3</span><span class="p">)</span> <span class="p">(</span><span class="kt">Var</span> <span class="s">&#34;foo&#34;</span><span class="p">)</span>
 
     <span class="c1">// We can freely copy and mutate any shared mutable type</span>
-    <span class="k">var</span> <span class="n">alias1</span> <span class="ow">=</span> <span class="n">my_expr</span>
+    <span class="n">var</span> <span class="n">alias1</span> <span class="ow">=</span> <span class="n">my_expr</span>
     <span class="n">alias2</span> <span class="ow">=</span> <span class="n">my_expr</span>
 
     <span class="n">alias1</span> <span class="o">:=</span> <span class="kt">Int</span> <span class="mi">0</span>
@@ -3539,13 +3541,13 @@ via <code>shared mut type</code>:</p>
 of a <code>shared mut</code> type. We can however, obtain <code>ref</code> or <code>mut</code> references:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">expr</span> <span class="ow">=</span> <span class="kt">MutExpr</span><span class="o">.</span><span class="kt">Int</span> <span class="mi">3</span>
 
-<span class="nf">ref1</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Expr</span> <span class="ow">=</span> <span class="k">ref</span> <span class="n">expr</span>
+<span class="nf">ref1</span><span class="o">:</span> <span class="n">ref</span> <span class="kt">Expr</span> <span class="ow">=</span> <span class="n">ref</span> <span class="n">expr</span>
 <span class="nf">ref2</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Expr</span> <span class="ow">=</span> <span class="k">mut</span> <span class="n">expr</span>
 </code></pre></div><p>Since taking the reference of a tagged-union&rsquo;s field requires a <code>imm</code> or <code>uniq</code> reference (tagged-unions do
 not have stable shapes since they may be mutated to a different union variant), when matching on
 <code>shared mut</code> types, they are automatically copied:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">eval1</span> <span class="p">(</span><span class="n">e</span><span class="o">:</span> <span class="kt">Expr</span><span class="p">)</span> <span class="ow">=</span>
-    <span class="k">match</span> <span class="k">ref</span> <span class="n">e</span>  <span class="c1">// error: Getting a reference to a union&#39;s fields requires an `imm` or `uniq` reference</span>
+    <span class="k">match</span> <span class="n">ref</span> <span class="n">e</span>  <span class="c1">// error: Getting a reference to a union&#39;s fields requires an `imm` or `uniq` reference</span>
     <span class="o">|</span> <span class="kt">Int</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">x</span>
     <span class="o">...</span>
 
@@ -3561,7 +3563,7 @@ checking to uphold the properties of the <code>imm</code>/<code>uniq</code> refe
 can be made or multiple immutable references, but never both at once).</p>
 <p>Since Ante natively supports shared references, it is also possibly to obtain a
 shared reference directly through a shared pointer type like an <code>Rc t</code>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">as_mut</span> <span class="p">(</span><span class="n">rc</span><span class="o">:</span> <span class="k">uniq</span> <span class="kt">Rc</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">mut</span> <span class="n">t</span> <span class="ow">=</span> <span class="o">...</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">as_mut</span> <span class="p">(</span><span class="n">rc</span><span class="o">:</span> <span class="n">uniq</span> <span class="kt">Rc</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">mut</span> <span class="n">t</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><p>Note that like most pointer types, we still need an owned reference of the
 pointer itself to obtain a reference to the inside. Otherwise,
 the value would be able to drop out from under us if another shared reference
@@ -4016,7 +4018,7 @@ on its right. Here is the definition of <code>with</code> in pseudocode:</p>
 </code></pre></div><p>There are also times when we want to use a handler to handle an entire block. For this,
 we can use the <code>using</code> keyword:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// try: (Unit -&gt; a can Fail) -&gt; Maybe a</span>
-<span class="k">using</span> <span class="n">try</span>
+<span class="nf">using</span> <span class="n">try</span>
 
 <span class="nf">foo</span> <span class="ow">=</span> <span class="n">failable_operation</span> <span class="p">()</span>
 <span class="nf">bar</span> <span class="ow">=</span> <span class="n">failable_operation</span> <span class="p">()</span>
@@ -4060,7 +4062,7 @@ function&rsquo;s effects were not explicitly specified. So we can rewrite <code>
 </code></pre></div><p>And it would be equivalent. Note that this effect-polymorphism by default isn&rsquo;t always desired.
 In these cases, the function parameter&rsquo;s effects can be explicitly specified. This
 may be the case when spawning threads for example:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">spawn_thread</span> <span class="p">(</span><span class="n">thread</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=&gt;</span> <span class="kt">Unit</span> <span class="k">pure</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">IO</span><span class="p">,</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">spawn_thread</span> <span class="p">(</span><span class="n">thread</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=&gt;</span> <span class="kt">Unit</span> <span class="n">pure</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">IO</span><span class="p">,</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><p>The above function&rsquo;s signature states that <code>spawn_thread</code> may <code>Fail</code> and perform some IO (presumably
 in the form of spawning an OS thread), while <code>thread</code> may not perform any effects itself.</p>
 <p>Another case is when a function parameter has effects that the outer function does not. Consider:</p>
@@ -4201,7 +4203,7 @@ threading stateful values through multiple functions.</p>
     <span class="n">get</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span>
     <span class="n">put</span><span class="o">:</span> <span class="k">fn</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
 
-<span class="nf">state</span> <span class="p">(</span><span class="k">var</span> <span class="n">current_state</span><span class="o">:</span> <span class="n">s</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Use</span> <span class="n">s</span><span class="p">)</span> <span class="o">:</span> <span class="n">a</span> <span class="ow">=</span>
+<span class="nf">state</span> <span class="p">(</span><span class="n">var</span> <span class="n">current_state</span><span class="o">:</span> <span class="n">s</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Use</span> <span class="n">s</span><span class="p">)</span> <span class="o">:</span> <span class="n">a</span> <span class="ow">=</span>
     <span class="k">handle</span> <span class="n">f</span> <span class="p">()</span>
     <span class="o">|</span> <span class="n">get</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="k">resume</span> <span class="n">current_state</span>
     <span class="o">|</span> <span class="n">put</span> <span class="n">new_state</span> <span class="ow">-&gt;</span>
@@ -4261,17 +4263,17 @@ or <code>Continue</code> lets us program in a very imperative style,
 while remaining purely functional behind the scenes.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-an" data-lang="an"><span class="k">effect</span> <span class="kt">Loop</span> <span class="k">with</span>
     <span class="n">break</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span>
-    <span class="n">continue</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span>
+    <span class="k">continue</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span>
 
-<span class="nf">for</span> <span class="p">(</span><span class="n">iter</span><span class="o">:</span> <span class="n">i</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">e</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Loop</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Iterate</span> <span class="n">i</span> <span class="n">e</span> <span class="ow">=</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">iter</span><span class="o">:</span> <span class="n">i</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">e</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Loop</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Iterate</span> <span class="n">i</span> <span class="n">e</span> <span class="ow">=</span>
     <span class="k">match</span> <span class="n">next</span> <span class="n">iter</span>
     <span class="o">|</span> <span class="kt">None</span> <span class="ow">-&gt;</span> <span class="p">()</span>
     <span class="o">|</span> <span class="kt">Some</span> <span class="p">(</span><span class="n">rest</span><span class="p">,</span> <span class="n">elem</span><span class="p">)</span> <span class="ow">-&gt;</span>
         <span class="k">handle</span> <span class="n">f</span> <span class="n">elem</span>
         <span class="o">|</span> <span class="n">break</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="p">()</span>
-        <span class="o">|</span> <span class="n">continue</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="n">for</span> <span class="n">rest</span> <span class="n">f</span>
+        <span class="o">|</span> <span class="k">continue</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="k">for</span> <span class="n">rest</span> <span class="n">f</span>
         <span class="c1">// If the body returns normally, we also want to continue the loop</span>
-        <span class="o">|</span> <span class="k">return</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="n">for</span> <span class="n">rest</span> <span class="n">f</span>
+        <span class="o">|</span> <span class="k">return</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="k">for</span> <span class="n">rest</span> <span class="n">f</span>
 
 <span class="nf">while</span> <span class="p">(</span><span class="n">cond</span><span class="o">:</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span><span class="p">)</span> <span class="p">(</span><span class="n">body</span><span class="o">:</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">State</span> <span class="n">a</span> <span class="ow">=</span>
     <span class="k">if</span> <span class="n">cond</span> <span class="p">(</span><span class="n">get</span> <span class="p">())</span> <span class="k">then</span>
@@ -4283,7 +4285,7 @@ while remaining purely functional behind the scenes.</p>
 
 <span class="c1">// Loop until we eventually find a prime number through sheer luck</span>
 <span class="nf">loop_examples</span> <span class="p">(</span><span class="n">vec</span><span class="o">:</span> <span class="kt">Vec</span> <span class="kt">I32</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Print</span><span class="p">,</span> <span class="kt">State</span> <span class="kt">I32</span> <span class="ow">=</span>
-    <span class="n">for</span> <span class="n">vec</span> <span class="k">fn</span> <span class="n">elem</span> <span class="ow">-&gt;</span>
+    <span class="k">for</span> <span class="n">vec</span> <span class="k">fn</span> <span class="n">elem</span> <span class="ow">-&gt;</span>
         <span class="n">largest</span> <span class="ow">=</span> <span class="n">get</span> <span class="p">()</span>
         <span class="k">if</span> <span class="n">largest</span> <span class="o">&gt;</span> <span class="mi">100</span> <span class="k">then</span>
             <span class="n">print</span> <span class="s">&#34;oops, too big!&#34;</span>
