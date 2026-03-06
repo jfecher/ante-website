@@ -35,7 +35,7 @@
 
 
 
-<link href="/css/custom.css?1772818622" rel="stylesheet">
+<link href="/css/custom.css?1772819976" rel="stylesheet">
 
 
 
@@ -761,7 +761,7 @@ also mutable references which may not be unique (spelled <code>mut</code>), yet 
 <span class="c1">// we can only give out shared references to the contents. Also note that requiring a unique reference</span>
 <span class="c1">// here instead of a shared one ensures the reference count stays at least one while the returned</span>
 <span class="c1">// reference is alive.</span>
-<span class="kt">Rc</span><span class="o">.</span><span class="n">as_mut</span> <span class="p">(</span><span class="n">self</span><span class="o">:</span> <span class="n">uniq</span> <span class="kt">Rc</span> <span class="n">a</span><span class="p">)</span><span class="o">:</span> <span class="k">mut</span> <span class="n">a</span> <span class="ow">=</span> <span class="o">...</span>
+<span class="kt">Rc</span><span class="o">.</span><span class="n">as_mut</span> <span class="p">(</span><span class="n">self</span><span class="o">:</span> <span class="k">uniq</span> <span class="kt">Rc</span> <span class="n">a</span><span class="p">)</span><span class="o">:</span> <span class="k">mut</span> <span class="n">a</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><p>Specifics aside, shared mutability comes with its own fair share of difficulties but is ultimately still important
 for low-level languages today. I&rsquo;m generally of the mind that it should be avoided when possible,
 but when it is needed it can still be simpler than the alternatives. Determining &ldquo;when it is needed&rdquo; is left

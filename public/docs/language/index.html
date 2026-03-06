@@ -35,7 +35,7 @@
 
 
 
-<link href="/css/custom.css?1772818622" rel="stylesheet">
+<link href="/css/custom.css?1772819976" rel="stylesheet">
 
 
 
@@ -2610,7 +2610,7 @@ argument that is a collection with 1 element <code>i</code>.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo</span> <span class="n">array</span><span class="o">.</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 </code></pre></div><p>Additionally, references to elements can be retrieved using the subscript operator
 with a reference kind:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">print</span> <span class="p">(</span><span class="n">ref</span> <span class="n">my_array</span><span class="o">.</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">print</span> <span class="p">(</span><span class="k">ref</span> <span class="n">my_array</span><span class="o">.</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
 <span class="nf">mutate</span> <span class="p">(</span><span class="k">mut</span> <span class="n">my_array</span><span class="o">.</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 </code></pre></div><h2 id="dereference-operator">Dereference Operator</h2>
@@ -3246,8 +3246,8 @@ to it so that we can refer to the value as many times as we need.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">s</span> <span class="ow">=</span> <span class="s">&#34;my string&#34;</span>
 
 <span class="c1">// References can be used as many times as needed</span>
-<span class="nf">baz</span> <span class="p">(</span><span class="n">ref</span> <span class="n">s</span><span class="p">)</span>
-<span class="nf">baz</span> <span class="p">(</span><span class="n">ref</span> <span class="n">s</span><span class="p">)</span>
+<span class="nf">baz</span> <span class="p">(</span><span class="k">ref</span> <span class="n">s</span><span class="p">)</span>
+<span class="nf">baz</span> <span class="p">(</span><span class="k">ref</span> <span class="n">s</span><span class="p">)</span>
 </code></pre></div><p>Creating a temporary reference to a value can be done via a <code>ref &lt;expr&gt;</code> expression.
 These references do not allow mutation of the underlying value. If a mutable reference
 is desired, they can be created via <code>mut &lt;expr&gt;</code>:</p>
@@ -3260,7 +3260,7 @@ is desired, they can be created via <code>mut &lt;expr&gt;</code>:</p>
 </code></pre></div><p>Borrowing prevents the underlying value from being moved while any reference to it is still used:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">bad</span> <span class="p">(</span><span class="n">foo</span><span class="o">:</span> <span class="kt">Foo</span><span class="p">)</span> <span class="ow">=</span>
     <span class="c1">// Error: Cannot move `foo` while the borrowed reference `ref foo` is still alive</span>
-    <span class="n">bar</span> <span class="p">(</span><span class="n">ref</span> <span class="n">foo</span><span class="p">)</span> <span class="n">foo</span>
+    <span class="n">bar</span> <span class="p">(</span><span class="k">ref</span> <span class="n">foo</span><span class="p">)</span> <span class="n">foo</span>
 </code></pre></div><p>Trying to move the underlying value while the reference is still alive will result in an error.
 Additionally, we cannot return a reference to an outer scope after the variable it references may be dropped.
 To keep track of when a reference is valid, each reference stores the set of variables it may borrow from in its type.</p>
@@ -3271,19 +3271,19 @@ The borrow set can often be omitted from the type, in which case the borrow set 
 a fresh borrow set will be used.</p>
 <p>The borrow set parameter represents which variable(s) a reference borrows from. In the following example:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo</span> <span class="ow">=</span> <span class="mi">32</span>
-<span class="nf">bar</span> <span class="ow">=</span> <span class="n">ref</span> <span class="n">foo</span>
+<span class="nf">bar</span> <span class="ow">=</span> <span class="k">ref</span> <span class="n">foo</span>
 </code></pre></div><p><code>bar</code> will have the type <code>ref 'foo I32</code> because it is a reference to the variable <code>foo</code> which holds an <code>I32</code>.</p>
 <p>Sometimes, the exact variable a reference borrows from is unknown:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">example1</span> <span class="p">(</span><span class="n">foo</span><span class="o">:</span> <span class="n">ref</span> <span class="n">&#39;foo</span> <span class="kt">I32</span><span class="p">)</span> <span class="p">(</span><span class="n">bar</span><span class="o">:</span> <span class="n">ref</span> <span class="n">&#39;bar</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">example1</span> <span class="p">(</span><span class="n">foo</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;foo</span> <span class="kt">I32</span><span class="p">)</span> <span class="p">(</span><span class="n">bar</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;bar</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
     <span class="c1">// Is the return type `ref &#39;foo I32` or `ref &#39;bar I32`?</span>
     <span class="k">if</span> <span class="n">random</span> <span class="p">()</span> <span class="k">then</span> <span class="n">foo</span> <span class="k">else</span> <span class="n">bar</span>
 </code></pre></div><p>This is why references have a borrow <em>set</em> rather than always a single variable. For the
 example above, the reference type returned would be <code>ref '(foo, bar) I32</code>. When calling
 <code>example1</code>, the returned reference will be valid for only as long as <em>both</em> arguments
 to the function are:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">example2</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="n">ref</span> <span class="n">&#39;a</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">example2</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;a</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
     <span class="n">b</span> <span class="ow">=</span> <span class="mi">1</span>
-    <span class="n">example1</span> <span class="n">a</span> <span class="p">(</span><span class="n">ref</span> <span class="n">b</span><span class="p">)</span>  <span class="c1">// error! returned reference borrows from `b` but `b` is dropped here while the reference is still used!</span>
+    <span class="n">example1</span> <span class="n">a</span> <span class="p">(</span><span class="k">ref</span> <span class="n">b</span><span class="p">)</span>  <span class="c1">// error! returned reference borrows from `b` but `b` is dropped here while the reference is still used!</span>
 </code></pre></div><p>In the example above we call <code>example1</code> to return one of the two references but <code>b</code> is local
 to <code>example2</code> and will be dropped when the function finishes! If this code were allowed we
 would return a dangling reference which will likely lead to a runtime crash when later
@@ -3300,11 +3300,11 @@ rules are used for determining what the borrow set is assumed to be:</p>
 </li>
 </ul>
 <p>Using these rules, we can rewrite <code>example1</code>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">example1</span> <span class="p">(</span><span class="n">foo</span><span class="o">:</span> <span class="n">ref</span> <span class="kt">I32</span><span class="p">)</span> <span class="p">(</span><span class="n">bar</span><span class="o">:</span> <span class="n">ref</span> <span class="kt">I32</span><span class="p">)</span><span class="o">:</span> <span class="n">ref</span> <span class="kt">&#39;(foo, bar)</span> <span class="kt">I32</span> <span class="ow">=</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">example1</span> <span class="p">(</span><span class="n">foo</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">I32</span><span class="p">)</span> <span class="p">(</span><span class="n">bar</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">I32</span><span class="p">)</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">&#39;(foo, bar)</span> <span class="kt">I32</span> <span class="ow">=</span>
     <span class="k">if</span> <span class="n">random</span> <span class="p">()</span> <span class="k">then</span> <span class="n">foo</span> <span class="k">else</span> <span class="n">bar</span>
 </code></pre></div><p>Most of the time, these rules mean we can omit borrow sets unless the function both takes multiple reference parameters
 and returns a reference.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">concat_foo</span> <span class="p">(</span><span class="n">foo1</span><span class="o">:</span> <span class="n">ref</span> <span class="kt">Foo</span><span class="p">)</span> <span class="p">(</span><span class="n">foo2</span><span class="o">:</span> <span class="n">ref</span> <span class="kt">Foo</span><span class="p">)</span> <span class="o">:</span> <span class="kt">String</span> <span class="ow">=</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">concat_foo</span> <span class="p">(</span><span class="n">foo1</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Foo</span><span class="p">)</span> <span class="p">(</span><span class="n">foo2</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Foo</span><span class="p">)</span> <span class="o">:</span> <span class="kt">String</span> <span class="ow">=</span>
     <span class="n">foo1</span><span class="o">.</span><span class="n">msg</span> <span class="o">++</span> <span class="n">foo2</span><span class="o">.</span><span class="n">msg</span>
 </code></pre></div><h4 id="types-with-borrow-sets">Types with Borrow Sets</h4>
 <p>Borrow sets can also be added to type definitions. This is necessary if a type needs
@@ -3312,7 +3312,7 @@ to hold onto a temporary reference, although most of the time users should favor
 wrapper types such as <code>Rc t</code> as these will generally be easier to work with. Borrow
 set parameters are distinguished from regular type parameters by the <code>'</code> sigil:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Context</span> <span class="n">&#39;l</span> <span class="ow">=</span>
-    <span class="n">global_context</span><span class="o">:</span> <span class="n">ref</span> <span class="n">&#39;l</span> <span class="kt">GlobalContext</span>
+    <span class="n">global_context</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;l</span> <span class="kt">GlobalContext</span>
 </code></pre></div><hr>
 <h3 id="shared-mutability-and-reference-kinds">Shared Mutability and Reference Kinds</h3>
 <p>Although largely built-upon Rust, Ante&rsquo;s borrowing semantics differ in that it
@@ -3383,7 +3383,7 @@ references to Vecs since they do not hand out references to elements. If we ever
 need a Vec element when all we have is a <code>ref Vec t</code>, we can still retrieve
 an element through something like <code>Vec.get_cloned</code>:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Raises Fail if the index is out of bounds</span>
-<span class="nf">get_cloned</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="n">ref</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="p">{</span><span class="kt">Clone</span> <span class="n">t</span><span class="p">}</span> <span class="o">:</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span>
+<span class="nf">get_cloned</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="p">{</span><span class="kt">Clone</span> <span class="n">t</span><span class="p">}</span> <span class="o">:</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span>
 </code></pre></div><p>As a result, if you know you&rsquo;re going to be working with mutably shared Vecs
 or other container types, and your element type is expensive to clone, you may
 want to wrap each element in a pointer type to reduce the cost of cloning: <code>Vec (Rc t)</code>.</p>
@@ -3402,8 +3402,8 @@ if the value is set to <code>None</code>, but notably excludes fields of a struc
     <span class="n">foo</span> <span class="ow">=</span> <span class="n">return_ref</span> <span class="n">x</span>  <span class="c1">// ok</span>
     <span class="o">...</span>
 
-<span class="nf">requires_ref</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="n">ref</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span> <span class="o">...</span>
-<span class="nf">return_ref</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="n">ref</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="n">ref</span> <span class="n">t</span> <span class="ow">=</span> <span class="n">y</span>
+<span class="nf">requires_ref</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span> <span class="o">...</span>
+<span class="nf">return_ref</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span> <span class="ow">=</span> <span class="n">y</span>
 </code></pre></div><p>Above we know that <code>y</code> is a temporary reference only valid within <code>requires_ref</code>, so once the call ends we can continue
 using <code>x</code> as an <code>imm t</code> reference - it isn&rsquo;t possible for <code>y</code> to outlive its temporary lifetime. When <code>return_ref</code> is called
 we borrow <code>x</code> as a <code>ref</code> again, and this time may not use <code>x</code> again until <code>foo</code> is dropped.</p>
@@ -3424,17 +3424,17 @@ This allows for aliases to exist further up the call stack as long as they aren&
 reference is alive.</p>
 <p>Note that in the case of cyclic types, a variable is counted as a possible alias to itself and thus cannot
 be promoted.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">shared_to_owned</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="n">ref</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">shared_to_owned</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span>
     <span class="n">requires_owned</span> <span class="n">x</span> <span class="mi">0</span>  <span class="c1">// ok! `x` is not used with any possible mutable aliases</span>
 
 <span class="nf">requires_owned</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="k">imm</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">z</span><span class="o">:</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span> <span class="o">...</span>
 
-<span class="nf">promote_invalid</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">mut</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="n">uniq</span> <span class="n">t</span> <span class="ow">=</span>
+<span class="nf">promote_invalid</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">mut</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">uniq</span> <span class="n">t</span> <span class="ow">=</span>
     <span class="c1">// Converting to `uniq t` is okay - but we can&#39;t return these without keeping the `local` part</span>
     <span class="c1">// error! Cannot return a uniq reference promoted from a mut reference - it may be aliased by the caller</span>
     <span class="n">x</span>
 
-<span class="nf">promote_valid</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">mut</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">local</span> <span class="n">uniq</span> <span class="n">t</span> <span class="ow">=</span>
+<span class="nf">promote_valid</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">mut</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">local</span> <span class="k">uniq</span> <span class="n">t</span> <span class="ow">=</span>
     <span class="c1">// ok! Using this in the calling scope will come with the restrictions `local` provides</span>
     <span class="n">x</span>
 </code></pre></div><p>The way the compiler proves a variable is not mutably aliased locally is by requiring a <code>Distinct a b</code> trait constraint
@@ -3442,7 +3442,7 @@ whenever a mutable variable of type <code>b</code> is used while a <code>local</
 implemented by the compiler when the type <code>a</code> is not contained within the type <code>b</code>. For example, in
 the following code, we&rsquo;d expect a constraint for <code>Distinct String I32</code> to be issued (and solved):</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">convert_string_ref</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">String</span><span class="p">)</span> <span class="p">(</span><span class="n">i</span><span class="o">:</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
-    <span class="n">promotion</span><span class="o">:</span> <span class="n">uniq</span> <span class="kt">String</span> <span class="ow">=</span> <span class="n">s</span>
+    <span class="n">promotion</span><span class="o">:</span> <span class="k">uniq</span> <span class="kt">String</span> <span class="ow">=</span> <span class="n">s</span>
     <span class="n">print</span> <span class="n">i</span>  <span class="c1">// i is used while `promotion` is still used, `Distinct String I32` is searched for &amp; satisfied</span>
     <span class="n">print</span> <span class="n">promotion</span>
 </code></pre></div><p>This constraint is important for preventing use of values which may have been dropped:</p>
@@ -3466,7 +3466,7 @@ as we like, so as long as we can make a block of code where <code>v</code> isn&r
 references and moved values. Notably, this allows us convert many variables of the same type from <code>ref</code> to <code>imm</code> easily.
 Since they are not mutable, they don&rsquo;t require a <code>Distinct a b</code> restriction, letting us alias the resulting <code>imm</code>
 references as well:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">promote_to_imm</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="n">ref</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="n">ref</span> <span class="n">b</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">promote_to_imm</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">ref</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="k">ref</span> <span class="n">b</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span>
     <span class="n">requires_imm</span> <span class="n">x</span> <span class="n">y</span>
 
 <span class="nf">requires_imm</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">imm</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="k">imm</span> <span class="n">b</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span> <span class="o">...</span>
@@ -3541,13 +3541,13 @@ via <code>shared mut type</code>:</p>
 of a <code>shared mut</code> type. We can however, obtain <code>ref</code> or <code>mut</code> references:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">expr</span> <span class="ow">=</span> <span class="kt">MutExpr</span><span class="o">.</span><span class="kt">Int</span> <span class="mi">3</span>
 
-<span class="nf">ref1</span><span class="o">:</span> <span class="n">ref</span> <span class="kt">Expr</span> <span class="ow">=</span> <span class="n">ref</span> <span class="n">expr</span>
+<span class="nf">ref1</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Expr</span> <span class="ow">=</span> <span class="k">ref</span> <span class="n">expr</span>
 <span class="nf">ref2</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Expr</span> <span class="ow">=</span> <span class="k">mut</span> <span class="n">expr</span>
 </code></pre></div><p>Since taking the reference of a tagged-union&rsquo;s field requires a <code>imm</code> or <code>uniq</code> reference (tagged-unions do
 not have stable shapes since they may be mutated to a different union variant), when matching on
 <code>shared mut</code> types, they are automatically copied:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">eval1</span> <span class="p">(</span><span class="n">e</span><span class="o">:</span> <span class="kt">Expr</span><span class="p">)</span> <span class="ow">=</span>
-    <span class="k">match</span> <span class="n">ref</span> <span class="n">e</span>  <span class="c1">// error: Getting a reference to a union&#39;s fields requires an `imm` or `uniq` reference</span>
+    <span class="k">match</span> <span class="k">ref</span> <span class="n">e</span>  <span class="c1">// error: Getting a reference to a union&#39;s fields requires an `imm` or `uniq` reference</span>
     <span class="o">|</span> <span class="kt">Int</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">x</span>
     <span class="o">...</span>
 
@@ -3563,7 +3563,7 @@ checking to uphold the properties of the <code>imm</code>/<code>uniq</code> refe
 can be made or multiple immutable references, but never both at once).</p>
 <p>Since Ante natively supports shared references, it is also possibly to obtain a
 shared reference directly through a shared pointer type like an <code>Rc t</code>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">as_mut</span> <span class="p">(</span><span class="n">rc</span><span class="o">:</span> <span class="n">uniq</span> <span class="kt">Rc</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">mut</span> <span class="n">t</span> <span class="ow">=</span> <span class="o">...</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">as_mut</span> <span class="p">(</span><span class="n">rc</span><span class="o">:</span> <span class="k">uniq</span> <span class="kt">Rc</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">mut</span> <span class="n">t</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><p>Note that like most pointer types, we still need an owned reference of the
 pointer itself to obtain a reference to the inside. Otherwise,
 the value would be able to drop out from under us if another shared reference

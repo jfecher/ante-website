@@ -35,7 +35,7 @@
 
 
 
-<link href="/css/custom.css?1772818622" rel="stylesheet">
+<link href="/css/custom.css?1772819976" rel="stylesheet">
 
 
 
@@ -618,14 +618,14 @@ For example, when we take multiple mutable references to the same value, we can 
 </code></pre></div><p>Note that shared references are a weaker guarantee than single-owner ones. So if we have a function which
 only requires a shared reference, we can still pass a single-owner reference to it, as long as the mutability
 matches:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">log_foo</span> <span class="p">(</span><span class="n">foo</span><span class="o">:</span> <span class="n">ref</span> <span class="kt">Foo</span><span class="p">)</span> <span class="p">(</span><span class="n">context</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Context</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">log_foo</span> <span class="p">(</span><span class="n">foo</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Foo</span><span class="p">)</span> <span class="p">(</span><span class="n">context</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Context</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span>
     <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">logging_enabled</span> <span class="k">then</span>
         <span class="n">log</span> <span class="s">&#34;Found foo: ${foo}&#34;</span>
         <span class="n">context</span><span class="o">.</span><span class="n">logs</span> <span class="o">+=</span> <span class="mi">1</span>
 
 <span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span>
     <span class="n">foo</span><span class="o">:</span> <span class="k">imm</span> <span class="kt">Foo</span> <span class="ow">=</span> <span class="o">...</span>
-    <span class="n">context</span><span class="o">:</span> <span class="n">uniq</span> <span class="kt">Context</span> <span class="ow">=</span> <span class="o">...</span>
+    <span class="n">context</span><span class="o">:</span> <span class="k">uniq</span> <span class="kt">Context</span> <span class="ow">=</span> <span class="o">...</span>
     <span class="n">log_foo</span> <span class="n">foo</span> <span class="n">context</span>  <span class="c1">// ok!</span>
 </code></pre></div><p>It is also important to note that any shared references do not implement <code>Send</code> to be able to be sent
 across other threads. Since they inherently allow for shared mutability, this would not be safe to allow.</p>
@@ -658,7 +658,7 @@ through a pointer boundary:</p>
     <span class="n">ptr</span><span class="o">:</span> <span class="kt">Box</span> <span class="kt">Bar</span>
 
 <span class="c1">// If we had the following function, we could create a dangling reference:</span>
-<span class="kt">Box</span><span class="o">.</span><span class="n">as_ref</span> <span class="p">(</span><span class="n">box</span><span class="o">:</span> <span class="n">ref</span> <span class="kt">Box</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="n">ref</span> <span class="n">t</span>
+<span class="kt">Box</span><span class="o">.</span><span class="n">as_ref</span> <span class="p">(</span><span class="n">box</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Box</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span>
 
 <span class="nf">var</span> <span class="n">foo</span> <span class="ow">=</span> <span class="kt">Foo</span> <span class="p">(</span><span class="kt">Box</span><span class="o">.</span><span class="n">new</span> <span class="n">my_bar</span><span class="p">)</span>
 
@@ -691,7 +691,7 @@ at all?</p>
 perfectly fine to use in a shared, mutable context. As long as we don&rsquo;t give out references to elements
 we are fine:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Can call this with ref, imm, mut, or uniq, great!</span>
-<span class="kt">Vec</span><span class="o">.</span><span class="n">len</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="n">ref</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">Usz</span> <span class="ow">=</span> <span class="o">...</span>
+<span class="kt">Vec</span><span class="o">.</span><span class="n">len</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">Usz</span> <span class="ow">=</span> <span class="o">...</span>
 
 <span class="c1">// Also great!</span>
 <span class="kt">Vec</span><span class="o">.</span><span class="n">push</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">elem</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span> <span class="o">...</span>
@@ -700,7 +700,7 @@ we are fine:</p>
 <span class="kt">Vec</span><span class="o">.</span><span class="n">pop</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><p>Alright, alright but that still never solved the issue of actually accessing the elements without
 removing them from the <code>Vec</code>. It turns out however, we can do that too:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Vec</span><span class="o">.</span><span class="n">get_cloned</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="n">ref</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="p">{</span><span class="kt">Clone</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Vec</span><span class="o">.</span><span class="n">get_cloned</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="p">{</span><span class="kt">Clone</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><p>(<code>{Clone t}</code> is Ante&rsquo;s way of writing trait constraints)</p>
 <p>As long as we don&rsquo;t return a reference to an element, the API itself is safe.
 Note that since this requires cloning each value, this will be fine for small,
@@ -721,7 +721,7 @@ having the ability to opt out of AxM, AxM can be opted into instead.</p>
 <h2 id="shared-interior-mutability">Shared Interior Mutability</h2>
 <p>Since Ante includes shared mutability as a builtin, certain types which can only yield
 immutable references in Rust can be accessed mutably in Ante. For example, <code>Rc t</code>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Rc</span><span class="o">.</span><span class="n">as_mut</span> <span class="p">(</span><span class="n">rc</span><span class="o">:</span> <span class="n">uniq</span> <span class="kt">Rc</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">mut</span> <span class="n">t</span> <span class="ow">=</span> <span class="o">...</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Rc</span><span class="o">.</span><span class="n">as_mut</span> <span class="p">(</span><span class="n">rc</span><span class="o">:</span> <span class="k">uniq</span> <span class="kt">Rc</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">mut</span> <span class="n">t</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><p>Note that like the <code>Box t</code> example earlier, this still requires a <code>uniq</code> reference to
 project inside the <code>Rc</code>. In practice this means to use this to mutate inside an <code>Rc</code> you&rsquo;ll
 often need to clone it first. Otherwise another shared reference to the <code>Rc</code> could swap
@@ -743,13 +743,13 @@ be able to Clone it to access its fields:</p>
    <span class="o">|</span> <span class="kt">Triangle</span> <span class="p">(</span><span class="n">width</span><span class="o">:</span> <span class="kt">U32</span><span class="p">)</span> <span class="p">(</span><span class="n">height</span><span class="o">:</span> <span class="kt">U32</span><span class="p">)</span>
    <span class="o">|</span> <span class="kt">Square</span> <span class="p">(</span><span class="n">height</span><span class="o">:</span> <span class="kt">U32</span><span class="p">)</span>
 
-<span class="nf">height</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="n">ref</span> <span class="kt">Shape</span><span class="p">)</span><span class="o">:</span> <span class="kt">U32</span> <span class="ow">=</span>
+<span class="nf">height</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Shape</span><span class="p">)</span><span class="o">:</span> <span class="kt">U32</span> <span class="ow">=</span>
     <span class="k">match</span> <span class="n">clone</span> <span class="n">s</span>
     <span class="o">|</span> <span class="kt">Triangle</span> <span class="n">_</span> <span class="n">height</span> <span class="ow">-&gt;</span> <span class="n">height</span>
     <span class="o">|</span> <span class="kt">Square</span> <span class="n">height</span> <span class="ow">-&gt;</span> <span class="n">height</span>
 </code></pre></div><p>But how can we implement <code>Clone Shape</code> if we can&rsquo;t access a tagged union&rsquo;s fields without cloning it first?</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="kt">Clone</span> <span class="kt">Shape</span> <span class="k">with</span>
-    <span class="n">clone</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="n">ref</span> <span class="kt">Shape</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="n">clone</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Shape</span><span class="p">)</span> <span class="ow">=</span>
         <span class="k">match</span> <span class="n">s</span>  <span class="c1">// Error here</span>
         <span class="o">|</span> <span class="kt">Triangle</span> <span class="n">w</span> <span class="n">h</span> <span class="ow">-&gt;</span> <span class="kt">Triangle</span> <span class="o">@</span><span class="n">w</span> <span class="o">@</span><span class="n">h</span>
         <span class="o">|</span> <span class="kt">Square</span> <span class="n">h</span> <span class="ow">-&gt;</span> <span class="kt">Square</span> <span class="o">@</span><span class="n">h</span>
@@ -761,7 +761,7 @@ only, users would still be able to write a <code>Clone</code> impl that would vi
 
 <span class="k">impl</span> <span class="kt">Clone</span> <span class="kt">Foo</span> <span class="k">with</span>
     <span class="n">clone</span> <span class="n">foo</span> <span class="ow">=</span>
-        <span class="n">var</span> <span class="n">vec</span> <span class="ow">=</span> <span class="n">clone</span> <span class="p">(</span><span class="n">ref</span> <span class="n">foo</span><span class="o">.</span><span class="n">vec</span><span class="p">)</span>
+        <span class="n">var</span> <span class="n">vec</span> <span class="ow">=</span> <span class="n">clone</span> <span class="p">(</span><span class="k">ref</span> <span class="n">foo</span><span class="o">.</span><span class="n">vec</span><span class="p">)</span>
         <span class="n">mut_vec</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="kt">Foo</span> <span class="ow">=</span> <span class="n">vec</span><span class="o">.</span><span class="n">as_mut</span> <span class="p">()</span>
 
         <span class="c1">// If this clone impl was invoked from `Clone (Vec Foo)`</span>
@@ -775,7 +775,7 @@ only, users would still be able to write a <code>Clone</code> impl that would vi
 </code></pre></div><p>Unfortunately, writing a custom impl for <code>Clone</code> is inherently unsafe. For this reason, these impls
 now require the <code>unsafe</code> keyword.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">unsafe</span> <span class="k">impl</span> <span class="n">clone_foo</span><span class="o">:</span> <span class="kt">Clone</span> <span class="kt">Foo</span> <span class="k">with</span>
-    <span class="n">clone</span> <span class="n">foo</span> <span class="ow">=</span> <span class="kt">Foo</span> <span class="p">(</span><span class="n">clone</span> <span class="p">(</span><span class="n">ref</span> <span class="n">foo</span><span class="o">.</span><span class="n">vec</span><span class="p">))</span>
+    <span class="n">clone</span> <span class="n">foo</span> <span class="ow">=</span> <span class="kt">Foo</span> <span class="p">(</span><span class="n">clone</span> <span class="p">(</span><span class="k">ref</span> <span class="n">foo</span><span class="o">.</span><span class="n">vec</span><span class="p">))</span>
 </code></pre></div><p>Thankfully, writing custom <code>Clone</code> impls is uncommon and code like this which goes out of its
 way to break it is even more rare.
 Nevertheless, it would still be nice if this case could be prevented more cleanly and made safe.</p>
