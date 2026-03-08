@@ -35,7 +35,7 @@
 
 
 
-<link href="/css/custom.css?1772986342" rel="stylesheet">
+<link href="/css/custom.css?1772987363" rel="stylesheet">
 
 
 
@@ -647,8 +647,8 @@
                     
                     
                     
-                    <a href="/docs/language/#dereference-operator">
-                        <li>Dereference Operator</li>
+                    <a href="/docs/language/#dereference-operator-copy-and-clone">
+                        <li>Dereference Operator, Copy, and Clone</li>
                     </a>
                     
                     
@@ -2615,18 +2615,32 @@ with a reference kind:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">print</span> <span class="p">(</span><span class="k">ref</span> <span class="n">my_array</span><span class="o">.</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
 <span class="nf">mutate</span> <span class="p">(</span><span class="k">mut</span> <span class="n">my_array</span><span class="o">.</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-</code></pre></div><h2 id="dereference-operator">Dereference Operator</h2>
-<p>Dereferencing references in ante can be done with the <code>@</code> operator.
-<code>@</code> is used over the more common <code>*</code> since it is unambiguous what it refers to,
-plays nicely with ML-style function call syntax, and gives the helpful mnemonic
-&ldquo;get the value <em>at</em> the reference&rdquo;.</p>
-<p>Note that dereferencing a value via <code>@</code> requires the value implement <code>Copy</code>.
-Types which are expensive to copy implement <code>Clone</code> instead. Note that there
-is no requirement for <code>Copy</code> types to be memcpy-able. Instead it is used for
-types which are &ldquo;cheap&rdquo; to copy - usually meaning they don&rsquo;t need to allocate
-any heap memory. A result of this is that <code>Rc t</code> is <code>Copy</code>.</p>
-<p>If you need to access a struct field, <code>struct.field</code> will automatically dereference
-<code>struct</code> as many times as needed to access its field.</p>
+</code></pre></div><h2 id="dereference-operator-copy-and-clone">Dereference Operator, Copy, and Clone</h2>
+<p>Dereferencing reference in Ante requires the element type of the reference to implement
+either <code>Copy</code> or <code>Clone</code>. Both traits have the same semantics in that they both perform
+copies (although certain values like <code>Rc t</code> may be shared), but types implementing <code>Copy</code>
+are generally expected to be cheaper to copy than types only implementing <code>Clone</code>.</p>
+<p>These traits can be called via the <code>copy</code> or <code>clone</code> functions, but there is also the
+postfix <code>.*</code> operator available as an alias to <code>copy</code>. This operator has a higher precedence
+than function calls and can be more convenient in some cases.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Person</span> <span class="ow">=</span> <span class="n">age</span><span class="o">:</span> <span class="kt">U8</span><span class="p">,</span> <span class="n">name</span><span class="o">:</span> <span class="kt">String</span>
+
+<span class="nf">foo</span> <span class="p">(</span><span class="n">person</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Person</span><span class="p">)</span> <span class="p">(</span><span class="n">id</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">U32</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="n">bar</span> <span class="n">person</span><span class="o">.</span><span class="n">age</span><span class="o">.*</span> <span class="n">id</span><span class="o">.*</span>
+
+<span class="nf">bar</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="kt">U8</span><span class="p">)</span> <span class="p">(</span><span class="n">b</span><span class="o">:</span> <span class="kt">U32</span><span class="p">)</span> <span class="ow">=</span> <span class="o">...</span>
+</code></pre></div><p>If you need to access a struct field, <code>struct.field</code> will retrieve a reference to the
+given field if <code>struct</code> is a reference, otherwise it will attempt to copy or move the
+field out of the struct. Also note that if a value was expected but a reference was
+provided, there is a coercion such that the reference will be automatically copied,
+providing its element type implements <code>Copy</code>. This means <code>foo</code> above could be rewritten to:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo</span> <span class="p">(</span><span class="n">person</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Person</span><span class="p">)</span> <span class="p">(</span><span class="n">id</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">U32</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="n">bar</span> <span class="n">person</span><span class="o">.</span><span class="n">age</span> <span class="n">id</span>
+</code></pre></div><blockquote>
+<p>Note that there is no requirement for <code>Copy</code> types to be memcpy-able. Instead it is
+used for types which are &ldquo;cheap&rdquo; to copy - usually meaning they don&rsquo;t need to allocate
+any memory on the heap. A result of this is that <code>Rc t</code> implements <code>Copy</code>.</p>
+</blockquote>
 <h2 id="pipeline-operators">Pipeline Operators</h2>
 <p>The pipeline operators <code>|&gt;</code> and <code>&lt;|</code> are sugar for function application and
 serve to pipe the results from one function to the input of another.</p>
@@ -3369,7 +3383,7 @@ be any other reference of any kind to the same value while we hold the exclusive
 <span class="nf">ref2</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">String</span> <span class="ow">=</span> <span class="k">mut</span> <span class="n">message</span>
 
 <span class="c1">// It is safe to modify the string through shared, mutable references</span>
-<span class="o">@</span><span class="n">ref1</span> <span class="o">:=</span> <span class="s">&#34;${message}, WorZd!&#34;</span>  <span class="c1">// &#34;Hello, WorZd!&#34;</span>
+<span class="nf">ref1</span><span class="o">.*</span> <span class="o">:=</span> <span class="s">&#34;${message}, WorZd!&#34;</span>  <span class="c1">// &#34;Hello, WorZd!&#34;</span>
 <span class="nf">ref2</span><span class="o">.</span><span class="n">replace</span> <span class="s">&#34;Z&#34;</span> <span class="s">&#34;l&#34;</span>
 <span class="nf">print</span> <span class="n">ref2</span>                     <span class="c1">// &#34;Hello, World!&#34;</span>
 </code></pre></div><p>The <code>imm</code> and <code>uniq</code> reference kinds are used prevent operations that would be unsafe

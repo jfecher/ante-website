@@ -486,21 +486,40 @@ print (ref my_array.[0])
 mutate (mut my_array.[1])
 ```
 
-## Dereference Operator
+## Dereference Operator, Copy, and Clone
 
-Dereferencing references in ante can be done with the `@` operator.
-`@` is used over the more common `*` since it is unambiguous what it refers to,
-plays nicely with ML-style function call syntax, and gives the helpful mnemonic
-"get the value _at_ the reference".
+Dereferencing reference in Ante requires the element type of the reference to implement
+either `Copy` or `Clone`. Both traits have the same semantics in that they both perform
+copies (although certain values like `Rc t` may be shared), but types implementing `Copy`
+are generally expected to be cheaper to copy than types only implementing `Clone`.
 
-Note that dereferencing a value via `@` requires the value implement `Copy`.
-Types which are expensive to copy implement `Clone` instead. Note that there
-is no requirement for `Copy` types to be memcpy-able. Instead it is used for
-types which are "cheap" to copy - usually meaning they don't need to allocate
-any heap memory. A result of this is that `Rc t` is `Copy`.
+These traits can be called via the `copy` or `clone` functions, but there is also the
+postfix `.*` operator available as an alias to `copy`. This operator has a higher precedence
+than function calls and can be more convenient in some cases.
 
-If you need to access a struct field, `struct.field` will automatically dereference
-`struct` as many times as needed to access its field.
+```ante
+type Person = age: U8, name: String
+
+foo (person: ref Person) (id: ref U32) =
+    bar person.age.* id.*
+
+bar (a: U8) (b: U32) = ...
+```
+
+If you need to access a struct field, `struct.field` will retrieve a reference to the
+given field if `struct` is a reference, otherwise it will attempt to copy or move the
+field out of the struct. Also note that if a value was expected but a reference was
+provided, there is a coercion such that the reference will be automatically copied,
+providing its element type implements `Copy`. This means `foo` above could be rewritten to:
+
+```ante
+foo (person: ref Person) (id: ref U32) =
+    bar person.age id
+```
+
+> Note that there is no requirement for `Copy` types to be memcpy-able. Instead it is
+> used for types which are "cheap" to copy - usually meaning they don't need to allocate
+> any memory on the heap. A result of this is that `Rc t` implements `Copy`.
 
 ## Pipeline Operators
 
@@ -1494,7 +1513,7 @@ ref1: mut String = mut message
 ref2: mut String = mut message
 
 // It is safe to modify the string through shared, mutable references
-@ref1 := "${message}, WorZd!"  // "Hello, WorZd!"
+ref1.* := "${message}, WorZd!"  // "Hello, WorZd!"
 ref2.replace "Z" "l"
 print ref2                     // "Hello, World!"
 ```
