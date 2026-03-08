@@ -93,23 +93,26 @@ Character escapes can also be used to represent characters not on a traditional 
 
 ## Strings
 
-Strings in ante are utf-8 by default and are represented via a pointer and
-length pair. For efficient sub-string operations, strings are not null-terminated.
-If desired, C-style null-terminated strings can be obtained by calling the `c_string` function.
+Ante supports several different string types for different use cases but the most common `String`
+type which string literals are given by default is represented as a reference-counted pointer
+to a growable UTF-8 string with copy-on-write semantics. `String` is not null terminated.
+String literals in code are stored in read only memory and do not require heap allocation.
+Attempting to mutate these values however, will be treated as if they are always aliased and
+will invoke copy-on-write semantics which will copy to the heap before making the mutation.
+
+This is meant to be relatively efficient for the general case, although users with more specific
+optimization or representation requirements may wish to use alternative string types. Examples
+of alternate types include the null-terminated `C.String` and the OS-dependent `OsString`.
 
 ```ante
-print "Hello, World!"
+var my_str = "Hello!"
 
-// The String type is equivalent to the following struct:
-type String =
-    c_string: Ptr Char
-    length: Usz
+hello = my_str  // String implements `Copy` with a relatively cheap rc-increment
 
-// C-interop often requires using the `c_string` function:
-c_string (s: String) : C.String = ...
-
-extern puts : C.String -> I32
-puts (c_string "Hello, C!")
+// Modifying `my_str` will not modify `hello`
+my_str.[0] = 'Y'
+print my_str  //=> Yello!
+print hello   //=> Hello!
 ```
 
 ## String Interpolation
@@ -1919,17 +1922,19 @@ print_to_string true  //=> outputs true
 ## Named Impls
 
 In contrast to other languages with traits or typeclasses, all impls
-are named in ante. This enables impls to be imported or hidden from
+are named in ante. This enables impls to be imported or excluded from
 scope in the same manner as any other construct: by name.
 
 ```ante
-import Foo.Impls.* hiding eq_foo
+import implicit Foo.Impls.eq_foo
 ```
 
 When an impl is ambiguous, you can just specify the [implicit parameter](#implicits)
 explicitly:
 
 ```ante
+import implicit Foo.Bar.stringify_bool
+
 impl conflicting_impl: Stringify a with
     stringify _ = ""
 
@@ -2070,10 +2075,9 @@ separate parent modules so there is no name conflict.
 ## Imports
 
 Importing symbols within a module into scope can be
-done with an `import` expression. Lets say
-we were using the module hierarchy given in the
-[section above](#modules). In our `Baz.Nested` file we
-have:
+done with an `import` expression. Using the module hierarchy
+from the [section above](#modules), in our `Baz.Nested` file we
+may have:
 
 ```ante
 nested_baz = 0
@@ -2087,13 +2091,15 @@ get_baz () = "baz"
 To use these definitions from `Foo` we can import them:
 
 ```ante
-import Baz.Nested.*
+import Baz.Nested.nested_baz, get_baz
 
 baz = get_baz ()
 print "baz: $baz, nested_baz = $nested_baz"
 ```
 
-We can also import only some symbols into scope:
+Note that Ante does not support wildcard imports. This is an intentional decision to speed up the
+name resolution step in the compiler by enabling it to be done without collecting all names
+in the current project & dependencies first.
 
 ```ante
 // This syntax was chosen so that when adding new imports
@@ -2105,34 +2111,15 @@ print (get_baz ())
 print_baz ()
 ```
 
-Now, lets say we are in module Bar and want to import `Baz.Nested`
-but we already have a function named `get_baz` in scope. We cannot
-do `import Baz.Nested.*` since there would be conflicting names in scope.
-We could import only the functions we need but if we require many functions
-from `Baz.Nested` then this may take some time. For this reason, when using
-wildcard imports, you can also specify definitions to exclude, via the `hiding` clause:
+You may also rename imports via `as`:
 
 ```ante
-import Baz.Nested.* hiding get_baz
-
-// No error here
-get_baz () = my_local_baz
-```
-
-Alternatively, you can also rename imports via `as`:
-
-```ante
-import Baz.Nested.* hiding get_baz
-
-// If we want to import everything from Baz.Nested while renaming
-// some of the items we need to list them separately since `as`
-// doesn't work with * imports:
 import Baz.Nested.get_baz as other_get_baz
 
 import Foo.a as foo_a, b, c, d as foo_d
 
 // No error here
-get_baz () = my_local_baz
+get_baz () = ...
 ```
 
 ## Implicit Imports
@@ -2143,7 +2130,7 @@ used for trait implementations:
 
 ```ante
 import Lib.MyType
-import implicit Lib.MyType.Impls.*
+import implicit Lib.MyType.eq_mytype
 
 main () =
     x = MyType.new ()

@@ -35,7 +35,7 @@
 
 
 
-<link href="/css/custom.css?1772819976" rel="stylesheet">
+<link href="/css/custom.css?1772986342" rel="stylesheet">
 
 
 
@@ -2328,21 +2328,23 @@ the string contains only ASCII characters, its size in memory is 1 byte per char
 <span class="sc">&#39;</span><span class="se">\xFFFF</span><span class="sc">&#39;</span> <span class="c1">// an arbitrary Unicode scalar value given by the</span>
          <span class="c1">// number &#39;FFFF&#39; in hex</span>
 </code></pre></div><h2 id="strings">Strings</h2>
-<p>Strings in ante are utf-8 by default and are represented via a pointer and
-length pair. For efficient sub-string operations, strings are not null-terminated.
-If desired, C-style null-terminated strings can be obtained by calling the <code>c_string</code> function.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">print</span> <span class="s">&#34;Hello, World!&#34;</span>
+<p>Ante supports several different string types for different use cases but the most common <code>String</code>
+type which string literals are given by default is represented as a reference-counted pointer
+to a growable UTF-8 string with copy-on-write semantics. <code>String</code> is not null terminated.
+String literals in code are stored in read only memory and do not require heap allocation.
+Attempting to mutate these values however, will be treated as if they are always aliased and
+will invoke copy-on-write semantics which will copy to the heap before making the mutation.</p>
+<p>This is meant to be relatively efficient for the general case, although users with more specific
+optimization or representation requirements may wish to use alternative string types. Examples
+of alternate types include the null-terminated <code>C.String</code> and the OS-dependent <code>OsString</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">var</span> <span class="n">my_str</span> <span class="ow">=</span> <span class="s">&#34;Hello!&#34;</span>
 
-<span class="c1">// The String type is equivalent to the following struct:</span>
-<span class="k">type</span> <span class="kt">String</span> <span class="ow">=</span>
-    <span class="n">c_string</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="kt">Char</span>
-    <span class="n">length</span><span class="o">:</span> <span class="kt">Usz</span>
+<span class="nf">hello</span> <span class="ow">=</span> <span class="n">my_str</span>  <span class="c1">// String implements `Copy` with a relatively cheap rc-increment</span>
 
-<span class="c1">// C-interop often requires using the `c_string` function:</span>
-<span class="nf">c_string</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">:</span> <span class="kt">C</span><span class="o">.</span><span class="kt">String</span> <span class="ow">=</span> <span class="o">...</span>
-
-<span class="k">extern</span> <span class="n">puts</span> <span class="o">:</span> <span class="kt">C</span><span class="o">.</span><span class="kt">String</span> <span class="ow">-&gt;</span> <span class="kt">I32</span>
-<span class="nf">puts</span> <span class="p">(</span><span class="n">c_string</span> <span class="s">&#34;Hello, C!&#34;</span><span class="p">)</span>
+<span class="c1">// Modifying `my_str` will not modify `hello`</span>
+<span class="nf">my_str</span><span class="o">.</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">=</span> <span class="sc">&#39;Y&#39;</span>
+<span class="nf">print</span> <span class="n">my_str</span>  <span class="c1">//=&gt; Yello!</span>
+<span class="nf">print</span> <span class="n">hello</span>   <span class="c1">//=&gt; Hello!</span>
 </code></pre></div><h2 id="string-interpolation">String Interpolation</h2>
 <p>Ante supports string interpolation via <code>$</code> or <code>${...}</code> within a string. Within
 the brackets, arbitrary expressions will be converted to strings and spliced
@@ -3673,12 +3675,14 @@ in scope and use that:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">print_to_string</span> <span class="kc">true</span>  <span class="c1">//=&gt; outputs true</span>
 </code></pre></div><h2 id="named-impls">Named Impls</h2>
 <p>In contrast to other languages with traits or typeclasses, all impls
-are named in ante. This enables impls to be imported or hidden from
+are named in ante. This enables impls to be imported or excluded from
 scope in the same manner as any other construct: by name.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Foo</span><span class="o">.</span><span class="kt">Impls</span><span class="o">.*</span> <span class="k">hiding</span> <span class="n">eq_foo</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="k">implicit</span> <span class="kt">Foo</span><span class="o">.</span><span class="kt">Impls</span><span class="o">.</span><span class="n">eq_foo</span>
 </code></pre></div><p>When an impl is ambiguous, you can just specify the <a href="#implicits">implicit parameter</a>
 explicitly:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">conflicting_impl</span><span class="o">:</span> <span class="kt">Stringify</span> <span class="n">a</span> <span class="k">with</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="k">implicit</span> <span class="kt">Foo</span><span class="o">.</span><span class="kt">Bar</span><span class="o">.</span><span class="n">stringify_bool</span>
+
+<span class="k">impl</span> <span class="n">conflicting_impl</span><span class="o">:</span> <span class="kt">Stringify</span> <span class="n">a</span> <span class="k">with</span>
     <span class="n">stringify</span> <span class="n">_</span> <span class="ow">=</span> <span class="s">&#34;&#34;</span>
 
 <span class="nf">print_to_string</span> <span class="kc">true</span> <span class="p">{</span><span class="n">stringify_bool</span><span class="p">}</span>
@@ -3778,10 +3782,9 @@ in the <code>baz</code> folder. The two <code>nested.an</code> files are also in
 separate parent modules so there is no name conflict.</p>
 <h2 id="imports">Imports</h2>
 <p>Importing symbols within a module into scope can be
-done with an <code>import</code> expression. Lets say
-we were using the module hierarchy given in the
-<a href="#modules">section above</a>. In our <code>Baz.Nested</code> file we
-have:</p>
+done with an <code>import</code> expression. Using the module hierarchy
+from the <a href="#modules">section above</a>, in our <code>Baz.Nested</code> file we
+may have:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">nested_baz</span> <span class="ow">=</span> <span class="mi">0</span>
 
 <span class="nf">print_baz</span> <span class="p">()</span> <span class="ow">=</span>
@@ -3789,11 +3792,13 @@ have:</p>
 
 <span class="nf">get_baz</span> <span class="p">()</span> <span class="ow">=</span> <span class="s">&#34;baz&#34;</span>
 </code></pre></div><p>To use these definitions from <code>Foo</code> we can import them:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Baz</span><span class="o">.</span><span class="kt">Nested</span><span class="o">.*</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Baz</span><span class="o">.</span><span class="kt">Nested</span><span class="o">.</span><span class="n">nested_baz</span><span class="p">,</span> <span class="n">get_baz</span>
 
 <span class="nf">baz</span> <span class="ow">=</span> <span class="n">get_baz</span> <span class="p">()</span>
 <span class="nf">print</span> <span class="s">&#34;baz: $baz, nested_baz = $nested_baz&#34;</span>
-</code></pre></div><p>We can also import only some symbols into scope:</p>
+</code></pre></div><p>Note that Ante does not support wildcard imports. This is an intentional decision to speed up the
+name resolution step in the compiler by enabling it to be done without collecting all names
+in the current project &amp; dependencies first.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// This syntax was chosen so that when adding new imports</span>
 <span class="c1">// you only need to edit the end of the line rather than</span>
 <span class="c1">// needing to add a &#39;{&#39; or similar token before print_baz as well.</span>
@@ -3801,34 +3806,19 @@ have:</p>
 
 <span class="nf">print</span> <span class="p">(</span><span class="n">get_baz</span> <span class="p">())</span>
 <span class="nf">print_baz</span> <span class="p">()</span>
-</code></pre></div><p>Now, lets say we are in module Bar and want to import <code>Baz.Nested</code>
-but we already have a function named <code>get_baz</code> in scope. We cannot
-do <code>import Baz.Nested.*</code> since there would be conflicting names in scope.
-We could import only the functions we need but if we require many functions
-from <code>Baz.Nested</code> then this may take some time. For this reason, when using
-wildcard imports, you can also specify definitions to exclude, via the <code>hiding</code> clause:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Baz</span><span class="o">.</span><span class="kt">Nested</span><span class="o">.*</span> <span class="k">hiding</span> <span class="n">get_baz</span>
-
-<span class="c1">// No error here</span>
-<span class="nf">get_baz</span> <span class="p">()</span> <span class="ow">=</span> <span class="n">my_local_baz</span>
-</code></pre></div><p>Alternatively, you can also rename imports via <code>as</code>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Baz</span><span class="o">.</span><span class="kt">Nested</span><span class="o">.*</span> <span class="k">hiding</span> <span class="n">get_baz</span>
-
-<span class="c1">// If we want to import everything from Baz.Nested while renaming</span>
-<span class="c1">// some of the items we need to list them separately since `as`</span>
-<span class="c1">// doesn&#39;t work with * imports:</span>
-<span class="k">import</span> <span class="kt">Baz</span><span class="o">.</span><span class="kt">Nested</span><span class="o">.</span><span class="n">get_baz</span> <span class="k">as</span> <span class="n">other_get_baz</span>
+</code></pre></div><p>You may also rename imports via <code>as</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Baz</span><span class="o">.</span><span class="kt">Nested</span><span class="o">.</span><span class="n">get_baz</span> <span class="k">as</span> <span class="n">other_get_baz</span>
 
 <span class="k">import</span> <span class="kt">Foo</span><span class="o">.</span><span class="n">a</span> <span class="k">as</span> <span class="n">foo_a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span> <span class="k">as</span> <span class="n">foo_d</span>
 
 <span class="c1">// No error here</span>
-<span class="nf">get_baz</span> <span class="p">()</span> <span class="ow">=</span> <span class="n">my_local_baz</span>
+<span class="nf">get_baz</span> <span class="p">()</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><h2 id="implicit-imports">Implicit Imports</h2>
 <p>To import a value into scope and enable any definitions searching for a <code>implicit</code> of the
 same type to use it, the value must be imported via <code>import implicit</code>. This is most often
 used for trait implementations:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Lib</span><span class="o">.</span><span class="kt">MyType</span>
-<span class="k">import</span> <span class="k">implicit</span> <span class="kt">Lib</span><span class="o">.</span><span class="kt">MyType</span><span class="o">.</span><span class="kt">Impls</span><span class="o">.*</span>
+<span class="k">import</span> <span class="k">implicit</span> <span class="kt">Lib</span><span class="o">.</span><span class="kt">MyType</span><span class="o">.</span><span class="n">eq_mytype</span>
 
 <span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span>
     <span class="n">x</span> <span class="ow">=</span> <span class="kt">MyType</span><span class="o">.</span><span class="n">new</span> <span class="p">()</span>
