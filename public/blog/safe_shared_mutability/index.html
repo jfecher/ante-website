@@ -35,7 +35,7 @@
 
 
 
-<link href="/css/custom.css?1772987363" rel="stylesheet">
+<link href="/css/custom.css?1774903236" rel="stylesheet">
 
 
 
@@ -600,7 +600,7 @@ references.</p>
 These references are sometimes called shared references since they allow for shared mutability, to contrast
 with <code>imm</code> and <code>uniq</code> which are sometimes called single-owner references.
 For example, when we take multiple mutable references to the same value, we can use the new <code>mut</code> reference kind:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">var</span> <span class="n">my_tuple</span> <span class="ow">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">var</span> <span class="n">my_tuple</span> <span class="ow">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="nf">elem1</span> <span class="ow">=</span> <span class="k">mut</span> <span class="n">my_tuple</span><span class="o">.</span><span class="mi">0</span>
 <span class="nf">also_elem1</span> <span class="ow">=</span> <span class="k">mut</span> <span class="n">my_tuple</span><span class="o">.</span><span class="mi">0</span>
 
@@ -608,7 +608,7 @@ For example, when we take multiple mutable references to the same value, we can 
 <span class="nf">print</span> <span class="n">also_elem1</span>  <span class="c1">// Outputs 1</span>
 </code></pre></div><p>The type of <code>elem1</code> and <code>also_elem1</code> here is <code>mut I32</code>.</p>
 <p>We can also mutate through these shared references:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">var</span> <span class="n">my_tuple</span> <span class="ow">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">var</span> <span class="n">my_tuple</span> <span class="ow">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="nf">elem1</span> <span class="ow">=</span> <span class="k">mut</span> <span class="n">my_tuple</span><span class="o">.</span><span class="mi">0</span>
 <span class="nf">also_elem1</span> <span class="ow">=</span> <span class="k">mut</span> <span class="n">my_tuple</span><span class="o">.</span><span class="mi">0</span>
 
@@ -641,7 +641,7 @@ to signal to the caller if the index was out of bounds)</p>
 it needs an immutable reference to the Vec, and <code>imm</code> references are like <code>&amp;T</code> references in Rust
 where they may not be aliased by mutable references.
 When we try to call <code>get</code> with a vector that is mutably shared, we&rsquo;ll get an error:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">var</span> <span class="n">v</span> <span class="ow">=</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">var</span> <span class="n">v</span> <span class="ow">=</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 
 <span class="nf">v_ref1</span> <span class="ow">=</span> <span class="k">mut</span> <span class="n">v</span>
 <span class="nf">v_ref2</span> <span class="ow">=</span> <span class="k">imm</span> <span class="n">v</span> <span class="c1">// error: `v` cannot be immutably borrowed while `mut` reference `v_ref1` is still used</span>
@@ -660,7 +660,7 @@ through a pointer boundary:</p>
 <span class="c1">// If we had the following function, we could create a dangling reference:</span>
 <span class="kt">Box</span><span class="o">.</span><span class="n">as_ref</span> <span class="p">(</span><span class="n">box</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Box</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span>
 
-<span class="nf">var</span> <span class="n">foo</span> <span class="ow">=</span> <span class="kt">Foo</span> <span class="p">(</span><span class="kt">Box</span><span class="o">.</span><span class="n">new</span> <span class="n">my_bar</span><span class="p">)</span>
+<span class="k">var</span> <span class="n">foo</span> <span class="ow">=</span> <span class="kt">Foo</span> <span class="p">(</span><span class="kt">Box</span><span class="o">.</span><span class="n">new</span> <span class="n">my_bar</span><span class="p">)</span>
 
 <span class="nf">foo_mut_ref</span> <span class="ow">=</span> <span class="k">mut</span> <span class="n">foo</span>
 
@@ -761,7 +761,7 @@ only, users would still be able to write a <code>Clone</code> impl that would vi
 
 <span class="k">impl</span> <span class="kt">Clone</span> <span class="kt">Foo</span> <span class="k">with</span>
     <span class="n">clone</span> <span class="n">foo</span> <span class="ow">=</span>
-        <span class="n">var</span> <span class="n">vec</span> <span class="ow">=</span> <span class="n">clone</span> <span class="p">(</span><span class="k">ref</span> <span class="n">foo</span><span class="o">.</span><span class="n">vec</span><span class="p">)</span>
+        <span class="k">var</span> <span class="n">vec</span> <span class="ow">=</span> <span class="n">clone</span> <span class="p">(</span><span class="k">ref</span> <span class="n">foo</span><span class="o">.</span><span class="n">vec</span><span class="p">)</span>
         <span class="n">mut_vec</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="kt">Foo</span> <span class="ow">=</span> <span class="n">vec</span><span class="o">.</span><span class="n">as_mut</span> <span class="p">()</span>
 
         <span class="c1">// If this clone impl was invoked from `Clone (Vec Foo)`</span>

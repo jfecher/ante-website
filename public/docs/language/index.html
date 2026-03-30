@@ -35,7 +35,7 @@
 
 
 
-<link href="/css/custom.css?1772987363" rel="stylesheet">
+<link href="/css/custom.css?1774903236" rel="stylesheet">
 
 
 
@@ -1555,6 +1555,35 @@
                     
                         <ul class="toc-h2">
                     
+                        <ul class="toc-h3">
+                    
+                    
+                    
+                    
+                    <a href="/docs/language/#inferred-implicit-parameters">
+                        <li>Inferred Implicit Parameters</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
                     
                     
                     
@@ -2337,12 +2366,12 @@ will invoke copy-on-write semantics which will copy to the heap before making th
 <p>This is meant to be relatively efficient for the general case, although users with more specific
 optimization or representation requirements may wish to use alternative string types. Examples
 of alternate types include the null-terminated <code>C.String</code> and the OS-dependent <code>OsString</code>.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">var</span> <span class="n">my_str</span> <span class="ow">=</span> <span class="s">&#34;Hello!&#34;</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">var</span> <span class="n">my_str</span> <span class="ow">=</span> <span class="s">&#34;Hello!&#34;</span>
 
 <span class="nf">hello</span> <span class="ow">=</span> <span class="n">my_str</span>  <span class="c1">// String implements `Copy` with a relatively cheap rc-increment</span>
 
 <span class="c1">// Modifying `my_str` will not modify `hello`</span>
-<span class="nf">my_str</span><span class="o">.</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">=</span> <span class="sc">&#39;Y&#39;</span>
+<span class="nf">my_str</span><span class="o">.</span><span class="n">replace</span> <span class="s">&#34;H&#34;</span> <span class="s">&#34;Y&#34;</span>
 <span class="nf">print</span> <span class="n">my_str</span>  <span class="c1">//=&gt; Yello!</span>
 <span class="nf">print</span> <span class="n">hello</span>   <span class="c1">//=&gt; Hello!</span>
 </code></pre></div><h2 id="string-interpolation">String Interpolation</h2>
@@ -2371,7 +2400,7 @@ This is because ante has global <a href="#type-inference">type inference</a>.</p
 </code></pre></div><h2 id="mutability">Mutability</h2>
 <p>A variable can be made mutable by using the <code>var</code> keyword when defining the variable:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Mutable variables can be created with `var`:</span>
-<span class="nf">var</span> <span class="n">pet_name</span> <span class="ow">=</span> <span class="s">&#34;Ember&#34;</span>
+<span class="k">var</span> <span class="n">pet_name</span> <span class="ow">=</span> <span class="s">&#34;Ember&#34;</span>
 <span class="nf">print</span> <span class="n">pet_name</span>  <span class="c1">//=&gt; Ember</span>
 
 <span class="c1">// And can be mutated with `:=`</span>
@@ -2379,25 +2408,31 @@ This is because ante has global <a href="#type-inference">type inference</a>.</p
 <span class="nf">print</span> <span class="n">pet_name</span>  <span class="c1">//=&gt; Cinder</span>
 </code></pre></div><p>Here&rsquo;s another example showing a function that can mutate the passed in parameter using a
 temporary mutable reference (<code>mut</code>):</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">count_evens</span> <span class="n">array</span> <span class="n">counter</span> <span class="ow">=</span>
-    <span class="k">for</span> <span class="n">array</span> <span class="k">fn</span> <span class="n">elem</span> <span class="ow">-&gt;</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// We can do this with mutable state:</span>
+<span class="nf">count_evens</span> <span class="p">(</span><span class="n">array</span><span class="o">:</span> <span class="kt">Array</span> <span class="n">n</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">counter</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="k">for</span> <span class="n">elem</span> <span class="k">in</span> <span class="n">array</span> <span class="k">do</span>
         <span class="k">if</span> <span class="n">even</span> <span class="n">elem</span> <span class="k">then</span>
             <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
 
-<span class="nf">var</span> <span class="n">counter</span> <span class="ow">=</span> <span class="mi">0</span>
+<span class="k">var</span> <span class="n">counter</span> <span class="ow">=</span> <span class="mi">0</span>
 <span class="nf">count_evens</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span> <span class="p">(</span><span class="k">mut</span> <span class="n">counter</span><span class="p">)</span>
+<span class="nf">count_evens</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="p">(</span><span class="k">mut</span> <span class="n">counter</span><span class="p">)</span>
+<span class="nf">print</span> <span class="n">counter</span>  <span class="c1">//=&gt; 5</span>
 
-<span class="nf">print</span> <span class="n">counter</span>  <span class="c1">//=&gt; 2</span>
-</code></pre></div><p>In general, <code>mut &lt;expr&gt;</code> lets you take a temporary mutable reference to the given expression
+<span class="c1">// Although in practice it is good to prefer immutability:</span>
+<span class="nf">count_evens2</span> <span class="p">(</span><span class="n">array</span><span class="o">:</span> <span class="kt">Array</span> <span class="n">n</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">I32</span> <span class="ow">=</span>
+    <span class="n">array</span><span class="o">.</span><span class="n">filter</span> <span class="n">even</span> <span class="o">|&gt;</span> <span class="n">count</span>
+
+<span class="nf">print</span> <span class="p">(</span><span class="n">count_evens2</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span> <span class="o">+</span> <span class="n">count_evens2</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+</code></pre></div><p><code>mut &lt;expr&gt;</code> lets you take a temporary mutable reference to the given expression
 on the right-hand side. In the case of variables and struct fields, this reference will refer
 to the existing value, and will require the original variable to be mutable. In the case of
 other values, such as those returned from a function, a temporary mutable reference is still
 obtained.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">var</span> <span class="n">my_pair</span> <span class="ow">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">var</span> <span class="n">my_pair</span> <span class="ow">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span>
 <span class="nf">my_pair</span><span class="o">.</span><span class="n">first</span> <span class="o">:=</span> <span class="mi">3</span>
 
 <span class="c1">// Without the `mut` this would copy the `second` field into a new variable</span>
-<span class="c1">// creating a temporary reference to it</span>
 <span class="nf">field_ref</span> <span class="ow">=</span> <span class="k">mut</span> <span class="n">my_pair</span><span class="o">.</span><span class="n">second</span>
 <span class="nf">field_ref</span> <span class="o">:=</span> <span class="mi">4</span>
 
@@ -2405,7 +2440,7 @@ obtained.</p>
 
 <span class="c1">// The following two lines give an error because we never declared `bad` to be mutable</span>
 <span class="nf">bad</span> <span class="ow">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span>
-<span class="nf">bad</span><span class="o">.</span><span class="n">first</span> <span class="o">:=</span> <span class="mi">3</span>
+<span class="nf">bad</span><span class="o">.</span><span class="n">first</span> <span class="o">:=</span> <span class="mi">3</span>  <span class="c1">// error! `bad` is not mutable</span>
 </code></pre></div><h1 id="functions">Functions</h1>
 <p>Functions in Ante are also defined via <code>=</code> and are just syntactic
 sugar for assigning a lambda for a variable. That is, <code>foo1</code> and <code>foo2</code>
@@ -2451,7 +2486,7 @@ methods on it like so:</p>
 <span class="p">(</span><span class="kt">Vec</span> <span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">push</span> <span class="p">(</span><span class="k">mut</span> <span class="n">self</span><span class="p">)</span> <span class="p">(</span><span class="n">elem</span><span class="o">:</span> <span class="n">a</span><span class="p">)</span> <span class="ow">=</span> <span class="o">...</span>
 
 <span class="c1">// Call the methods. This can be done without explicitly importing `Vec.new` or `Vec.push`:</span>
-<span class="nf">var</span> <span class="n">vec</span> <span class="ow">=</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">new</span> <span class="p">()</span>
+<span class="k">var</span> <span class="n">vec</span> <span class="ow">=</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">new</span> <span class="p">()</span>
 <span class="nf">vec</span><span class="o">.</span><span class="n">push</span> <span class="s">&#34;called&#34;</span>
 <span class="nf">vec</span><span class="o">.</span><span class="n">push</span> <span class="s">&#34;a&#34;</span>
 <span class="nf">vec</span><span class="o">.</span><span class="n">push</span> <span class="s">&#34;method!&#34;</span>
@@ -3267,7 +3302,7 @@ to it so that we can refer to the value as many times as we need.</p>
 </code></pre></div><p>Creating a temporary reference to a value can be done via a <code>ref &lt;expr&gt;</code> expression.
 These references do not allow mutation of the underlying value. If a mutable reference
 is desired, they can be created via <code>mut &lt;expr&gt;</code>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">var</span> <span class="n">s</span> <span class="ow">=</span> <span class="s">&#34;my string&#34;</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">var</span> <span class="n">s</span> <span class="ow">=</span> <span class="s">&#34;my string&#34;</span>
 
 <span class="c1">// This function call may modify our string</span>
 <span class="nf">qux</span> <span class="p">(</span><span class="k">mut</span> <span class="n">s</span><span class="p">)</span>
@@ -3376,7 +3411,7 @@ equivalent in Rust but can be thought of as similar to <code>&amp;Cell&lt;T&gt;<
 references to the same value at the same time. If we have a <code>imm</code> reference, there may only be other <code>imm</code>
 references to the same value. Finally, if we have an exclusive reference (<code>uniq</code>), there will not
 be any other reference of any kind to the same value while we hold the exclusive reference.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">var</span> <span class="n">message</span> <span class="ow">=</span> <span class="s">&#34;Hello&#34;</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">var</span> <span class="n">message</span> <span class="ow">=</span> <span class="s">&#34;Hello&#34;</span>
 
 <span class="c1">// Create two shared, mutable references to the same string value</span>
 <span class="nf">ref1</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">String</span> <span class="ow">=</span> <span class="k">mut</span> <span class="n">message</span>
@@ -3546,7 +3581,7 @@ via <code>shared mut type</code>:</p>
     <span class="n">my_expr</span> <span class="ow">=</span> <span class="kt">MutExpr</span><span class="o">.</span><span class="kt">Add</span> <span class="p">(</span><span class="kt">Int</span> <span class="mi">3</span><span class="p">)</span> <span class="p">(</span><span class="kt">Var</span> <span class="s">&#34;foo&#34;</span><span class="p">)</span>
 
     <span class="c1">// We can freely copy and mutate any shared mutable type</span>
-    <span class="n">var</span> <span class="n">alias1</span> <span class="ow">=</span> <span class="n">my_expr</span>
+    <span class="k">var</span> <span class="n">alias1</span> <span class="ow">=</span> <span class="n">my_expr</span>
     <span class="n">alias2</span> <span class="ow">=</span> <span class="n">my_expr</span>
 
     <span class="n">alias1</span> <span class="o">:=</span> <span class="kt">Int</span> <span class="mi">0</span>
@@ -3687,7 +3722,26 @@ requires <code>Stringify t</code> we can pass in a <code>Bool</code> and the
 compiler will automatically find the <code>stringify_bool</code> impl
 in scope and use that:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">print_to_string</span> <span class="kc">true</span>  <span class="c1">//=&gt; outputs true</span>
-</code></pre></div><h2 id="named-impls">Named Impls</h2>
+</code></pre></div><h3 id="inferred-implicit-parameters">Inferred Implicit Parameters</h3>
+<p>When inferring a function&rsquo;s type, if that function requires an
+implicit that references a parameter type, the implicit will be inferred
+to be a parameter of the function itself. That is, the following definitions
+of <code>print_double</code> are mostly the same:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// This:</span>
+<span class="nf">print_double</span> <span class="n">x</span> <span class="ow">=</span> <span class="n">print</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="c1">// Is inferred as:</span>
+<span class="nf">print_double</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="kt">Print</span> <span class="n">t</span><span class="p">}</span> <span class="p">{</span><span class="kt">Add</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span>
+    <span class="n">print</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span><span class="p">)</span>
+</code></pre></div><p>There is one small difference between the two: implicits inferred to be parameters
+cannot be explicitly specified by users at call sites:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">print_double</span> <span class="n">x</span> <span class="ow">=</span> <span class="n">print</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span>
+    <span class="c1">// error! `print_double` was not declared with any implicit arguments</span>
+    <span class="n">print_double</span> <span class="mi">2</span> <span class="p">{</span><span class="n">print_i32</span><span class="p">}</span> <span class="p">{</span><span class="n">add_i32</span><span class="p">}</span>
+</code></pre></div><p>If we want to allow users to do so, we must explicitly specify the signature of <code>print_double</code>.</p>
+<h2 id="named-impls">Named Impls</h2>
 <p>In contrast to other languages with traits or typeclasses, all impls
 are named in ante. This enables impls to be imported or excluded from
 scope in the same manner as any other construct: by name.</p>
@@ -4207,7 +4261,7 @@ threading stateful values through multiple functions.</p>
     <span class="n">get</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span>
     <span class="n">put</span><span class="o">:</span> <span class="k">fn</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
 
-<span class="nf">state</span> <span class="p">(</span><span class="n">var</span> <span class="n">current_state</span><span class="o">:</span> <span class="n">s</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Use</span> <span class="n">s</span><span class="p">)</span> <span class="o">:</span> <span class="n">a</span> <span class="ow">=</span>
+<span class="nf">state</span> <span class="p">(</span><span class="k">var</span> <span class="n">current_state</span><span class="o">:</span> <span class="n">s</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Use</span> <span class="n">s</span><span class="p">)</span> <span class="o">:</span> <span class="n">a</span> <span class="ow">=</span>
     <span class="k">handle</span> <span class="n">f</span> <span class="p">()</span>
     <span class="o">|</span> <span class="n">get</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="k">resume</span> <span class="n">current_state</span>
     <span class="o">|</span> <span class="n">put</span> <span class="n">new_state</span> <span class="ow">-&gt;</span>

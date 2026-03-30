@@ -35,7 +35,7 @@
 
 
 
-<link href="/css/custom.css?1772987363" rel="stylesheet">
+<link href="/css/custom.css?1774903236" rel="stylesheet">
 
 
 
@@ -718,8 +718,8 @@ patterns as well:</p>
     <span class="n">next</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="p">(</span><span class="kt">NonEmptyList</span> <span class="n">a</span><span class="p">)</span>
 
 <span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span>
-    <span class="n">var</span> <span class="n">head</span> <span class="ow">=</span> <span class="kt">NonEmptyList</span> <span class="mi">0</span> <span class="kt">None</span>
-    <span class="n">var</span> <span class="n">tail</span> <span class="ow">=</span> <span class="kt">NonEmptyList</span> <span class="mi">1</span> <span class="kt">None</span>
+    <span class="k">var</span> <span class="n">head</span> <span class="ow">=</span> <span class="kt">NonEmptyList</span> <span class="mi">0</span> <span class="kt">None</span>
+    <span class="k">var</span> <span class="n">tail</span> <span class="ow">=</span> <span class="kt">NonEmptyList</span> <span class="mi">1</span> <span class="kt">None</span>
     <span class="n">head</span><span class="o">.</span><span class="n">next</span> <span class="o">:=</span> <span class="kt">Some</span> <span class="n">tail</span>
     <span class="n">tail</span><span class="o">.</span><span class="n">next</span> <span class="o">:=</span> <span class="kt">Some</span> <span class="n">head</span>
 
@@ -748,8 +748,8 @@ or in <a href="/blog/safe-shared-mutability">the blog post where they were first
     <span class="n">next</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="p">(</span><span class="kt">Rc</span> <span class="p">(</span><span class="kt">NonEmptyList</span> <span class="n">a</span><span class="p">))</span>
 
 <span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span>
-    <span class="n">var</span> <span class="n">head</span> <span class="ow">=</span> <span class="kt">Rc</span><span class="o">.</span><span class="n">of</span> <span class="p">(</span><span class="kt">NonEmptyList</span> <span class="mi">0</span> <span class="kt">None</span><span class="p">)</span>
-    <span class="n">var</span> <span class="n">tail</span> <span class="ow">=</span> <span class="kt">Rc</span><span class="o">.</span><span class="n">of</span> <span class="p">(</span><span class="kt">NonEmptyList</span> <span class="mi">1</span> <span class="kt">None</span><span class="p">)</span>
+    <span class="k">var</span> <span class="n">head</span> <span class="ow">=</span> <span class="kt">Rc</span><span class="o">.</span><span class="n">of</span> <span class="p">(</span><span class="kt">NonEmptyList</span> <span class="mi">0</span> <span class="kt">None</span><span class="p">)</span>
+    <span class="k">var</span> <span class="n">tail</span> <span class="ow">=</span> <span class="kt">Rc</span><span class="o">.</span><span class="n">of</span> <span class="p">(</span><span class="kt">NonEmptyList</span> <span class="mi">1</span> <span class="kt">None</span><span class="p">)</span>
     <span class="p">(</span><span class="n">head</span><span class="o">.</span><span class="n">as_mut</span> <span class="p">())</span><span class="o">.</span><span class="n">next</span> <span class="o">:=</span> <span class="kt">Some</span> <span class="n">tail</span>
     <span class="p">(</span><span class="n">tail</span><span class="o">.</span><span class="n">as_mut</span> <span class="p">())</span><span class="o">.</span><span class="n">next</span> <span class="o">:=</span> <span class="kt">Some</span> <span class="n">head</span>
 

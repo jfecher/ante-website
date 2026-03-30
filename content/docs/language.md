@@ -110,7 +110,7 @@ var my_str = "Hello!"
 hello = my_str  // String implements `Copy` with a relatively cheap rc-increment
 
 // Modifying `my_str` will not modify `hello`
-my_str.[0] = 'Y'
+my_str.replace "H" "Y"
 print my_str  //=> Yello!
 print hello   //=> Hello!
 ```
@@ -166,18 +166,25 @@ Here's another example showing a function that can mutate the passed in paramete
 temporary mutable reference (`mut`):
 
 ```ante
-count_evens array counter =
-    for array fn elem ->
+// We can do this with mutable state:
+count_evens (array: Array n t) (counter: mut I32) =
+    for elem in array do
         if even elem then
             counter += 1
 
 var counter = 0
 count_evens [4, 5, 6] (mut counter)
+count_evens [0, 2, 4] (mut counter)
+print counter  //=> 5
 
-print counter  //=> 2
+// Although in practice it is good to prefer immutability:
+count_evens2 (array: Array n t): I32 =
+    array.filter even |> count
+
+print (count_evens2 [4, 5, 6] + count_evens2 [0, 2, 4])
 ```
 
-In general, `mut <expr>` lets you take a temporary mutable reference to the given expression
+`mut <expr>` lets you take a temporary mutable reference to the given expression
 on the right-hand side. In the case of variables and struct fields, this reference will refer
 to the existing value, and will require the original variable to be mutable. In the case of
 other values, such as those returned from a function, a temporary mutable reference is still
@@ -188,7 +195,6 @@ var my_pair = 1, 2
 my_pair.first := 3
 
 // Without the `mut` this would copy the `second` field into a new variable
-// creating a temporary reference to it
 field_ref = mut my_pair.second
 field_ref := 4
 
@@ -196,7 +202,7 @@ print my_pair  //=> 3, 4
 
 // The following two lines give an error because we never declared `bad` to be mutable
 bad = 1, 2
-bad.first := 3
+bad.first := 3  // error! `bad` is not mutable
 ```
 
 # Functions
@@ -1937,6 +1943,35 @@ in scope and use that:
 ```ante
 print_to_string true  //=> outputs true
 ```
+
+### Inferred Implicit Parameters
+
+When inferring a function's type, if that function requires an
+implicit that references a parameter type, the implicit will be inferred
+to be a parameter of the function itself. That is, the following definitions
+of `print_double` are mostly the same:
+
+```ante
+// This:
+print_double x = print (x + x)
+
+// Is inferred as:
+print_double (x: t) {Print t} {Add t}: Unit =
+    print (x + x)
+```
+
+There is one small difference between the two: implicits inferred to be parameters
+cannot be explicitly specified by users at call sites:
+
+```ante
+print_double x = print (x + x)
+
+main () =
+    // error! `print_double` was not declared with any implicit arguments
+    print_double 2 {print_i32} {add_i32}
+```
+
+If we want to allow users to do so, we must explicitly specify the signature of `print_double`.
 
 ## Named Impls
 
