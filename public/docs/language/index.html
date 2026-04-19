@@ -35,7 +35,7 @@
 
 
 
-<link href="/css/custom.css" rel="stylesheet">
+<link href="/css/custom.css?1774903236" rel="stylesheet">
 
 
 
@@ -647,8 +647,8 @@
                     
                     
                     
-                    <a href="/docs/language/#dereference-operator">
-                        <li>Dereference Operator</li>
+                    <a href="/docs/language/#dereference-operator-copy-and-clone">
+                        <li>Dereference Operator, Copy, and Clone</li>
                     </a>
                     
                     
@@ -1555,6 +1555,35 @@
                     
                         <ul class="toc-h2">
                     
+                        <ul class="toc-h3">
+                    
+                    
+                    
+                    
+                    <a href="/docs/language/#inferred-implicit-parameters">
+                        <li>Inferred Implicit Parameters</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
                     
                     
                     
@@ -2328,21 +2357,23 @@ the string contains only ASCII characters, its size in memory is 1 byte per char
 <span class="sc">&#39;</span><span class="se">\xFFFF</span><span class="sc">&#39;</span> <span class="c1">// an arbitrary Unicode scalar value given by the</span>
          <span class="c1">// number &#39;FFFF&#39; in hex</span>
 </code></pre></div><h2 id="strings">Strings</h2>
-<p>Strings in ante are utf-8 by default and are represented via a pointer and
-length pair. For efficient sub-string operations, strings are not null-terminated.
-If desired, C-style null-terminated strings can be obtained by calling the <code>c_string</code> function.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">print</span> <span class="s">&#34;Hello, World!&#34;</span>
+<p>Ante supports several different string types for different use cases but the most common <code>String</code>
+type which string literals are given by default is represented as a reference-counted pointer
+to a growable UTF-8 string with copy-on-write semantics. <code>String</code> is not null terminated.
+String literals in code are stored in read only memory and do not require heap allocation.
+Attempting to mutate these values however, will be treated as if they are always aliased and
+will invoke copy-on-write semantics which will copy to the heap before making the mutation.</p>
+<p>This is meant to be relatively efficient for the general case, although users with more specific
+optimization or representation requirements may wish to use alternative string types. Examples
+of alternate types include the null-terminated <code>C.String</code> and the OS-dependent <code>OsString</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">var</span> <span class="n">my_str</span> <span class="ow">=</span> <span class="s">&#34;Hello!&#34;</span>
 
-<span class="c1">// The String type is equivalent to the following struct:</span>
-<span class="k">type</span> <span class="kt">String</span> <span class="ow">=</span>
-    <span class="n">c_string</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="kt">Char</span>
-    <span class="n">length</span><span class="o">:</span> <span class="kt">Usz</span>
+<span class="nf">hello</span> <span class="ow">=</span> <span class="n">my_str</span>  <span class="c1">// String implements `Copy` with a relatively cheap rc-increment</span>
 
-<span class="c1">// C-interop often requires using the `c_string` function:</span>
-<span class="nf">c_string</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">:</span> <span class="kt">C</span><span class="o">.</span><span class="kt">String</span> <span class="ow">=</span> <span class="o">...</span>
-
-<span class="k">extern</span> <span class="n">puts</span> <span class="o">:</span> <span class="kt">C</span><span class="o">.</span><span class="kt">String</span> <span class="ow">-&gt;</span> <span class="kt">I32</span>
-<span class="nf">puts</span> <span class="p">(</span><span class="n">c_string</span> <span class="s">&#34;Hello, C!&#34;</span><span class="p">)</span>
+<span class="c1">// Modifying `my_str` will not modify `hello`</span>
+<span class="nf">my_str</span><span class="o">.</span><span class="n">replace</span> <span class="s">&#34;H&#34;</span> <span class="s">&#34;Y&#34;</span>
+<span class="nf">print</span> <span class="n">my_str</span>  <span class="c1">//=&gt; Yello!</span>
+<span class="nf">print</span> <span class="n">hello</span>   <span class="c1">//=&gt; Hello!</span>
 </code></pre></div><h2 id="string-interpolation">String Interpolation</h2>
 <p>Ante supports string interpolation via <code>$</code> or <code>${...}</code> within a string. Within
 the brackets, arbitrary expressions will be converted to strings and spliced
@@ -2377,16 +2408,23 @@ This is because ante has global <a href="#type-inference">type inference</a>.</p
 <span class="nf">print</span> <span class="n">pet_name</span>  <span class="c1">//=&gt; Cinder</span>
 </code></pre></div><p>Here&rsquo;s another example showing a function that can mutate the passed in parameter using a
 temporary mutable reference (<code>mut</code>):</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">count_evens</span> <span class="n">array</span> <span class="n">counter</span> <span class="ow">=</span>
-    <span class="n">for</span> <span class="n">array</span> <span class="k">fn</span> <span class="n">elem</span> <span class="ow">-&gt;</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// We can do this with mutable state:</span>
+<span class="nf">count_evens</span> <span class="p">(</span><span class="n">array</span><span class="o">:</span> <span class="kt">Array</span> <span class="n">n</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">counter</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="k">for</span> <span class="n">elem</span> <span class="k">in</span> <span class="n">array</span> <span class="k">do</span>
         <span class="k">if</span> <span class="n">even</span> <span class="n">elem</span> <span class="k">then</span>
             <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
 
 <span class="k">var</span> <span class="n">counter</span> <span class="ow">=</span> <span class="mi">0</span>
 <span class="nf">count_evens</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span> <span class="p">(</span><span class="k">mut</span> <span class="n">counter</span><span class="p">)</span>
+<span class="nf">count_evens</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="p">(</span><span class="k">mut</span> <span class="n">counter</span><span class="p">)</span>
+<span class="nf">print</span> <span class="n">counter</span>  <span class="c1">//=&gt; 5</span>
 
-<span class="nf">print</span> <span class="n">counter</span>  <span class="c1">//=&gt; 2</span>
-</code></pre></div><p>In general, <code>mut &lt;expr&gt;</code> lets you take a temporary mutable reference to the given expression
+<span class="c1">// Although in practice it is good to prefer immutability:</span>
+<span class="nf">count_evens2</span> <span class="p">(</span><span class="n">array</span><span class="o">:</span> <span class="kt">Array</span> <span class="n">n</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">I32</span> <span class="ow">=</span>
+    <span class="n">array</span><span class="o">.</span><span class="n">filter</span> <span class="n">even</span> <span class="o">|&gt;</span> <span class="n">count</span>
+
+<span class="nf">print</span> <span class="p">(</span><span class="n">count_evens2</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span> <span class="o">+</span> <span class="n">count_evens2</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+</code></pre></div><p><code>mut &lt;expr&gt;</code> lets you take a temporary mutable reference to the given expression
 on the right-hand side. In the case of variables and struct fields, this reference will refer
 to the existing value, and will require the original variable to be mutable. In the case of
 other values, such as those returned from a function, a temporary mutable reference is still
@@ -2395,7 +2433,6 @@ obtained.</p>
 <span class="nf">my_pair</span><span class="o">.</span><span class="n">first</span> <span class="o">:=</span> <span class="mi">3</span>
 
 <span class="c1">// Without the `mut` this would copy the `second` field into a new variable</span>
-<span class="c1">// creating a temporary reference to it</span>
 <span class="nf">field_ref</span> <span class="ow">=</span> <span class="k">mut</span> <span class="n">my_pair</span><span class="o">.</span><span class="n">second</span>
 <span class="nf">field_ref</span> <span class="o">:=</span> <span class="mi">4</span>
 
@@ -2403,7 +2440,7 @@ obtained.</p>
 
 <span class="c1">// The following two lines give an error because we never declared `bad` to be mutable</span>
 <span class="nf">bad</span> <span class="ow">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span>
-<span class="nf">bad</span><span class="o">.</span><span class="n">first</span> <span class="o">:=</span> <span class="mi">3</span>
+<span class="nf">bad</span><span class="o">.</span><span class="n">first</span> <span class="o">:=</span> <span class="mi">3</span>  <span class="c1">// error! `bad` is not mutable</span>
 </code></pre></div><h1 id="functions">Functions</h1>
 <p>Functions in Ante are also defined via <code>=</code> and are just syntactic
 sugar for assigning a lambda for a variable. That is, <code>foo1</code> and <code>foo2</code>
@@ -2613,18 +2650,32 @@ with a reference kind:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">print</span> <span class="p">(</span><span class="k">ref</span> <span class="n">my_array</span><span class="o">.</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
 <span class="nf">mutate</span> <span class="p">(</span><span class="k">mut</span> <span class="n">my_array</span><span class="o">.</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-</code></pre></div><h2 id="dereference-operator">Dereference Operator</h2>
-<p>Dereferencing references in ante can be done with the <code>@</code> operator.
-<code>@</code> is used over the more common <code>*</code> since it is unambiguous what it refers to,
-plays nicely with ML-style function call syntax, and gives the helpful mnemonic
-&ldquo;get the value <em>at</em> the reference&rdquo;.</p>
-<p>Note that dereferencing a value via <code>@</code> requires the value implement <code>Copy</code>.
-Types which are expensive to copy implement <code>Clone</code> instead. Note that there
-is no requirement for <code>Copy</code> types to be memcpy-able. Instead it is used for
-types which are &ldquo;cheap&rdquo; to copy - usually meaning they don&rsquo;t need to allocate
-any heap memory. A result of this is that <code>Rc t</code> is <code>Copy</code>.</p>
-<p>If you need to access a struct field, <code>struct.field</code> will automatically dereference
-<code>struct</code> as many times as needed to access its field.</p>
+</code></pre></div><h2 id="dereference-operator-copy-and-clone">Dereference Operator, Copy, and Clone</h2>
+<p>Dereferencing reference in Ante requires the element type of the reference to implement
+either <code>Copy</code> or <code>Clone</code>. Both traits have the same semantics in that they both perform
+copies (although certain values like <code>Rc t</code> may be shared), but types implementing <code>Copy</code>
+are generally expected to be cheaper to copy than types only implementing <code>Clone</code>.</p>
+<p>These traits can be called via the <code>copy</code> or <code>clone</code> functions, but there is also the
+postfix <code>.*</code> operator available as an alias to <code>copy</code>. This operator has a higher precedence
+than function calls and can be more convenient in some cases.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Person</span> <span class="ow">=</span> <span class="n">age</span><span class="o">:</span> <span class="kt">U8</span><span class="p">,</span> <span class="n">name</span><span class="o">:</span> <span class="kt">String</span>
+
+<span class="nf">foo</span> <span class="p">(</span><span class="n">person</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Person</span><span class="p">)</span> <span class="p">(</span><span class="n">id</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">U32</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="n">bar</span> <span class="n">person</span><span class="o">.</span><span class="n">age</span><span class="o">.*</span> <span class="n">id</span><span class="o">.*</span>
+
+<span class="nf">bar</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="kt">U8</span><span class="p">)</span> <span class="p">(</span><span class="n">b</span><span class="o">:</span> <span class="kt">U32</span><span class="p">)</span> <span class="ow">=</span> <span class="o">...</span>
+</code></pre></div><p>If you need to access a struct field, <code>struct.field</code> will retrieve a reference to the
+given field if <code>struct</code> is a reference, otherwise it will attempt to copy or move the
+field out of the struct. Also note that if a value was expected but a reference was
+provided, there is a coercion such that the reference will be automatically copied,
+providing its element type implements <code>Copy</code>. This means <code>foo</code> above could be rewritten to:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo</span> <span class="p">(</span><span class="n">person</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Person</span><span class="p">)</span> <span class="p">(</span><span class="n">id</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">U32</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="n">bar</span> <span class="n">person</span><span class="o">.</span><span class="n">age</span> <span class="n">id</span>
+</code></pre></div><blockquote>
+<p>Note that there is no requirement for <code>Copy</code> types to be memcpy-able. Instead it is
+used for types which are &ldquo;cheap&rdquo; to copy - usually meaning they don&rsquo;t need to allocate
+any memory on the heap. A result of this is that <code>Rc t</code> implements <code>Copy</code>.</p>
+</blockquote>
 <h2 id="pipeline-operators">Pipeline Operators</h2>
 <p>The pipeline operators <code>|&gt;</code> and <code>&lt;|</code> are sugar for function application and
 serve to pipe the results from one function to the input of another.</p>
@@ -2673,7 +2724,7 @@ Lets compare the task of converting a tuple to a string with doing the same for 
 With tuples we must <a href="https://hackage.haskell.org/package/base-4.14.1.0/docs/src/GHC.Show.html#line-268">create a different impl for every possible tuple size</a>.
 with pairs on the other hand the simple implementation works for all sizes:</li>
 </ol>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">cast_pair_string</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Cast</span> <span class="p">(</span><span class="kt">Pair</span> <span class="n">a</span> <span class="n">b</span><span class="p">)</span> <span class="kt">String</span> <span class="k">via</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">cast_pair_string</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Cast</span> <span class="p">(</span><span class="kt">Pair</span> <span class="n">a</span> <span class="n">b</span><span class="p">)</span> <span class="kt">String</span> <span class="n">via</span>
     <span class="n">cast</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="ow">=</span> <span class="s">&#34;$a, $b&#34;</span>
 </code></pre></div><ol start="3">
 <li>
@@ -2728,12 +2779,12 @@ of parenthesis but in ante since tuples are just nested pairs you can just add a
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">pairs</span> <span class="ow">=</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)]</span>
 
 <span class="c1">// Other languages require deconstructing with nested parenthesis:</span>
-<span class="nf">for</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">pairs</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">one</span><span class="p">,</span> <span class="n">two</span><span class="p">))</span> <span class="ow">-&gt;</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">pairs</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">one</span><span class="p">,</span> <span class="n">two</span><span class="p">))</span> <span class="ow">-&gt;</span>
     <span class="n">print</span> <span class="s">&#34;Iteration $i: sum = ${one + two}&#34;</span>
 
 <span class="c1">// But since `,` is just a normal operator,</span>
 <span class="c1">// the following version is equally valid</span>
-<span class="nf">for</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">pairs</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">one</span><span class="p">,</span> <span class="n">two</span><span class="p">)</span> <span class="ow">-&gt;</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">pairs</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">one</span><span class="p">,</span> <span class="n">two</span><span class="p">)</span> <span class="ow">-&gt;</span>
     <span class="n">print</span> <span class="s">&#34;Iteration $i: sum = ${one + two}&#34;</span>
 </code></pre></div><p>Finally, its necessary to mention that the earlier <code>Cast</code> example printed nested
 pairs as <code>1, 2, 3</code> where as the <code>Show</code> instances in haskell printed tuples as <code>(1, 2, 3)</code>.
@@ -2815,9 +2866,9 @@ or else branch can either be single expressions or an indented block expression.
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// The type of for is:</span>
 <span class="c1">// for: fn a (elem -&gt; Unit) {Iterator a elem} -&gt; Unit</span>
 
-<span class="nf">for</span> <span class="p">(</span><span class="mi">0</span><span class="o">..</span><span class="mi">10</span><span class="p">)</span> <span class="n">print</span>   <span class="c1">// prints 0-9 inclusive</span>
+<span class="k">for</span> <span class="p">(</span><span class="mi">0</span><span class="o">..</span><span class="mi">10</span><span class="p">)</span> <span class="n">print</span>   <span class="c1">// prints 0-9 inclusive</span>
 
-<span class="nf">for</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">array</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">elem</span><span class="p">)</span> <span class="ow">-&gt;</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">array</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">elem</span><span class="p">)</span> <span class="ow">-&gt;</span>
     <span class="c1">// do something more complex...</span>
     <span class="n">print</span> <span class="n">result</span>
 </code></pre></div><p>You may notice that there is no way to break or continue out of the <code>for</code> function. Moreover if you need a more complex loop that a while loop may traditionally provide in other languages, there likely isn’t an already existing iterate function that would suit your need. Other functional languages usually use helper functions with recursion to address this problem:</p>
@@ -3367,15 +3418,15 @@ be any other reference of any kind to the same value while we hold the exclusive
 <span class="nf">ref2</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">String</span> <span class="ow">=</span> <span class="k">mut</span> <span class="n">message</span>
 
 <span class="c1">// It is safe to modify the string through shared, mutable references</span>
-<span class="o">@</span><span class="n">ref1</span> <span class="o">:=</span> <span class="s">&#34;${message}, WorZd!&#34;</span>  <span class="c1">// &#34;Hello, WorZd!&#34;</span>
+<span class="nf">ref1</span><span class="o">.*</span> <span class="o">:=</span> <span class="s">&#34;${message}, WorZd!&#34;</span>  <span class="c1">// &#34;Hello, WorZd!&#34;</span>
 <span class="nf">ref2</span><span class="o">.</span><span class="n">replace</span> <span class="s">&#34;Z&#34;</span> <span class="s">&#34;l&#34;</span>
 <span class="nf">print</span> <span class="n">ref2</span>                     <span class="c1">// &#34;Hello, World!&#34;</span>
 </code></pre></div><p>The <code>imm</code> and <code>uniq</code> reference kinds are used prevent operations that would be unsafe
-on references which may be mutably shared. A common theme of these operations is that they hand
-out references inside of a type with an unstable shape. For example, handing out
-a reference to a <code>Vec</code> element would be unsafe in a shared context since the <code>Vec</code>&rsquo;s contents
-may be reallocated by another reference. To prevent this, <code>Vec.get</code> requires
-an immutable reference:</p>
+on references which may be mutably shared. A common indication of when an operation may
+be unsafe if it is mutably shared is if they hand out references inside of a type with
+an unstable shape. For example, handing out a reference to a <code>Vec</code> element would be unsafe
+in a shared context since the <code>Vec</code>&rsquo;s contents may be reallocated by another reference.
+To prevent this, <code>Vec.get</code> requires an immutable reference:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Raises Fail if the index is out of bounds</span>
 <span class="nf">get</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">imm</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="k">imm</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span>
 </code></pre></div><p>Other Vec functions like <code>push</code> or <code>pop</code> would still be safe to call on shared <code>mut</code>
@@ -3416,36 +3467,38 @@ enabling <code>ref</code> and <code>mut</code> to be used in more function param
 who are now free to pass owned (<code>imm</code>, <code>uniq</code>) or mutably shared (<code>ref</code>, <code>mut</code>) data.</p>
 </blockquote>
 <p>A reference promotion occurs when a <code>imm</code> or <code>uniq</code> reference is required but only a <code>ref</code> or <code>mut</code> reference
-is provided. When promoting a reference, instead of getting a <code>imm t</code> or <code>uniq t</code>, an <code>unstable imm t</code>
-or <code>unstable uniq t</code> is received instead. Compared to the non-unstable versions, unstable references
+is provided. When promoting a reference, instead of getting a <code>imm t</code> or <code>uniq t</code>, a <code>local imm t</code>
+or <code>local uniq t</code> is received instead. Compared to the non-local versions, local references only
 require us to show to the compiler that the reference is not <em>locally</em> mutably aliased. In other words,
-a <code>unstable uniq t</code> doesn&rsquo;t need to be unique globally, it only needs to be unique while it is still being used.</p>
-<p>Note that in the case of cyclic types, a variable is counted as a possible alias to itself and thus cannot be
-promoted.</p>
+a <code>local uniq t</code> doesn&rsquo;t need to be unique globally, it only needs to be unique while it is still being used.
+This allows for aliases to exist further up the call stack as long as they aren&rsquo;t accessed while the local
+reference is alive.</p>
+<p>Note that in the case of cyclic types, a variable is counted as a possible alias to itself and thus cannot
+be promoted.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">shared_to_owned</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span>
     <span class="n">requires_owned</span> <span class="n">x</span> <span class="mi">0</span>  <span class="c1">// ok! `x` is not used with any possible mutable aliases</span>
 
 <span class="nf">requires_owned</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="k">imm</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">z</span><span class="o">:</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span> <span class="o">...</span>
 
 <span class="nf">promote_invalid</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">mut</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">uniq</span> <span class="n">t</span> <span class="ow">=</span>
-    <span class="c1">// Converting to `uniq t` is okay - but we can&#39;t return these without keeping the `unstable` part</span>
+    <span class="c1">// Converting to `uniq t` is okay - but we can&#39;t return these without keeping the `local` part</span>
     <span class="c1">// error! Cannot return a uniq reference promoted from a mut reference - it may be aliased by the caller</span>
     <span class="n">x</span>
 
-<span class="nf">promote_valid</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">mut</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="n">unstable</span> <span class="k">uniq</span> <span class="n">t</span> <span class="ow">=</span>
-    <span class="c1">// ok! Using this in the calling scope will come with the restrictions `unstable` provides</span>
+<span class="nf">promote_valid</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">mut</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">local</span> <span class="k">uniq</span> <span class="n">t</span> <span class="ow">=</span>
+    <span class="c1">// ok! Using this in the calling scope will come with the restrictions `local` provides</span>
     <span class="n">x</span>
 </code></pre></div><p>The way the compiler proves a variable is not mutably aliased locally is by requiring a <code>Distinct a b</code> trait constraint
-whenever a mutable variable of type <code>b</code> is used while an <code>unstable</code> reference to a type <code>a</code> is still alive. This trait is automatically
+whenever a mutable variable of type <code>b</code> is used while a <code>local</code> reference to a type <code>a</code> is still alive. This trait is automatically
 implemented by the compiler when the type <code>a</code> is not contained within the type <code>b</code>. For example, in
 the following code, we&rsquo;d expect a constraint for <code>Distinct String I32</code> to be issued (and solved):</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">convert_string_ref</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">String</span><span class="p">)</span> <span class="p">(</span><span class="n">i</span><span class="o">:</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
     <span class="n">promotion</span><span class="o">:</span> <span class="k">uniq</span> <span class="kt">String</span> <span class="ow">=</span> <span class="n">s</span>
-    <span class="n">print</span> <span class="n">i</span>  <span class="c1">// i is used while `promotion` is still used</span>
+    <span class="n">print</span> <span class="n">i</span>  <span class="c1">// i is used while `promotion` is still used, `Distinct String I32` is searched for &amp; satisfied</span>
     <span class="n">print</span> <span class="n">promotion</span>
 </code></pre></div><p>This constraint is important for preventing use of values which may have been dropped:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">invalid_shared_to_owned</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span>
-    <span class="c1">// `get` requires an `imm` reference so this must promote to `unstable imm Vec t`</span>
+    <span class="c1">// `get` requires an `imm` reference so this must promote to `local imm Vec t`</span>
     <span class="n">element_ref</span> <span class="ow">=</span> <span class="n">v</span><span class="o">.</span><span class="n">get</span> <span class="mi">0</span> <span class="o">|&gt;</span> <span class="n">unwrap</span>
     <span class="n">print</span> <span class="n">element_ref</span>  <span class="c1">// ok</span>
 
@@ -3669,14 +3722,35 @@ requires <code>Stringify t</code> we can pass in a <code>Bool</code> and the
 compiler will automatically find the <code>stringify_bool</code> impl
 in scope and use that:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">print_to_string</span> <span class="kc">true</span>  <span class="c1">//=&gt; outputs true</span>
-</code></pre></div><h2 id="named-impls">Named Impls</h2>
+</code></pre></div><h3 id="inferred-implicit-parameters">Inferred Implicit Parameters</h3>
+<p>When inferring a function&rsquo;s type, if that function requires an
+implicit that references a parameter type, the implicit will be inferred
+to be a parameter of the function itself. That is, the following definitions
+of <code>print_double</code> are mostly the same:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// This:</span>
+<span class="nf">print_double</span> <span class="n">x</span> <span class="ow">=</span> <span class="n">print</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="c1">// Is inferred as:</span>
+<span class="nf">print_double</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="kt">Print</span> <span class="n">t</span><span class="p">}</span> <span class="p">{</span><span class="kt">Add</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span>
+    <span class="n">print</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span><span class="p">)</span>
+</code></pre></div><p>There is one small difference between the two: implicits inferred to be parameters
+cannot be explicitly specified by users at call sites:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">print_double</span> <span class="n">x</span> <span class="ow">=</span> <span class="n">print</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span>
+    <span class="c1">// error! `print_double` was not declared with any implicit arguments</span>
+    <span class="n">print_double</span> <span class="mi">2</span> <span class="p">{</span><span class="n">print_i32</span><span class="p">}</span> <span class="p">{</span><span class="n">add_i32</span><span class="p">}</span>
+</code></pre></div><p>If we want to allow users to do so, we must explicitly specify the signature of <code>print_double</code>.</p>
+<h2 id="named-impls">Named Impls</h2>
 <p>In contrast to other languages with traits or typeclasses, all impls
-are named in ante. This enables impls to be imported or hidden from
+are named in ante. This enables impls to be imported or excluded from
 scope in the same manner as any other construct: by name.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Foo</span><span class="o">.</span><span class="kt">Impls</span><span class="o">.*</span> <span class="k">hiding</span> <span class="n">eq_foo</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="k">implicit</span> <span class="kt">Foo</span><span class="o">.</span><span class="kt">Impls</span><span class="o">.</span><span class="n">eq_foo</span>
 </code></pre></div><p>When an impl is ambiguous, you can just specify the <a href="#implicits">implicit parameter</a>
 explicitly:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">conflicting_impl</span><span class="o">:</span> <span class="kt">Stringify</span> <span class="n">a</span> <span class="k">with</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="k">implicit</span> <span class="kt">Foo</span><span class="o">.</span><span class="kt">Bar</span><span class="o">.</span><span class="n">stringify_bool</span>
+
+<span class="k">impl</span> <span class="n">conflicting_impl</span><span class="o">:</span> <span class="kt">Stringify</span> <span class="n">a</span> <span class="k">with</span>
     <span class="n">stringify</span> <span class="n">_</span> <span class="ow">=</span> <span class="s">&#34;&#34;</span>
 
 <span class="nf">print_to_string</span> <span class="kc">true</span> <span class="p">{</span><span class="n">stringify_bool</span><span class="p">}</span>
@@ -3776,10 +3850,9 @@ in the <code>baz</code> folder. The two <code>nested.an</code> files are also in
 separate parent modules so there is no name conflict.</p>
 <h2 id="imports">Imports</h2>
 <p>Importing symbols within a module into scope can be
-done with an <code>import</code> expression. Lets say
-we were using the module hierarchy given in the
-<a href="#modules">section above</a>. In our <code>Baz.Nested</code> file we
-have:</p>
+done with an <code>import</code> expression. Using the module hierarchy
+from the <a href="#modules">section above</a>, in our <code>Baz.Nested</code> file we
+may have:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">nested_baz</span> <span class="ow">=</span> <span class="mi">0</span>
 
 <span class="nf">print_baz</span> <span class="p">()</span> <span class="ow">=</span>
@@ -3787,11 +3860,13 @@ have:</p>
 
 <span class="nf">get_baz</span> <span class="p">()</span> <span class="ow">=</span> <span class="s">&#34;baz&#34;</span>
 </code></pre></div><p>To use these definitions from <code>Foo</code> we can import them:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Baz</span><span class="o">.</span><span class="kt">Nested</span><span class="o">.*</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Baz</span><span class="o">.</span><span class="kt">Nested</span><span class="o">.</span><span class="n">nested_baz</span><span class="p">,</span> <span class="n">get_baz</span>
 
 <span class="nf">baz</span> <span class="ow">=</span> <span class="n">get_baz</span> <span class="p">()</span>
 <span class="nf">print</span> <span class="s">&#34;baz: $baz, nested_baz = $nested_baz&#34;</span>
-</code></pre></div><p>We can also import only some symbols into scope:</p>
+</code></pre></div><p>Note that Ante does not support wildcard imports. This is an intentional decision to speed up the
+name resolution step in the compiler by enabling it to be done without collecting all names
+in the current project &amp; dependencies first.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// This syntax was chosen so that when adding new imports</span>
 <span class="c1">// you only need to edit the end of the line rather than</span>
 <span class="c1">// needing to add a &#39;{&#39; or similar token before print_baz as well.</span>
@@ -3799,34 +3874,19 @@ have:</p>
 
 <span class="nf">print</span> <span class="p">(</span><span class="n">get_baz</span> <span class="p">())</span>
 <span class="nf">print_baz</span> <span class="p">()</span>
-</code></pre></div><p>Now, lets say we are in module Bar and want to import <code>Baz.Nested</code>
-but we already have a function named <code>get_baz</code> in scope. We cannot
-do <code>import Baz.Nested.*</code> since there would be conflicting names in scope.
-We could import only the functions we need but if we require many functions
-from <code>Baz.Nested</code> then this may take some time. For this reason, when using
-wildcard imports, you can also specify definitions to exclude, via the <code>hiding</code> clause:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Baz</span><span class="o">.</span><span class="kt">Nested</span><span class="o">.*</span> <span class="k">hiding</span> <span class="n">get_baz</span>
-
-<span class="c1">// No error here</span>
-<span class="nf">get_baz</span> <span class="p">()</span> <span class="ow">=</span> <span class="n">my_local_baz</span>
-</code></pre></div><p>Alternatively, you can also rename imports via <code>as</code>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Baz</span><span class="o">.</span><span class="kt">Nested</span><span class="o">.*</span> <span class="k">hiding</span> <span class="n">get_baz</span>
-
-<span class="c1">// If we want to import everything from Baz.Nested while renaming</span>
-<span class="c1">// some of the items we need to list them separately since `as`</span>
-<span class="c1">// doesn&#39;t work with * imports:</span>
-<span class="k">import</span> <span class="kt">Baz</span><span class="o">.</span><span class="kt">Nested</span><span class="o">.</span><span class="n">get_baz</span> <span class="k">as</span> <span class="n">other_get_baz</span>
+</code></pre></div><p>You may also rename imports via <code>as</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Baz</span><span class="o">.</span><span class="kt">Nested</span><span class="o">.</span><span class="n">get_baz</span> <span class="k">as</span> <span class="n">other_get_baz</span>
 
 <span class="k">import</span> <span class="kt">Foo</span><span class="o">.</span><span class="n">a</span> <span class="k">as</span> <span class="n">foo_a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span> <span class="k">as</span> <span class="n">foo_d</span>
 
 <span class="c1">// No error here</span>
-<span class="nf">get_baz</span> <span class="p">()</span> <span class="ow">=</span> <span class="n">my_local_baz</span>
+<span class="nf">get_baz</span> <span class="p">()</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><h2 id="implicit-imports">Implicit Imports</h2>
 <p>To import a value into scope and enable any definitions searching for a <code>implicit</code> of the
 same type to use it, the value must be imported via <code>import implicit</code>. This is most often
 used for trait implementations:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Lib</span><span class="o">.</span><span class="kt">MyType</span>
-<span class="k">import</span> <span class="k">implicit</span> <span class="kt">Lib</span><span class="o">.</span><span class="kt">MyType</span><span class="o">.</span><span class="kt">Impls</span><span class="o">.*</span>
+<span class="k">import</span> <span class="k">implicit</span> <span class="kt">Lib</span><span class="o">.</span><span class="kt">MyType</span><span class="o">.</span><span class="n">eq_mytype</span>
 
 <span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span>
     <span class="n">x</span> <span class="ow">=</span> <span class="kt">MyType</span><span class="o">.</span><span class="n">new</span> <span class="p">()</span>
@@ -4016,7 +4076,7 @@ on its right. Here is the definition of <code>~&gt;</code> in pseudocode:</p>
 </code></pre></div><p>There are also times when we want to use a handler to handle an entire block. For this,
 we can use the <code>using</code> keyword:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// try: (Unit -&gt; a can Fail) -&gt; Maybe a</span>
-<span class="k">using</span> <span class="n">try</span>
+<span class="nf">using</span> <span class="n">try</span>
 
 <span class="nf">foo</span> <span class="ow">=</span> <span class="n">failable_operation</span> <span class="p">()</span>
 <span class="nf">bar</span> <span class="ow">=</span> <span class="n">failable_operation</span> <span class="p">()</span>
@@ -4060,7 +4120,7 @@ function&rsquo;s effects were not explicitly specified. So we can rewrite <code>
 </code></pre></div><p>And it would be equivalent. Note that this effect-polymorphism by default isn&rsquo;t always desired.
 In these cases, the function parameter&rsquo;s effects can be explicitly specified. This
 may be the case when spawning threads for example:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">spawn_thread</span> <span class="p">(</span><span class="n">thread</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=&gt;</span> <span class="kt">Unit</span> <span class="k">pure</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">IO</span><span class="p">,</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">spawn_thread</span> <span class="p">(</span><span class="n">thread</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=&gt;</span> <span class="kt">Unit</span> <span class="n">pure</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">IO</span><span class="p">,</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><p>The above function&rsquo;s signature states that <code>spawn_thread</code> may <code>Fail</code> and perform some IO (presumably
 in the form of spawning an OS thread), while <code>thread</code> may not perform any effects itself.</p>
 <p>Another case is when a function parameter has effects that the outer function does not. Consider:</p>
@@ -4261,17 +4321,17 @@ or <code>Continue</code> lets us program in a very imperative style,
 while remaining purely functional behind the scenes.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-an" data-lang="an"><span class="k">effect</span> <span class="kt">Loop</span> <span class="k">with</span>
     <span class="n">break</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span>
-    <span class="n">continue</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span>
+    <span class="k">continue</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span>
 
-<span class="nf">for</span> <span class="p">(</span><span class="n">iter</span><span class="o">:</span> <span class="n">i</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">e</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Loop</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Iterate</span> <span class="n">i</span> <span class="n">e</span> <span class="ow">=</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">iter</span><span class="o">:</span> <span class="n">i</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">e</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Loop</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Iterate</span> <span class="n">i</span> <span class="n">e</span> <span class="ow">=</span>
     <span class="k">match</span> <span class="n">next</span> <span class="n">iter</span>
     <span class="o">|</span> <span class="kt">None</span> <span class="ow">-&gt;</span> <span class="p">()</span>
     <span class="o">|</span> <span class="kt">Some</span> <span class="p">(</span><span class="n">rest</span><span class="p">,</span> <span class="n">elem</span><span class="p">)</span> <span class="ow">-&gt;</span>
         <span class="k">handle</span> <span class="n">f</span> <span class="n">elem</span>
         <span class="o">|</span> <span class="n">break</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="p">()</span>
-        <span class="o">|</span> <span class="n">continue</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="n">for</span> <span class="n">rest</span> <span class="n">f</span>
+        <span class="o">|</span> <span class="k">continue</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="k">for</span> <span class="n">rest</span> <span class="n">f</span>
         <span class="c1">// If the body returns normally, we also want to continue the loop</span>
-        <span class="o">|</span> <span class="k">return</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="n">for</span> <span class="n">rest</span> <span class="n">f</span>
+        <span class="o">|</span> <span class="k">return</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="k">for</span> <span class="n">rest</span> <span class="n">f</span>
 
 <span class="nf">while</span> <span class="p">(</span><span class="n">cond</span><span class="o">:</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span><span class="p">)</span> <span class="p">(</span><span class="n">body</span><span class="o">:</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">State</span> <span class="n">a</span> <span class="ow">=</span>
     <span class="k">if</span> <span class="n">cond</span> <span class="p">(</span><span class="n">get</span> <span class="p">())</span> <span class="k">then</span>
@@ -4283,7 +4343,7 @@ while remaining purely functional behind the scenes.</p>
 
 <span class="c1">// Loop until we eventually find a prime number through sheer luck</span>
 <span class="nf">loop_examples</span> <span class="p">(</span><span class="n">vec</span><span class="o">:</span> <span class="kt">Vec</span> <span class="kt">I32</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Print</span><span class="p">,</span> <span class="kt">State</span> <span class="kt">I32</span> <span class="ow">=</span>
-    <span class="n">for</span> <span class="n">vec</span> <span class="k">fn</span> <span class="n">elem</span> <span class="ow">-&gt;</span>
+    <span class="k">for</span> <span class="n">vec</span> <span class="k">fn</span> <span class="n">elem</span> <span class="ow">-&gt;</span>
         <span class="n">largest</span> <span class="ow">=</span> <span class="n">get</span> <span class="p">()</span>
         <span class="k">if</span> <span class="n">largest</span> <span class="o">&gt;</span> <span class="mi">100</span> <span class="k">then</span>
             <span class="n">print</span> <span class="s">&#34;oops, too big!&#34;</span>

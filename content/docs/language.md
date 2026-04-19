@@ -93,23 +93,26 @@ Character escapes can also be used to represent characters not on a traditional 
 
 ## Strings
 
-Strings in ante are utf-8 by default and are represented via a pointer and
-length pair. For efficient sub-string operations, strings are not null-terminated.
-If desired, C-style null-terminated strings can be obtained by calling the `c_string` function.
+Ante supports several different string types for different use cases but the most common `String`
+type which string literals are given by default is represented as a reference-counted pointer
+to a growable UTF-8 string with copy-on-write semantics. `String` is not null terminated.
+String literals in code are stored in read only memory and do not require heap allocation.
+Attempting to mutate these values however, will be treated as if they are always aliased and
+will invoke copy-on-write semantics which will copy to the heap before making the mutation.
+
+This is meant to be relatively efficient for the general case, although users with more specific
+optimization or representation requirements may wish to use alternative string types. Examples
+of alternate types include the null-terminated `C.String` and the OS-dependent `OsString`.
 
 ```ante
-print "Hello, World!"
+var my_str = "Hello!"
 
-// The String type is equivalent to the following struct:
-type String =
-    c_string: Ptr Char
-    length: Usz
+hello = my_str  // String implements `Copy` with a relatively cheap rc-increment
 
-// C-interop often requires using the `c_string` function:
-c_string (s: String) : C.String = ...
-
-extern puts : C.String -> I32
-puts (c_string "Hello, C!")
+// Modifying `my_str` will not modify `hello`
+my_str.replace "H" "Y"
+print my_str  //=> Yello!
+print hello   //=> Hello!
 ```
 
 ## String Interpolation
@@ -163,18 +166,25 @@ Here's another example showing a function that can mutate the passed in paramete
 temporary mutable reference (`mut`):
 
 ```ante
-count_evens array counter =
-    for array fn elem ->
+// We can do this with mutable state:
+count_evens (array: Array n t) (counter: mut I32) =
+    for elem in array do
         if even elem then
             counter += 1
 
 var counter = 0
 count_evens [4, 5, 6] (mut counter)
+count_evens [0, 2, 4] (mut counter)
+print counter  //=> 5
 
-print counter  //=> 2
+// Although in practice it is good to prefer immutability:
+count_evens2 (array: Array n t): I32 =
+    array.filter even |> count
+
+print (count_evens2 [4, 5, 6] + count_evens2 [0, 2, 4])
 ```
 
-In general, `mut <expr>` lets you take a temporary mutable reference to the given expression
+`mut <expr>` lets you take a temporary mutable reference to the given expression
 on the right-hand side. In the case of variables and struct fields, this reference will refer
 to the existing value, and will require the original variable to be mutable. In the case of
 other values, such as those returned from a function, a temporary mutable reference is still
@@ -185,7 +195,6 @@ var my_pair = 1, 2
 my_pair.first := 3
 
 // Without the `mut` this would copy the `second` field into a new variable
-// creating a temporary reference to it
 field_ref = mut my_pair.second
 field_ref := 4
 
@@ -193,7 +202,7 @@ print my_pair  //=> 3, 4
 
 // The following two lines give an error because we never declared `bad` to be mutable
 bad = 1, 2
-bad.first := 3
+bad.first := 3  // error! `bad` is not mutable
 ```
 
 # Functions
@@ -483,21 +492,40 @@ print (ref my_array.[0])
 mutate (mut my_array.[1])
 ```
 
-## Dereference Operator
+## Dereference Operator, Copy, and Clone
 
-Dereferencing references in ante can be done with the `@` operator.
-`@` is used over the more common `*` since it is unambiguous what it refers to,
-plays nicely with ML-style function call syntax, and gives the helpful mnemonic
-"get the value _at_ the reference".
+Dereferencing reference in Ante requires the element type of the reference to implement
+either `Copy` or `Clone`. Both traits have the same semantics in that they both perform
+copies (although certain values like `Rc t` may be shared), but types implementing `Copy`
+are generally expected to be cheaper to copy than types only implementing `Clone`.
 
-Note that dereferencing a value via `@` requires the value implement `Copy`.
-Types which are expensive to copy implement `Clone` instead. Note that there
-is no requirement for `Copy` types to be memcpy-able. Instead it is used for
-types which are "cheap" to copy - usually meaning they don't need to allocate
-any heap memory. A result of this is that `Rc t` is `Copy`.
+These traits can be called via the `copy` or `clone` functions, but there is also the
+postfix `.*` operator available as an alias to `copy`. This operator has a higher precedence
+than function calls and can be more convenient in some cases.
 
-If you need to access a struct field, `struct.field` will automatically dereference
-`struct` as many times as needed to access its field.
+```ante
+type Person = age: U8, name: String
+
+foo (person: ref Person) (id: ref U32) =
+    bar person.age.* id.*
+
+bar (a: U8) (b: U32) = ...
+```
+
+If you need to access a struct field, `struct.field` will retrieve a reference to the
+given field if `struct` is a reference, otherwise it will attempt to copy or move the
+field out of the struct. Also note that if a value was expected but a reference was
+provided, there is a coercion such that the reference will be automatically copied,
+providing its element type implements `Copy`. This means `foo` above could be rewritten to:
+
+```ante
+foo (person: ref Person) (id: ref U32) =
+    bar person.age id
+```
+
+> Note that there is no requirement for `Copy` types to be memcpy-able. Instead it is
+> used for types which are "cheap" to copy - usually meaning they don't need to allocate
+> any memory on the heap. A result of this is that `Rc t` implements `Copy`.
 
 ## Pipeline Operators
 
@@ -1491,17 +1519,17 @@ ref1: mut String = mut message
 ref2: mut String = mut message
 
 // It is safe to modify the string through shared, mutable references
-@ref1 := "${message}, WorZd!"  // "Hello, WorZd!"
+ref1.* := "${message}, WorZd!"  // "Hello, WorZd!"
 ref2.replace "Z" "l"
 print ref2                     // "Hello, World!"
 ```
 
 The `imm` and `uniq` reference kinds are used prevent operations that would be unsafe
-on references which may be mutably shared. A common theme of these operations is that they hand
-out references inside of a type with an unstable shape. For example, handing out
-a reference to a `Vec` element would be unsafe in a shared context since the `Vec`'s contents
-may be reallocated by another reference. To prevent this, `Vec.get` requires
-an immutable reference:
+on references which may be mutably shared. A common indication of when an operation may
+be unsafe if it is mutably shared is if they hand out references inside of a type with
+an unstable shape. For example, handing out a reference to a `Vec` element would be unsafe
+in a shared context since the `Vec`'s contents may be reallocated by another reference.
+To prevent this, `Vec.get` requires an immutable reference:
 
 ```ante
 // Raises Fail if the index is out of bounds
@@ -1557,13 +1585,15 @@ is more powerful than the original.
 > who are now free to pass owned (`imm`, `uniq`) or mutably shared (`ref`, `mut`) data.
 
 A reference promotion occurs when a `imm` or `uniq` reference is required but only a `ref` or `mut` reference
-is provided. When promoting a reference, instead of getting a `imm t` or `uniq t`, an `unstable imm t`
-or `unstable uniq t` is received instead. Compared to the non-unstable versions, unstable references
+is provided. When promoting a reference, instead of getting a `imm t` or `uniq t`, a `local imm t`
+or `local uniq t` is received instead. Compared to the non-local versions, local references only
 require us to show to the compiler that the reference is not _locally_ mutably aliased. In other words,
-a `unstable uniq t` doesn't need to be unique globally, it only needs to be unique while it is still being used.
+a `local uniq t` doesn't need to be unique globally, it only needs to be unique while it is still being used.
+This allows for aliases to exist further up the call stack as long as they aren't accessed while the local
+reference is alive.
 
-Note that in the case of cyclic types, a variable is counted as a possible alias to itself and thus cannot be
-promoted.
+Note that in the case of cyclic types, a variable is counted as a possible alias to itself and thus cannot
+be promoted.
 
 
 ```ante
@@ -1573,24 +1603,24 @@ shared_to_owned (x: ref t) =
 requires_owned (y: imm t) (z: I32) = ...
 
 promote_invalid (x: mut t): uniq t =
-    // Converting to `uniq t` is okay - but we can't return these without keeping the `unstable` part
+    // Converting to `uniq t` is okay - but we can't return these without keeping the `local` part
     // error! Cannot return a uniq reference promoted from a mut reference - it may be aliased by the caller
     x
 
-promote_valid (x: mut t): unstable uniq t =
-    // ok! Using this in the calling scope will come with the restrictions `unstable` provides
+promote_valid (x: mut t): local uniq t =
+    // ok! Using this in the calling scope will come with the restrictions `local` provides
     x
 ```
 
 The way the compiler proves a variable is not mutably aliased locally is by requiring a `Distinct a b` trait constraint
-whenever a mutable variable of type `b` is used while an `unstable` reference to a type `a` is still alive. This trait is automatically
+whenever a mutable variable of type `b` is used while a `local` reference to a type `a` is still alive. This trait is automatically
 implemented by the compiler when the type `a` is not contained within the type `b`. For example, in
 the following code, we'd expect a constraint for `Distinct String I32` to be issued (and solved):
 
 ```ante
 convert_string_ref (s: mut String) (i: I32) =
     promotion: uniq String = s
-    print i  // i is used while `promotion` is still used
+    print i  // i is used while `promotion` is still used, `Distinct String I32` is searched for & satisfied
     print promotion
 ```
 
@@ -1598,7 +1628,7 @@ This constraint is important for preventing use of values which may have been dr
 
 ```ante
 invalid_shared_to_owned (x: mut Vec t) (y: mut Vec t) =
-    // `get` requires an `imm` reference so this must promote to `unstable imm Vec t`
+    // `get` requires an `imm` reference so this must promote to `local imm Vec t`
     element_ref = v.get 0 |> unwrap
     print element_ref  // ok
 
@@ -1914,20 +1944,51 @@ in scope and use that:
 print_to_string true  //=> outputs true
 ```
 
+### Inferred Implicit Parameters
+
+When inferring a function's type, if that function requires an
+implicit that references a parameter type, the implicit will be inferred
+to be a parameter of the function itself. That is, the following definitions
+of `print_double` are mostly the same:
+
+```ante
+// This:
+print_double x = print (x + x)
+
+// Is inferred as:
+print_double (x: t) {Print t} {Add t}: Unit =
+    print (x + x)
+```
+
+There is one small difference between the two: implicits inferred to be parameters
+cannot be explicitly specified by users at call sites:
+
+```ante
+print_double x = print (x + x)
+
+main () =
+    // error! `print_double` was not declared with any implicit arguments
+    print_double 2 {print_i32} {add_i32}
+```
+
+If we want to allow users to do so, we must explicitly specify the signature of `print_double`.
+
 ## Named Impls
 
 In contrast to other languages with traits or typeclasses, all impls
-are named in ante. This enables impls to be imported or hidden from
+are named in ante. This enables impls to be imported or excluded from
 scope in the same manner as any other construct: by name.
 
 ```ante
-import Foo.Impls.* hiding eq_foo
+import implicit Foo.Impls.eq_foo
 ```
 
 When an impl is ambiguous, you can just specify the [implicit parameter](#implicits)
 explicitly:
 
 ```ante
+import implicit Foo.Bar.stringify_bool
+
 impl conflicting_impl: Stringify a with
     stringify _ = ""
 
@@ -2068,10 +2129,9 @@ separate parent modules so there is no name conflict.
 ## Imports
 
 Importing symbols within a module into scope can be
-done with an `import` expression. Lets say
-we were using the module hierarchy given in the
-[section above](#modules). In our `Baz.Nested` file we
-have:
+done with an `import` expression. Using the module hierarchy
+from the [section above](#modules), in our `Baz.Nested` file we
+may have:
 
 ```ante
 nested_baz = 0
@@ -2085,13 +2145,15 @@ get_baz () = "baz"
 To use these definitions from `Foo` we can import them:
 
 ```ante
-import Baz.Nested.*
+import Baz.Nested.nested_baz, get_baz
 
 baz = get_baz ()
 print "baz: $baz, nested_baz = $nested_baz"
 ```
 
-We can also import only some symbols into scope:
+Note that Ante does not support wildcard imports. This is an intentional decision to speed up the
+name resolution step in the compiler by enabling it to be done without collecting all names
+in the current project & dependencies first.
 
 ```ante
 // This syntax was chosen so that when adding new imports
@@ -2103,34 +2165,15 @@ print (get_baz ())
 print_baz ()
 ```
 
-Now, lets say we are in module Bar and want to import `Baz.Nested`
-but we already have a function named `get_baz` in scope. We cannot
-do `import Baz.Nested.*` since there would be conflicting names in scope.
-We could import only the functions we need but if we require many functions
-from `Baz.Nested` then this may take some time. For this reason, when using
-wildcard imports, you can also specify definitions to exclude, via the `hiding` clause:
+You may also rename imports via `as`:
 
 ```ante
-import Baz.Nested.* hiding get_baz
-
-// No error here
-get_baz () = my_local_baz
-```
-
-Alternatively, you can also rename imports via `as`:
-
-```ante
-import Baz.Nested.* hiding get_baz
-
-// If we want to import everything from Baz.Nested while renaming
-// some of the items we need to list them separately since `as`
-// doesn't work with * imports:
 import Baz.Nested.get_baz as other_get_baz
 
 import Foo.a as foo_a, b, c, d as foo_d
 
 // No error here
-get_baz () = my_local_baz
+get_baz () = ...
 ```
 
 ## Implicit Imports
@@ -2141,7 +2184,7 @@ used for trait implementations:
 
 ```ante
 import Lib.MyType
-import implicit Lib.MyType.Impls.*
+import implicit Lib.MyType.eq_mytype
 
 main () =
     x = MyType.new ()
