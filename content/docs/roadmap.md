@@ -100,7 +100,7 @@ All APIs are non-final.
 - [x] `C` module in stdlib for C interop
 - [x] `Vec`: mutable, growable vectors
 - [x] `HashMap`
-- [x] `VList`: persistent vector/list hybrid with O(1) push/pop.
+- [x] `PVec`: persistent vector with O(1) pop, get, and clone, and amortized O(1) push.
 - [~] `IO`: existing module is extremely bare bones.
 - [ ] Others: Help wanted! Designing which modules the stdlib should include
 
