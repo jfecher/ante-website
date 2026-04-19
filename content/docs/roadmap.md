@@ -4,16 +4,11 @@ date = "2022-06-25"
 categories = ["docs"]
 +++
 
-> Ante's compiler is currently undergoing a from-scratch rewrite! The roadmap here
-> still covers the master branch rather than the rewrite branch. The rewrite has already
-> accomplished its main goals of being fully incremental and concurrent while removing tech debt,
-> but compared to master is notably missing closure conversion, effect handlers, polymorphic
-> integer and float literals, and anonymous struct types, among other features.
+> Ante's compiler has recently finished a complete rewrite and is now incremental,
+> concurrent, and fault-tolerant - although general performance still has much room for improvement.
 
-This page is for an in-depth roadmap of ante to show what is currently implemented
-in the compiler. Note that the basic compiler passes from lexing, parsing, etc through
-(llvm) codegen have been implemented for quite some time so readers can assume the basic
-inner workings of the compiler are working.
+This page is for an in-depth roadmap of ante to show which features are currently implemented
+in the compiler.
 
 All designs in the [ideas](/docs/ideas) page are not implemented as their design is still non-final and may
 not be selected at all.
@@ -26,10 +21,14 @@ Key:
 ---
 # Literals
 
-All literals are implemented except for:
-
+- [x] Polymorphic integers (defaulting to `I32`)
+- [x] Polymorphic floats (defaulting to `F64`)
+- [x] Unit literal `()`
+- [x] Bool literals `true` and `false`
 - [~] `Char` - implemented but is 1 byte rather than 4. There is an open design question of
 whether ante should use rust's model for chars (4 bytes), Swift's model (variable bytes), or something else.
+These also use a temporary `c"_"` syntax currently.
+- [ ] Array literals
 
 ---
 
@@ -38,18 +37,21 @@ whether ante should use rust's model for chars (4 bytes), Swift's model (variabl
 - [x] Basic arithmetic, `+`, `-`, `*`, `/`, comparisons, etc.
 - [x] Pipeline operators `|>` and `<|`
 - [x] Assignment `:=`
+- [x] Compound assignment operators `+=`, `-=`, `*=`, `/=`, `%=`
 - [x] `.` Field access
-- [ ] `+=`, `-=`, `*=` and friends
+- [x] `.` Method calls
+- [x] `~>` Applying effect handlers
+- [ ] `using` Keyword for applying an effect handler to a block
 - [ ] `is` operator for pattern matching without `match`
-- [ ] `Bits` module - There are `bnot`, `band`, `bor`, and `bxor` functions in the prelude however.
 
 ---
 # Functions and Control Flow
 
-- [x] Functions + lambdas
-- [x] Explicit currying
+- [x] Free functions
+- [x] Closures
+- [x] Explicit currying via `_`
 - [x] if
-- [~] `match` and pattern matching
+- [x] `match` and pattern matching
   - [x] Variable/match-all patterns
   - [x] Constructor patterns
   - [x] Integer literal patterns
@@ -58,9 +60,9 @@ whether ante should use rust's model for chars (4 bytes), Swift's model (variabl
   - [ ] Pattern guards: `| pattern if expr -> ...`
   - [ ] `is` keyword for matching within expressions
 - [x] `loop` sugar
-- [x] `Iterator` trait in prelude
+- [ ] `for` loops
+- [ ] `while` loops
 - [x] `extern`
-- [ ] `C` module in stdlib to move extern C functions and types to, they are currently in the prelude.
 
 ---
 # Types
@@ -69,78 +71,86 @@ whether ante should use rust's model for chars (4 bytes), Swift's model (variabl
 - [x] Product and sum (struct and enum) type definitions
 - [ ] Type aliases
 - [x] Type annotations
-- [x] Traits
-  - [x] Restricted Functional Dependency clause (`->`). Equivalent to associated types.
-- [x] Polymorphic `Int` and `Float` types for polymorphic integer and float literals
-  - [x] Defaulting to `I32` and `F64`
-- [~] Row polymorphic struct types. Implemented internally, except for:
-  - [ ] Allow users to specify these in type annotations. They are currently only inferred.
-- [x] Trait impls
-  - [x] Given clause
-  - [x] Impl search
-  - [x] Static dispatch of traits
+- [x] Implicits
+  - [x] `implicit` local variables
+  - [x] `implicit` parameters
+  - [x] Querying implicit values required for a function call
+  - [x] Calling implicit functions in scope for their return value (required for traits)
+    - [ ] Check to ensure only `pure` implicit functions can be called
+- [x] Trait sugar to create a dictionary type of the required functions
+- [x] Trait impl sugar for implicit values which is an instantiation of the trait type
+- [ ] Row polymorphic struct types
 
 ---
 # Modules
 
 - [x] Basic module hierarchy
-- [x] Relative roots. This refers to the ability to refer to `Vec.push` defined in `stdlib/Vec.an`
-even though there is no `Vec` module strictly in the directory you're in.
-  - [ ] Adding arbitrary new relative roots to refer to imported libraries used within a project. This will
-likely need to wait until a package manager is ironed out.
-- [~] Import all visible symbols from a file. This uses the syntax `import Vec` instead of `import Vec.*` currently
-but is otherwise implemented.
-- [~] Importing only select symbols from a module. This uses `import Vec.foo bar` currently instead of `import Vec.foo, bar`
+- [x] `import` one or more symbols from a module
+- [x] `export` only a subset of symbols from a module
 - [ ] Renaming imports
-- [ ] Hiding imports
-- [ ] Exports
-  - All top-level values are publically exported currently
+- [ ] `import implicit` for introducing implicit values. Currently these use a normal `import` statement.
+
+---
+# Stdlib
+
+All APIs are non-final.
+
+- [x] `Prelude` module auto-imported into each file
+  - [ ] Opt out of importing prelude into a given file or project
+- [x] `C` module in stdlib for C interop
+- [x] `Vec`: mutable, growable vectors
+- [x] `HashMap`
+- [x] `VList`: persistent vector/list hybrid with O(1) push/pop.
+- [~] `IO`: existing module is extremely bare bones.
+- [ ] Others: Help wanted! Designing which modules the stdlib should include
 
 ---
 # Compiler-specific
 
 - [x] LLVM backend
-- [x] Cranelift backend
+- [ ] Cranelift backend
 - [ ] Compiler option to write inferred types into the file
-- [~] Language server.
+- [x] Language server.
   - [x] Display errors in file
   - [x] Hover
-  - [ ] Go to definition
+  - [x] Go to definition
   - [ ] Go to type
   - [ ] Rename
-- [x] Unused variable warning message
-- [ ] Parser recoverable on error
-- [x] Name resolution recoverable on error
-- [x] Type system recoverable on error
+  - [ ] Import symbol
+  - [ ] Fill in match arms
+- [x] Recoverable on error
+- [x] Compiler only rechecks changed code in incremental mode
+  - Disabled by default since it requires storing metadata for the project, enabled for the language server
+- [x] Concurrent
 
 ---
-# Ownership
+# Ownership & Mutation
 
-Ante's ownership and borrowing rules have been completely redesigned recently. They
-will take some time to implement. This is currently the largest more or less completely
-unimplemented item.
-
+- [x] `var` for local mutable variables
 - [x] Mutating owned values and mutable references to values.
-- [ ] Tracking moves and issuing errors when a moved value is used
-- [ ] `Drop`
+- [x] Move tracking
+- [ ] `Drop` called after a variable's last non-move use
   - [ ] `Drop`-unwinding for uncalled `resume`s when handling effects.
-- [~] Borrowing
-  - [x] Basic immutable and mutable borrowing
-  - [ ] Preventing moving owned values while the borrowed reference is alive
-  - [ ] `shared` and `owned` modifiers
-  - [ ] `ref` qualifier for types which store references
+- [x] `Copy` called when a `Copy` variable is used
+- [ ] Borrowing
+  - [x] `ref`, `mut`, `imm`, and `uniq` references exist
+  - [ ] `imm` and `uniq` cannot coexist with `ref` and `mut` to the same value
+  - [ ] `uniq` cannot coexist with any other reference to the same value
+  - [ ] Moves are prevented while any reference to the same value is alive
+  - [ ] Lifetimes are checked
+- [ ] `shared` modifier on types
+
 ---
 # Algebraic Effects
 
 - [x] Type checking
-  - Type checking for effects is considered implemented but higher-order effectful functions are not as general as they should be.
 - [x] Runtime
   - [x] Handlers
     - [x] Handlers for a single effect
     - [x] Handlers for multiple effects
+    - [ ] Handlers for multiple instances of the same effect (e.g. `Emit a, Emit b`)
     - [ ] `return _ -> e` clause
       - This is unimplemented but can be emulated by sequencing the handled expression with `e`
   - [x] `resume`
     - [x] Single resumptions
     - [x] 0 resumptions
-      - Implemented except for the related `Drop`-unwinding ownership feature

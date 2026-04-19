@@ -4007,12 +4007,12 @@ of an effect.</p>
 <h2 id="sugar-for-applying-handlers">Sugar for applying handlers</h2>
 <p>You&rsquo;ll notice <code>handle_give_int</code> expects a function, so we have to wrap <code>do_math 3</code> in a
 lambda before we pass it into our handler. Since this operation is so common, ante provides
-the <code>with</code> operator which will wrap its left argument in a lambda and pass it to the function
-on its right. Here is the definition of <code>with</code> in pseudocode:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">a</span> <span class="k">with</span> <span class="n">b</span>
+the <code>~&gt;</code> operator which will wrap its left argument in a lambda and pass it to the function
+on its right. Here is the definition of <code>~&gt;</code> in pseudocode:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">a</span> <span class="o">~&gt;</span> <span class="n">b</span>
     <span class="ow">=</span> <span class="n">b</span> <span class="p">(</span><span class="k">fn</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="n">a</span><span class="p">)</span>
 </code></pre></div><p>With this we can rewrite the last line as:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">do_math</span> <span class="mi">3</span> <span class="k">with</span> <span class="n">handle_give_int</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">do_math</span> <span class="mi">3</span> <span class="o">~&gt;</span> <span class="n">handle_give_int</span>
 </code></pre></div><p>There are also times when we want to use a handler to handle an entire block. For this,
 we can use the <code>using</code> keyword:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// try: (Unit -&gt; a can Fail) -&gt; Maybe a</span>
@@ -4086,7 +4086,7 @@ for <code>GiveInt</code> in addition to <code>handle_give_int</code>:</p>
     <span class="k">handle</span> <span class="n">f</span> <span class="p">()</span>
     <span class="o">|</span> <span class="n">give_int</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="k">resume</span> <span class="n">int</span>
 
-<span class="nf">do_math</span> <span class="mi">1</span> <span class="k">with</span> <span class="n">the_int</span> <span class="mi">5</span>  <span class="c1">//=&gt; 11</span>
+<span class="nf">do_math</span> <span class="mi">1</span> <span class="o">~&gt;</span> <span class="n">the_int</span> <span class="mi">5</span>  <span class="c1">//=&gt; 11</span>
 </code></pre></div><h3 id="matching-on-the-returned-value">Matching on the Returned Value</h3>
 <p>Handle expressions can also match on the return value
 of the handled expression</p>
@@ -4096,12 +4096,12 @@ of the handled expression</p>
     <span class="o">|</span> <span class="n">give_int</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="k">resume</span> <span class="mi">0</span>
 
 
-<span class="nf">do_math</span> <span class="mi">5</span> <span class="k">with</span> <span class="n">count_giveint_calls</span>  <span class="c1">//=&gt; 2</span>
+<span class="nf">do_math</span> <span class="mi">5</span> <span class="o">~&gt;</span> <span class="n">count_giveint_calls</span>  <span class="c1">//=&gt; 2</span>
 </code></pre></div><p>This example can be confusing at first - how can we always return
 an integer representing the number of GiveInt calls if our function
 says it returns some type <code>a</code>? Let&rsquo;s work this out step by step
 to see how it expands:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">do_math</span> <span class="mi">5</span> <span class="k">with</span> <span class="n">count_giveint_calls</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">do_math</span> <span class="mi">5</span> <span class="o">~&gt;</span> <span class="n">count_giveint_calls</span>
 
 <span class="c1">// First we expand and substitute</span>
 <span class="k">handle</span>
@@ -4157,7 +4157,7 @@ not calling <code>resume</code>:</p>
     <span class="c1">// Do not resume, return the default value instead</span>
     <span class="o">|</span> <span class="n">give_int</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="n">default_value</span>
 
-<span class="nf">do_math</span> <span class="mi">7</span> <span class="k">with</span> <span class="n">interpret</span> <span class="mi">42</span>  <span class="c1">//=&gt; 42</span>
+<span class="nf">do_math</span> <span class="mi">7</span> <span class="o">~&gt;</span> <span class="n">interpret</span> <span class="mi">42</span>  <span class="c1">//=&gt; 42</span>
 </code></pre></div><h2 id="error-handling">Error Handling</h2>
 <p>Ante primarily uses the <code>Fail</code> and <code>Throw e</code> effects for error handling.
 These roughly correspond to <code>Maybe t</code> and <code>Result t e</code> respectively.
@@ -4182,8 +4182,8 @@ which convert Fails to Maybe, and Throws to Results:</p>
     <span class="o">|</span> <span class="k">return</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="kt">Ok</span> <span class="n">x</span>
     <span class="o">|</span> <span class="n">throw</span> <span class="n">e</span> <span class="ow">-&gt;</span> <span class="kt">Error</span> <span class="n">e</span>
 
-<span class="nf">print</span> <span class="p">(</span><span class="n">add_even_numbers</span> <span class="s">&#34;2&#34;</span> <span class="s">&#34;4&#34;</span> <span class="k">with</span> <span class="n">try</span><span class="p">)</span> <span class="c1">//=&gt; Some 6</span>
-<span class="nf">print</span> <span class="p">(</span><span class="n">add_even_numbers</span> <span class="s">&#34;2&#34;</span> <span class="s">&#34;5&#34;</span> <span class="k">with</span> <span class="n">try</span><span class="p">)</span> <span class="c1">//=&gt; None</span>
+<span class="nf">print</span> <span class="p">(</span><span class="n">add_even_numbers</span> <span class="s">&#34;2&#34;</span> <span class="s">&#34;4&#34;</span> <span class="o">~&gt;</span> <span class="n">try</span><span class="p">)</span> <span class="c1">//=&gt; Some 6</span>
+<span class="nf">print</span> <span class="p">(</span><span class="n">add_even_numbers</span> <span class="s">&#34;2&#34;</span> <span class="s">&#34;5&#34;</span> <span class="o">~&gt;</span> <span class="n">try</span><span class="p">)</span> <span class="c1">//=&gt; None</span>
 </code></pre></div><p>Because effects can be naturally composed, functions returning multiple
 different errors can also be naturally composed without requiring users
 to define their own error unions:</p>
@@ -4236,7 +4236,7 @@ threading stateful values through multiple functions.</p>
 
 <span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span>
     <span class="n">e</span> <span class="ow">=</span> <span class="kt">Let</span> <span class="s">&#34;foo&#34;</span> <span class="p">(</span><span class="kt">Int</span> <span class="mi">1</span><span class="p">)</span> <span class="p">(</span><span class="kt">Add</span> <span class="p">(</span><span class="kt">Var</span> <span class="s">&#34;foo&#34;</span><span class="p">)</span> <span class="p">(</span><span class="kt">Int</span> <span class="mi">2</span><span class="p">))</span>
-    <span class="n">eval</span> <span class="n">e</span> <span class="k">with</span> <span class="n">state</span> <span class="kt">Map</span><span class="o">.</span><span class="n">empty</span>  <span class="c1">//=&gt; 3</span>
+    <span class="n">eval</span> <span class="n">e</span> <span class="o">~&gt;</span> <span class="n">state</span> <span class="kt">Map</span><span class="o">.</span><span class="n">empty</span>  <span class="c1">//=&gt; 3</span>
 </code></pre></div><p>Note that compared to the monadic approach, we do not
 need to explicitly bind between effectful operations,
 so we are free to write an expression like <code>define name (eval rhs)</code>
@@ -4301,7 +4301,7 @@ while remaining purely functional behind the scenes.</p>
         <span class="k">not</span> <span class="n">is_prime</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>
 
 <span class="nf">find_random_prime</span> <span class="p">(</span><span class="n">vec</span><span class="o">:</span> <span class="kt">Vec</span> <span class="kt">I32</span><span class="p">)</span> <span class="o">:</span> <span class="kt">I32</span> <span class="k">can</span> <span class="kt">Print</span> <span class="ow">=</span>
-    <span class="n">loop_examples</span> <span class="n">vec</span> <span class="k">with</span> <span class="n">final_state</span> <span class="mi">0</span>
+    <span class="n">loop_examples</span> <span class="n">vec</span> <span class="o">~&gt;</span> <span class="n">final_state</span> <span class="mi">0</span>
 </code></pre></div><h3 id="generators">Generators</h3>
 <p>The yield effect provides a way to implement generators.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Yield</span> <span class="n">a</span> <span class="k">with</span>
@@ -4329,17 +4329,17 @@ while remaining purely functional behind the scenes.</p>
 
 <span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span>
     <span class="n">odds</span> <span class="ow">=</span> <span class="n">traverse</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
-        <span class="k">with</span> <span class="n">filter</span> <span class="n">is_odd</span>
-        <span class="k">with</span> <span class="n">yield_to_list</span>
+        <span class="o">~&gt;</span> <span class="n">filter</span> <span class="n">is_odd</span>
+        <span class="o">~&gt;</span> <span class="n">yield_to_list</span>
 
-    <span class="c1">// Above we see a benefit of the with operator over a different</span>
+    <span class="c1">// Above we see a benefit of the ~&gt; operator over a different</span>
     <span class="c1">// lambda sugar like {foo} for (fn () -&gt; foo). With the later</span>
     <span class="c1">// syntax, nesting is unavoidable:</span>
     <span class="c1">// odds = {{traverse [1, 2, 3]}</span>
     <span class="c1">//     .filter is_odd}</span>
     <span class="c1">//     .yield_to_list</span>
 
-    <span class="n">traverse</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="k">with</span> <span class="n">filter</span> <span class="n">is_odd</span> <span class="k">with</span> <span class="n">iter</span> <span class="k">fn</span> <span class="n">i</span> <span class="ow">-&gt;</span>
+    <span class="n">traverse</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">~&gt;</span> <span class="n">filter</span> <span class="n">is_odd</span> <span class="o">~&gt;</span> <span class="n">iter</span> <span class="k">fn</span> <span class="n">i</span> <span class="ow">-&gt;</span>
         <span class="n">print</span> <span class="s">&#34;yielded $i&#34;</span>
 </code></pre></div><h3 id="logging-and-mocking">Logging and Mocking</h3>
 <p>The ability to decide effect handlers at the callsite enables
@@ -4373,7 +4373,7 @@ mock them for testing.</p>
 
 <span class="c1">// Print effect handling is builtin, let ante handle it</span>
 <span class="nf">main</span> <span class="p">()</span> <span class="k">can</span> <span class="kt">Print</span> <span class="ow">=</span>
-    <span class="n">business_logic</span> <span class="kc">true</span> <span class="k">with</span> <span class="n">database</span>
+    <span class="n">business_logic</span> <span class="kc">true</span> <span class="o">~&gt;</span> <span class="n">database</span>
 
 <span class="c1">// Mock our business function. Use a different handler for</span>
 <span class="c1">// testing instead of the database handler that will actually</span>
@@ -4384,7 +4384,7 @@ mock them for testing.</p>
     <span class="o">|</span> <span class="n">querydb</span> <span class="n">_</span> <span class="ow">-&gt;</span>
         <span class="n">error</span> <span class="s">&#34;Tried to query when should_query = false!&#34;</span>
 
-    <span class="n">logs</span> <span class="ow">=</span> <span class="n">business_logic</span> <span class="kc">true</span> <span class="k">with</span> <span class="n">ignore_db</span> <span class="k">with</span> <span class="n">collect_prints</span>
+    <span class="n">logs</span> <span class="ow">=</span> <span class="n">business_logic</span> <span class="kc">true</span> <span class="o">~&gt;</span> <span class="n">ignore_db</span> <span class="o">~&gt;</span> <span class="n">collect_prints</span>
     <span class="n">assert</span> <span class="p">(</span><span class="k">not</span> <span class="n">is_empty</span> <span class="n">logs</span><span class="p">)</span>
 </code></pre></div><h3 id="others">Others</h3>
 <p>Other examples include using effects to

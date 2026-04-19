@@ -2380,18 +2380,18 @@ of an effect.
 
 You'll notice `handle_give_int` expects a function, so we have to wrap `do_math 3` in a
 lambda before we pass it into our handler. Since this operation is so common, ante provides
-the `with` operator which will wrap its left argument in a lambda and pass it to the function
-on its right. Here is the definition of `with` in pseudocode:
+the `~>` operator which will wrap its left argument in a lambda and pass it to the function
+on its right. Here is the definition of `~>` in pseudocode:
 
 ```ante
-a with b
+a ~> b
     = b (fn () -> a)
 ```
 
 With this we can rewrite the last line as:
 
 ```ante
-do_math 3 with handle_give_int
+do_math 3 ~> handle_give_int
 ```
 
 There are also times when we want to use a handler to handle an entire block. For this,
@@ -2503,7 +2503,7 @@ the_int (int: I32) (f: Unit -> a can GiveInt) : a =
     handle f ()
     | give_int _ -> resume int
 
-do_math 1 with the_int 5  //=> 11
+do_math 1 ~> the_int 5  //=> 11
 ```
 
 ### Matching on the Returned Value
@@ -2518,7 +2518,7 @@ count_giveint_calls (f: Unit -> a can GiveInt) : I32 =
     | give_int _ -> 1 + resume 0
 
 
-do_math 5 with count_giveint_calls  //=> 2
+do_math 5 ~> count_giveint_calls  //=> 2
 ```
 
 This example can be confusing at first - how can we always return
@@ -2527,7 +2527,7 @@ says it returns some type `a`? Let's work this out step by step
 to see how it expands:
 
 ```ante
-do_math 5 with count_giveint_calls
+do_math 5 ~> count_giveint_calls
 
 // First we expand and substitute
 handle
@@ -2591,7 +2591,7 @@ interpret (default_value: a) (f: Unit -> a can GiveInt) : a =
     // Do not resume, return the default value instead
     | give_int _ -> default_value
 
-do_math 7 with interpret 42  //=> 42
+do_math 7 ~> interpret 42  //=> 42
 ```
 
 ## Error Handling
@@ -2625,8 +2625,8 @@ catch (f: Unit -> a can Throw e) : Result a e =
     | return x -> Ok x
     | throw e -> Error e
 
-print (add_even_numbers "2" "4" with try) //=> Some 6
-print (add_even_numbers "2" "5" with try) //=> None
+print (add_even_numbers "2" "4" ~> try) //=> Some 6
+print (add_even_numbers "2" "5" ~> try) //=> None
 ```
 
 Because effects can be naturally composed, functions returning multiple
@@ -2690,7 +2690,7 @@ eval (expr: Expr) : I32 can Eval =
 
 main () =
     e = Let "foo" (Int 1) (Add (Var "foo") (Int 2))
-    eval e with state Map.empty  //=> 3
+    eval e ~> state Map.empty  //=> 3
 ```
 
 Note that compared to the monadic approach, we do not
@@ -2763,7 +2763,7 @@ loop_examples (vec: Vec I32) : Unit can Print, State I32 =
         not is_prime (x + 2)
 
 find_random_prime (vec: Vec I32) : I32 can Print =
-    loop_examples vec with final_state 0
+    loop_examples vec ~> final_state 0
 ```
 
 ### Generators
@@ -2796,17 +2796,17 @@ yield_to_list (k: Unit -> a can Yield b) : List b =
 
 main () =
     odds = traverse [1, 2, 3]
-        with filter is_odd
-        with yield_to_list
+        ~> filter is_odd
+        ~> yield_to_list
 
-    // Above we see a benefit of the with operator over a different
+    // Above we see a benefit of the ~> operator over a different
     // lambda sugar like {foo} for (fn () -> foo). With the later
     // syntax, nesting is unavoidable:
     // odds = {{traverse [1, 2, 3]}
     //     .filter is_odd}
     //     .yield_to_list
 
-    traverse [1, 2, 3] with filter is_odd with iter fn i ->
+    traverse [1, 2, 3] ~> filter is_odd ~> iter fn i ->
         print "yielded $i"
 ```
 
@@ -2845,7 +2845,7 @@ business_logic (should_query: Bool) : Unit can Print, QueryDatabase =
 
 // Print effect handling is builtin, let ante handle it
 main () can Print =
-    business_logic true with database
+    business_logic true ~> database
 
 // Mock our business function. Use a different handler for
 // testing instead of the database handler that will actually
@@ -2856,7 +2856,7 @@ test () =
     | querydb _ ->
         error "Tried to query when should_query = false!"
 
-    logs = business_logic true with ignore_db with collect_prints
+    logs = business_logic true ~> ignore_db ~> collect_prints
     assert (not is_empty logs)
 ```
 
