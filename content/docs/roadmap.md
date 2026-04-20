@@ -60,8 +60,9 @@ These also use a temporary `c"_"` syntax currently.
   - [ ] Pattern guards: `| pattern if expr -> ...`
   - [ ] `is` keyword for matching within expressions
 - [x] `loop` sugar
-- [ ] `for` loops
-- [ ] `while` loops
+- [x] `for` loops
+- [x] `while` loops
+- [x] `break`/`continue`
 - [x] `extern`
 
 ---
@@ -101,6 +102,7 @@ All APIs are non-final.
 - [x] `Vec`: mutable, growable vectors
 - [x] `HashMap`
 - [x] `PVec`: persistent vector with O(1) pop, get, and clone, and amortized O(1) push.
+- [x] `Rc`
 - [~] `IO`: existing module is extremely bare bones.
 - [ ] Others: Help wanted! Designing which modules the stdlib should include
 
