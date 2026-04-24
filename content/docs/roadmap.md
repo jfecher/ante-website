@@ -18,6 +18,10 @@ Key:
 - [~] Partially implemented
 - [ ] Not implemented
 
+Note that since the compiler is still immature, a feature marked as implemented may not be completely
+bug-free or may have some unimplemented corner cases. These are not expected however, and users encountering
+any bugs with these features should create an issue on github.
+
 ---
 # Literals
 
@@ -42,7 +46,7 @@ These also use a temporary `c"_"` syntax currently.
 - [x] `.` Method calls
 - [x] `~>` Applying effect handlers
 - [ ] `using` Keyword for applying an effect handler to a block
-- [ ] `is` operator for pattern matching without `match`
+- [x] `is` operator for pattern matching without `match`
 
 ---
 # Functions and Control Flow
@@ -104,6 +108,7 @@ All APIs are non-final.
 - [x] `Seq`: persistent vector with O(1) pop, get, and clone, and amortized O(1) push.
 - [x] `Rc`
 - [~] `IO`: existing module is extremely bare bones.
+- [x] `Stream`: The `Emit` effect and `Stream` trait for push-based streams.
 - [ ] Others: Help wanted! Designing which modules the stdlib should include
 
 ---
@@ -112,6 +117,7 @@ All APIs are non-final.
 - [x] LLVM backend
 - [ ] Cranelift backend
 - [ ] Compiler option to write inferred types into the file
+- [ ] Formatter
 - [x] Language server.
   - [x] Display errors in file
   - [x] Hover
@@ -120,6 +126,7 @@ All APIs are non-final.
   - [ ] Rename
   - [ ] Import symbol
   - [ ] Fill in match arms
+  - [x] Vim plugin
 - [x] Recoverable on error
 - [x] Compiler only rechecks changed code in incremental mode
   - Disabled by default since it requires storing metadata for the project, enabled for the language server
@@ -133,7 +140,7 @@ All APIs are non-final.
 - [x] Move tracking
 - [ ] `Drop` called after a variable's last non-move use
   - [ ] `Drop`-unwinding for uncalled `resume`s when handling effects.
-- [x] `Copy` called when a `Copy` variable is used
+- [x] `Copy` exempting variables from moves
 - [ ] Borrowing
   - [x] `ref`, `mut`, `imm`, and `uniq` references exist
   - [ ] `imm` and `uniq` cannot coexist with `ref` and `mut` to the same value

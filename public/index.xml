@@ -77,7 +77,7 @@ effect Read a with read : Unit -&amp;gt; a the_value (value: a) (f: Unit -&amp;g
  This page is for an in-depth roadmap of ante to show which features are currently implemented in the compiler.
 All designs in the ideas page are not implemented as their design is still non-final and may not be selected at all.
 Key:
- Implemented [~] Partially implemented Not implemented   Literals  Polymorphic integers (defaulting to I32) Polymorphic floats (defaulting to F64) Unit literal () Bool literals true and false [~] Char - implemented but is 1 byte rather than 4.</description>
+ Implemented [~] Partially implemented Not implemented  Note that since the compiler is still immature, a feature marked as implemented may not be completely bug-free or may have some unimplemented corner cases.</description>
     </item>
     
     <item>

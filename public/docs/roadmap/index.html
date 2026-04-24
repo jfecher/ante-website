@@ -500,6 +500,9 @@ not be selected at all.</p>
 <li>[~] Partially implemented</li>
 <li><input disabled="" type="checkbox"> Not implemented</li>
 </ul>
+<p>Note that since the compiler is still immature, a feature marked as implemented may not be completely
+bug-free or may have some unimplemented corner cases. These are not expected however, and users encountering
+any bugs with these features should create an issue on github.</p>
 <hr>
 <h1 id="literals">Literals</h1>
 <ul>
@@ -523,7 +526,7 @@ These also use a temporary <code>c&quot;_&quot;</code> syntax currently.</li>
 <li><input checked="" disabled="" type="checkbox"> <code>.</code> Method calls</li>
 <li><input checked="" disabled="" type="checkbox"> <code>~&gt;</code> Applying effect handlers</li>
 <li><input disabled="" type="checkbox"> <code>using</code> Keyword for applying an effect handler to a block</li>
-<li><input disabled="" type="checkbox"> <code>is</code> operator for pattern matching without <code>match</code></li>
+<li><input checked="" disabled="" type="checkbox"> <code>is</code> operator for pattern matching without <code>match</code></li>
 </ul>
 <hr>
 <h1 id="functions-and-control-flow">Functions and Control Flow</h1>
@@ -596,6 +599,7 @@ These also use a temporary <code>c&quot;_&quot;</code> syntax currently.</li>
 <li><input checked="" disabled="" type="checkbox"> <code>Seq</code>: persistent vector with O(1) pop, get, and clone, and amortized O(1) push.</li>
 <li><input checked="" disabled="" type="checkbox"> <code>Rc</code></li>
 <li>[~] <code>IO</code>: existing module is extremely bare bones.</li>
+<li><input checked="" disabled="" type="checkbox"> <code>Stream</code>: The <code>Emit</code> effect and <code>Stream</code> trait for push-based streams.</li>
 <li><input disabled="" type="checkbox"> Others: Help wanted! Designing which modules the stdlib should include</li>
 </ul>
 <hr>
@@ -604,6 +608,7 @@ These also use a temporary <code>c&quot;_&quot;</code> syntax currently.</li>
 <li><input checked="" disabled="" type="checkbox"> LLVM backend</li>
 <li><input disabled="" type="checkbox"> Cranelift backend</li>
 <li><input disabled="" type="checkbox"> Compiler option to write inferred types into the file</li>
+<li><input disabled="" type="checkbox"> Formatter</li>
 <li><input checked="" disabled="" type="checkbox"> Language server.
 <ul>
 <li><input checked="" disabled="" type="checkbox"> Display errors in file</li>
@@ -613,6 +618,7 @@ These also use a temporary <code>c&quot;_&quot;</code> syntax currently.</li>
 <li><input disabled="" type="checkbox"> Rename</li>
 <li><input disabled="" type="checkbox"> Import symbol</li>
 <li><input disabled="" type="checkbox"> Fill in match arms</li>
+<li><input checked="" disabled="" type="checkbox"> Vim plugin</li>
 </ul>
 </li>
 <li><input checked="" disabled="" type="checkbox"> Recoverable on error</li>
@@ -634,7 +640,7 @@ These also use a temporary <code>c&quot;_&quot;</code> syntax currently.</li>
 <li><input disabled="" type="checkbox"> <code>Drop</code>-unwinding for uncalled <code>resume</code>s when handling effects.</li>
 </ul>
 </li>
-<li><input checked="" disabled="" type="checkbox"> <code>Copy</code> called when a <code>Copy</code> variable is used</li>
+<li><input checked="" disabled="" type="checkbox"> <code>Copy</code> exempting variables from moves</li>
 <li><input disabled="" type="checkbox"> Borrowing
 <ul>
 <li><input checked="" disabled="" type="checkbox"> <code>ref</code>, <code>mut</code>, <code>imm</code>, and <code>uniq</code> references exist</li>
