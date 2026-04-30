@@ -105,10 +105,10 @@ with move semantics. As a bonus, this scheme is also completely zero-cost.
 # A New Approach for a New Age
 
 Ante's system for ensuring memory & thread safety uses Rust as a foundation. Anywhere a non-reference
-value is seen, it is an owned value. Similarly, anytime `&t` or `&mut t` are seen, these are borrowed
+value is seen, it is an owned value. Similarly, any time `&t` or `&mut t` are seen, these are borrowed
 references.
 
-The most important change from Rust's system is that in addition to Rust's single-owners style references
+The most important change from Rust's system is that in addition to Rust's single-owner style references
 (`imm` and `uniq` in Ante), there are also reference kinds which do allow shared mutability: `ref` and `mut`.
 These references are sometimes called shared references since they allow for shared mutability, to contrast
 with `imm` and `uniq` which are sometimes called single-owner references.
