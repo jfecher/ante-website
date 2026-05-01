@@ -29,6 +29,7 @@ any bugs with these features should create an issue on github.
 - [x] Polymorphic floats (defaulting to `F64`)
 - [x] Unit literal `()`
 - [x] Bool literals `true` and `false`
+- [x] Strings
 - [~] `Char` - implemented but is 1 byte rather than 4. There is an open design question of
 whether ante should use rust's model for chars (4 bytes), Swift's model (variable bytes), or something else.
 These also use a temporary `c"_"` syntax currently.
@@ -44,8 +45,7 @@ These also use a temporary `c"_"` syntax currently.
 - [x] Compound assignment operators `+=`, `-=`, `*=`, `/=`, `%=`
 - [x] `.` Field access
 - [x] `.` Method calls
-- [x] `~>` Applying effect handlers
-- [ ] `using` Keyword for applying an effect handler to a block
+- [x] `<-` Wrapping the rest of the block in a function (often for applying effect handlers)
 - [x] `is` operator for pattern matching without `match`
 
 ---
@@ -93,6 +93,7 @@ These also use a temporary `c"_"` syntax currently.
 - [x] `import` one or more symbols from a module
 - [x] `export` only a subset of symbols from a module
 - [ ] Renaming imports
+- [ ] Re-exports
 - [ ] `import implicit` for introducing implicit values. Currently these use a normal `import` statement.
 
 ---
@@ -103,12 +104,14 @@ All APIs are non-final.
 - [x] `Prelude` module auto-imported into each file
   - [ ] Opt out of importing prelude into a given file or project
 - [x] `C` module in stdlib for C interop
-- [x] `Vec`: mutable, growable vectors
+- [x] `Vec`: Mutable, growable vectors
 - [x] `HashMap`
-- [x] `Seq`: persistent vector with O(1) pop, get, and clone, and amortized O(1) push.
+- [x] `Seq`: Persistent vector with O(1) pop, get, and clone, and amortized O(1) push.
 - [x] `Rc`
-- [~] `IO`: existing module is extremely bare bones.
+- [~] `String`: Methods lack any kind of UTF-8 verification
+- [~] `IO`: Existing module is extremely bare bones.
 - [x] `Stream`: The `Emit` effect and `Stream` trait for push-based streams.
+- [x] `Fail`: Effects for generic failure & throwing a specific value
 - [ ] Others: Help wanted! Designing which modules the stdlib should include
 
 ---
@@ -116,17 +119,20 @@ All APIs are non-final.
 
 - [x] LLVM backend
 - [ ] Cranelift backend
+- [ ] Existentialization option for lowering generics in debug mode (making monomorphization optional)
 - [ ] Compiler option to write inferred types into the file
 - [ ] Formatter
 - [x] Language server.
   - [x] Display errors in file
   - [x] Hover
+  - [ ] Display documentation on hover
   - [x] Go to definition
   - [ ] Go to type
   - [ ] Rename
   - [ ] Import symbol
   - [ ] Fill in match arms
   - [x] Vim plugin
+  - [ ] VS-Code plugin: One exists but it is not hooked up to the language server and its syntax is out of date
 - [x] Recoverable on error
 - [x] Compiler only rechecks changed code in incremental mode
   - Disabled by default since it requires storing metadata for the project, enabled for the language server
@@ -150,7 +156,7 @@ All APIs are non-final.
 - [ ] `shared` modifier on types
 
 ---
-# Algebraic Effects
+# Effects
 
 - [x] Type checking
 - [x] Runtime
@@ -158,8 +164,8 @@ All APIs are non-final.
     - [x] Handlers for a single effect
     - [x] Handlers for multiple effects
     - [ ] Handlers for multiple instances of the same effect (e.g. `Emit a, Emit b`)
-    - [ ] `return _ -> e` clause
-      - This is unimplemented but can be emulated by sequencing the handled expression with `e`
   - [x] `resume`
     - [x] Single resumptions
     - [x] 0 resumptions
+  - [x] Capabilities
+    - [ ] Capabilities are second-class

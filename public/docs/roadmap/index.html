@@ -35,7 +35,7 @@
 
 
 
-<link href="/css/custom.css" rel="stylesheet">
+<link href="/css/custom.css?1777672383" rel="stylesheet">
 
 
 
@@ -425,8 +425,8 @@
                     
                     
                     
-                    <a href="/docs/roadmap/#algebraic-effects">
-                        <li>Algebraic Effects</li>
+                    <a href="/docs/roadmap/#effects">
+                        <li>Effects</li>
                     </a>
                     
                     
@@ -510,6 +510,7 @@ any bugs with these features should create an issue on github.</p>
 <li><input checked="" disabled="" type="checkbox"> Polymorphic floats (defaulting to <code>F64</code>)</li>
 <li><input checked="" disabled="" type="checkbox"> Unit literal <code>()</code></li>
 <li><input checked="" disabled="" type="checkbox"> Bool literals <code>true</code> and <code>false</code></li>
+<li><input checked="" disabled="" type="checkbox"> Strings</li>
 <li>[~] <code>Char</code> - implemented but is 1 byte rather than 4. There is an open design question of
 whether ante should use rust&rsquo;s model for chars (4 bytes), Swift&rsquo;s model (variable bytes), or something else.
 These also use a temporary <code>c&quot;_&quot;</code> syntax currently.</li>
@@ -524,8 +525,7 @@ These also use a temporary <code>c&quot;_&quot;</code> syntax currently.</li>
 <li><input checked="" disabled="" type="checkbox"> Compound assignment operators <code>+=</code>, <code>-=</code>, <code>*=</code>, <code>/=</code>, <code>%=</code></li>
 <li><input checked="" disabled="" type="checkbox"> <code>.</code> Field access</li>
 <li><input checked="" disabled="" type="checkbox"> <code>.</code> Method calls</li>
-<li><input checked="" disabled="" type="checkbox"> <code>~&gt;</code> Applying effect handlers</li>
-<li><input disabled="" type="checkbox"> <code>using</code> Keyword for applying an effect handler to a block</li>
+<li><input checked="" disabled="" type="checkbox"> <code>&lt;-</code> Wrapping the rest of the block in a function (often for applying effect handlers)</li>
 <li><input checked="" disabled="" type="checkbox"> <code>is</code> operator for pattern matching without <code>match</code></li>
 </ul>
 <hr>
@@ -582,6 +582,7 @@ These also use a temporary <code>c&quot;_&quot;</code> syntax currently.</li>
 <li><input checked="" disabled="" type="checkbox"> <code>import</code> one or more symbols from a module</li>
 <li><input checked="" disabled="" type="checkbox"> <code>export</code> only a subset of symbols from a module</li>
 <li><input disabled="" type="checkbox"> Renaming imports</li>
+<li><input disabled="" type="checkbox"> Re-exports</li>
 <li><input disabled="" type="checkbox"> <code>import implicit</code> for introducing implicit values. Currently these use a normal <code>import</code> statement.</li>
 </ul>
 <hr>
@@ -594,12 +595,14 @@ These also use a temporary <code>c&quot;_&quot;</code> syntax currently.</li>
 </ul>
 </li>
 <li><input checked="" disabled="" type="checkbox"> <code>C</code> module in stdlib for C interop</li>
-<li><input checked="" disabled="" type="checkbox"> <code>Vec</code>: mutable, growable vectors</li>
+<li><input checked="" disabled="" type="checkbox"> <code>Vec</code>: Mutable, growable vectors</li>
 <li><input checked="" disabled="" type="checkbox"> <code>HashMap</code></li>
-<li><input checked="" disabled="" type="checkbox"> <code>Seq</code>: persistent vector with O(1) pop, get, and clone, and amortized O(1) push.</li>
+<li><input checked="" disabled="" type="checkbox"> <code>Seq</code>: Persistent vector with O(1) pop, get, and clone, and amortized O(1) push.</li>
 <li><input checked="" disabled="" type="checkbox"> <code>Rc</code></li>
-<li>[~] <code>IO</code>: existing module is extremely bare bones.</li>
+<li>[~] <code>String</code>: Methods lack any kind of UTF-8 verification</li>
+<li>[~] <code>IO</code>: Existing module is extremely bare bones.</li>
 <li><input checked="" disabled="" type="checkbox"> <code>Stream</code>: The <code>Emit</code> effect and <code>Stream</code> trait for push-based streams.</li>
+<li><input checked="" disabled="" type="checkbox"> <code>Fail</code>: Effects for generic failure &amp; throwing a specific value</li>
 <li><input disabled="" type="checkbox"> Others: Help wanted! Designing which modules the stdlib should include</li>
 </ul>
 <hr>
@@ -607,18 +610,21 @@ These also use a temporary <code>c&quot;_&quot;</code> syntax currently.</li>
 <ul>
 <li><input checked="" disabled="" type="checkbox"> LLVM backend</li>
 <li><input disabled="" type="checkbox"> Cranelift backend</li>
+<li><input disabled="" type="checkbox"> Existentialization option for lowering generics in debug mode (making monomorphization optional)</li>
 <li><input disabled="" type="checkbox"> Compiler option to write inferred types into the file</li>
 <li><input disabled="" type="checkbox"> Formatter</li>
 <li><input checked="" disabled="" type="checkbox"> Language server.
 <ul>
 <li><input checked="" disabled="" type="checkbox"> Display errors in file</li>
 <li><input checked="" disabled="" type="checkbox"> Hover</li>
+<li><input disabled="" type="checkbox"> Display documentation on hover</li>
 <li><input checked="" disabled="" type="checkbox"> Go to definition</li>
 <li><input disabled="" type="checkbox"> Go to type</li>
 <li><input disabled="" type="checkbox"> Rename</li>
 <li><input disabled="" type="checkbox"> Import symbol</li>
 <li><input disabled="" type="checkbox"> Fill in match arms</li>
 <li><input checked="" disabled="" type="checkbox"> Vim plugin</li>
+<li><input disabled="" type="checkbox"> VS-Code plugin: One exists but it is not hooked up to the language server and its syntax is out of date</li>
 </ul>
 </li>
 <li><input checked="" disabled="" type="checkbox"> Recoverable on error</li>
@@ -653,7 +659,7 @@ These also use a temporary <code>c&quot;_&quot;</code> syntax currently.</li>
 <li><input disabled="" type="checkbox"> <code>shared</code> modifier on types</li>
 </ul>
 <hr>
-<h1 id="algebraic-effects">Algebraic Effects</h1>
+<h1 id="effects">Effects</h1>
 <ul>
 <li><input checked="" disabled="" type="checkbox"> Type checking</li>
 <li><input checked="" disabled="" type="checkbox"> Runtime
@@ -663,17 +669,17 @@ These also use a temporary <code>c&quot;_&quot;</code> syntax currently.</li>
 <li><input checked="" disabled="" type="checkbox"> Handlers for a single effect</li>
 <li><input checked="" disabled="" type="checkbox"> Handlers for multiple effects</li>
 <li><input disabled="" type="checkbox"> Handlers for multiple instances of the same effect (e.g. <code>Emit a, Emit b</code>)</li>
-<li><input disabled="" type="checkbox"> <code>return _ -&gt; e</code> clause
-<ul>
-<li>This is unimplemented but can be emulated by sequencing the handled expression with <code>e</code></li>
-</ul>
-</li>
 </ul>
 </li>
 <li><input checked="" disabled="" type="checkbox"> <code>resume</code>
 <ul>
 <li><input checked="" disabled="" type="checkbox"> Single resumptions</li>
 <li><input checked="" disabled="" type="checkbox"> 0 resumptions</li>
+</ul>
+</li>
+<li><input checked="" disabled="" type="checkbox"> Capabilities
+<ul>
+<li><input disabled="" type="checkbox"> Capabilities are second-class</li>
 </ul>
 </li>
 </ul>

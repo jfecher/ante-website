@@ -1,23 +1,24 @@
-weight: 5
-title: "Type Inference"
+weight: 2
+title: "Traits via Implicits"
 description: >
-    <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="c1">// A collection c of elements of type e</span>
+    <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="c1">// Traits in Ante are just sugar for types holding closure values</span>
 
-    <span class="k">trait</span> <span class="kt">Collection c</span> -> <span class="kt">e</span> <span class="k">with</span> 
-        len: <span class="k">fn</span> <span class="kt">c</span> -> <span class="kt">Usz</span>
-        get: <span class="k">fn</span> <span class="kt">c</span> (index: <span class="kt">Usz</span>) -> <span class="kt">e</span>
+    <span class="k">trait</span> <span class="kt">Foo t</span> <span class="k">with</span> 
+        foo: <span class="k">fn</span> <span class="kt">t</span> -> <span class="kt">U32</span>
 
-    <span class="k">trait</span> <span class="kt">Show t</span> <span class="k">with</span> to_string: <span class="k">fn</span> <span class="kt">t</span> -> <span class="kt">String</span>
+    <span class="c1">// And trait impls are sugar for implicit functions which take values and return a trait object.</span>
 
+    <span class="c1">// Moreover, since traits are implicits, no global coherence or orphan restrictions are required</span>
 
-    <span class="k">effect</span> <span class="kt">Print</span> <span class="k">with</span> print: <span class="k">fn</span> <span class="kt">String</span> -> <span class="kt">Unit</span>
+    <span class="k">impl</span> ord_i32_descending: <span class="kt">Ord I32</span> <span class="k">with</span>
+        cmp a b = <span class="kt">Ordering</span>.from_int (b - a)
 
+    <span class="c1">// Impls can be defined locally and closures can capture data, making
 
-    <span class="c1">// Inferred type:
+    // implementing traits on interned types much easier</span>
 
-    // elem_to_string: fn a Usz {Collection a b} {Show b} -> String
-
-    //    can Print</span>
-
-    elem_to_string c i =
-        get c i |> to_string |> print</code></pre></div>
+    <span class="k">impl</span> foo_interned (ctx: <span class="kt">InternCtx</span>): <span class="kt">Display MyInternedType</span> <span class="k">with</span>
+        foo interned =
+            <span class="c1">// Use `ctx` from the closure environment</span>
+            data = ctx.get interned
+            foo data</code></pre></div>

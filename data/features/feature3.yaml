@@ -1,5 +1,5 @@
 weight: 3
-name: "Algebraic Effects"
+name: "Effects via Capabilities"
 icon: "fa fa-cube"
-description: "Algebraic effects provide great code reuse and can even provide convenient ways to optimize code, such as swapping out the Allocator by handling the Allocator effect."
+description: "Capabilities provide great code reuse and are both easier to use and understand when compared to monads."
 link: "docs/language/#algebraic-effects"

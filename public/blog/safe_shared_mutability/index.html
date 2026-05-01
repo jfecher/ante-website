@@ -35,7 +35,7 @@
 
 
 
-<link href="/css/custom.css" rel="stylesheet">
+<link href="/css/custom.css?1777672383" rel="stylesheet">
 
 
 
@@ -593,9 +593,9 @@ with move semantics. As a bonus, this scheme is also completely zero-cost.</p>
 <hr>
 <h1 id="a-new-approach-for-a-new-age">A New Approach for a New Age</h1>
 <p>Ante&rsquo;s system for ensuring memory &amp; thread safety uses Rust as a foundation. Anywhere a non-reference
-value is seen, it is an owned value. Similarly, anytime <code>&amp;t</code> or <code>&amp;mut t</code> are seen, these are borrowed
+value is seen, it is an owned value. Similarly, any time <code>&amp;t</code> or <code>&amp;mut t</code> are seen, these are borrowed
 references.</p>
-<p>The most important change from Rust&rsquo;s system is that in addition to Rust&rsquo;s single-owners style references
+<p>The most important change from Rust&rsquo;s system is that in addition to Rust&rsquo;s single-owner style references
 (<code>imm</code> and <code>uniq</code> in Ante), there are also reference kinds which do allow shared mutability: <code>ref</code> and <code>mut</code>.
 These references are sometimes called shared references since they allow for shared mutability, to contrast
 with <code>imm</code> and <code>uniq</code> which are sometimes called single-owner references.

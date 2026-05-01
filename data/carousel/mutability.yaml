@@ -1,7 +1,7 @@
-weight: 3
+weight: 4
 title: "Safe Shared Mutability"
 description: >
-    <div class="highlight-textalign-left"><pre><span class="k">var</span> vec = <span class="kt">Vec</span>.of [<span class="m">1</span>, <span class="m">2</span>, <span class="m">3</span>]
+    <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="k">var</span> vec = <span class="kt">Vec</span>.of [<span class="m">1</span>, <span class="m">2</span>, <span class="m">3</span>]
 
 
     ref1 = <span class="k">mut</span> vec  <span class="c1">// Create a temporary mutable reference to vec</span>

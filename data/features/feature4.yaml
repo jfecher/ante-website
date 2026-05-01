@@ -1,5 +1,5 @@
 weight: 4
-name: "Always-Incremental Compilation"
+name: "Fast Compilation"
 icon: "fa fa-cubes"
-description: "Incremental compilation metadata is distributed along with source code. This avoids the need for each user to rebuild most libraries or applications."
+description: "Compared to similar compilers, Ante's compiler is both incremental and does not require monomorphization in debug builds."
 link: "docs/ideas/#always-incremental-compilation"

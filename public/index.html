@@ -36,7 +36,7 @@
 
 
 
-<link href="/css/custom.css" rel="stylesheet">
+<link href="/css/custom.css?1777672383" rel="stylesheet">
 
 
 
@@ -220,23 +220,8 @@
             </div>
         </section>
 
-        <section class="bar background-white"style="padding: 0 !important; margin-top: -3rem; margin-bottom: 2rem;">
-            <div class="container" >
-                <h2>Ante is in active development</h2>
-
-                <div class="lead" text-align="center">
-                    Ante is currently in active development and the compiler is in a very early state.
-                    In addition, the features listed on this website detail the language itself rather
-                    than the subset that is implemented by the current compiler. If you are interested
-                    to see which features are implemented, please look at the github page linked below.
-                    Otherwise, if you just want to see the current design of the language, check out the
-                    <a href="https://antelang.org/docs/language">language tour</a>.
-                </div>
-            </div>
-        </section>
-
-
         
+
 
 <section>
     <div class="home-carousel">
@@ -281,21 +266,48 @@ move_value foo  <span class="c1">// ok!</span></code></pre></div>
                     
                         <div class="row">
                             <div class="col-sm-5 right">
-                                <h1>Algebraic Effects</h1>
-                                <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="c1">// Effects are trivial to combine</span>
-<span class="kt">Interpret</span> = <span class="k">can</span> <span class="kt">Use InterpreterState</span>, <span class="kt">Fail</span>
+                                <h1>Traits via Implicits</h1>
+                                <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="c1">// Traits in Ante are just sugar for types holding closure values</span>
+<span class="k">trait</span> <span class="kt">Foo t</span> <span class="k">with</span> 
+    foo: <span class="k">fn</span> <span class="kt">t</span> -> <span class="kt">U32</span>
 
-<span class="c1">// One use is to thread state automatically, while keeping it explicit in the type signature</span>
-eval (expr: <span class="kt">Expr</span>): <span class="kt">I32</span> <span class="k">can</span> <span class="kt">Interpret</span> =
-    <span class="k">match</span> expr
-    | <span class="kt">Int</span> x -> x
-    | <span class="kt">Var</span> name -> lookup name
-    | <span class="kt">Add</span> lhs rhs -> eval lhs + eval rhs  <span class="c1">// No explicit state threading</span>
+<span class="c1">// And trait impls are sugar for implicit functions which take values and return a trait object.</span>
+<span class="c1">// Moreover, since traits are implicits, no global coherence or orphan restrictions are required</span>
+<span class="k">impl</span> ord_i32_descending: <span class="kt">Ord I32</span> <span class="k">with</span>
+    cmp a b = <span class="kt">Ordering</span>.from_int (b - a)
 
-<span class="c1">// Lookup a name, throwing `Fail` if it is not found</span>
-lookup (name: <span class="kt">String</span>): <span class="kt">I32</span> <span class="k">can</span> <span class="kt">Interpret</span> =
-    state = get () : <span class="kt">InterpreterState</span>
-    state.environment.lookup name |>.unwrap  <span class="c1">// `unwrap` throws a `Fail` effect instead of panicking</span></code></pre></div>
+<span class="c1">// Impls can be defined locally and closures can capture data, making
+// implementing traits on interned types much easier</span>
+<span class="k">impl</span> foo_interned (ctx: <span class="kt">InternCtx</span>): <span class="kt">Display MyInternedType</span> <span class="k">with</span>
+    foo interned =
+        <span class="c1">// Use `ctx` from the closure environment</span>
+        data = ctx.get interned
+        foo data</code></pre></div>
+
+                            </div>
+                            <div class="col-sm-7">
+                                <img class="img-responsive" src="" alt="">
+                            </div>
+                        </div>
+                    
+                </div>
+                
+                <div class="item">
+                    
+                        <div class="row">
+                            <div class="col-sm-5 right">
+                                <h1>Effects and Capabilities</h1>
+                                <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="c1">// Each capability is passed as a parameter and enables a function to perform its effect</span>
+signup (name: <span class="kt">String</span>) (email: <span class="kt">Email</span>) {t: <span class="kt">Throw ValidationErr</span>} {<span class="kt">Throw IOErr</span>} {<span class="kt">IO</span>}: <span class="kt">User</span> =
+    <span class="c1">// Unlike monads, capabilities are trivial to combine: they are just implicit parameters</span>
+    cfg = read_cfg_from_disk ()
+    <span class="c1">// And they can be passed explicitly if desired (or required)</span>
+    validate name email {t}
+
+<span class="c1">// Easy abstraction over control-flow: map_vec trivially works with exceptions, async, etc.</span>
+<span class="c1">// Any capabilities required by `f` are captured in its closure</span>
+map_vec (v: <span class="kt">Vec t</span>) (f: <span class="k">fn</span> <span class="kt">t</span> => <span class="kt">u</span>): <span class="kt">Vec u</span> =
+    <span class="kt">Vec</span>.of (map v f)</code></pre></div>
 
                             </div>
                             <div class="col-sm-7">
@@ -310,7 +322,7 @@ lookup (name: <span class="kt">String</span>): <span class="kt">I32</span> <span
                         <div class="row">
                             <div class="col-sm-5 right">
                                 <h1>Safe Shared Mutability</h1>
-                                <div class="highlight-textalign-left"><pre><span class="k">var</span> vec = <span class="kt">Vec</span>.of [<span class="m">1</span>, <span class="m">2</span>, <span class="m">3</span>]
+                                <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="k">var</span> vec = <span class="kt">Vec</span>.of [<span class="m">1</span>, <span class="m">2</span>, <span class="m">3</span>]
 
 ref1 = <span class="k">mut</span> vec  <span class="c1">// Create a temporary mutable reference to vec</span>
 ref2 = <span class="k">mut</span> vec
@@ -336,50 +348,20 @@ elem = ref1.get <span class="m">0</span></code></pre></div>
                         <div class="row">
                             <div class="col-sm-5 right">
                                 <h1>Generators</h1>
-                                <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="c1">// Generators are implemented via Algebraic Effects</span>
+                                <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="c1">// Generators are implemented via effects</span>
 <span class="k">effect</span> <span class="kt">Emit elem</span> <span class="k">with</span> 
     emit: <span class="k">fn</span> <span class="kt">elem</span> -> <span class="kt">Unit</span>
 
-<span class="c1">// One advantage of Generators is that they are easier to write than Iterators</span>
-map (stream: <span class="k">fn</span> <span class="kt">Unit</span> -> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit a</span>) (f: <span class="k">fn</span> <span class="kt">a</span> -> <span class="kt">b</span>) <span class="k">can</span> <span class="kt">Emit b</span> =
-    <span class="k">handle</span> stream ()
-    | <span class="kt">Emit</span> elem -> 
+<span class="c1">// One advantage of generators is that they are easier to write than iterators.</span>
+<span class="c1">// We'll supply the `Emit a` value but the caller needs to provide a capability for `Emit b`</span>
+map (stream: <span class="k">fn</span> (<span class="kt">Emit a</span>) -> <span class="kt">Unit</span>) (f: <span class="k">fn</span> <span class="kt">a</span> => <span class="kt">b</span>) {<span class="kt">Emit b</span>} =
+    <span class="k">handler</span> emit_a <span class="k">for</span> emit elem ->
         emit (f elem)
         <span class="k">resume</span> ()
+    stream emit_a
 
-<span class="c1">// Stream is a helper trait to Emit all elements of a collection</span>
-parse_csv (text: <span class="kt">s</span>) {<span class="kt">Stream s String</span>} : <span class="kt">Vec</span> (<span class="kt">Vec String</span>) =
-    lines text |> skip <span class="m">1</span> |> map (split _ <span class="s">","</span>) |> collect
-
-csv = parse_csv (<span class="kt">File</span>.open <span class="s">"input.csv"</span>)</code></pre></div>
-
-                            </div>
-                            <div class="col-sm-7">
-                                <img class="img-responsive" src="" alt="">
-                            </div>
-                        </div>
-                    
-                </div>
-                
-                <div class="item">
-                    
-                        <div class="row">
-                            <div class="col-sm-5 right">
-                                <h1>Type Inference</h1>
-                                <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="c1">// A collection c of elements of type e</span>
-<span class="k">trait</span> <span class="kt">Collection c</span> -> <span class="kt">e</span> <span class="k">with</span> 
-    len: <span class="k">fn</span> <span class="kt">c</span> -> <span class="kt">Usz</span>
-    get: <span class="k">fn</span> <span class="kt">c</span> (index: <span class="kt">Usz</span>) -> <span class="kt">e</span>
-
-<span class="k">trait</span> <span class="kt">Show t</span> <span class="k">with</span> to_string: <span class="k">fn</span> <span class="kt">t</span> -> <span class="kt">String</span>
-
-<span class="k">effect</span> <span class="kt">Print</span> <span class="k">with</span> print: <span class="k">fn</span> <span class="kt">String</span> -> <span class="kt">Unit</span>
-
-<span class="c1">// Inferred type:
-// elem_to_string: fn a Usz {Collection a b} {Show b} -> String
-//    can Print</span>
-elem_to_string c i =
-    get c i |> to_string |> print</code></pre></div>
+parse_csv (text: <span class="kt">String</span>): <span class="kt">Vec</span> (<span class="kt">Vec String</span>) =
+    lines text |> skip <span class="m">1</span> |> map (<span class="k">fn</span> line -> split line <span class="s">","</span> |> Vec.of) |> Vec.of</code></pre></div>
 
                             </div>
                             <div class="col-sm-7">
@@ -394,6 +376,7 @@ elem_to_string c i =
         </div>
     </div>
 </section>
+
 
 
 
@@ -456,8 +439,8 @@ elem_to_string c i =
                                 <i class="fa fa-cube"></i>
                             </div>
                         </a>
-                        <h3>Algebraic Effects</h3>
-                        <p>Algebraic effects provide great code reuse and can even provide convenient ways to optimize code, such as swapping out the Allocator by handling the Allocator effect.</p>
+                        <h3>Effects via Capabilities</h3>
+                        <p>Capabilities provide great code reuse and are both easier to use and understand when compared to monads.</p>
                     </div>
                 </div>
 		
@@ -476,8 +459,8 @@ elem_to_string c i =
                                 <i class="fa fa-cubes"></i>
                             </div>
                         </a>
-                        <h3>Always-Incremental Compilation</h3>
-                        <p>Incremental compilation metadata is distributed along with source code. This avoids the need for each user to rebuild most libraries or applications.</p>
+                        <h3>Fast Compilation</h3>
+                        <p>Compared to similar compilers, Ante&rsquo;s compiler is both incremental and does not require monomorphization in debug builds.</p>
                     </div>
                 </div>
 		
@@ -491,7 +474,7 @@ elem_to_string c i =
                             </div>
                         </a>
                         <h3>High &amp; Low Level language</h3>
-                        <p>To try to bridge the gap between high and low level languages, ante adapts a high-level approach by default, maintaining the ability to drop into low-level code when needed.</p>
+                        <p>To try to bridge the gap between high and low level languages, ante adapts a high-level shell implemented in userland by a low-level core.</p>
                     </div>
                 </div>
 		
