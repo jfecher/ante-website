@@ -2634,7 +2634,9 @@ standard one&rsquo;s you&rsquo;re probably used to:</p>
 <span class="k">trait</span> <span class="kt">Div</span> <span class="n">a</span> <span class="ow">=</span>
     <span class="p">(</span><span class="o">/</span><span class="p">)</span><span class="o">:</span> <span class="k">fn</span> <span class="n">a</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="n">a</span>
 
-<span class="k">trait</span> <span class="kt">Rem</span> <span class="n">a</span> <span class="ow">=</span>
+<span class="c1">/// `%` is modulus rather than remainder. For unsigned numbers there is no</span>
+<span class="c1">/// difference, but for signed numbers `-3 % 5` would be `2` for modulus and `-3` for remainder.</span>
+<span class="k">trait</span> <span class="kt">Mod</span> <span class="n">a</span> <span class="ow">=</span>
     <span class="p">(</span><span class="o">%</span><span class="p">)</span><span class="o">:</span> <span class="k">fn</span> <span class="n">a</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="n">a</span>
 </code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Comparison operators are implemented in terms of the `Cmp` trait</span>
 <span class="k">trait</span> <span class="kt">Cmp</span> <span class="n">a</span> <span class="ow">=</span>
@@ -2901,8 +2903,8 @@ while true do println &#34;hello&#34;
 </code></pre></div><p>For more complex loops, Ante favors recursive functions like <code>map</code>, <code>foldl</code>, <code>iter</code>, and <code>for_</code>, which operate on streams:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">iter</span> <span class="p">(</span><span class="mi">0</span><span class="o">..</span><span class="mi">10</span><span class="p">)</span> <span class="n">println</span>   <span class="c1">// prints 0-9 inclusive</span>
 
-<span class="c1">// `for_` allows using the `continue_` and `break_` effects</span>
-<span class="nf">for</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">array</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">elem</span><span class="p">)</span> <span class="p">{</span><span class="kt">Loop</span><span class="p">}</span> <span class="ow">-&gt;</span>
+<span class="c1">// `for_` allows using `continue_` and `break_` via the `Loop` effect</span>
+<span class="nf">for_</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">array</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">elem</span><span class="p">)</span> <span class="p">{</span><span class="kt">Loop</span><span class="p">}</span> <span class="ow">-&gt;</span>
     <span class="k">if</span> <span class="n">i</span> <span class="o">%%</span> <span class="mi">3</span> <span class="k">then</span> <span class="n">continue_</span> <span class="p">()</span>
     <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">7</span> <span class="k">then</span> <span class="n">break_</span> <span class="p">()</span>
     <span class="n">print</span> <span class="n">elem</span>
@@ -3730,7 +3732,7 @@ can be converted to strings:</p>
 where each function is a field of that struct. In fact, their only difference from
 normal structs is that the functions they define may be generic without the trait type itself
 being generic over that type.</p>
-<p>Just like types and algebraic effects, we can leave out all our traits
+<p>Just like types and effects, we can leave out all our traits
 and they can still be inferred. When we do want to explicitly
 specify them, like above, we use <a href="#implicits">implicit parameters</a> to automatically
 pass around the instances for us. Note that this also means we need to ensure we
@@ -4028,7 +4030,7 @@ passing in unions will require putting them behind pointers in Ante.</p>
 useful tool since they can be used to abstract over several kinds of non-local control-flow
 (exceptions, generators, async, early-returns, etc). They can serve a similar purpose as
 monads, but unlike monads, they compose together more naturally.</p>
-<p>Algebraic effects can be declared with the <code>effect</code> keyword which define a set of functions
+<p>Effects can be declared with the <code>effect</code> keyword which define a set of functions
 in an effect:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">GiveInt</span> <span class="k">with</span>
     <span class="n">give_int</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">String</span> <span class="ow">-&gt;</span> <span class="kt">I32</span>
@@ -4083,6 +4085,7 @@ Being effects however, these do not need to be manually unpacked at each call si
     <span class="k">if</span> <span class="n">b</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">then</span> <span class="n">fail</span> <span class="p">()</span>
     <span class="n">a</span> <span class="o">/</span> <span class="n">b</span>
 
+<span class="k">type</span> <span class="kt">Name</span> <span class="ow">=</span> <span class="n">first</span><span class="o">:</span> <span class="kt">String</span><span class="p">,</span> <span class="n">last</span><span class="o">:</span> <span class="kt">String</span>
 <span class="k">type</span> <span class="kt">ParseError</span> <span class="ow">=</span> <span class="o">|</span> <span class="kt">NoName</span> <span class="o">|</span> <span class="kt">NoLastName</span> <span class="o">|</span> <span class="kt">ComplexName</span>
 
 <span class="nf">parse_name</span> <span class="p">(</span><span class="n">name</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">{</span><span class="kt">Throw</span> <span class="kt">ParseError</span><span class="p">}</span><span class="o">:</span> <span class="kt">Name</span> <span class="ow">=</span>
@@ -4156,7 +4159,7 @@ directly instead (essentially manually currying them). This is why you&rsquo;ll 
 <span class="c1">// And since these functions already return functions, we can pipeline them easily:</span>
 <span class="nf">doubled_evens</span> <span class="n">stream</span> <span class="ow">=</span> <span class="n">filter</span> <span class="n">stream</span> <span class="p">(</span><span class="n">_</span> <span class="o">%%</span> <span class="mi">2</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="n">map</span> <span class="p">(</span><span class="n">_</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span>
 </code></pre></div><h2 id="effect-control-flow">Effect Control-Flow</h2>
-<p>Algebraic Effects have a control-flow that is likely novel to many programmers. It is similar
+<p>Effects have a control-flow that is likely novel to many programmers. It is similar
 to an exception that may be resumed. We can create a handler to better
 show this unique control-flow:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">MyEffect</span> <span class="k">with</span>
@@ -4321,7 +4324,7 @@ It is often better to specify what is desired more directly. For thread-safety f
 instead of requiring purity of the spawned function, Ante requires it to be <code>Send</code>/<code>Sync</code>,
 which effects can implement as long as their captured environment is <code>Send</code>/<code>Sync</code>.</p>
 <h2 id="resuming-multiple-times">Resuming Multiple Times</h2>
-<p>In other languages with algebraic effects it may be possible to resume
+<p>In other languages with effects and handlers it may be possible to resume
 multiple times. This is currently not possible in Ante largely due to
 issues with mutability and efficiency, but may be allowed in the future.</p>
 <p>Instead, <code>resume</code> in Ante is typed as a <code>FnOnce</code> which limits it to only
@@ -4395,19 +4398,19 @@ out of loops.</p>
 <span class="c1">/// an additional Loop handler installed to allow breaking/continuing</span>
 <span class="c1">/// within the overall loop.</span>
 <span class="nf">for_</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span><span class="kt">Stream</span> <span class="n">s</span> <span class="n">a</span><span class="p">}</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="n">a</span> <span class="kt">Loop</span> <span class="ow">=&gt;</span> <span class="n">b</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span>
-    <span class="k">handler</span> <span class="n">h</span> <span class="n">for</span> <span class="n">emit</span> <span class="n">a</span> <span class="ow">-&gt;</span>
-        <span class="c1">// Scope the Loop handler to `f a l` only, so `continue_` skips just</span>
+    <span class="k">handler</span> <span class="n">emit_handler</span> <span class="n">for</span> <span class="n">emit</span> <span class="n">a</span> <span class="ow">-&gt;</span>
+        <span class="c1">// Scope the Loop handler to `f a loop_handler` only, so `continue_` skips just</span>
         <span class="c1">// the current iteration rather than the rest of the emit handler.</span>
         <span class="c1">// `break_` returns from the entire emit handler, so `resume ()` is</span>
         <span class="c1">// skipped and the stream halts.</span>
-        <span class="k">handler</span> <span class="n">l</span> <span class="n">for</span>
+        <span class="k">handler</span> <span class="n">loop_handler</span> <span class="n">for</span>
         <span class="o">|</span> <span class="n">break_</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="k">return</span> <span class="p">()</span>
         <span class="o">|</span> <span class="n">continue_</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="p">()</span>
         <span class="k">in</span>
-            <span class="n">f</span> <span class="n">a</span> <span class="n">l</span>
+            <span class="n">f</span> <span class="n">a</span> <span class="n">loop_handler</span>
             <span class="p">()</span>
         <span class="k">resume</span> <span class="p">()</span>
-    <span class="kt">Stream</span><span class="o">.</span><span class="n">stream</span> <span class="n">s</span> <span class="n">h</span>
+    <span class="kt">Stream</span><span class="o">.</span><span class="n">stream</span> <span class="n">s</span> <span class="n">emit_handler</span>
 
 <span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span>
     <span class="c1">// Print `12457`:</span>

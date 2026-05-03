@@ -421,7 +421,9 @@ trait Mul a =
 trait Div a =
     (/): fn a a -> a
 
-trait Rem a =
+/// `%` is modulus rather than remainder. For unsigned numbers there is no
+/// difference, but for signed numbers `-3 % 5` would be `2` for modulus and `-3` for remainder.
+trait Mod a =
     (%): fn a a -> a
 ```
 
@@ -790,8 +792,8 @@ For more complex loops, Ante favors recursive functions like `map`, `foldl`, `it
 ```ante
 iter (0..10) println   // prints 0-9 inclusive
 
-// `for_` allows using the `continue_` and `break_` effects
-for (enumerate array) fn (index, elem) {Loop} ->
+// `for_` allows using `continue_` and `break_` via the `Loop` effect
+for_ (enumerate array) fn (index, elem) {Loop} ->
     if i %% 3 then continue_ ()
     if i > 7 then break_ ()
     print elem
@@ -1913,7 +1915,7 @@ where each function is a field of that struct. In fact, their only difference fr
 normal structs is that the functions they define may be generic without the trait type itself
 being generic over that type.
 
-Just like types and algebraic effects, we can leave out all our traits
+Just like types and effects, we can leave out all our traits
 and they can still be inferred. When we do want to explicitly
 specify them, like above, we use [implicit parameters](#implicits) to automatically
 pass around the instances for us. Note that this also means we need to ensure we
@@ -2333,7 +2335,7 @@ useful tool since they can be used to abstract over several kinds of non-local c
 (exceptions, generators, async, early-returns, etc). They can serve a similar purpose as
 monads, but unlike monads, they compose together more naturally.
 
-Algebraic effects can be declared with the `effect` keyword which define a set of functions
+Effects can be declared with the `effect` keyword which define a set of functions
 in an effect:
 
 ```ante
@@ -2410,6 +2412,7 @@ safe_div (a: U32) (b: U32) {Fail}: U32 =
     if b == 0 then fail ()
     a / b
 
+type Name = first: String, last: String
 type ParseError = | NoName | NoLastName | ComplexName
 
 parse_name (name: String) {Throw ParseError}: Name =
@@ -2508,7 +2511,7 @@ doubled_evens stream = filter stream (_ %% 2) |> map (_ * 2) |> Vec.of
 
 ## Effect Control-Flow
 
-Algebraic Effects have a control-flow that is likely novel to many programmers. It is similar
+Effects have a control-flow that is likely novel to many programmers. It is similar
 to an exception that may be resumed. We can create a handler to better
 show this unique control-flow:
 
@@ -2696,7 +2699,7 @@ which effects can implement as long as their captured environment is `Send`/`Syn
 
 ## Resuming Multiple Times
 
-In other languages with algebraic effects it may be possible to resume
+In other languages with effects and handlers it may be possible to resume
 multiple times. This is currently not possible in Ante largely due to
 issues with mutability and efficiency, but may be allowed in the future.
 
@@ -2785,19 +2788,19 @@ effect Loop with
 /// an additional Loop handler installed to allow breaking/continuing
 /// within the overall loop.
 for_ (s: s) {Stream s a} (f: fn a Loop => b): Unit =
-    handler h for emit a ->
-        // Scope the Loop handler to `f a l` only, so `continue_` skips just
+    handler emit_handler for emit a ->
+        // Scope the Loop handler to `f a loop_handler` only, so `continue_` skips just
         // the current iteration rather than the rest of the emit handler.
         // `break_` returns from the entire emit handler, so `resume ()` is
         // skipped and the stream halts.
-        handler l for
+        handler loop_handler for
         | break_ () -> return ()
         | continue_ () -> ()
         in
-            f a l
+            f a loop_handler
             ()
         resume ()
-    Stream.stream s h
+    Stream.stream s emit_handler
 
 main () =
     // Print `12457`:
