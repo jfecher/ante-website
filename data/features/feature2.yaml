@@ -1,5 +1,5 @@
 weight: 2
-name: "Expressive"
-icon: "fa fa-chevron-right"
-description: "Common patterns like looping and handling effects have syntax sugar to cut down on repetitive code while keeping things explicit."
-link: "docs/language/#loops"
+name: "Secure"
+icon: "fa fa-lock"
+description: "Ante has capability-based security. If you don't pass an IO object to a function, it can't use it. It cannot even use external linked-in code without being allowed to do so."
+link: "docs/language/#capability-based-security"

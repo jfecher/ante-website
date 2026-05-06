@@ -1,4 +1,4 @@
-weight: 5
+weight: 6
 title: "Generators"
 description: >
     <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="c1">// Generators are implemented via effects</span>

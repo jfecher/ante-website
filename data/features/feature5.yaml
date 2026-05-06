@@ -1,5 +1,5 @@
 weight: 5
 name: "High & Low Level language"
 icon: "fa fa-code"
-description: "To try to bridge the gap between high and low level languages, ante adapts a high-level shell implemented in userland by a low-level core."
+description: "To try to bridge the gap between high and low level languages, ante has high-level abstractions implemented in userland by a low-level core."
 link: "blog/vision"

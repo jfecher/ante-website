@@ -2,4 +2,4 @@ weight: 1
 name: "Safe Shared Mutability"
 icon: "fa fa-bug"
 description: "Shared mutability is a common cause of bugs in other languages. In Ante, not only is it safe, it is zero-cost. The type system will prevent unsafe operations on mutably shared references at compile-time."
-link: "docs/language/#shared-mutability"
+link: "docs/language/#shared-mutability-and-reference-kinds"

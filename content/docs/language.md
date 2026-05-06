@@ -2301,31 +2301,86 @@ B   C
 D1  D2
 ```
 ---
-# Extern
+# Platform Independence
 
-Ante's C FFI is currently limited to `extern` functions.
-Without `extern`, all definitions must be initialized
-with a value and any names used may be mangled in the
-compiled output.
-
-You can use extern by declaring a value and giving it
-a type. Make sure the type is accurate as the compiler
-cannot check these signatures for correctness:
+Ante code is platform independent in that each Ante program is written against an interface
+for its target platform. It may not use functions not in this interface, and programs may not
+declare `extern` symbols in an ad-hoc manner like in other languages. Instead, `main` takes the
+platform it is targetting as an argument where each platform is an interface of functions available
+on that platform:
 
 ```ante
-extern puts: fn C.String -> C.Int
+main {Linux} =
+    // Linux provides access to syscalls such as fork, execve, and utilities such as io_uring
+
+main {Posix} =
+    // fork, execve, open, etc.
+
+main {Windows} =
+    // CreateThread, CreateProcess, etc
 ```
 
-You can also use extern with a block of declarations:
+More commonly, `main` will take `IO` as an argument which is an abstracted interface implemented
+by several common platforms:
 
 ```ante
-extern
-    exit: fn C.Int -> never_returns
-    malloc: fn Usz -> Ptr a
+main {IO} = ...
 ```
 
-There is currently no equivalent to an untagged C union in Ante so using any FFI that requires
-passing in unions will require putting them behind pointers in Ante.
+Code written using `IO` is expected to be reasonably cross-platform, although code written with
+more narrow capabilities will be even more so. For example, a function requiring only the `Print`
+capability (a part of the overall `IO` capability) will be easier to use on more exotic platforms
+that don't support all of `IO`. For this reason, libraries are encouraged to only require capabilities
+they actually need rather than pulling in all of `IO` because it is convenient.
+
+## Linking Dynlibs
+
+Ante has no `extern` equivalent in other languages to ad-hoc pull in symbols expected to be resolved by the linker.
+Instead, programs or libraries requiring dynamic libraries must define an interface and program against it
+like what is done for platforms above (indeed, it is the same mechanism). These interfaces can be defined
+as a type:
+
+```ante
+!lib
+type Llvm =
+    LLVMShutdown: fn Unit -> Unit
+    LLVMGetVersion: fn (major: Ptr C.UInt) (minor: Ptr C.UInt) (patch: Ptr C.UInt) -> Unit
+    LLVMCreateMessage: fn (message: C.String) -> C.String
+    LLVMDisposeMessage: fn (message: C.String) -> Unit
+
+    type ContextRef = Ptr Unit
+    LLVMContextCreate: fn Unit -> ContextRef
+    ...
+```
+
+And given to `main` as an argument, usually to be passed implicitly
+
+```ante
+main {IO} {Llvm} = ...
+```
+
+From there, the package manager (with direction from the user) is expected to link the appropriate library
+to provide values for these symbols. Platforms on which the underlying library is not supported may still
+use the interface by implementing it themselves if possible. For example, a library written to require a
+particular dynlib may still be usable on a platform without it if that dynlib's interface may be written
+in terms of functions that are available. By forcing programming against an interface like this, Ante
+code remains platform agnostic.
+
+## Implementing a new platform
+
+Getting code working for a new platform requires a few things:
+
+1. Depending on the platform, a new backend may be necessary. Getting Ante code working on the JVM or BEAM VM
+for example would require this. This could be added as a build step after Ante emits LLVM-IR.
+2. Any new primitives could be specified in a new interface and defined by the backend.
+3. Finally, existing capabilities like `IO` or `Print` could be implemented in terms of the functions
+in the new interface. Since `IO` and `Print` are interfaces themselves, this is as easy as implementing any
+other interface (although all of `IO` will be large):
+
+```ante
+impl print_jvm {Jvm}: Print with
+    print bytes = Jvm.writeBytes (bytes.as_ptr ()) 0 (bytes.len ())
+```
 
 ---
 # Effects, Handlers, and Capabilities
@@ -2930,3 +2985,55 @@ a clean design for [handling animations in games](https://gopiandcode.uk/logs/lo
 random state, or parsers, among others.
 
 ---
+
+# Capability-based Security
+
+By requiring capabilities for each effect (and external library) used by a function, Ante has
+capability-based security. Libraries that do not require a `Network` effect for example may
+not access the network. A pure function in a library one day may not be updated to secretly
+log user data in the future without adding a `Network` effect - a breaking change.
+
+There is a caveat here: since most effect capabilities are passed as implicits, if a function
+already has an implicit `Network` in scope, a once-innocent function like `innocent`:
+
+```ante
+foo (bar: Bar) {Network} =
+    innocent bar
+    my_network_fn ()
+
+// In another library:
+innocent (bar: Bar) = ...
+```
+
+May be updated to maliciously use a `Network` effect and `foo` wouldn't require a source update
+since an implicit was already available:
+
+```ante
+foo (bar: Bar) {Network} =
+    innocent bar
+    my_network_fn ()
+
+// In another library (updated):
+innocent (bar: Bar) {Network} =
+    send_user_data_to_private_servers bar
+```
+
+This is unfortunate and although it is a problem shared with more traditional effect systems, it
+is still weaker than other capability-based security models where everything must be passed explicitly.
+To mitigate this:
+
+- The package manager can warn when a library is updated to require additional capabilities
+- A particularly cautious programmer can require every capability be passed explicitly in the first place:
+
+```ante
+foo (bar: Bar) (net: Network) =
+    innocent bar  // error! no implicit of type `Network` found
+    my_network_fn () {net}
+
+// In another library:
+innocent (bar: Bar) {Network} =
+    send_user_data_to_private_servers bar
+```
+
+Even with this downside however, Ante remains significantly more secure than existing programming
+languages where all effects are untracked.

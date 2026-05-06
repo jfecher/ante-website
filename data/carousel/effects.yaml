@@ -9,7 +9,7 @@ description: >
         <span class="c1">// And they can be passed explicitly if desired (or required)</span>
         validate name email {t}
 
-    <span class="c1">// Easy abstraction over control-flow: map_vec trivially works with exceptions, async, etc.</span>
+    <span class="c1">// No function coloring problem: map_vec trivially works with exceptions, async, etc.</span>
 
     <span class="c1">// Any capabilities required by `f` are captured in its closure</span>
 

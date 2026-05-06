@@ -1,0 +1,27 @@
+weight: 4
+title: "Platform Agnostic"
+description: >
+    <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="c1">// `main` takes any required libraries and primitives as arguments</span>
+
+    main {<span class="kt">Linux</span>} = <span class="c1">// fork, execve, etc</span>
+
+    main {<span class="kt">Wasm</span>} = <span class="c1">// __wasi_fd_read, __wasi_fd_write, etc</span>
+
+
+    <span class="c1">// But you are encouraged to use the IO module for an abstracted interface available on most common platforms</span>
+
+    main {<span class="kt">IO</span>} = ...
+
+
+    <span class="c1">// Libraries may still defer to more efficient implementations when needed</span>
+
+    my_async_io {<span class="kt">IO</span>} =
+        <span class="k">if</span> <span class="kt">IO</span>.linux () <span class="k">is</span> <span class="kt">Some</span> api
+        <span class="k">then</span> <span class="c1">// use io_uring</span>
+        <span class="k">else</span> <span class="c1">// fallback</span>
+
+    <span class="c1">// Libraries requiring code to be linked in must specify this. Otherwise, they
+
+    // would break on exotic targets like Wasm or the Beam VM which can't support dynlibs</span>
+
+    compile_with_llvm_dynlib (llvm_bitcode: <span class="kt">String</span>) {<span class="kt">Llvm</span>} = ...</code></pre></div>

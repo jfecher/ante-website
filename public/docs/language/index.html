@@ -1802,10 +1802,60 @@
                     
                     
                     
-                    <a href="/docs/language/#extern">
-                        <li>Extern</li>
+                    <a href="/docs/language/#platform-independence">
+                        <li>Platform Independence</li>
                     </a>
                     
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/docs/language/#linking-dynlibs">
+                        <li>Linking Dynlibs</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/docs/language/#implementing-a-new-platform">
+                        <li>Implementing a new platform</li>
+                    </a>
+                    
+                    
+                        </ul>
                     
                         </ul>
                     
@@ -2267,6 +2317,27 @@
                         </ul>
                     
                         </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                    
+                    
+                    
+                    <a href="/docs/language/#capability-based-security">
+                        <li>Capability-based Security</li>
+                    </a>
+                    
                     
                         </ul>
                     
@@ -4009,22 +4080,64 @@ B   C
 |   |
 D1  D2
 </code></pre></div><hr>
-<h1 id="extern">Extern</h1>
-<p>Ante&rsquo;s C FFI is currently limited to <code>extern</code> functions.
-Without <code>extern</code>, all definitions must be initialized
-with a value and any names used may be mangled in the
-compiled output.</p>
-<p>You can use extern by declaring a value and giving it
-a type. Make sure the type is accurate as the compiler
-cannot check these signatures for correctness:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">extern</span> <span class="n">puts</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">C</span><span class="o">.</span><span class="kt">String</span> <span class="ow">-&gt;</span> <span class="kt">C</span><span class="o">.</span><span class="kt">Int</span>
-</code></pre></div><p>You can also use extern with a block of declarations:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">extern</span>
-    <span class="n">exit</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">C</span><span class="o">.</span><span class="kt">Int</span> <span class="ow">-&gt;</span> <span class="n">never_returns</span>
-    <span class="n">malloc</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Usz</span> <span class="ow">-&gt;</span> <span class="kt">Ptr</span> <span class="n">a</span>
-</code></pre></div><p>There is currently no equivalent to an untagged C union in Ante so using any FFI that requires
-passing in unions will require putting them behind pointers in Ante.</p>
-<hr>
+<h1 id="platform-independence">Platform Independence</h1>
+<p>Ante code is platform independent in that each Ante program is written against an interface
+for its target platform. It may not use functions not in this interface, and programs may not
+declare <code>extern</code> symbols in an ad-hoc manner like in other languages. Instead, <code>main</code> takes the
+platform it is targetting as an argument where each platform is an interface of functions available
+on that platform:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">main</span> <span class="p">{</span><span class="kt">Linux</span><span class="p">}</span> <span class="ow">=</span>
+    <span class="c1">// Linux provides access to syscalls such as fork, execve, and utilities such as io_uring</span>
+
+<span class="nf">main</span> <span class="p">{</span><span class="kt">Posix</span><span class="p">}</span> <span class="ow">=</span>
+    <span class="c1">// fork, execve, open, etc.</span>
+
+<span class="nf">main</span> <span class="p">{</span><span class="kt">Windows</span><span class="p">}</span> <span class="ow">=</span>
+    <span class="c1">// CreateThread, CreateProcess, etc</span>
+</code></pre></div><p>More commonly, <code>main</code> will take <code>IO</code> as an argument which is an abstracted interface implemented
+by several common platforms:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">main</span> <span class="p">{</span><span class="kt">IO</span><span class="p">}</span> <span class="ow">=</span> <span class="o">...</span>
+</code></pre></div><p>Code written using <code>IO</code> is expected to be reasonably cross-platform, although code written with
+more narrow capabilities will be even more so. For example, a function requiring only the <code>Print</code>
+capability (a part of the overall <code>IO</code> capability) will be easier to use on more exotic platforms
+that don&rsquo;t support all of <code>IO</code>. For this reason, libraries are encouraged to only require capabilities
+they actually need rather than pulling in all of <code>IO</code> because it is convenient.</p>
+<h2 id="linking-dynlibs">Linking Dynlibs</h2>
+<p>Ante has no <code>extern</code> equivalent in other languages to ad-hoc pull in symbols expected to be resolved by the linker.
+Instead, programs or libraries requiring dynamic libraries must define an interface and program against it
+like what is done for platforms above (indeed, it is the same mechanism). These interfaces can be defined
+as a type:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="o">!</span><span class="n">lib</span>
+<span class="k">type</span> <span class="kt">Llvm</span> <span class="ow">=</span>
+    <span class="kt">LLVMShutdown</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
+    <span class="kt">LLVMGetVersion</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="n">major</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="kt">C</span><span class="o">.</span><span class="kt">UInt</span><span class="p">)</span> <span class="p">(</span><span class="n">minor</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="kt">C</span><span class="o">.</span><span class="kt">UInt</span><span class="p">)</span> <span class="p">(</span><span class="n">patch</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="kt">C</span><span class="o">.</span><span class="kt">UInt</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
+    <span class="kt">LLVMCreateMessage</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="n">message</span><span class="o">:</span> <span class="kt">C</span><span class="o">.</span><span class="kt">String</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">C</span><span class="o">.</span><span class="kt">String</span>
+    <span class="kt">LLVMDisposeMessage</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="n">message</span><span class="o">:</span> <span class="kt">C</span><span class="o">.</span><span class="kt">String</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
+
+    <span class="k">type</span> <span class="kt">ContextRef</span> <span class="ow">=</span> <span class="kt">Ptr</span> <span class="kt">Unit</span>
+    <span class="kt">LLVMContextCreate</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">ContextRef</span>
+    <span class="o">...</span>
+</code></pre></div><p>And given to <code>main</code> as an argument, usually to be passed implicitly</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">main</span> <span class="p">{</span><span class="kt">IO</span><span class="p">}</span> <span class="p">{</span><span class="kt">Llvm</span><span class="p">}</span> <span class="ow">=</span> <span class="o">...</span>
+</code></pre></div><p>From there, the package manager (with direction from the user) is expected to link the appropriate library
+to provide values for these symbols. Platforms on which the underlying library is not supported may still
+use the interface by implementing it themselves if possible. For example, a library written to require a
+particular dynlib may still be usable on a platform without it if that dynlib&rsquo;s interface may be written
+in terms of functions that are available. By forcing programming against an interface like this, Ante
+code remains platform agnostic.</p>
+<h2 id="implementing-a-new-platform">Implementing a new platform</h2>
+<p>Getting code working for a new platform requires a few things:</p>
+<ol>
+<li>Depending on the platform, a new backend may be necessary. Getting Ante code working on the JVM or BEAM VM
+for example would require this. This could be added as a build step after Ante emits LLVM-IR.</li>
+<li>Any new primitives could be specified in a new interface and defined by the backend.</li>
+<li>Finally, existing capabilities like <code>IO</code> or <code>Print</code> could be implemented in terms of the functions
+in the new interface. Since <code>IO</code> and <code>Print</code> are interfaces themselves, this is as easy as implementing any
+other interface (although all of <code>IO</code> will be large):</li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">print_jvm</span> <span class="p">{</span><span class="kt">Jvm</span><span class="p">}</span><span class="o">:</span> <span class="kt">Print</span> <span class="k">with</span>
+    <span class="n">print</span> <span class="n">bytes</span> <span class="ow">=</span> <span class="kt">Jvm</span><span class="o">.</span><span class="n">writeBytes</span> <span class="p">(</span><span class="n">bytes</span><span class="o">.</span><span class="n">as_ptr</span> <span class="p">())</span> <span class="mi">0</span> <span class="p">(</span><span class="n">bytes</span><span class="o">.</span><span class="n">len</span> <span class="p">())</span>
+</code></pre></div><hr>
 <h1 id="effects-handlers-and-capabilities">Effects, Handlers, and Capabilities</h1>
 <p>Effects are a control-flow abstraction similar to a resumable exception. They are a
 useful tool since they can be used to abstract over several kinds of non-local control-flow
@@ -4523,6 +4636,44 @@ implement <a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2
 a clean design for <a href="https://gopiandcode.uk/logs/log-bye-bye-monads-algebraic-effects.html">handling animations in games</a>,
 random state, or parsers, among others.</p>
 <hr>
+<h1 id="capability-based-security">Capability-based Security</h1>
+<p>By requiring capabilities for each effect (and external library) used by a function, Ante has
+capability-based security. Libraries that do not require a <code>Network</code> effect for example may
+not access the network. A pure function in a library one day may not be updated to secretly
+log user data in the future without adding a <code>Network</code> effect - a breaking change.</p>
+<p>There is a caveat here: since most effect capabilities are passed as implicits, if a function
+already has an implicit <code>Network</code> in scope, a once-innocent function like <code>innocent</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo</span> <span class="p">(</span><span class="n">bar</span><span class="o">:</span> <span class="kt">Bar</span><span class="p">)</span> <span class="p">{</span><span class="kt">Network</span><span class="p">}</span> <span class="ow">=</span>
+    <span class="n">innocent</span> <span class="n">bar</span>
+    <span class="n">my_network_fn</span> <span class="p">()</span>
+
+<span class="c1">// In another library:</span>
+<span class="nf">innocent</span> <span class="p">(</span><span class="n">bar</span><span class="o">:</span> <span class="kt">Bar</span><span class="p">)</span> <span class="ow">=</span> <span class="o">...</span>
+</code></pre></div><p>May be updated to maliciously use a <code>Network</code> effect and <code>foo</code> wouldn&rsquo;t require a source update
+since an implicit was already available:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo</span> <span class="p">(</span><span class="n">bar</span><span class="o">:</span> <span class="kt">Bar</span><span class="p">)</span> <span class="p">{</span><span class="kt">Network</span><span class="p">}</span> <span class="ow">=</span>
+    <span class="n">innocent</span> <span class="n">bar</span>
+    <span class="n">my_network_fn</span> <span class="p">()</span>
+
+<span class="c1">// In another library (updated):</span>
+<span class="nf">innocent</span> <span class="p">(</span><span class="n">bar</span><span class="o">:</span> <span class="kt">Bar</span><span class="p">)</span> <span class="p">{</span><span class="kt">Network</span><span class="p">}</span> <span class="ow">=</span>
+    <span class="n">send_user_data_to_private_servers</span> <span class="n">bar</span>
+</code></pre></div><p>This is unfortunate and although it is a problem shared with more traditional effect systems, it
+is still weaker than other capability-based security models where everything must be passed explicitly.
+To mitigate this:</p>
+<ul>
+<li>The package manager can warn when a library is updated to require additional capabilities</li>
+<li>A particularly cautious programmer can require every capability be passed explicitly in the first place:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo</span> <span class="p">(</span><span class="n">bar</span><span class="o">:</span> <span class="kt">Bar</span><span class="p">)</span> <span class="p">(</span><span class="n">net</span><span class="o">:</span> <span class="kt">Network</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="n">innocent</span> <span class="n">bar</span>  <span class="c1">// error! no implicit of type `Network` found</span>
+    <span class="n">my_network_fn</span> <span class="p">()</span> <span class="p">{</span><span class="n">net</span><span class="p">}</span>
+
+<span class="c1">// In another library:</span>
+<span class="nf">innocent</span> <span class="p">(</span><span class="n">bar</span><span class="o">:</span> <span class="kt">Bar</span><span class="p">)</span> <span class="p">{</span><span class="kt">Network</span><span class="p">}</span> <span class="ow">=</span>
+    <span class="n">send_user_data_to_private_servers</span> <span class="n">bar</span>
+</code></pre></div><p>Even with this downside however, Ante remains significantly more secure than existing programming
+languages where all effects are untracked.</p>
 
                         </div>
                         
