@@ -67,7 +67,6 @@ These also use a temporary `c"_"` syntax currently.
 - [x] `for` loops
 - [x] `while` loops
 - [x] `break`/`continue`
-- [x] `extern`
 
 ---
 # Types
@@ -122,6 +121,12 @@ All APIs are non-final.
 - [ ] Existentialization option for lowering generics in debug mode (making monomorphization optional)
 - [ ] Compiler option to write inferred types into the file
 - [ ] Formatter
+- [ ] Platforms
+  - [ ] Interfaces for common platforms defined
+  - [ ] `IO` interface defined
+    - The compiler uses `extern` declarations currently not in its design and relies on Posix symbols
+  - [ ] Linker provides values for platform parameters to `main`.
+  - [ ] Linker provides values for dynamic library parameters to `main`.
 - [x] Language server.
   - [x] Display errors in file
   - [x] Hover
@@ -169,3 +174,5 @@ All APIs are non-final.
     - [x] 0 resumptions
   - [x] Capabilities
     - [ ] Capabilities are second-class
+    - [ ] Capability-based Security
+      - No `IO` effect yet. Other effects are handled as normal but users can escape these restraints by defining `extern` symbols which link to library code performing arbitrary effects.

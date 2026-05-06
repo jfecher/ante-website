@@ -550,7 +550,6 @@ These also use a temporary <code>c&quot;_&quot;</code> syntax currently.</li>
 <li><input checked="" disabled="" type="checkbox"> <code>for</code> loops</li>
 <li><input checked="" disabled="" type="checkbox"> <code>while</code> loops</li>
 <li><input checked="" disabled="" type="checkbox"> <code>break</code>/<code>continue</code></li>
-<li><input checked="" disabled="" type="checkbox"> <code>extern</code></li>
 </ul>
 <hr>
 <h1 id="types">Types</h1>
@@ -613,6 +612,18 @@ These also use a temporary <code>c&quot;_&quot;</code> syntax currently.</li>
 <li><input disabled="" type="checkbox"> Existentialization option for lowering generics in debug mode (making monomorphization optional)</li>
 <li><input disabled="" type="checkbox"> Compiler option to write inferred types into the file</li>
 <li><input disabled="" type="checkbox"> Formatter</li>
+<li><input disabled="" type="checkbox"> Platforms
+<ul>
+<li><input disabled="" type="checkbox"> Interfaces for common platforms defined</li>
+<li><input disabled="" type="checkbox"> <code>IO</code> interface defined
+<ul>
+<li>The compiler uses <code>extern</code> declarations currently not in its design and relies on Posix symbols</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox"> Linker provides values for platform parameters to <code>main</code>.</li>
+<li><input disabled="" type="checkbox"> Linker provides values for dynamic library parameters to <code>main</code>.</li>
+</ul>
+</li>
 <li><input checked="" disabled="" type="checkbox"> Language server.
 <ul>
 <li><input checked="" disabled="" type="checkbox"> Display errors in file</li>
@@ -680,6 +691,11 @@ These also use a temporary <code>c&quot;_&quot;</code> syntax currently.</li>
 <li><input checked="" disabled="" type="checkbox"> Capabilities
 <ul>
 <li><input disabled="" type="checkbox"> Capabilities are second-class</li>
+<li><input disabled="" type="checkbox"> Capability-based Security
+<ul>
+<li>No <code>IO</code> effect yet. Other effects are handled as normal but users can escape these restraints by defining <code>extern</code> symbols which link to library code performing arbitrary effects.</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
