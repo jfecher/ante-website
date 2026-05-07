@@ -1,8 +1,6 @@
 baseURL = "https://antelang.org/"
 title = "Ante"
 
-theme = "hugo-universal-theme"
-
 languageCode = "en-us"
 defaultContentLanguage = "en"
 
