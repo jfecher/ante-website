@@ -778,7 +778,7 @@ if should_print () then
 Ante includes the traditional `for` and `while` loops along with `break` and `continue`.
 `for` loops must iterate over an increasing range. For anything more complex, streams must be used.
 
-```
+```ante
 for i in 0 .. 10 do
     if i %% 3 then continue
     if i > 7 then break

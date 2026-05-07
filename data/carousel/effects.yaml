@@ -1,17 +1,14 @@
 weight: 3
 title: "Effects and Capabilities"
-description: >
-    <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="c1">// Each capability is passed as a parameter and enables a function to perform its effect</span>
-
-    signup (name: <span class="kt">String</span>) (email: <span class="kt">Email</span>) {t: <span class="kt">Throw ValidationErr</span>} {<span class="kt">Throw IOErr</span>} {<span class="kt">IO</span>}: <span class="kt">User</span> =
-        <span class="c1">// Unlike monads, capabilities are trivial to combine: they are just implicit parameters</span>
+code: |
+    // Each capability is passed as a parameter and enables a function to perform its effect
+    signup (name: String) (email: Email) {t: Throw ValidationErr} {Throw IOErr} {IO}: User =
+        // Unlike monads, capabilities are trivial to combine: they are just implicit parameters
         cfg = read_cfg_from_disk ()
-        <span class="c1">// And they can be passed explicitly if desired (or required)</span>
+        // And they can be passed explicitly if desired (or required)
         validate name email {t}
 
-    <span class="c1">// No function coloring problem: map_vec trivially works with exceptions, async, etc.</span>
-
-    <span class="c1">// Any capabilities required by `f` are captured in its closure</span>
-
-    map_vec (v: <span class="kt">Vec t</span>) (f: <span class="k">fn</span> <span class="kt">t</span> => <span class="kt">u</span>): <span class="kt">Vec u</span> =
-        <span class="kt">Vec</span>.of (map v f)</code></pre></div>
+    // No function coloring problem: map_vec trivially works with exceptions, async, etc.
+    // Any capabilities required by `f` are captured in its closure
+    map_vec (v: Vec t) (f: fn t => u): Vec u =
+        Vec.of (map v f)

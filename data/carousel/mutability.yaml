@@ -1,23 +1,15 @@
 weight: 5
 title: "Safe Shared Mutability"
-description: >
-    <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="k">var</span> vec = <span class="kt">Vec</span>.of [<span class="m">1</span>, <span class="m">2</span>, <span class="m">3</span>]
+code: |
+    var vec = Vec.of [1, 2, 3]
 
+    ref1 = mut vec  // Create a temporary mutable reference to vec
+    ref2 = mut vec
 
-    ref1 = <span class="k">mut</span> vec  <span class="c1">// Create a temporary mutable reference to vec</span>
+    // Ok! It is safe to call `Vec.push` with shared mutable references
+    ref1.push 4
+    ref2.push 5
 
-    ref2 = <span class="k">mut</span> vec
-
-
-    <span class="c1">// Ok! It is safe to call `Vec.push` with shared mutable references</span>
-
-    ref1.push <span class="m">4</span>
-
-    ref2.push <span class="m">5</span>
-
-
-    <span class="c1">// Retrieving a reference to an element is also possible, but we can't</span>
-
-    <span class="c1">// use other mutable references to the same value while it is active.</span>
-
-    elem = ref1.get <span class="m">0</span></code></pre></div>
+    // Retrieving a reference to an element is also possible, but we can't
+    // use other mutable references to the same value while it is active.
+    elem = ref1.get 0

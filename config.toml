@@ -22,7 +22,6 @@ newContentEditor = "vim"
   [markup.highlight]
     guessSyntax = true
     noClasses = false
-    style = "monokai"
     codeFences = true
 
 [menu]

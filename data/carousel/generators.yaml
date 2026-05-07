@@ -1,20 +1,17 @@
 weight: 6
 title: "Generators"
-description: >
-    <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="c1">// Generators are implemented via effects</span>
+code: |
+    // Generators are implemented via effects
+    effect Emit elem with
+        emit: fn elem -> Unit
 
-    <span class="k">effect</span> <span class="kt">Emit elem</span> <span class="k">with</span> 
-        emit: <span class="k">fn</span> <span class="kt">elem</span> -> <span class="kt">Unit</span>
-
-    <span class="c1">// One advantage of generators is that they are easier to write than iterators.</span>
-
-    <span class="c1">// We'll supply the `Emit a` value but the caller needs to provide a capability for `Emit b`</span>
-
-    map (stream: <span class="k">fn</span> (<span class="kt">Emit a</span>) -> <span class="kt">Unit</span>) (f: <span class="k">fn</span> <span class="kt">a</span> => <span class="kt">b</span>) {<span class="kt">Emit b</span>} =
-        <span class="k">handler</span> emit_a <span class="k">for</span> emit elem ->
+    // One advantage of generators is that they are easier to write than iterators.
+    // We'll supply the `Emit a` value but the caller needs to provide a capability for `Emit b`
+    map (stream: fn (Emit a) -> Unit) (f: fn a => b) {Emit b} =
+        handler emit_a for emit elem ->
             emit (f elem)
-            <span class="k">resume</span> ()
+            resume ()
         stream emit_a
 
-    parse_csv (text: <span class="kt">String</span>): <span class="kt">Vec</span> (<span class="kt">Vec String</span>) =
-        lines text |> skip <span class="m">1</span> |> map (<span class="k">fn</span> line -> split line <span class="s">","</span> |> Vec.of) |> Vec.of</code></pre></div>
+    parse_csv (text: String): Vec (Vec String) =
+        lines text |> skip 1 |> map (fn line -> split line "," |> Vec.of) |> Vec.of

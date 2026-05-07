@@ -1,24 +1,19 @@
 weight: 2
 title: "Traits via Implicits"
-description: >
-    <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="c1">// Traits in Ante are just sugar for types holding closure values</span>
+code: |
+    // Traits in Ante are just sugar for types holding closure values
+    trait Foo t with
+        foo: fn t -> U32
 
-    <span class="k">trait</span> <span class="kt">Foo t</span> <span class="k">with</span> 
-        foo: <span class="k">fn</span> <span class="kt">t</span> -> <span class="kt">U32</span>
+    // And trait impls are sugar for implicit functions which take values and return a trait object.
+    // Moreover, since traits are implicits, no global coherence or orphan restrictions are required
+    impl ord_i32_descending: Ord I32 with
+        cmp a b = Ordering.from_int (b - a)
 
-    <span class="c1">// And trait impls are sugar for implicit functions which take values and return a trait object.</span>
-
-    <span class="c1">// Moreover, since traits are implicits, no global coherence or orphan restrictions are required</span>
-
-    <span class="k">impl</span> ord_i32_descending: <span class="kt">Ord I32</span> <span class="k">with</span>
-        cmp a b = <span class="kt">Ordering</span>.from_int (b - a)
-
-    <span class="c1">// Impls can be defined locally and closures can capture data, making
-
-    // implementing traits on interned types much easier</span>
-
-    <span class="k">impl</span> foo_interned (ctx: <span class="kt">InternCtx</span>): <span class="kt">Display MyInternedType</span> <span class="k">with</span>
+    // Impls can be defined locally and closures can capture data, making
+    // implementing traits on interned types much easier
+    impl foo_interned (ctx: InternCtx): Display MyInternedType with
         foo interned =
-            <span class="c1">// Use `ctx` from the closure environment</span>
+            // Use `ctx` from the closure environment
             data = ctx.get interned
-            foo data</code></pre></div>
+            foo data

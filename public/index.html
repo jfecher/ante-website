@@ -36,7 +36,7 @@
 
 
 
-<link href="/css/custom.css" rel="stylesheet">
+<link href="/css/custom.css?1778190341" rel="stylesheet">
 
 
 
@@ -222,6 +222,7 @@
 
         
 
+
 <section>
     <div class="home-carousel">
         <div class="dark-mask"></div>
@@ -236,23 +237,27 @@
                         <div class="row">
                             <div class="col-sm-5 right">
                                 <h1>Opt-out Move Semantics</h1>
-                                <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante">move_value x = ()
+                                
+                                    <div class="highlight-textalign-left">
+                                        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">move_value</span> <span class="n">x</span> <span class="ow">=</span> <span class="p">()</span>
 
 <span class="c1">// Most types are not shared and use move semantics by default</span>
-vec = <span class="kt">Vec</span>.of [<span class="m">1</span>, <span class="m">2</span>, <span class="m">3</span>]
-move_value vec  <span class="c1">// ok!</span>
-move_value vec  <span class="c1">// error! Vec already moved</span>
+<span class="nf">vec</span> <span class="ow">=</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="nf">move_value</span> <span class="n">vec</span>  <span class="c1">// ok!</span>
+<span class="nf">move_value</span> <span class="n">vec</span>  <span class="c1">// error! Vec already moved</span>
 
 <span class="c1">// But shared types can be defined which enable cleaner code and a gentler learning curve.</span>
-<span class="k">shared type</span> <span class="kt">Expr</span> =
-    | <span class="kt">Int I32</span>
-    | <span class="kt">Var</span> (name: <span class="kt">String</span>)
-    | <span class="kt">Add Expr Expr</span> <span class="c1">// No explicit boxing since `Expr` is shared</span>
+<span class="k">shared</span> <span class="k">type</span> <span class="kt">Expr</span> <span class="ow">=</span>
+    <span class="o">|</span> <span class="kt">Int</span> <span class="kt">I32</span>
+    <span class="o">|</span> <span class="kt">Var</span> <span class="p">(</span><span class="n">name</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span>
+    <span class="o">|</span> <span class="kt">Add</span> <span class="kt">Expr</span> <span class="kt">Expr</span>  <span class="c1">// No explicit boxing since `Expr` is shared</span>
 
-foo = <span class="kt">Expr</span>.<span class="kt">Var</span> <span class="s">"foo"</span>
-move_value foo  <span class="c1">// ok!</span>
-move_value foo  <span class="c1">// ok!</span></code></pre></div>
-
+<span class="nf">foo</span> <span class="ow">=</span> <span class="kt">Expr</span><span class="o">.</span><span class="kt">Var</span> <span class="s">&#34;foo&#34;</span>
+<span class="nf">move_value</span> <span class="n">foo</span>  <span class="c1">// ok!</span>
+<span class="nf">move_value</span> <span class="n">foo</span>  <span class="c1">// ok!</span>
+</code></pre></div>
+                                    </div>
+                                
                             </div>
                             <div class="col-sm-7">
                                 <img class="img-responsive" src="" alt="">
@@ -266,23 +271,27 @@ move_value foo  <span class="c1">// ok!</span></code></pre></div>
                         <div class="row">
                             <div class="col-sm-5 right">
                                 <h1>Traits via Implicits</h1>
-                                <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="c1">// Traits in Ante are just sugar for types holding closure values</span>
-<span class="k">trait</span> <span class="kt">Foo t</span> <span class="k">with</span> 
-    foo: <span class="k">fn</span> <span class="kt">t</span> -> <span class="kt">U32</span>
+                                
+                                    <div class="highlight-textalign-left">
+                                        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Traits in Ante are just sugar for types holding closure values</span>
+<span class="k">trait</span> <span class="kt">Foo</span> <span class="n">t</span> <span class="k">with</span>
+    <span class="n">foo</span><span class="o">:</span> <span class="k">fn</span> <span class="n">t</span> <span class="ow">-&gt;</span> <span class="kt">U32</span>
 
 <span class="c1">// And trait impls are sugar for implicit functions which take values and return a trait object.</span>
 <span class="c1">// Moreover, since traits are implicits, no global coherence or orphan restrictions are required</span>
-<span class="k">impl</span> ord_i32_descending: <span class="kt">Ord I32</span> <span class="k">with</span>
-    cmp a b = <span class="kt">Ordering</span>.from_int (b - a)
+<span class="k">impl</span> <span class="n">ord_i32_descending</span><span class="o">:</span> <span class="kt">Ord</span> <span class="kt">I32</span> <span class="k">with</span>
+    <span class="n">cmp</span> <span class="n">a</span> <span class="n">b</span> <span class="ow">=</span> <span class="kt">Ordering</span><span class="o">.</span><span class="n">from_int</span> <span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span>
 
-<span class="c1">// Impls can be defined locally and closures can capture data, making
-// implementing traits on interned types much easier</span>
-<span class="k">impl</span> foo_interned (ctx: <span class="kt">InternCtx</span>): <span class="kt">Display MyInternedType</span> <span class="k">with</span>
-    foo interned =
+<span class="c1">// Impls can be defined locally and closures can capture data, making</span>
+<span class="c1">// implementing traits on interned types much easier</span>
+<span class="k">impl</span> <span class="n">foo_interned</span> <span class="p">(</span><span class="n">ctx</span><span class="o">:</span> <span class="kt">InternCtx</span><span class="p">)</span><span class="o">:</span> <span class="kt">Display</span> <span class="kt">MyInternedType</span> <span class="k">with</span>
+    <span class="n">foo</span> <span class="n">interned</span> <span class="ow">=</span>
         <span class="c1">// Use `ctx` from the closure environment</span>
-        data = ctx.get interned
-        foo data</code></pre></div>
-
+        <span class="n">data</span> <span class="ow">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">get</span> <span class="n">interned</span>
+        <span class="n">foo</span> <span class="n">data</span>
+</code></pre></div>
+                                    </div>
+                                
                             </div>
                             <div class="col-sm-7">
                                 <img class="img-responsive" src="" alt="">
@@ -296,18 +305,22 @@ move_value foo  <span class="c1">// ok!</span></code></pre></div>
                         <div class="row">
                             <div class="col-sm-5 right">
                                 <h1>Effects and Capabilities</h1>
-                                <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="c1">// Each capability is passed as a parameter and enables a function to perform its effect</span>
-signup (name: <span class="kt">String</span>) (email: <span class="kt">Email</span>) {t: <span class="kt">Throw ValidationErr</span>} {<span class="kt">Throw IOErr</span>} {<span class="kt">IO</span>}: <span class="kt">User</span> =
+                                
+                                    <div class="highlight-textalign-left">
+                                        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Each capability is passed as a parameter and enables a function to perform its effect</span>
+<span class="nf">signup</span> <span class="p">(</span><span class="n">name</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">(</span><span class="n">email</span><span class="o">:</span> <span class="kt">Email</span><span class="p">)</span> <span class="p">{</span><span class="n">t</span><span class="o">:</span> <span class="kt">Throw</span> <span class="kt">ValidationErr</span><span class="p">}</span> <span class="p">{</span><span class="kt">Throw</span> <span class="kt">IOErr</span><span class="p">}</span> <span class="p">{</span><span class="kt">IO</span><span class="p">}</span><span class="o">:</span> <span class="kt">User</span> <span class="ow">=</span>
     <span class="c1">// Unlike monads, capabilities are trivial to combine: they are just implicit parameters</span>
-    cfg = read_cfg_from_disk ()
+    <span class="n">cfg</span> <span class="ow">=</span> <span class="n">read_cfg_from_disk</span> <span class="p">()</span>
     <span class="c1">// And they can be passed explicitly if desired (or required)</span>
-    validate name email {t}
+    <span class="n">validate</span> <span class="n">name</span> <span class="n">email</span> <span class="p">{</span><span class="n">t</span><span class="p">}</span>
 
 <span class="c1">// No function coloring problem: map_vec trivially works with exceptions, async, etc.</span>
 <span class="c1">// Any capabilities required by `f` are captured in its closure</span>
-map_vec (v: <span class="kt">Vec t</span>) (f: <span class="k">fn</span> <span class="kt">t</span> => <span class="kt">u</span>): <span class="kt">Vec u</span> =
-    <span class="kt">Vec</span>.of (map v f)</code></pre></div>
-
+<span class="nf">map_vec</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="n">t</span> <span class="ow">=&gt;</span> <span class="n">u</span><span class="p">)</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">u</span> <span class="ow">=</span>
+    <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span> <span class="p">(</span><span class="n">map</span> <span class="n">v</span> <span class="n">f</span><span class="p">)</span>
+</code></pre></div>
+                                    </div>
+                                
                             </div>
                             <div class="col-sm-7">
                                 <img class="img-responsive" src="" alt="">
@@ -321,23 +334,27 @@ map_vec (v: <span class="kt">Vec t</span>) (f: <span class="k">fn</span> <span c
                         <div class="row">
                             <div class="col-sm-5 right">
                                 <h1>Platform Agnostic</h1>
-                                <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="c1">// `main` takes any required libraries and primitives as arguments</span>
-main {<span class="kt">Linux</span>} = <span class="c1">// fork, execve, etc</span>
-main {<span class="kt">Wasm</span>} = <span class="c1">// __wasi_fd_read, __wasi_fd_write, etc</span>
+                                
+                                    <div class="highlight-textalign-left">
+                                        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// `main` takes any required libraries and primitives as arguments</span>
+<span class="nf">main</span> <span class="p">{</span><span class="kt">Linux</span><span class="p">}</span> <span class="ow">=</span> <span class="c1">// fork, execve, etc</span>
+<span class="nf">main</span> <span class="p">{</span><span class="kt">Wasm</span><span class="p">}</span>  <span class="ow">=</span> <span class="c1">// __wasi_fd_read, __wasi_fd_write, etc</span>
 
 <span class="c1">// But you are encouraged to use the IO module for an abstracted interface available on most common platforms</span>
-main {<span class="kt">IO</span>} = ...
+<span class="nf">main</span> <span class="p">{</span><span class="kt">IO</span><span class="p">}</span> <span class="ow">=</span> <span class="o">...</span>
 
 <span class="c1">// Libraries may still defer to more efficient implementations when needed</span>
-my_async_io {<span class="kt">IO</span>} =
-    <span class="k">if</span> <span class="kt">IO</span>.linux () <span class="k">is</span> <span class="kt">Some</span> api
+<span class="nf">my_async_io</span> <span class="p">{</span><span class="kt">IO</span><span class="p">}</span> <span class="ow">=</span>
+    <span class="k">if</span> <span class="kt">IO</span><span class="o">.</span><span class="n">linux</span> <span class="p">()</span> <span class="k">is</span> <span class="kt">Some</span> <span class="n">api</span>
     <span class="k">then</span> <span class="c1">// use io_uring</span>
     <span class="k">else</span> <span class="c1">// fallback</span>
 
-<span class="c1">// Libraries requiring code to be linked in must specify this. Otherwise, they
-// would break on exotic targets like Wasm or the Beam VM which can't support dynlibs</span>
-compile_with_llvm_dynlib (llvm_bitcode: <span class="kt">String</span>) {<span class="kt">Llvm</span>} = ...</code></pre></div>
-
+<span class="c1">// Libraries requiring code to be linked in must specify this. Otherwise, they</span>
+<span class="c1">// would break on exotic targets like Wasm or the Beam VM which can&#39;t support dynlibs</span>
+<span class="nf">compile_with_llvm_dynlib</span> <span class="p">(</span><span class="n">llvm_bitcode</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">{</span><span class="kt">Llvm</span><span class="p">}</span> <span class="ow">=</span> <span class="o">...</span>
+</code></pre></div>
+                                    </div>
+                                
                             </div>
                             <div class="col-sm-7">
                                 <img class="img-responsive" src="" alt="">
@@ -351,19 +368,23 @@ compile_with_llvm_dynlib (llvm_bitcode: <span class="kt">String</span>) {<span c
                         <div class="row">
                             <div class="col-sm-5 right">
                                 <h1>Safe Shared Mutability</h1>
-                                <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="k">var</span> vec = <span class="kt">Vec</span>.of [<span class="m">1</span>, <span class="m">2</span>, <span class="m">3</span>]
+                                
+                                    <div class="highlight-textalign-left">
+                                        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">var</span> <span class="n">vec</span> <span class="ow">=</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 
-ref1 = <span class="k">mut</span> vec  <span class="c1">// Create a temporary mutable reference to vec</span>
-ref2 = <span class="k">mut</span> vec
+<span class="nf">ref1</span> <span class="ow">=</span> <span class="k">mut</span> <span class="n">vec</span>  <span class="c1">// Create a temporary mutable reference to vec</span>
+<span class="nf">ref2</span> <span class="ow">=</span> <span class="k">mut</span> <span class="n">vec</span>
 
 <span class="c1">// Ok! It is safe to call `Vec.push` with shared mutable references</span>
-ref1.push <span class="m">4</span>
-ref2.push <span class="m">5</span>
+<span class="nf">ref1</span><span class="o">.</span><span class="n">push</span> <span class="mi">4</span>
+<span class="nf">ref2</span><span class="o">.</span><span class="n">push</span> <span class="mi">5</span>
 
-<span class="c1">// Retrieving a reference to an element is also possible, but we can't</span>
+<span class="c1">// Retrieving a reference to an element is also possible, but we can&#39;t</span>
 <span class="c1">// use other mutable references to the same value while it is active.</span>
-elem = ref1.get <span class="m">0</span></code></pre></div>
-
+<span class="nf">elem</span> <span class="ow">=</span> <span class="n">ref1</span><span class="o">.</span><span class="n">get</span> <span class="mi">0</span>
+</code></pre></div>
+                                    </div>
+                                
                             </div>
                             <div class="col-sm-7">
                                 <img class="img-responsive" src="" alt="">
@@ -377,21 +398,25 @@ elem = ref1.get <span class="m">0</span></code></pre></div>
                         <div class="row">
                             <div class="col-sm-5 right">
                                 <h1>Generators</h1>
-                                <div class="highlight-textalign-left"><pre class="center-align"><code class="language/ante" data-lang="ante"><span class="c1">// Generators are implemented via effects</span>
-<span class="k">effect</span> <span class="kt">Emit elem</span> <span class="k">with</span> 
-    emit: <span class="k">fn</span> <span class="kt">elem</span> -> <span class="kt">Unit</span>
+                                
+                                    <div class="highlight-textalign-left">
+                                        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Generators are implemented via effects</span>
+<span class="k">effect</span> <span class="kt">Emit</span> <span class="n">elem</span> <span class="k">with</span>
+    <span class="n">emit</span><span class="o">:</span> <span class="k">fn</span> <span class="n">elem</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
 
 <span class="c1">// One advantage of generators is that they are easier to write than iterators.</span>
-<span class="c1">// We'll supply the `Emit a` value but the caller needs to provide a capability for `Emit b`</span>
-map (stream: <span class="k">fn</span> (<span class="kt">Emit a</span>) -> <span class="kt">Unit</span>) (f: <span class="k">fn</span> <span class="kt">a</span> => <span class="kt">b</span>) {<span class="kt">Emit b</span>} =
-    <span class="k">handler</span> emit_a <span class="k">for</span> emit elem ->
-        emit (f elem)
-        <span class="k">resume</span> ()
-    stream emit_a
+<span class="c1">// We&#39;ll supply the `Emit a` value but the caller needs to provide a capability for `Emit b`</span>
+<span class="nf">map</span> <span class="p">(</span><span class="n">stream</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="kt">Emit</span> <span class="n">a</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="n">a</span> <span class="ow">=&gt;</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span><span class="kt">Emit</span> <span class="n">b</span><span class="p">}</span> <span class="ow">=</span>
+    <span class="k">handler</span> <span class="n">emit_a</span> <span class="k">for</span> <span class="n">emit</span> <span class="n">elem</span> <span class="ow">-&gt;</span>
+        <span class="n">emit</span> <span class="p">(</span><span class="n">f</span> <span class="n">elem</span><span class="p">)</span>
+        <span class="k">resume</span> <span class="p">()</span>
+    <span class="n">stream</span> <span class="n">emit_a</span>
 
-parse_csv (text: <span class="kt">String</span>): <span class="kt">Vec</span> (<span class="kt">Vec String</span>) =
-    lines text |> skip <span class="m">1</span> |> map (<span class="k">fn</span> line -> split line <span class="s">","</span> |> Vec.of) |> Vec.of</code></pre></div>
-
+<span class="nf">parse_csv</span> <span class="p">(</span><span class="n">text</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">Vec</span> <span class="p">(</span><span class="kt">Vec</span> <span class="kt">String</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="n">lines</span> <span class="n">text</span> <span class="o">|&gt;</span> <span class="n">skip</span> <span class="mi">1</span> <span class="o">|&gt;</span> <span class="n">map</span> <span class="p">(</span><span class="k">fn</span> <span class="n">line</span> <span class="ow">-&gt;</span> <span class="n">split</span> <span class="n">line</span> <span class="s">&#34;,&#34;</span> <span class="o">|&gt;</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span>
+</code></pre></div>
+                                    </div>
+                                
                             </div>
                             <div class="col-sm-7">
                                 <img class="img-responsive" src="" alt="">
@@ -405,6 +430,7 @@ parse_csv (text: <span class="kt">String</span>): <span class="kt">Vec</span> (<
         </div>
     </div>
 </section>
+
 
 
 
