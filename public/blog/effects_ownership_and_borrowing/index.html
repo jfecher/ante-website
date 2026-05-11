@@ -583,7 +583,7 @@ with ownership and borrowing - particularly Ante?<sup id="fnref:1"><a href="#fn:
 <hr>
 <h1 id="ownership">Ownership</h1>
 <p>Consider the following program:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Read</span> <span class="n">a</span> <span class="k">with</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">effect</span> <span class="kt">Read</span> <span class="n">a</span> <span class="k">with</span>
     <span class="n">read</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span>
 
 <span class="nf">the_value</span> <span class="p">(</span><span class="n">value</span><span class="o">:</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">b</span> <span class="k">can</span> <span class="kt">Read</span> <span class="n">a</span><span class="p">)</span> <span class="o">:</span> <span class="n">b</span> <span class="ow">=</span>
@@ -658,7 +658,7 @@ returns another reference should also fail:</p>
 <p>Now let&rsquo;s consider how we can break programs which pass references to effects.
 For this we&rsquo;re going to use the <code>Yield a</code> effect which is used for creating
 generators or streams:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Yield</span> <span class="n">a</span> <span class="k">with</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">effect</span> <span class="kt">Yield</span> <span class="n">a</span> <span class="k">with</span>
     <span class="n">yield</span><span class="o">:</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
 
 <span class="nf">foo</span> <span class="p">()</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Yield</span> <span class="p">(</span><span class="o">&amp;</span><span class="k">own</span> <span class="k">mut</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
@@ -702,7 +702,7 @@ in-progress computation, we need a way to safely encode this environment, yet we
 need to do so when defining the effect before the environment is known.
 What type should be given to <code>resume</code>?</p>
 <p>Consider the following code:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Fork</span> <span class="k">with</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">effect</span> <span class="kt">Fork</span> <span class="k">with</span>
     <span class="n">fork</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span>
 
 <span class="nf">foo</span> <span class="p">()</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Fork</span> <span class="ow">=</span>
@@ -729,7 +729,7 @@ already-dropped value.</p>
 some way to determine if <code>resume</code> should be a <code>Fn</code>, <code>FnMut</code>, or <code>FnOnce</code> since
 we cannot know this within the handler itself.</p>
 <p>One possibility is to require this in the definition of <code>Fork</code>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Fork</span> <span class="k">with</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">effect</span> <span class="kt">Fork</span> <span class="k">with</span>
     <span class="n">fork</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span>
 
     <span class="c1">// The underscores here are because we&#39;re omitting the closure environment</span>
@@ -762,7 +762,7 @@ after the last use of <code>resume</code> in the effect handler.</p>
 <h2 id="environment-type-quantification">Environment Type Quantification</h2>
 <p>Most effects which give an explicit type for <code>resume</code> will either omit the
 environment type, or specify it as a type variable quantified over the function:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Foo</span> <span class="k">with</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">effect</span> <span class="kt">Foo</span> <span class="k">with</span>
     <span class="n">foo</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
     <span class="n">foo</span><span class="o">.</span><span class="k">resume</span><span class="o">:</span> <span class="kt">FnOnce</span> <span class="n">env</span> <span class="n">_</span>
 
@@ -770,7 +770,7 @@ environment type, or specify it as a type variable quantified over the function:
     <span class="c1">// foo.resume: forall env. FnOnce env _</span>
 </code></pre></div><p>This is generally desired since it allows the <code>resume</code> closure to be unboxed most
 of the time. However, what would happen if the user wrote the trait as the following:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Foo</span> <span class="n">env</span> <span class="k">with</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">effect</span> <span class="kt">Foo</span> <span class="n">env</span> <span class="k">with</span>
     <span class="n">foo</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
     <span class="n">foo</span><span class="o">.</span><span class="k">resume</span><span class="o">:</span> <span class="kt">FnOnce</span> <span class="n">env</span> <span class="n">_</span>
 </code></pre></div><p>Since each generic instance of a trait would be separate (e.g. <code>Read I32</code> versus <code>Read String</code>),
@@ -788,7 +788,7 @@ to being called at most once per handler. It remains to be seen how useful this 
 <p>If any capabilities are required on the <code>resume</code> closure, a <code>given</code> clause can be added.
 Since most traits on closures are defined as long as they&rsquo;re defined on the closure environment,
 it is usually sufficient to require the trait on the closure environment alone:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">FooCloneEnv</span> <span class="k">with</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">effect</span> <span class="kt">FooCloneEnv</span> <span class="k">with</span>
     <span class="n">foo</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
     <span class="n">foo</span><span class="o">.</span><span class="k">resume</span><span class="o">:</span> <span class="kt">FnOnce</span> <span class="n">env</span> <span class="n">_</span> <span class="k">given</span> <span class="kt">Clone</span> <span class="n">env</span>
 </code></pre></div><p>Note that since <code>resume</code> is a continuation, this environment type includes any captured variables
@@ -811,7 +811,7 @@ the <code>vec</code> variable below:</p>
 <h1 id="multithreading">Multithreading</h1>
 <p>Going back to the <code>Fork</code> example, what would happen if we tried to run each
 resumption in its own thread?</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Fork</span> <span class="k">with</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">effect</span> <span class="kt">Fork</span> <span class="k">with</span>
     <span class="n">fork</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span>
 
     <span class="c1">// Changed to Fn so that we can alias this twice below</span>
@@ -828,7 +828,7 @@ resumption in its own thread?</p>
             <span class="kt">Thread</span><span class="o">.</span><span class="n">spawn</span> <span class="p">(</span><span class="k">fn</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="k">resume</span> <span class="mi">false</span><span class="p">)</span>
 </code></pre></div><p>In order to spawn a new thread to call <code>resume</code> we&rsquo;d need to require
 a reference to the closure environment is <code>Send</code>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Fork</span> <span class="k">with</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">effect</span> <span class="kt">Fork</span> <span class="k">with</span>
     <span class="n">fork</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span>
     <span class="n">foo</span><span class="o">.</span><span class="k">resume</span><span class="o">:</span> <span class="kt">Fn</span> <span class="n">env</span> <span class="n">_</span> <span class="k">given</span> <span class="kt">Send</span> <span class="o">&amp;</span><span class="n">env</span>
 
@@ -907,7 +907,7 @@ to state machines. In this scheme, the following code is rejected:</p>
 </span><span class="w">    </span><span class="p">}.</span><span class="n">boxed</span><span class="p">()</span><span class="w">
 </span><span class="w"></span><span class="p">}</span><span class="w">
 </span></code></pre></div><p>If we try to implement a similar example in future-Ante<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Async</span> <span class="k">with</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">effect</span> <span class="kt">Async</span> <span class="k">with</span>
     <span class="n">await</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
 
 <span class="nf">recursive</span> <span class="p">()</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Await</span> <span class="ow">=</span>

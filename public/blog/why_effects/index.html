@@ -599,7 +599,7 @@ In this post I&rsquo;ll explain exactly that and will include as complete a list
 above or read from any of the other effectful languages for a good head start! But I recognize it&rsquo;s hard to get buy-in to learn something before showing
 why it is useful first (hence this blog post!). So I&rsquo;ll give a quick elevator pitch on a good mental model to think about effects.</p>
 <p>You can think of algebraic effects essentially as exceptions that you can resume. You can declare an effect function:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">SayMessage</span> <span class="k">with</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">effect</span> <span class="kt">SayMessage</span> <span class="k">with</span>
     <span class="c1">// This effect function takes a Unit type and returns a Unit type.</span>
     <span class="c1">// Note that `Unit` is roughly the same as `void` in imperative languages.</span>
     <span class="c1">// There are differences between them but none that are relevant here.</span>
@@ -636,7 +636,7 @@ constructs are difficult to implement, requiring low-level knowledge though, rig
 straightforward actually.</p>
 <p>Let&rsquo;s consider exceptions. Remember when I described algebraic effects as resumeable exceptions? This actually works
 pretty well as a hint on how to implement exceptions via effects. How do we do it? Just don&rsquo;t <code>resume</code> the effect when it is thrown:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Throw</span> <span class="n">a</span> <span class="k">with</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">effect</span> <span class="kt">Throw</span> <span class="n">a</span> <span class="k">with</span>
     <span class="n">throw</span><span class="o">:</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="n">never_returns</span>
 
 <span class="nf">safe_div</span> <span class="n">x</span> <span class="n">y</span> <span class="ow">=</span>
@@ -653,7 +653,7 @@ pretty well as a hint on how to implement exceptions via effects. How do we do i
     <span class="n">print</span> <span class="n">msg</span>
 </code></pre></div><p>How about something more advanced? Surely generators must be more difficult? Well, a little but the code still fits
 onto a sticky note:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Yield</span> <span class="n">a</span> <span class="k">with</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">effect</span> <span class="kt">Yield</span> <span class="n">a</span> <span class="k">with</span>
     <span class="n">yield</span><span class="o">:</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
 
 <span class="nf">yield_all_elements_of_vec</span> <span class="p">(</span><span class="n">vec</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">a</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Yield</span> <span class="n">a</span> <span class="ow">=</span>
@@ -703,7 +703,7 @@ we have code that touches a database:</p>
     <span class="n">x</span> <span class="o">*</span> <span class="mi">2</span>
 </code></pre></div><p>This is all well and fine until we want to use a different database, restrict access to this database, or you know, actually
 test these functions. What we can do is move the database to an effect:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Database</span> <span class="k">with</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">effect</span> <span class="kt">Database</span> <span class="k">with</span>
     <span class="n">query</span><span class="o">:</span> <span class="kt">String</span> <span class="ow">-&gt;</span> <span class="kt">DbResponse</span>
 
 <span class="nf">business_logic</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">I32</span><span class="p">)</span> <span class="k">can</span> <span class="kt">Database</span> <span class="ow">=</span>
@@ -750,7 +750,7 @@ or even with a mock database for testing:</p>
     <span class="n">assert</span> <span class="p">(</span><span class="n">int</span> <span class="o">==</span> <span class="mi">1234</span><span class="p">)</span>
     <span class="n">assert</span> <span class="p">(</span><span class="n">messages</span> <span class="o">==</span> <span class="s">&#34;Hello!</span><span class="se">\n</span><span class="s">Not sure what to write here, honestly&#34;</span><span class="p">)</span>
 </code></pre></div><p>Or conditionally disable logging output:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Log</span> <span class="k">with</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">effect</span> <span class="kt">Log</span> <span class="k">with</span>
     <span class="n">log</span><span class="o">:</span> <span class="kt">LogLevel</span> <span class="ow">-&gt;</span> <span class="kt">String</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
 
 <span class="k">type</span> <span class="kt">LogLevel</span> <span class="ow">=</span> <span class="o">|</span> <span class="kt">Error</span> <span class="o">|</span> <span class="kt">Warn</span> <span class="o">|</span> <span class="kt">Info</span>
@@ -781,7 +781,7 @@ or even with a mock database for testing:</p>
 any programming language is the use of a <code>Context</code> object which often needs to be passed to
 most functions in the program or library. We can encode this pattern as an effect. All
 we need are functions to <code>get</code> the context and to <code>set</code> it:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Use</span> <span class="n">a</span> <span class="k">with</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">effect</span> <span class="kt">Use</span> <span class="n">a</span> <span class="k">with</span>
     <span class="n">get</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span>
     <span class="n">set</span><span class="o">:</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
 </code></pre></div><p>Most languages call this a state effect and it is generic over the type of state to use.</p>
@@ -883,7 +883,7 @@ detail cost so much to the terseness of the program? If we want to avoid this, w
 the Prng a global, which many languages and libraries do, but this comes with the usual
 downsides of globals - most notably requiring the object to be thread safe. If we make
 it an effect like the following:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Random</span> <span class="k">with</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">effect</span> <span class="kt">Random</span> <span class="k">with</span>
     <span class="c1">// Return a random byte</span>
     <span class="n">random</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">U8</span>
 </code></pre></div><p>We gain the ability to thread it through a program mostly for free
@@ -892,7 +892,7 @@ Plus, if we later decide we want to use <code>/dev/urandom</code> or some other 
 numbers instead of the Prng object, we only need to swap out the effect handler. Nothing
 else in the call stack needs to be changed.</p>
 <p>Similarly, let&rsquo;s consider an <code>Allocate</code> effect:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Allocate</span> <span class="k">with</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">effect</span> <span class="kt">Allocate</span> <span class="k">with</span>
     <span class="n">allocate</span><span class="o">:</span> <span class="p">(</span><span class="n">size</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">Alignment</span> <span class="ow">-&gt;</span> <span class="kt">Ptr</span> <span class="n">a</span>
     <span class="n">free</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
 

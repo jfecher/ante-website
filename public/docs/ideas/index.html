@@ -1050,7 +1050,7 @@ Can we do better?</p>
 <p>Yes we can. This pattern of &ldquo;manually threading through X through our program&rdquo; is the same as the <code>State</code> effect. We can design a similar
 effect for allocate which should compile to the same state-passing code but with the benefit of having the compiler thread through
 the allocator for us:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Allocate</span> <span class="n">a</span> <span class="k">with</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">effect</span> <span class="kt">Allocate</span> <span class="n">a</span> <span class="k">with</span>
     <span class="n">allocate</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">Ptr</span> <span class="n">a</span>
 </code></pre></div><p>Now functions that may allocate are marked with an effect:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Box</span> <span class="n">a</span> <span class="ow">=</span>
@@ -1094,7 +1094,7 @@ users to type <code>can Allocate a, Allocate b</code> for every function that ma
 If we get rid of the type variable and use a slightly different design:</p>
 </li>
 </ol>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Allocate</span> <span class="k">with</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">effect</span> <span class="kt">Allocate</span> <span class="k">with</span>
     <span class="n">allocate</span><span class="o">:</span> <span class="kt">Type</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Ptr</span> <span class="n">a</span>
 </code></pre></div><p>Then the effect could be folded into the <code>IO</code> effect alias: <code>IO = can Print, Allocate, ...</code>, though
 this would force all allocations within a function to use the same allocator (rather than just
@@ -1126,10 +1126,10 @@ is known or whether the trait is dynamic.</p>
 <p>In traits with multiple type parameters or traits with type parameters which are not used
 directly in a function&rsquo;s parameters it is unclear which type a trait object would represent
 at runtime. For example, given the traits</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">trait</span> <span class="kt">Pair</span> <span class="n">a</span> <span class="n">b</span> <span class="k">with</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">trait</span> <span class="kt">Pair</span> <span class="n">a</span> <span class="n">b</span> <span class="k">with</span>
     <span class="n">pack</span> <span class="o">:</span> <span class="n">a</span> <span class="o">-</span> <span class="n">b</span> <span class="ow">-&gt;</span> <span class="kt">String</span>
 
-<span class="k">trait</span> <span class="kt">Parse</span> <span class="n">a</span> <span class="k">with</span>
+<span class="nf">trait</span> <span class="kt">Parse</span> <span class="n">a</span> <span class="k">with</span>
     <span class="n">parse</span> <span class="o">:</span> <span class="kt">String</span> <span class="ow">-&gt;</span> <span class="n">a</span>
 
 <span class="nf">example1</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">Pair</span><span class="p">)</span> <span class="ow">=</span> <span class="n">pack</span> <span class="o">???</span>
@@ -1188,7 +1188,7 @@ To provide a derive mechanism without these downsides, I propose a system based 
 Generic Programming</a> in which we can define how to derive a
 trait by specifying rules for what to do for product types, sum types, and annotated types.</p>
 <p>Here&rsquo;s an example in ante (syntax not final):</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">trait</span> <span class="kt">Hash</span> <span class="n">a</span> <span class="k">with</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">trait</span> <span class="kt">Hash</span> <span class="n">a</span> <span class="k">with</span>
     <span class="n">hash</span><span class="o">:</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">U64</span>
 
 <span class="k">derive</span> <span class="kt">Hash</span> <span class="n">a</span> <span class="n">via</span> <span class="k">match</span> <span class="n">a</span>

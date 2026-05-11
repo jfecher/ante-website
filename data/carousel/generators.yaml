@@ -2,16 +2,18 @@ weight: 6
 title: "Generators"
 code: |
     // Generators are implemented via effects
-    effect Emit elem with
-        emit: fn elem -> Unit
+    ability Emit elem =
+        emit: resume fn elem -> Unit
 
     // One advantage of generators is that they are easier to write than iterators.
     // We'll supply the `Emit a` value but the caller needs to provide a capability for `Emit b`
     map (stream: fn (Emit a) -> Unit) (f: fn a => b) {Emit b} =
-        handler emit_a for emit elem ->
+        handler emit_a = Emit fn elem ->
             emit (f elem)
             resume ()
-        stream emit_a
+        in stream emit_a
 
+    // From: `a,b,c\n1,2,3\n4,5,6`
+    // Return: `[["1", "2", "3"], ["4", "5", "6"]]`
     parse_csv (text: String): Vec (Vec String) =
         lines text |> skip 1 |> map (fn line -> split line "," |> Vec.of) |> Vec.of

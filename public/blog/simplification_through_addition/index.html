@@ -668,7 +668,7 @@ extraneous specification since OO langs often let an interface be used directly 
 One could argue the <code>impl</code> helps key in when this is happening but since the goal is to inch Ante
 more towards the higher level languages, I&rsquo;ll omit it for now.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Stream is a helper trait for using generators</span>
-<span class="k">trait</span> <span class="kt">Stream</span> <span class="n">t</span> <span class="n">elem</span> <span class="k">with</span>
+<span class="nf">trait</span> <span class="kt">Stream</span> <span class="n">t</span> <span class="n">elem</span> <span class="k">with</span>
     <span class="n">stream</span><span class="o">:</span> <span class="n">t</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Yield</span> <span class="n">elem</span>
 
 <span class="nf">filter</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">Stream</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">FnMut</span> <span class="n">a</span> <span class="ow">=&gt;</span> <span class="kt">Bool</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Yield</span> <span class="n">a</span> <span class="ow">=</span>

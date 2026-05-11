@@ -5,7 +5,7 @@ code: |
     main {Linux} = // fork, execve, etc
     main {Wasm}  = // __wasi_fd_read, __wasi_fd_write, etc
 
-    // But you are encouraged to use the IO module for an abstracted interface available on most common platforms
+    // But you are encouraged to use the IO module which is available on most common platforms
     main {IO} = ...
 
     // Libraries may still defer to more efficient implementations when needed

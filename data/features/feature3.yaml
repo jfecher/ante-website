@@ -1,5 +1,5 @@
 weight: 3
-name: "Effects via Capabilities"
+name: "Abilities"
 icon: "fa fa-cube"
-description: "Capabilities provide great code reuse and are both easier to use and understand when compared to monads."
-link: "docs/language/#algebraic-effects"
+description: "Abilities combine traits and an effect system and provide great code reuse. They are easier to use when compared to monads and provide clearer type errors when things are not as expected."
+link: "docs/language/#abilities"

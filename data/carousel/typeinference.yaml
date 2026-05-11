@@ -1,18 +1,18 @@
 weight: 2
 title: "Traits via Implicits"
 code: |
-    // Traits in Ante are just sugar for types holding closure values
-    trait Foo t with
+    // Abilities in Ante are just sugar for types holding closure values
+    ability Foo t =
         foo: fn t -> U32
 
-    // And trait impls are sugar for implicit functions which take values and return a trait object.
-    // Moreover, since traits are implicits, no global coherence or orphan restrictions are required
-    impl ord_i32_descending: Ord I32 with
+    // Since they are just values, we can create them in normal constructor expressions
+    // and no global coherence or orphan restrictions are required
+    implicit ord_i32_descending = Ord I32 with
         cmp a b = Ordering.from_int (b - a)
 
-    // Impls can be defined locally and closures can capture data, making
-    // implementing traits on interned types much easier
-    impl foo_interned (ctx: InternCtx): Display MyInternedType with
+    // Ability values can be defined locally and closures can capture data,
+    // making implementing them on interned types much easier
+    implicit foo_interned (ctx: InternCtx): Display MyInternedType with
         foo interned =
             // Use `ctx` from the closure environment
             data = ctx.get interned

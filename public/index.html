@@ -273,18 +273,18 @@
                                 <h1>Traits via Implicits</h1>
                                 
                                     <div class="highlight-textalign-left">
-                                        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Traits in Ante are just sugar for types holding closure values</span>
-<span class="k">trait</span> <span class="kt">Foo</span> <span class="n">t</span> <span class="k">with</span>
+                                        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Abilities in Ante are just sugar for types holding closure values</span>
+<span class="k">ability</span> <span class="kt">Foo</span> <span class="n">t</span> <span class="ow">=</span>
     <span class="n">foo</span><span class="o">:</span> <span class="k">fn</span> <span class="n">t</span> <span class="ow">-&gt;</span> <span class="kt">U32</span>
 
-<span class="c1">// And trait impls are sugar for implicit functions which take values and return a trait object.</span>
-<span class="c1">// Moreover, since traits are implicits, no global coherence or orphan restrictions are required</span>
-<span class="k">impl</span> <span class="n">ord_i32_descending</span><span class="o">:</span> <span class="kt">Ord</span> <span class="kt">I32</span> <span class="k">with</span>
+<span class="c1">// Since they are just values, we can create them in normal constructor expressions</span>
+<span class="c1">// and no global coherence or orphan restrictions are required</span>
+<span class="k">implicit</span> <span class="n">ord_i32_descending</span> <span class="ow">=</span> <span class="kt">Ord</span> <span class="kt">I32</span> <span class="k">with</span>
     <span class="n">cmp</span> <span class="n">a</span> <span class="n">b</span> <span class="ow">=</span> <span class="kt">Ordering</span><span class="o">.</span><span class="n">from_int</span> <span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span>
 
-<span class="c1">// Impls can be defined locally and closures can capture data, making</span>
-<span class="c1">// implementing traits on interned types much easier</span>
-<span class="k">impl</span> <span class="n">foo_interned</span> <span class="p">(</span><span class="n">ctx</span><span class="o">:</span> <span class="kt">InternCtx</span><span class="p">)</span><span class="o">:</span> <span class="kt">Display</span> <span class="kt">MyInternedType</span> <span class="k">with</span>
+<span class="c1">// Ability values can be defined locally and closures can capture data,</span>
+<span class="c1">// making implementing them on interned types much easier</span>
+<span class="k">implicit</span> <span class="n">foo_interned</span> <span class="p">(</span><span class="n">ctx</span><span class="o">:</span> <span class="kt">InternCtx</span><span class="p">)</span><span class="o">:</span> <span class="kt">Display</span> <span class="kt">MyInternedType</span> <span class="k">with</span>
     <span class="n">foo</span> <span class="n">interned</span> <span class="ow">=</span>
         <span class="c1">// Use `ctx` from the closure environment</span>
         <span class="n">data</span> <span class="ow">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">get</span> <span class="n">interned</span>
@@ -307,10 +307,14 @@
                                 <h1>Effects and Capabilities</h1>
                                 
                                     <div class="highlight-textalign-left">
-                                        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Each capability is passed as a parameter and enables a function to perform its effect</span>
+                                        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Effects are just abilities with `resume` functions, enabling effect handlers</span>
+<span class="k">ability</span> <span class="kt">Throw</span> <span class="n">err</span> <span class="ow">=</span>
+    <span class="n">throw</span><span class="o">:</span> <span class="k">resume</span> <span class="k">fn</span> <span class="n">t</span> <span class="ow">-&gt;</span> <span class="kt">Never</span>
+
+<span class="c1">// And capabilities are just ability values, which are often passed as implicits</span>
 <span class="nf">signup</span> <span class="p">(</span><span class="n">name</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">(</span><span class="n">email</span><span class="o">:</span> <span class="kt">Email</span><span class="p">)</span> <span class="p">{</span><span class="n">t</span><span class="o">:</span> <span class="kt">Throw</span> <span class="kt">ValidationErr</span><span class="p">}</span> <span class="p">{</span><span class="kt">Throw</span> <span class="kt">IOErr</span><span class="p">}</span> <span class="p">{</span><span class="kt">IO</span><span class="p">}</span><span class="o">:</span> <span class="kt">User</span> <span class="ow">=</span>
     <span class="c1">// Unlike monads, capabilities are trivial to combine: they are just implicit parameters</span>
-    <span class="n">cfg</span> <span class="ow">=</span> <span class="n">read_cfg_from_disk</span> <span class="p">()</span>
+    <span class="n">cfg</span> <span class="ow">=</span> <span class="n">read_cfg_from_disk</span> <span class="p">()</span> <span class="c1">// Requires `Throw IOErr` and `IO`</span>
     <span class="c1">// And they can be passed explicitly if desired (or required)</span>
     <span class="n">validate</span> <span class="n">name</span> <span class="n">email</span> <span class="p">{</span><span class="n">t</span><span class="p">}</span>
 
@@ -340,7 +344,7 @@
 <span class="nf">main</span> <span class="p">{</span><span class="kt">Linux</span><span class="p">}</span> <span class="ow">=</span> <span class="c1">// fork, execve, etc</span>
 <span class="nf">main</span> <span class="p">{</span><span class="kt">Wasm</span><span class="p">}</span>  <span class="ow">=</span> <span class="c1">// __wasi_fd_read, __wasi_fd_write, etc</span>
 
-<span class="c1">// But you are encouraged to use the IO module for an abstracted interface available on most common platforms</span>
+<span class="c1">// But you are encouraged to use the IO module which is available on most common platforms</span>
 <span class="nf">main</span> <span class="p">{</span><span class="kt">IO</span><span class="p">}</span> <span class="ow">=</span> <span class="o">...</span>
 
 <span class="c1">// Libraries may still defer to more efficient implementations when needed</span>
@@ -401,17 +405,19 @@
                                 
                                     <div class="highlight-textalign-left">
                                         <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Generators are implemented via effects</span>
-<span class="k">effect</span> <span class="kt">Emit</span> <span class="n">elem</span> <span class="k">with</span>
-    <span class="n">emit</span><span class="o">:</span> <span class="k">fn</span> <span class="n">elem</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
+<span class="k">ability</span> <span class="kt">Emit</span> <span class="n">elem</span> <span class="ow">=</span>
+    <span class="n">emit</span><span class="o">:</span> <span class="k">resume</span> <span class="k">fn</span> <span class="n">elem</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
 
 <span class="c1">// One advantage of generators is that they are easier to write than iterators.</span>
 <span class="c1">// We&#39;ll supply the `Emit a` value but the caller needs to provide a capability for `Emit b`</span>
 <span class="nf">map</span> <span class="p">(</span><span class="n">stream</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="kt">Emit</span> <span class="n">a</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="n">a</span> <span class="ow">=&gt;</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span><span class="kt">Emit</span> <span class="n">b</span><span class="p">}</span> <span class="ow">=</span>
-    <span class="k">handler</span> <span class="n">emit_a</span> <span class="k">for</span> <span class="n">emit</span> <span class="n">elem</span> <span class="ow">-&gt;</span>
+    <span class="k">handler</span> <span class="n">emit_a</span> <span class="ow">=</span> <span class="kt">Emit</span> <span class="k">fn</span> <span class="n">elem</span> <span class="ow">-&gt;</span>
         <span class="n">emit</span> <span class="p">(</span><span class="n">f</span> <span class="n">elem</span><span class="p">)</span>
         <span class="k">resume</span> <span class="p">()</span>
-    <span class="n">stream</span> <span class="n">emit_a</span>
+    <span class="k">in</span> <span class="n">stream</span> <span class="n">emit_a</span>
 
+<span class="c1">// From: `a,b,c\n1,2,3\n4,5,6`</span>
+<span class="c1">// Return: `[[&#34;1&#34;, &#34;2&#34;, &#34;3&#34;], [&#34;4&#34;, &#34;5&#34;, &#34;6&#34;]]`</span>
 <span class="nf">parse_csv</span> <span class="p">(</span><span class="n">text</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">Vec</span> <span class="p">(</span><span class="kt">Vec</span> <span class="kt">String</span><span class="p">)</span> <span class="ow">=</span>
     <span class="n">lines</span> <span class="n">text</span> <span class="o">|&gt;</span> <span class="n">skip</span> <span class="mi">1</span> <span class="o">|&gt;</span> <span class="n">map</span> <span class="p">(</span><span class="k">fn</span> <span class="n">line</span> <span class="ow">-&gt;</span> <span class="n">split</span> <span class="n">line</span> <span class="s">&#34;,&#34;</span> <span class="o">|&gt;</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span>
 </code></pre></div>
@@ -488,13 +494,13 @@
 		
 				<div class="col-md-4">
                     <div class="box-simple">
-                        <a href="docs/language/#algebraic-effects">
+                        <a href="docs/language/#abilities">
                             <div class="icon">
                                 <i class="fa fa-cube"></i>
                             </div>
                         </a>
-                        <h3>Effects via Capabilities</h3>
-                        <p>Capabilities provide great code reuse and are both easier to use and understand when compared to monads.</p>
+                        <h3>Abilities</h3>
+                        <p>Abilities combine traits and an effect system and provide great code reuse. They are easier to use when compared to monads and provide clearer type errors when things are not as expected.</p>
                     </div>
                 </div>
 		
@@ -513,7 +519,7 @@
                                 <i class="fa fa-cubes"></i>
                             </div>
                         </a>
-                        <h3>Fast Compilation</h3>
+                        <h3>Flexible Compilation</h3>
                         <p>Compared to similar compilers, Ante&rsquo;s compiler is both incremental and does not require monomorphization in debug builds.</p>
                     </div>
                 </div>

@@ -1,10 +1,14 @@
 weight: 3
 title: "Effects and Capabilities"
 code: |
-    // Each capability is passed as a parameter and enables a function to perform its effect
+    // Effects are just abilities with `resume` functions, enabling effect handlers
+    ability Throw err =
+        throw: resume fn t -> Never
+
+    // And capabilities are just ability values, which are often passed as implicits
     signup (name: String) (email: Email) {t: Throw ValidationErr} {Throw IOErr} {IO}: User =
         // Unlike monads, capabilities are trivial to combine: they are just implicit parameters
-        cfg = read_cfg_from_disk ()
+        cfg = read_cfg_from_disk () // Requires `Throw IOErr` and `IO`
         // And they can be passed explicitly if desired (or required)
         validate name email {t}
 
