@@ -1,5 +1,5 @@
 weight: 3
-title: "Effects and Capabilities"
+title: "Effects"
 code: |
     // Effects are just abilities with `resume` functions, enabling effect handlers
     ability Throw err =

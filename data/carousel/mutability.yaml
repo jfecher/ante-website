@@ -1,4 +1,4 @@
-weight: 5
+weight: 4
 title: "Safe Shared Mutability"
 code: |
     var vec = Vec.of [1, 2, 3]

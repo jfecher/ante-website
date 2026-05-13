@@ -12,8 +12,8 @@ code: |
 
     // Ability values can be defined locally and closures can capture data,
     // making implementing them on interned types much easier
-    implicit foo_interned (ctx: InternCtx): Display MyInternedType with
-        foo interned =
+    implicit display_interned (ctx: InternCtx): Display MyInternedType with
+        display interned =
             // Use `ctx` from the closure environment
             data = ctx.get interned
-            foo data
+            display data

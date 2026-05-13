@@ -284,11 +284,11 @@
 
 <span class="c1">// Ability values can be defined locally and closures can capture data,</span>
 <span class="c1">// making implementing them on interned types much easier</span>
-<span class="k">implicit</span> <span class="n">foo_interned</span> <span class="p">(</span><span class="n">ctx</span><span class="o">:</span> <span class="kt">InternCtx</span><span class="p">)</span><span class="o">:</span> <span class="kt">Display</span> <span class="kt">MyInternedType</span> <span class="k">with</span>
-    <span class="n">foo</span> <span class="n">interned</span> <span class="ow">=</span>
+<span class="k">implicit</span> <span class="n">display_interned</span> <span class="p">(</span><span class="n">ctx</span><span class="o">:</span> <span class="kt">InternCtx</span><span class="p">)</span><span class="o">:</span> <span class="kt">Display</span> <span class="kt">MyInternedType</span> <span class="k">with</span>
+    <span class="n">display</span> <span class="n">interned</span> <span class="ow">=</span>
         <span class="c1">// Use `ctx` from the closure environment</span>
         <span class="n">data</span> <span class="ow">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">get</span> <span class="n">interned</span>
-        <span class="n">foo</span> <span class="n">data</span>
+        <span class="n">display</span> <span class="n">data</span>
 </code></pre></div>
                                     </div>
                                 
@@ -304,7 +304,7 @@
                     
                         <div class="row">
                             <div class="col-sm-5 right">
-                                <h1>Effects and Capabilities</h1>
+                                <h1>Effects</h1>
                                 
                                     <div class="highlight-textalign-left">
                                         <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Effects are just abilities with `resume` functions, enabling effect handlers</span>
@@ -322,40 +322,6 @@
 <span class="c1">// Any capabilities required by `f` are captured in its closure</span>
 <span class="nf">map_vec</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="n">t</span> <span class="ow">=&gt;</span> <span class="n">u</span><span class="p">)</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">u</span> <span class="ow">=</span>
     <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span> <span class="p">(</span><span class="n">map</span> <span class="n">v</span> <span class="n">f</span><span class="p">)</span>
-</code></pre></div>
-                                    </div>
-                                
-                            </div>
-                            <div class="col-sm-7">
-                                <img class="img-responsive" src="" alt="">
-                            </div>
-                        </div>
-                    
-                </div>
-                
-                <div class="item">
-                    
-                        <div class="row">
-                            <div class="col-sm-5 right">
-                                <h1>Platform Agnostic</h1>
-                                
-                                    <div class="highlight-textalign-left">
-                                        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// `main` takes any required libraries and primitives as arguments</span>
-<span class="nf">main</span> <span class="p">{</span><span class="kt">Linux</span><span class="p">}</span> <span class="ow">=</span> <span class="c1">// fork, execve, etc</span>
-<span class="nf">main</span> <span class="p">{</span><span class="kt">Wasm</span><span class="p">}</span>  <span class="ow">=</span> <span class="c1">// __wasi_fd_read, __wasi_fd_write, etc</span>
-
-<span class="c1">// But you are encouraged to use the IO module which is available on most common platforms</span>
-<span class="nf">main</span> <span class="p">{</span><span class="kt">IO</span><span class="p">}</span> <span class="ow">=</span> <span class="o">...</span>
-
-<span class="c1">// Libraries may still defer to more efficient implementations when needed</span>
-<span class="nf">my_async_io</span> <span class="p">{</span><span class="kt">IO</span><span class="p">}</span> <span class="ow">=</span>
-    <span class="k">if</span> <span class="kt">IO</span><span class="o">.</span><span class="n">linux</span> <span class="p">()</span> <span class="k">is</span> <span class="kt">Some</span> <span class="n">api</span>
-    <span class="k">then</span> <span class="c1">// use io_uring</span>
-    <span class="k">else</span> <span class="c1">// fallback</span>
-
-<span class="c1">// Libraries requiring code to be linked in must specify this. Otherwise, they</span>
-<span class="c1">// would break on exotic targets like Wasm or the Beam VM which can&#39;t support dynlibs</span>
-<span class="nf">compile_with_llvm_dynlib</span> <span class="p">(</span><span class="n">llvm_bitcode</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">{</span><span class="kt">Llvm</span><span class="p">}</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div>
                                     </div>
                                 
@@ -420,6 +386,40 @@
 <span class="c1">// Return: `[[&#34;1&#34;, &#34;2&#34;, &#34;3&#34;], [&#34;4&#34;, &#34;5&#34;, &#34;6&#34;]]`</span>
 <span class="nf">parse_csv</span> <span class="p">(</span><span class="n">text</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">Vec</span> <span class="p">(</span><span class="kt">Vec</span> <span class="kt">String</span><span class="p">)</span> <span class="ow">=</span>
     <span class="n">lines</span> <span class="n">text</span> <span class="o">|&gt;</span> <span class="n">skip</span> <span class="mi">1</span> <span class="o">|&gt;</span> <span class="n">map</span> <span class="p">(</span><span class="k">fn</span> <span class="n">line</span> <span class="ow">-&gt;</span> <span class="n">split</span> <span class="n">line</span> <span class="s">&#34;,&#34;</span> <span class="o">|&gt;</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span>
+</code></pre></div>
+                                    </div>
+                                
+                            </div>
+                            <div class="col-sm-7">
+                                <img class="img-responsive" src="" alt="">
+                            </div>
+                        </div>
+                    
+                </div>
+                
+                <div class="item">
+                    
+                        <div class="row">
+                            <div class="col-sm-5 right">
+                                <h1>Platform Agnostic</h1>
+                                
+                                    <div class="highlight-textalign-left">
+                                        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// `main` takes any required libraries and primitives as arguments</span>
+<span class="nf">main</span> <span class="p">{</span><span class="kt">Linux</span><span class="p">}</span> <span class="ow">=</span> <span class="c1">// fork, execve, etc</span>
+<span class="nf">main</span> <span class="p">{</span><span class="kt">Wasm</span><span class="p">}</span>  <span class="ow">=</span> <span class="c1">// __wasi_fd_read, __wasi_fd_write, etc</span>
+
+<span class="c1">// But you are encouraged to use the IO module which is available on most common platforms</span>
+<span class="nf">main</span> <span class="p">{</span><span class="kt">IO</span><span class="p">}</span> <span class="ow">=</span> <span class="o">...</span>
+
+<span class="c1">// Libraries may still defer to more efficient implementations when needed</span>
+<span class="nf">my_async_io</span> <span class="p">{</span><span class="kt">IO</span><span class="p">}</span> <span class="ow">=</span>
+    <span class="k">if</span> <span class="kt">IO</span><span class="o">.</span><span class="n">linux</span> <span class="p">()</span> <span class="k">is</span> <span class="kt">Some</span> <span class="n">api</span>
+    <span class="k">then</span> <span class="c1">// use io_uring</span>
+    <span class="k">else</span> <span class="c1">// fallback</span>
+
+<span class="c1">// Libraries requiring code to be linked in must specify this. Otherwise, they</span>
+<span class="c1">// would break on exotic targets like Wasm or the Beam VM which can&#39;t support dynlibs</span>
+<span class="nf">compile_with_llvm_dynlib</span> <span class="p">(</span><span class="n">llvm_bitcode</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">{</span><span class="kt">Llvm</span><span class="p">}</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div>
                                     </div>
                                 
