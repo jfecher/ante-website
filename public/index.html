@@ -274,8 +274,8 @@
                                 
                                     <div class="highlight-textalign-left">
                                         <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Abilities in Ante are just sugar for types holding closure values</span>
-<span class="k">ability</span> <span class="kt">Foo</span> <span class="n">t</span> <span class="ow">=</span>
-    <span class="n">foo</span><span class="o">:</span> <span class="k">fn</span> <span class="n">t</span> <span class="ow">-&gt;</span> <span class="kt">U32</span>
+<span class="nf">ability</span> <span class="kt">Add</span> <span class="n">t</span> <span class="ow">=</span>
+    <span class="p">(</span><span class="o">+</span><span class="p">)</span><span class="o">:</span> <span class="k">fn</span> <span class="n">t</span> <span class="n">t</span> <span class="ow">-&gt;</span> <span class="n">t</span>
 
 <span class="c1">// Since they are just values, we can create them in normal constructor expressions</span>
 <span class="c1">// and no global coherence or orphan restrictions are required</span>
@@ -284,7 +284,7 @@
 
 <span class="c1">// Ability values can be defined locally and closures can capture data,</span>
 <span class="c1">// making implementing them on interned types much easier</span>
-<span class="k">implicit</span> <span class="n">display_interned</span> <span class="p">(</span><span class="n">ctx</span><span class="o">:</span> <span class="kt">InternCtx</span><span class="p">)</span><span class="o">:</span> <span class="kt">Display</span> <span class="kt">MyInternedType</span> <span class="k">with</span>
+<span class="k">implicit</span> <span class="n">display_interned</span> <span class="p">(</span><span class="n">ctx</span><span class="o">:</span> <span class="kt">InternCtx</span><span class="p">)</span> <span class="ow">=</span> <span class="kt">Display</span> <span class="kt">MyInternedType</span> <span class="k">with</span>
     <span class="n">display</span> <span class="n">interned</span> <span class="ow">=</span>
         <span class="c1">// Use `ctx` from the closure environment</span>
         <span class="n">data</span> <span class="ow">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">get</span> <span class="n">interned</span>
@@ -308,7 +308,7 @@
                                 
                                     <div class="highlight-textalign-left">
                                         <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Effects are just abilities with `resume` functions, enabling effect handlers</span>
-<span class="k">ability</span> <span class="kt">Throw</span> <span class="n">err</span> <span class="ow">=</span>
+<span class="nf">ability</span> <span class="kt">Throw</span> <span class="n">err</span> <span class="ow">=</span>
     <span class="n">throw</span><span class="o">:</span> <span class="k">resume</span> <span class="k">fn</span> <span class="n">t</span> <span class="ow">-&gt;</span> <span class="kt">Never</span>
 
 <span class="c1">// And capabilities are just ability values, which are often passed as implicits</span>
@@ -371,7 +371,7 @@
                                 
                                     <div class="highlight-textalign-left">
                                         <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Generators are implemented via effects</span>
-<span class="k">ability</span> <span class="kt">Emit</span> <span class="n">elem</span> <span class="ow">=</span>
+<span class="nf">ability</span> <span class="kt">Emit</span> <span class="n">elem</span> <span class="ow">=</span>
     <span class="n">emit</span><span class="o">:</span> <span class="k">resume</span> <span class="k">fn</span> <span class="n">elem</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
 
 <span class="c1">// One advantage of generators is that they are easier to write than iterators.</span>

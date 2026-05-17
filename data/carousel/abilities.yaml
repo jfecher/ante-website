@@ -2,8 +2,8 @@ weight: 2
 title: "Traits via Implicits"
 code: |
     // Abilities in Ante are just sugar for types holding closure values
-    ability Foo t =
-        foo: fn t -> U32
+    ability Add t =
+        (+): fn t t -> t
 
     // Since they are just values, we can create them in normal constructor expressions
     // and no global coherence or orphan restrictions are required
@@ -12,7 +12,7 @@ code: |
 
     // Ability values can be defined locally and closures can capture data,
     // making implementing them on interned types much easier
-    implicit display_interned (ctx: InternCtx): Display MyInternedType with
+    implicit display_interned (ctx: InternCtx) = Display MyInternedType with
         display interned =
             // Use `ctx` from the closure environment
             data = ctx.get interned
