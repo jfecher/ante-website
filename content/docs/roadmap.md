@@ -33,7 +33,8 @@ any bugs with these features should create an issue on github.
 - [~] `Char` - implemented but is 1 byte rather than 4. There is an open design question of
 whether ante should use rust's model for chars (4 bytes), Swift's model (variable bytes), or something else.
 These also use a temporary `c"_"` syntax currently.
-- [ ] Array literals
+- [x] Array literals
+- [ ] Slices
 
 ---
 
@@ -44,8 +45,7 @@ These also use a temporary `c"_"` syntax currently.
 - [x] Assignment `:=`
 - [x] Compound assignment operators `+=`, `-=`, `*=`, `/=`, `%=`
 - [x] `.` Field access
-- [x] `.` Method calls
-- [x] `<-` Wrapping the rest of the block in a function (often for applying effect handlers)
+- [x] `.` Method calls - these may change in the future due to the conflict with struct field access
 - [x] `is` operator for pattern matching without `match`
 
 ---
@@ -60,9 +60,9 @@ These also use a temporary `c"_"` syntax currently.
   - [x] Constructor patterns
   - [x] Integer literal patterns
   - [x] Completeness & Redundancy checking
-  - [ ] 'Or' clause in pattern matching, combining patterns via `|`
+  - [x] 'Or' clause in pattern matching, combining patterns via `|`
   - [ ] Pattern guards: `| pattern if expr -> ...`
-  - [ ] `is` keyword for matching within expressions
+  - [x] `is` keyword for matching within expressions
 - [x] `loop` sugar
 - [x] `for` loops
 - [x] `while` loops
@@ -163,6 +163,7 @@ All APIs are non-final.
 ---
 # Effects
 
+- [ ] Ability merger: traits & effects are still separate concepts in the compiler
 - [x] Type checking
 - [x] Runtime
   - [x] Handlers

@@ -514,7 +514,8 @@ any bugs with these features should create an issue on github.</p>
 <li>[~] <code>Char</code> - implemented but is 1 byte rather than 4. There is an open design question of
 whether ante should use rust&rsquo;s model for chars (4 bytes), Swift&rsquo;s model (variable bytes), or something else.
 These also use a temporary <code>c&quot;_&quot;</code> syntax currently.</li>
-<li><input disabled="" type="checkbox"> Array literals</li>
+<li><input checked="" disabled="" type="checkbox"> Array literals</li>
+<li><input disabled="" type="checkbox"> Slices</li>
 </ul>
 <hr>
 <h1 id="operators">Operators</h1>
@@ -524,8 +525,7 @@ These also use a temporary <code>c&quot;_&quot;</code> syntax currently.</li>
 <li><input checked="" disabled="" type="checkbox"> Assignment <code>:=</code></li>
 <li><input checked="" disabled="" type="checkbox"> Compound assignment operators <code>+=</code>, <code>-=</code>, <code>*=</code>, <code>/=</code>, <code>%=</code></li>
 <li><input checked="" disabled="" type="checkbox"> <code>.</code> Field access</li>
-<li><input checked="" disabled="" type="checkbox"> <code>.</code> Method calls</li>
-<li><input checked="" disabled="" type="checkbox"> <code>&lt;-</code> Wrapping the rest of the block in a function (often for applying effect handlers)</li>
+<li><input checked="" disabled="" type="checkbox"> <code>.</code> Method calls - these may change in the future due to the conflict with struct field access</li>
 <li><input checked="" disabled="" type="checkbox"> <code>is</code> operator for pattern matching without <code>match</code></li>
 </ul>
 <hr>
@@ -541,9 +541,9 @@ These also use a temporary <code>c&quot;_&quot;</code> syntax currently.</li>
 <li><input checked="" disabled="" type="checkbox"> Constructor patterns</li>
 <li><input checked="" disabled="" type="checkbox"> Integer literal patterns</li>
 <li><input checked="" disabled="" type="checkbox"> Completeness &amp; Redundancy checking</li>
-<li><input disabled="" type="checkbox"> &lsquo;Or&rsquo; clause in pattern matching, combining patterns via <code>|</code></li>
+<li><input checked="" disabled="" type="checkbox"> &lsquo;Or&rsquo; clause in pattern matching, combining patterns via <code>|</code></li>
 <li><input disabled="" type="checkbox"> Pattern guards: <code>| pattern if expr -&gt; ...</code></li>
-<li><input disabled="" type="checkbox"> <code>is</code> keyword for matching within expressions</li>
+<li><input checked="" disabled="" type="checkbox"> <code>is</code> keyword for matching within expressions</li>
 </ul>
 </li>
 <li><input checked="" disabled="" type="checkbox"> <code>loop</code> sugar</li>
@@ -672,6 +672,7 @@ These also use a temporary <code>c&quot;_&quot;</code> syntax currently.</li>
 <hr>
 <h1 id="effects">Effects</h1>
 <ul>
+<li><input disabled="" type="checkbox"> Ability merger: traits &amp; effects are still separate concepts in the compiler</li>
 <li><input checked="" disabled="" type="checkbox"> Type checking</li>
 <li><input checked="" disabled="" type="checkbox"> Runtime
 <ul>
