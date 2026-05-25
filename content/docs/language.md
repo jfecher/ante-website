@@ -38,8 +38,11 @@ integer types respectively of the same size as a pointer.
 // type via a suffix then we can use them with any other integer type.
 100 + 1usz == 101
 
-// Type error: operands of '+' must be of the same type
-3i8 + 3u8
+// When no integer type is specified, integers default to `I32`
+100 + 1 == 101
+
+// Ante does not implicitly cast integer types. The following is a type error:
+3u8 + 3u16
 
 // Large numbers can use _ to separate digits
 1_000_000
@@ -54,6 +57,7 @@ floats respectively. Floats have a similar syntax to integers, but with
 a `.` separating the decimal digits.
 
 ```ante
+// Floats without a specified type are polymorphic and default to `F64`
 3.0 + 4.5 / 1.5
 
 // 32-bit floats can be created with the F32 suffix

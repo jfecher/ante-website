@@ -6,7 +6,17 @@
     <description>Recent content in docs on Ante</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 25 Jun 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://antelang.org/categories/docs/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 25 May 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://antelang.org/categories/docs/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>FAQ</title>
+      <link>https://antelang.org/docs/faq/</link>
+      <pubDate>Mon, 25 May 2026 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/docs/faq/</guid>
+      <description>FAQ  Why use Ante?   Safe, shared mutability with unboxed types. It is common to hear that shared mutability should be avoided, and while generally a good rule to design around, shared mutability is extremely important for enabling other aspects of the language:
+ Safe, shared mutability enables Ante to model higher-level code from garbage-collected languages like Java or C#. Combined with Ante&amp;rsquo;s core of ownership + borrowing, this means Ante code can be both high-level or lower-level closer to Rust.</description>
+    </item>
+    
     <item>
       <title>Roadmap</title>
       <link>https://antelang.org/docs/roadmap/</link>

@@ -164,6 +164,9 @@
             <li class="dropdown">
                 <a href="https://antelang.org//blog">Blog</a>
             </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//docs/faq">FAQ</a>
+            </li>
 
             <li class="dropdown">
                 <a href="https://github.com/jfecher/ante"><i class="fa fa-15x fa-github"></i></a>
@@ -2453,8 +2456,11 @@ integer types respectively of the same size as a pointer.</p>
 <span class="c1">// type via a suffix then we can use them with any other integer type.</span>
 <span class="mi">100</span> <span class="o">+</span> <span class="mi">1usz</span> <span class="o">==</span> <span class="mi">101</span>
 
-<span class="c1">// Type error: operands of &#39;+&#39; must be of the same type</span>
-<span class="mi">3i8</span> <span class="o">+</span> <span class="mi">3u8</span>
+<span class="c1">// When no integer type is specified, integers default to `I32`</span>
+<span class="mi">100</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">==</span> <span class="mi">101</span>
+
+<span class="c1">// Ante does not implicitly cast integer types. The following is a type error:</span>
+<span class="mi">3u8</span> <span class="o">+</span> <span class="mi">3u16</span>
 
 <span class="c1">// Large numbers can use _ to separate digits</span>
 <span class="mi">1_000_000</span>
@@ -2464,7 +2470,8 @@ integer types respectively of the same size as a pointer.</p>
 and come in two varieties: <code>F32</code> and <code>F64</code> for 32-bit floats and 64-bit
 floats respectively. Floats have a similar syntax to integers, but with
 a <code>.</code> separating the decimal digits.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="mf">3.0</span> <span class="o">+</span> <span class="mf">4.5</span> <span class="o">/</span> <span class="mf">1.5</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Floats without a specified type are polymorphic and default to `F64`</span>
+<span class="mf">3.0</span> <span class="o">+</span> <span class="mf">4.5</span> <span class="o">/</span> <span class="mf">1.5</span>
 
 <span class="c1">// 32-bit floats can be created with the F32 suffix</span>
 <span class="mf">3.0f32</span>
