@@ -528,7 +528,7 @@ fast, memory-safe, and thread-safe.</p>
 achieve all of these is an ownership model. Ownership models have been used by quite a few languages,
 but the language which popularized them was Rust. In Rust, the compiler will check our
 code to ensure we have no dangling references and cannot access already-freed memory (among other errors). For
-example, the next snippet is a compile-time error in rust:</p>
+example, the next snippet is a compile-time error in Rust:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">vec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="fm">vec!</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">];</span><span class="w">
 </span><span class="w"></span><span class="kd">let</span><span class="w"> </span><span class="n">first_element</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">vec</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span><span class="w">
 </span><span class="w">
@@ -542,7 +542,7 @@ example, the next snippet is a compile-time error in rust:</p>
 by a related feature to ownership: Rust&rsquo;s borrowing rules. It turns out that moving every object
 into and out of each function is not very convenient, so Rust also lets us create borrowed
 references to values. These references can be mutable or immutable, and their lifetimes are tied
-to that of the owned value. This particular error is prevented by Rust&rsquo;s &ldquo;Aliasibility XOR Mutability&rdquo;
+to that of the owned value. This particular error is prevented by Rust&rsquo;s &ldquo;Aliasability XOR Mutability&rdquo;
 rule, which I&rsquo;ll call AxM for short. AxM in Rust states that you can have aliasable borrowed
 references, or you can have mutability, but not both. So in the example above, since <code>Vec::push</code>
 requires a mutable <code>&amp;mut Vec&lt;i32&gt;</code> reference, we got a compile-time error trying to call it since
@@ -585,7 +585,7 @@ returns an offset inside of the vector&rsquo;s storage simply isn&rsquo;t possib
 if each vector were a <code>Vec&lt;Rc&lt;T&gt;&gt;</code> and instead of <code>&amp;Rc&lt;T&gt;</code>, their get function returns a cloned <code>Rc&lt;T&gt;</code>. In
 reality, Pony uses a tracing garbage collector so there is no cloning going on, but I think this helps to
 illustrate the point that each element inside a Vector would itself be an owned pointer. This is why these
-languages don&rsquo;t encounter the same issue Rust has with returning a reference to an element in a aliasable
+languages don&rsquo;t encounter the same issue Rust has with returning a reference to an element in an aliasable
 mutable context.</p>
 <p>So other languages like Pony allow aliasable mutability but require us to box all values. Rust
 lets us unbox most values and obtain references inside objects, but has the AxM restriction.
@@ -732,7 +732,7 @@ out the <code>Rc</code> for another, potentially dropping the original while we 
 <p>Compared to <code>Rc&lt;RefCell&lt;T&gt;&gt;</code> in Rust, a <code>Rc t</code> in Ante can lend out shared references directly
 without a wrapper type. The runtime cost is also different: <code>Rc&lt;RefCell&lt;T&gt;&gt;</code> performs reference
 counting for the outer <code>Rc</code> and the inner <code>Ref</code>s handed out by the <code>RefCell</code>. An <code>Rc t</code> in Ante
-only needs to perform the out <code>Rc</code>. Any <code>mut t</code> that are handed out can
+only needs to perform the outer <code>Rc</code>. Any <code>mut t</code> that are handed out can
 be copied/aliased freely. Moreover, <code>RefCell&lt;T&gt;</code> introduces a possible panic to the code if
 a <code>RefMut</code> is ever aliased at runtime, this is not possible with <code>mut t</code> in Ante.</p>
 <p>If we ever do need interior mutability to lend out owned references without cloning, then we&rsquo;d

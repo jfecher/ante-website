@@ -918,7 +918,7 @@ There are two options here:</p>
     <span class="n">get</span><span class="o">:</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Int</span> <span class="n">b</span> <span class="ow">-&gt;</span> <span class="n">c</span><span class="p">,</span>
     <span class="kt">Print</span> <span class="n">c</span>
 </code></pre></div><p>In which case we end up with a kind of compile-time duck typing. Worst case scenario if we made
-a typo (<code>gett</code> instead of <code>get</code>), this could generalize our <code>gett</code> constraint instaed of issuing
+a typo (<code>gett</code> instead of <code>get</code>), this could generalize our <code>gett</code> constraint instead of issuing
 a method not found error. This seems like it can be avoided however by only generalizing if there
 is actually at least 2 functions in scope with that name.</p>
 <p>It is an open question whether generalized function requirements should be resolved via the set of
@@ -1307,7 +1307,7 @@ to each other and neither are needed outside the current function we should be a
 list node allocations into 1 call to the allocator. In this specific example, the allocator may also
 simply be the stack itself since we do not need a dynamic lifetime for these nodes in this function.</p>
 <p>Grouping allocations in this way however leads to questions on how aggressively we should group adjacent
-items. What if they are separated by other definitons? Or arbitrary function calls? In general widening
+items. What if they are separated by other definitions? Or arbitrary function calls? In general widening
 the lifetime of one allocation to match another&rsquo;s so it may be grouped increases the amount of memory
 the resulting program would use by allocating earlier and freeing later. It is unclear what heuristics
 should be used - if any - to make this decision on when to group allocations separated by other statements.</p>
@@ -1340,7 +1340,7 @@ IR representations that are dependent on the host&rsquo;s architecture. Solving 
 as little space as possible is duplicated, or it may mean not saving data that is very dependent on the host&rsquo;s system such
 as llvm IR.</p>
 <p>Downloading this data rather than creating it on compilation would mean an increase in download times. Compared to Unison,
-ante users would be downloading both the textual code and the incremental version rather than just the later. It is unclear
+ante users would be downloading both the textual code and the incremental version rather than just the latter. It is unclear
 how much of a problem it would be in practice. One potential solution would be to ensure the incremental data of a library
 or program contains all the information needed to compile it. Then downloading the release of a library from a package manager
 would only entail downloading the metadata and not the source code itself. One potential issue with this solution is IDE integration.
@@ -1355,7 +1355,7 @@ however, tend to be written by hand with manual recursion.
 factoring out these recursive patterns, but they come with a high barrier to understanding and
 require users to manually define a fixpoint version of their types. Ante could in theory create
 and convert between the fixpoint version of the type behind the scenes to give users a nicer API.
-Lets consider a sum function for a tree type:</p>
+Let&rsquo;s consider a sum function for a tree type:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Tree</span> <span class="ow">=</span>
    <span class="o">|</span> <span class="kt">Branch</span> <span class="kt">Tree</span> <span class="kt">Tree</span>
    <span class="o">|</span> <span class="kt">Leaf</span> <span class="kt">I32</span>
@@ -1373,7 +1373,7 @@ a new <code>fold</code> keyword for this purpose:</p>
     <span class="o">|</span> <span class="kt">Leaf</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">x</span>
 </code></pre></div><p>So far, the little we gain in brevity is countered with the additional cognitive overhead
 of requiring users to understand the additional construct(s) that would be added to the language.
-Lets look at a more complex example:</p>
+Let&rsquo;s look at a more complex example:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Ast</span> <span class="ow">=</span>
     <span class="o">|</span> <span class="kt">Var</span> <span class="kt">String</span>
     <span class="o">|</span> <span class="kt">Int</span> <span class="kt">I32</span>
@@ -1439,7 +1439,7 @@ to only sorted vectors:</p>
 <span class="nf">sort</span> <span class="p">(</span><span class="n">vec</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="o">:</span> <span class="kt">SortedVec</span> <span class="n">t</span> <span class="ow">=</span> <span class="o">...</span>
 
 <span class="nf">binary_search</span> <span class="p">(</span><span class="n">vec</span><span class="o">:</span> <span class="kt">SortedVec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">elem</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Maybe</span> <span class="p">(</span><span class="kt">Index</span> <span class="n">vec</span><span class="p">)</span> <span class="ow">=</span> <span class="o">...</span>
-</code></pre></div><p>Each of these refinements are would be in type system and would be checked during compile-time with the help of a SMT solver.</p>
+</code></pre></div><p>Each of these refinements would be in the type system and would be checked during compile-time with the help of a SMT solver.</p>
 <hr>
 <h1 id="lifetime-inference">Lifetime Inference</h1>
 <p>Lifetime inference (originally &ldquo;region inference&rdquo;) is a technique
@@ -1506,7 +1506,7 @@ The place where <code>Ref</code>s are typically worst is in implementing contain
 hood so any container that wants to free early or reallocate and
 free/resize memory (ie. the vast majority of containers) should use
 one of the smart pointer types to hold their elements instead.</p>
-<p>For these reasons, lifetime inference isn&rsquo;t an incredibly useful for Ante
+<p>For these reasons, lifetime inference isn&rsquo;t incredibly useful for Ante
 today so it is not included in the language.</p>
 <h1 id="borrowing-alternatives">Borrowing Alternatives</h1>
 <p>The current design of borrowing does not mesh well with the safe, shared mutability design.
@@ -1599,7 +1599,7 @@ allowing types like <code>GhostCell</code> which require similar compiler-enforc
 continue with the more flexible lean in extending Rust&rsquo;s approach a bit by basing lifetimes off of
 &ldquo;places&rdquo; instead of source-code regions which is an approach which generalizes
 better to support self-referential structs and borrowing a subset of a struct&rsquo;s fields. Also unlike lifetimes,
-a place has a concrete syntax which can be refered to:</p>
+a place has a concrete syntax which can be referred to:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">x</span> <span class="ow">=</span> <span class="mi">3</span>
 <span class="nf">y</span><span class="o">:</span> <span class="o">&amp;</span><span class="n">&#39;x</span> <span class="kt">I32</span> <span class="ow">=</span> <span class="o">&amp;</span><span class="n">x</span>
 
@@ -1647,7 +1647,7 @@ the loop we&rsquo;d get an error:</p>
         <span class="n">foo</span> <span class="ow">=</span> <span class="n">self</span><span class="o">.</span><span class="n">get_foo</span> <span class="p">()</span>
 
         <span class="n">do_something_with</span> <span class="n">msg</span> <span class="n">foo</span>
-</code></pre></div><p>For this to work, we&rsquo;d presumably need alter the definition of <code>get_foo</code> to only use certain
+</code></pre></div><p>For this to work, we&rsquo;d presumably need to alter the definition of <code>get_foo</code> to only use certain
 fields of the struct. This could be done using Ante&rsquo;s existing anonymous struct types:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// The compiler would need to know that the anonymous struct type used here would mean only</span>
 <span class="c1">// `foo` can be used and use that information when checking lifetimes in the caller</span>

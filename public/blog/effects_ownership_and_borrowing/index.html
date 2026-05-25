@@ -833,7 +833,7 @@ resumption in its own thread?</p>
 a reference to the closure environment is <code>Send</code>:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Fork</span> <span class="k">with</span>
     <span class="n">fork</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span>
-    <span class="n">foo</span><span class="o">.</span><span class="k">resume</span><span class="o">:</span> <span class="kt">Fn</span> <span class="n">env</span> <span class="n">_</span> <span class="k">given</span> <span class="kt">Send</span> <span class="o">&amp;</span><span class="n">env</span>
+    <span class="n">fork</span><span class="o">.</span><span class="k">resume</span><span class="o">:</span> <span class="kt">Fn</span> <span class="n">env</span> <span class="n">_</span> <span class="k">given</span> <span class="kt">Send</span> <span class="o">&amp;</span><span class="n">env</span>
 
 <span class="nf">multithread_fork</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Fork</span><span class="p">)</span> <span class="o">:</span> <span class="n">a</span> <span class="ow">=</span>
     <span class="k">handle</span> <span class="n">f</span> <span class="p">()</span>
@@ -913,7 +913,7 @@ to state machines. In this scheme, the following code is rejected:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Async</span> <span class="k">with</span>
     <span class="n">await</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
 
-<span class="nf">recursive</span> <span class="p">()</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Await</span> <span class="ow">=</span>
+<span class="nf">recursive</span> <span class="p">()</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Async</span> <span class="ow">=</span>
     <span class="c1">// This doesn&#39;t quite match the semantics of the Rust example above,</span>
     <span class="c1">// but lets us use a simpler definition for `await`</span>
     <span class="n">await</span> <span class="p">()</span>

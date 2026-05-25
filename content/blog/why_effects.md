@@ -81,7 +81,7 @@ Ok, back to the topic though. Effect handlers are cool because we can implement 
 constructs are difficult to implement, requiring low-level knowledge though, right? Nope. Most of these are pretty
 straightforward actually.
 
-Let's consider exceptions. Remember when I described algebraic effects as resumeable exceptions? This actually works
+Let's consider exceptions. Remember when I described algebraic effects as resumable exceptions? This actually works
 pretty well as a hint on how to implement exceptions via effects. How do we do it? Just don't `resume` the effect when it is thrown:
 
 ```ante
@@ -123,7 +123,7 @@ filter (generator: Unit -> Unit can Yield a) (predicate: a -> Bool): Unit can Yi
             yield x
         resume ()  // continue yielding elements
 
-// Finally, lets add a helper function for applying a function to each yielded element
+// Finally, let's add a helper function for applying a function to each yielded element
 my_for_each (generator: Unit -> Unit can Yield a) (f: a -> Unit): Unit =
     handle generator ()
     | yield x ->
@@ -447,7 +447,7 @@ call_failable_functions (): Maybe U32 can IO =
             x * 2
 ```
 
-This is cumbersome enough languages like Rust provide syntax-sugar like `?`
+This is cumbersome enough that languages like Rust provide syntax-sugar like `?`
 to automatically return error values and focus on the good path. That isn't
 needed with effects though. The direct approach just works:
 
@@ -563,7 +563,7 @@ Based Security](https://joeduffyblog.com/2015/11/10/objects-as-secure-capabiliti
 where we must pass around capabilities like `fs: FileSystem` as explicit objects and only
 functions with these objects can access the file system. With algebraic effects it works similarly
 except the functions declare effects instead of taking capability parameters. There is a downside
-to the effect approach though, and its the same one mentioned above: since effects are automatically
+to the effect approach though, and it's the same one mentioned above: since effects are automatically
 threaded through your program you won't get an error if a function like `get_pi` is updated to
 require `IO` if your function also already requires that effect. This can crop up anywhere
 effects are used. E.g. with a `Fail` effect if a library function can't `Fail` but then was

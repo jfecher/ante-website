@@ -31,7 +31,7 @@ any bugs with these features should create an issue on github.
 - [x] Bool literals `true` and `false`
 - [x] Strings
 - [~] `Char` - implemented but is 1 byte rather than 4. There is an open design question of
-whether ante should use rust's model for chars (4 bytes), Swift's model (variable bytes), or something else.
+whether ante should use Rust's model for chars (4 bytes), Swift's model (variable bytes), or something else.
 These also use a temporary `c"_"` syntax currently.
 - [x] Array literals
 - [ ] Slices

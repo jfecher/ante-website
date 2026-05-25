@@ -20,7 +20,7 @@ categories = ["docs"]
     - Commit to only a single high-level or low-level language where:
       - Using only a low-level language sacrifices the brevity and development speed of the business logic
       - Using only a high-level language sacrifices the optimization potential of the fast loops.
-  - Ante enables using the same language for both, making business logic faster and easier to write compared to other low level
+  - Ante enables using the same language for both, making business logic faster and easier to write compared to other low-level
     languages so that developers have more time to spend on optimizations and bug fixes.
 
 - Inheriting Rust's model, Ante is one of the few languages with **stronger thread safety**.
@@ -35,8 +35,8 @@ categories = ["docs"]
   they can hide. Implicits in Ante strike a balance between abilities being always passed implicitly like traits/implicits are
   in other languages, and being able to be passed explicitly when desired.
 - **Flexibility**: Ante acknowledges there are practical tradeoffs between different paradigms. For example, being a low-level
-  language, mutation is a given, but at the same time Ante provides alternatives for most scenareos so that while unsafe tools
-  are available, the safe alternative is often just as easy or moreso to use.
+  language, mutation is a given, but at the same time Ante provides alternatives for most scenarios so that while unsafe tools
+  are available, the safe alternative is often just as easy or more so to use.
 
 ---
 ## Is Ante production ready?

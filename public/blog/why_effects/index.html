@@ -637,7 +637,7 @@ old, familiar signature for <code>map</code>:</p>
 <a href="https://effekt-lang.org/docs/casestudies/ad">automatic differentiation</a>, and much more with them. Surely such
 constructs are difficult to implement, requiring low-level knowledge though, right? Nope. Most of these are pretty
 straightforward actually.</p>
-<p>Let&rsquo;s consider exceptions. Remember when I described algebraic effects as resumeable exceptions? This actually works
+<p>Let&rsquo;s consider exceptions. Remember when I described algebraic effects as resumable exceptions? This actually works
 pretty well as a hint on how to implement exceptions via effects. How do we do it? Just don&rsquo;t <code>resume</code> the effect when it is thrown:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Throw</span> <span class="n">a</span> <span class="k">with</span>
     <span class="n">throw</span><span class="o">:</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="n">never_returns</span>
@@ -673,7 +673,7 @@ onto a sticky note:</p>
             <span class="n">yield</span> <span class="n">x</span>
         <span class="k">resume</span> <span class="p">()</span>  <span class="c1">// continue yielding elements</span>
 
-<span class="c1">// Finally, lets add a helper function for applying a function to each yielded element</span>
+<span class="c1">// Finally, let&#39;s add a helper function for applying a function to each yielded element</span>
 <span class="nf">my_for_each</span> <span class="p">(</span><span class="n">generator</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Yield</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span>
     <span class="k">handle</span> <span class="n">generator</span> <span class="p">()</span>
     <span class="o">|</span> <span class="n">yield</span> <span class="n">x</span> <span class="ow">-&gt;</span>
@@ -925,7 +925,7 @@ to <code>map</code> the <code>Some</code> value in-between steps:</p>
     <span class="n">try_get_line_from_stdin</span> <span class="p">()</span> <span class="o">|&gt;.</span><span class="n">and_then</span> <span class="k">fn</span> <span class="n">line</span> <span class="ow">-&gt;</span>
         <span class="n">try_parse</span> <span class="n">line</span> <span class="o">|&gt;.</span><span class="n">map</span> <span class="k">fn</span> <span class="n">x</span> <span class="ow">-&gt;</span>
             <span class="n">x</span> <span class="o">*</span> <span class="mi">2</span>
-</code></pre></div><p>This is cumbersome enough languages like Rust provide syntax-sugar like <code>?</code>
+</code></pre></div><p>This is cumbersome enough that languages like Rust provide syntax-sugar like <code>?</code>
 to automatically return error values and focus on the good path. That isn&rsquo;t
 needed with effects though. The direct approach just works:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Now imagine we have:</span>
@@ -1012,7 +1012,7 @@ Based Security</a>
 where we must pass around capabilities like <code>fs: FileSystem</code> as explicit objects and only
 functions with these objects can access the file system. With algebraic effects it works similarly
 except the functions declare effects instead of taking capability parameters. There is a downside
-to the effect approach though, and its the same one mentioned above: since effects are automatically
+to the effect approach though, and it&rsquo;s the same one mentioned above: since effects are automatically
 threaded through your program you won&rsquo;t get an error if a function like <code>get_pi</code> is updated to
 require <code>IO</code> if your function also already requires that effect. This can crop up anywhere
 effects are used. E.g. with a <code>Fail</code> effect if a library function can&rsquo;t <code>Fail</code> but then was

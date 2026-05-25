@@ -757,7 +757,7 @@ or in <a href="/blog/safe-shared-mutability">the blog post where they were first
     <span class="p">(</span><span class="n">tail</span><span class="o">.</span><span class="n">as_mut</span> <span class="p">())</span><span class="o">.</span><span class="n">next</span> <span class="o">:=</span> <span class="kt">Some</span> <span class="n">head</span>
 
     <span class="n">print</span> <span class="n">head</span>  <span class="c1">// prints: NonEmptyList 0 (Some (NonEmptyList 1 (Some (NonEmptyList 0 (Some ...)))))</span>
-</code></pre></div><p>When we do this, we see an <code>Rc.as_mut</code> method. Such a method would not be safe in rust where mutable references must be
+</code></pre></div><p>When we do this, we see an <code>Rc.as_mut</code> method. Such a method would not be safe in Rust where mutable references must be
 unique, but are safe in Ante which provides not only Rust-style mutable references (spelled <code>uniq</code>), but
 also mutable references which may not be unique (spelled <code>mut</code>), yet are still safe to use:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// This reference-counted pointer may be aliased elsewhere so even if we have a unique reference to it,</span>
@@ -803,7 +803,7 @@ to highlight another example: mocking. Effect handlers enable developers to clea
 code without rewiring it to pass around mock objects everywhere. This isn&rsquo;t impossible without effect handlers
 of course. Just like existing low-level languages <em>can</em> make use of high-level patterns,
 it isn&rsquo;t about whether it&rsquo;s possible, it&rsquo;s about how <em>easy</em> it is to actually do so. It&rsquo;s easy to discount ease
-of implementation as unimportant but it has real a real effect on how likely a particular solution is to actually
+of implementation as unimportant but it has a real effect on how likely a particular solution is to actually
 be adopted in practice. Even if an alternative will noticeably improve a program in some way, if it is too difficult
 to implement (verbose, obfuscated, conflicts with other goals, etc), it may not be. The right thing to do
 should be the easy thing to do, but most languages just don&rsquo;t have the necessary tools for this when effects are involved.</p>
@@ -829,7 +829,7 @@ effect handlers, the code is just mockable by default.</p>
 
 <span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span> <span class="n">foo</span> <span class="p">(</span><span class="kt">MyDbWrapper</span><span class="o">.</span><span class="n">real_db</span> <span class="p">())</span>
 <span class="nf">test</span> <span class="p">()</span> <span class="ow">=</span>
-    <span class="n">mock_db</span> <span class="ow">=</span> <span class="kt">MyDbWrappper</span><span class="o">.</span><span class="n">mock_db</span> <span class="p">()</span>
+    <span class="n">mock_db</span> <span class="ow">=</span> <span class="kt">MyDbWrapper</span><span class="o">.</span><span class="n">mock_db</span> <span class="p">()</span>
     <span class="n">foo</span> <span class="n">mock_db</span>
     <span class="n">assert</span> <span class="p">(</span><span class="n">mock_db</span><span class="o">.</span><span class="n">all_is_well</span> <span class="p">())</span>
 
@@ -856,7 +856,7 @@ Ask many non-Rust programmers though and they&rsquo;ll tell you one of if not th
 its complexity and therefore difficulty. I want to challenge this equivalence though. On the other end of things, we often
 hear of languages being very simple and thus easy to use. Indeed, simplicity is often used as a reason to cut otherwise useful
 features out of languages (such as generics in the original version of Go) in pursuit of an idealistic minimal language.
-Taken to its extreme though, its trivial to see that prioritization of simplicity of language design over all else does <em>not</em>
+Taken to its extreme though, it&rsquo;s trivial to see that prioritization of simplicity of language design over all else does <em>not</em>
 simplify things for the programmer. Just look at the <a href="https://en.wikipedia.org/wiki/Brainfuck">Brainfuck</a> language - it only
 has 8 commands, yet writing programs in it is generally considerably more difficult than an equivalent python program (which
 by all accounts is a much more complex language).</p>
@@ -886,7 +886,7 @@ moving possible pauses in execution for real-time applications, etc.&#160;<a hre
 </li>
 <li id="fn:2" role="doc-endnote">
 <p>Similarly, higher-level languages like C# or Swift may still allow users to optimize with value types or even
-rust-style borrowing.&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+Rust-style borrowing.&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:3" role="doc-endnote">
 <p>Performance of naive reference-counting is often quite a bit lower than a modern tracing GC, but for the purpose

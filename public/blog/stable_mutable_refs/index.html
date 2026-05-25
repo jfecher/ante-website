@@ -422,8 +422,8 @@
                     
                     
                     
-                    <a href="/blog/stable_mutable_refs/#experiment-can-we-track-whether-a-types-interior-is-aliased">
-                        <li>Experiment: Can We Track Whether A Types Interior is Aliased?</li>
+                    <a href="/blog/stable_mutable_refs/#experiment-can-we-track-whether-a-typeamprsquos-interior-is-aliased">
+                        <li>Experiment: Can We Track Whether A Type&amp;amp;rsquo;s Interior is Aliased?</li>
                     </a>
                     
                     
@@ -445,8 +445,8 @@
                     
                     
                     
-                    <a href="/blog/stable_mutable_refs/#lets-be-happy-with-what-we-have">
-                        <li>Lets Be Happy With What We Have</li>
+                    <a href="/blog/stable_mutable_refs/#letamprsquos-be-happy-with-what-we-have">
+                        <li>Let&amp;amp;rsquo;s Be Happy With What We Have</li>
                     </a>
                     
                     
@@ -637,7 +637,7 @@ in a language with unboxed types. For more information on those, start with
 can be aliased freely and mutate freely with the one restriction of not being able to be projected into
 any &ldquo;shape-unstable&rdquo; types.</p>
 <p>What is a shape-unstable type? It&rsquo;s any type where mutating it may cause a reference inside to be invalidated.
-Tagged-union value (Rust&rsquo;s enums) fall into this category since if we mutate <code>Maybe String</code> (<code>Option&lt;String&gt;</code> in Rust)
+Tagged-union values (Rust&rsquo;s enums) fall into this category since if we mutate <code>Maybe String</code> (<code>Option&lt;String&gt;</code> in Rust)
 to <code>None</code>, any references to the inner <code>&amp;String</code> would be left dangling. Similarly, <code>Vec t</code> falls into this category
 since when we push an element, any pre-existing references to elements we have would be dangling:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">dangling_refs</span> <span class="p">(</span><span class="n">opt</span><span class="o">:</span> <span class="o">!</span><span class="k">shared</span> <span class="kt">Maybe</span> <span class="kt">String</span><span class="p">)</span> <span class="p">(</span><span class="n">vec</span><span class="o">:</span> <span class="o">!</span><span class="k">shared</span> <span class="kt">Vec</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
@@ -680,13 +680,13 @@ value without cloning it, until we find a Leaf node we can increment the value o
         <span class="n">increment</span> <span class="n">r</span>
     <span class="o">|</span> <span class="kt">Leaf</span> <span class="n">x</span> <span class="ow">-&gt;</span>
         <span class="n">x</span> <span class="o">+=</span> <span class="mi">1</span>
-</code></pre></div><p>The reason the code about would error for <code>!shared</code> reference is the <code>match tree</code> line where we&rsquo;d have to be
+</code></pre></div><p>The reason the code above would error for <code>!shared</code> reference is the <code>match tree</code> line where we&rsquo;d have to be
 able to project the shared reference into each variant&rsquo;s fields. If that were allowed, we could mutate <code>tree := Leaf 0</code>
 after <code>Branch l r -&gt;</code> matches and cause <code>l</code> and <code>r</code> to be dangling. The fix for this is to clone <code>tree</code> before
 it is matched, but this would be very expensive for our <code>Tree</code> type!</p>
 <p>Instead, the <code>!stable Tree</code> reference says we can&rsquo;t mutate <code>Tree</code> in an unstable way (changing it to a different variant),
 but we can make shape-stable mutations - and what do you know the mutation we want (incrementing an integer), is perfectly stable!</p>
-<p>Just to highlight the differences again, if we go back to the <code>dangling_refs</code> example, when we used <code>!shared</code> references, we got an error on the frist couple lines:</p>
+<p>Just to highlight the differences again, if we go back to the <code>dangling_refs</code> example, when we used <code>!shared</code> references, we got an error on the first couple lines:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">dangling_refs</span> <span class="p">(</span><span class="n">opt</span><span class="o">:</span> <span class="o">!</span><span class="k">shared</span> <span class="kt">Maybe</span> <span class="kt">String</span><span class="p">)</span> <span class="p">(</span><span class="n">vec</span><span class="o">:</span> <span class="o">!</span><span class="k">shared</span> <span class="kt">Vec</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
     <span class="c1">// error! `as_ref` requires an `&amp;own` argument, but `opt` is shared!</span>
     <span class="n">inner_string</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">String</span> <span class="ow">=</span> <span class="n">as_ref</span> <span class="n">opt</span> <span class="o">|&gt;</span> <span class="n">unwrap</span>
@@ -834,7 +834,7 @@ mutability schemes. Both <code>!stable t</code> and <code>!shared t</code> bette
 <span class="nf">bar3</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="o">!</span><span class="k">shared</span> <span class="kt">FooPlain</span><span class="p">)</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><hr>
 <h1 id="interior-mutability">Interior Mutability</h1>
-<p>One mild annoyance I have with rust that is based more on theoretic grounds rather than an actual practical
+<p>One mild annoyance I have with Rust that is based more on theoretic grounds rather than an actual practical
 concern is that its immutable references aren&rsquo;t actually immutable:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="c1">// Does this mutate bar? Maybe! We&#39;d need to know if there are any types providing internal mutability within `Bar` to be sure.
 </span><span class="c1"></span><span class="k">fn</span> <span class="nf">foo</span><span class="p">(</span><span class="n">bar</span>: <span class="kp">&amp;</span><span class="nc">Bar</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="o">..</span><span class="p">.}</span><span class="w">
@@ -932,7 +932,7 @@ of the outer <code>Cell</code> wrapper. Compare this with them using <code>!stab
 any code at all<sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup> and could simply continue writing their method.</li>
 <li><code>!stable t</code> is more discoverable than <code>Cell t</code>. This is more of a minor point, but as a dedicated language construct,
 <code>!stable</code> references may be easier for new users to reach for compared to <code>Cell</code>. Although either could easily be
-forgotten about, the later also requires remembering useful conversions such as
+forgotten about, the latter also requires remembering useful conversions such as
 <a href="https://doc.rust-lang.org/std/cell/struct.Cell.html#method.from_mut"><code>Cell::from_mut</code></a> and
 <a href="https://doc.rust-lang.org/std/cell/struct.Cell.html#method.as_slice_of_cells"><code>Cell::as_slice_of_cells</code></a>.</li>
 </ul>
@@ -949,15 +949,15 @@ we&rsquo;d need to remove the <code>Rc t</code> to <code>!stable t</code> conver
 isn&rsquo;t actually true anymore.</strong></li>
 </ul>
 <hr>
-<h2 id="experiment-can-we-track-whether-a-types-interior-is-aliased">Experiment: Can We Track Whether A Types Interior is Aliased?</h2>
-<p>Before we discard <code>!stable t</code> entirely though we should note that the reason it loses it&rsquo;s advantage of being able
+<h2 id="experiment-can-we-track-whether-a-types-interior-is-aliased">Experiment: Can We Track Whether A Type&rsquo;s Interior is Aliased?</h2>
+<p>Before we discard <code>!stable t</code> entirely though we should note that the reason it loses its advantage of being able
 to project into any type is only because <code>!shared t</code> also exists. Maybe the best solution would be to redesign
 the language to better support <code>!stable t</code> and <code>!shared t</code> together, if possible. One system I&rsquo;ve seen
 toyed with in this mutability space as an alternative to Ante&rsquo;s shared references is to instead track whether
 a type is aliased in a field that may be dropped directly. So we want to have some notion for &ldquo;a reference&rdquo;
 and &ldquo;a reference derived from another, which may be dropped if the first is mutated.&rdquo; To accomplish this,
 we&rsquo;re going to try to blend <code>!stable t</code> and <code>!shared t</code> since the former provides the projection we want
-and the later provides the mutation properties we need. For example, we&rsquo;d like to be able to recursively
+and the latter provides the mutation properties we need. For example, we&rsquo;d like to be able to recursively
 traverse through a tagged-union value, projecting references within until a mutation is desired. When we
 mutate we&rsquo;ll need to guarantee we don&rsquo;t have shared references inside the portion of the type that is
 being cut off from the rest. Can we have our cake and eat it too? Let&rsquo;s do an experiment.</p>
@@ -1027,7 +1027,7 @@ the same lifetime variable, preventing independent mutation on both. This is a p
 by <a href="https://docs.rs/ghost-cell/latest/ghost_cell/ghost_cell/struct.GhostCell.html#">ghost cell</a> in Rust.</li>
 </ul>
 <hr>
-<h1 id="lets-be-happy-with-what-we-have">Lets Be Happy With What We Have</h1>
+<h1 id="lets-be-happy-with-what-we-have">Let&rsquo;s Be Happy With What We Have</h1>
 <p>For the reasons above, I don&rsquo;t think <code>!stable t</code> is useful enough to include as a core language
 feature in Ante. I hesitate to think it&rsquo;d be useful enough to include in any language, truthfully.
 If there are other designers out there who are very partial to <code>!stable t</code>-style shared mutability
@@ -1127,7 +1127,7 @@ within a function locally where aliasing is needed.</p>
 <p>Converting a <code>!own t</code> to a <code>!shared t</code> is perfectly safe to do - the original
 owned reference can&rsquo;t be used while the shared ones are active. So even if your code
 mostly uses owned references, they can still be locally weakened to shared references
-which can help avoid the aliasibility XOR mutability errors from <code>!own t</code> alone:</p>
+which can help avoid the aliasability XOR mutability errors from <code>!own t</code> alone:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Neither of these helpers require exclusive access to Context</span>
 <span class="c1">// These both retrieve shared references to fields on the struct type.</span>
 <span class="nf">get_foo</span> <span class="p">(</span><span class="n">self</span><span class="o">:</span> <span class="o">!</span><span class="kt">Context</span><span class="p">)</span><span class="o">:</span> <span class="o">!</span><span class="kt">Foo</span> <span class="ow">=</span> <span class="n">self</span><span class="o">.!</span><span class="n">foo</span>
@@ -1180,10 +1180,10 @@ Either way, mutating these via shared, mutable references is still sound.</p>
 <p>So Ante will not be getting <code>!stable t</code> but at the same time, I don&rsquo;t think it needs it.
 <code>!shared t</code> is already surprisingly flexible, and along with shared types we get pretty
 much all we need to support a high level interface on an otherwise much lower-level
-language. This isn&rsquo;t to say it get&rsquo;s us 100% there - Ante still inherits Rust&rsquo;s several
+language. This isn&rsquo;t to say it gets us 100% there - Ante still inherits Rust&rsquo;s several
 kinds of closures (<code>Fn</code>, <code>FnMut</code>, <code>FnOnce</code>) which complicates functional programming a bit.
 I&rsquo;m quite optimistic on the future of shared references though, and that is just one
-of feature of Ante. If you were at all intrigued by this article, consider keeping up with the project
+feature of Ante. If you were at all intrigued by this article, consider keeping up with the project
 from the <a href="https://discord.gg/NPJncGBAws">discord server</a>. The compiler is currently in the
 middle of a full rewrite after 5 years since the last so progress will be slow, yet changes
 will be constant.</p>

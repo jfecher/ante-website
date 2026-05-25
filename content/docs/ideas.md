@@ -57,7 +57,7 @@ foo: a -> Unit given
 ```
 
 In which case we end up with a kind of compile-time duck typing. Worst case scenario if we made
-a typo (`gett` instead of `get`), this could generalize our `gett` constraint instaed of issuing
+a typo (`gett` instead of `get`), this could generalize our `gett` constraint instead of issuing
 a method not found error. This seems like it can be avoided however by only generalizing if there
 is actually at least 2 functions in scope with that name.
 
@@ -556,7 +556,7 @@ list node allocations into 1 call to the allocator. In this specific example, th
 simply be the stack itself since we do not need a dynamic lifetime for these nodes in this function.
 
 Grouping allocations in this way however leads to questions on how aggressively we should group adjacent
-items. What if they are separated by other definitons? Or arbitrary function calls? In general widening
+items. What if they are separated by other definitions? Or arbitrary function calls? In general widening
 the lifetime of one allocation to match another's so it may be grouped increases the amount of memory
 the resulting program would use by allocating earlier and freeing later. It is unclear what heuristics
 should be used - if any - to make this decision on when to group allocations separated by other statements.
@@ -599,7 +599,7 @@ as little space as possible is duplicated, or it may mean not saving data that i
 as llvm IR.
 
 Downloading this data rather than creating it on compilation would mean an increase in download times. Compared to Unison,
-ante users would be downloading both the textual code and the incremental version rather than just the later. It is unclear
+ante users would be downloading both the textual code and the incremental version rather than just the latter. It is unclear
 how much of a problem it would be in practice. One potential solution would be to ensure the incremental data of a library
 or program contains all the information needed to compile it. Then downloading the release of a library from a package manager
 would only entail downloading the metadata and not the source code itself. One potential issue with this solution is IDE integration.
@@ -616,7 +616,7 @@ however, tend to be written by hand with manual recursion.
 factoring out these recursive patterns, but they come with a high barrier to understanding and
 require users to manually define a fixpoint version of their types. Ante could in theory create
 and convert between the fixpoint version of the type behind the scenes to give users a nicer API.
-Lets consider a sum function for a tree type:
+Let's consider a sum function for a tree type:
 
 ```ante
 type Tree =
@@ -642,7 +642,7 @@ sum tree =
 
 So far, the little we gain in brevity is countered with the additional cognitive overhead
 of requiring users to understand the additional construct(s) that would be added to the language.
-Lets look at a more complex example:
+Let's look at a more complex example:
 
 ```ante
 type Ast =
@@ -732,7 +732,7 @@ sort (vec: Vec t) : SortedVec t = ...
 binary_search (vec: SortedVec t) (elem: t) : Maybe (Index vec) = ...
 ```
 
-Each of these refinements are would be in type system and would be checked during compile-time with the help of a SMT solver.
+Each of these refinements would be in the type system and would be checked during compile-time with the help of a SMT solver.
 
 ---
 # Lifetime Inference
@@ -814,7 +814,7 @@ hood so any container that wants to free early or reallocate and
 free/resize memory (ie. the vast majority of containers) should use
 one of the smart pointer types to hold their elements instead.
 
-For these reasons, lifetime inference isn't an incredibly useful for Ante
+For these reasons, lifetime inference isn't incredibly useful for Ante
 today so it is not included in the language.
 
 # Borrowing Alternatives
@@ -931,7 +931,7 @@ allowing types like `GhostCell` which require similar compiler-enforced semantic
 continue with the more flexible lean in extending Rust's approach a bit by basing lifetimes off of
 "places" instead of source-code regions which is an approach which generalizes
 better to support self-referential structs and borrowing a subset of a struct's fields. Also unlike lifetimes,
-a place has a concrete syntax which can be refered to:
+a place has a concrete syntax which can be referred to:
 
 ```ante
 x = 3
@@ -1000,7 +1000,7 @@ Context.example (!own self) =
         do_something_with msg foo
 ```
 
-For this to work, we'd presumably need alter the definition of `get_foo` to only use certain
+For this to work, we'd presumably need to alter the definition of `get_foo` to only use certain
 fields of the struct. This could be done using Ante's existing anonymous struct types:
 
 ```ante

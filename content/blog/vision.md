@@ -263,7 +263,7 @@ main () =
     print head  // prints: NonEmptyList 0 (Some (NonEmptyList 1 (Some (NonEmptyList 0 (Some ...)))))
 ```
 
-When we do this, we see an `Rc.as_mut` method. Such a method would not be safe in rust where mutable references must be
+When we do this, we see an `Rc.as_mut` method. Such a method would not be safe in Rust where mutable references must be
 unique, but are safe in Ante which provides not only Rust-style mutable references (spelled `uniq`), but
 also mutable references which may not be unique (spelled `mut`), yet are still safe to use:
 
@@ -324,7 +324,7 @@ to highlight another example: mocking. Effect handlers enable developers to clea
 code without rewiring it to pass around mock objects everywhere. This isn't impossible without effect handlers
 of course. Just like existing low-level languages _can_ make use of high-level patterns,
 it isn't about whether it's possible, it's about how _easy_ it is to actually do so. It's easy to discount ease
-of implementation as unimportant but it has real a real effect on how likely a particular solution is to actually
+of implementation as unimportant but it has a real effect on how likely a particular solution is to actually
 be adopted in practice. Even if an alternative will noticeably improve a program in some way, if it is too difficult
 to implement (verbose, obfuscated, conflicts with other goals, etc), it may not be. The right thing to do
 should be the easy thing to do, but most languages just don't have the necessary tools for this when effects are involved.
@@ -353,7 +353,7 @@ foo (db: MyDbWrapper) =
 
 main () = foo (MyDbWrapper.real_db ())
 test () =
-    mock_db = MyDbWrappper.mock_db ()
+    mock_db = MyDbWrapper.mock_db ()
     foo mock_db
     assert (mock_db.all_is_well ())
 
@@ -385,7 +385,7 @@ Ask many non-Rust programmers though and they'll tell you one of if not the main
 its complexity and therefore difficulty. I want to challenge this equivalence though. On the other end of things, we often
 hear of languages being very simple and thus easy to use. Indeed, simplicity is often used as a reason to cut otherwise useful 
 features out of languages (such as generics in the original version of Go) in pursuit of an idealistic minimal language.
-Taken to its extreme though, its trivial to see that prioritization of simplicity of language design over all else does _not_
+Taken to its extreme though, it's trivial to see that prioritization of simplicity of language design over all else does _not_
 simplify things for the programmer. Just look at the [Brainfuck](https://en.wikipedia.org/wiki/Brainfuck) language - it only
 has 8 commands, yet writing programs in it is generally considerably more difficult than an equivalent python program (which
 by all accounts is a much more complex language).
@@ -417,7 +417,7 @@ has already progressed further than I've imagined.
 moving possible pauses in execution for real-time applications, etc. 
 
 [^high]: Similarly, higher-level languages like C# or Swift may still allow users to optimize with value types or even
-rust-style borrowing.
+Rust-style borrowing.
 
 [^rc]: To allow for more control over shared types, the runtime representation of shared types may be controlled by
 the developer of the final binary (to prevent ecosystem fragmentation, library authors may not control this compiler option).

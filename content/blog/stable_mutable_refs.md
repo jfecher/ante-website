@@ -17,7 +17,7 @@ can be aliased freely and mutate freely with the one restriction of not being ab
 any "shape-unstable" types.
 
 What is a shape-unstable type? It's any type where mutating it may cause a reference inside to be invalidated.
-Tagged-union value (Rust's enums) fall into this category since if we mutate `Maybe String` (`Option<String>` in Rust)
+Tagged-union values (Rust's enums) fall into this category since if we mutate `Maybe String` (`Option<String>` in Rust)
 to `None`, any references to the inner `&String` would be left dangling. Similarly, `Vec t` falls into this category
 since when we push an element, any pre-existing references to elements we have would be dangling:
 
@@ -73,7 +73,7 @@ increment (tree: !stable Tree) =
         x += 1
 ```
 
-The reason the code about would error for `!shared` reference is the `match tree` line where we'd have to be
+The reason the code above would error for `!shared` reference is the `match tree` line where we'd have to be
 able to project the shared reference into each variant's fields. If that were allowed, we could mutate `tree := Leaf 0`
 after `Branch l r ->` matches and cause `l` and `r` to be dangling. The fix for this is to clone `tree` before
 it is matched, but this would be very expensive for our `Tree` type!
@@ -81,7 +81,7 @@ it is matched, but this would be very expensive for our `Tree` type!
 Instead, the `!stable Tree` reference says we can't mutate `Tree` in an unstable way (changing it to a different variant),
 but we can make shape-stable mutations - and what do you know the mutation we want (incrementing an integer), is perfectly stable!
 
-Just to highlight the differences again, if we go back to the `dangling_refs` example, when we used `!shared` references, we got an error on the frist couple lines:
+Just to highlight the differences again, if we go back to the `dangling_refs` example, when we used `!shared` references, we got an error on the first couple lines:
 
 ```ante
 dangling_refs (opt: !shared Maybe String) (vec: !shared Vec I32) =
@@ -193,7 +193,7 @@ bar3 (x: !shared FooPlain) = ...
 
 # Interior Mutability
 
-One mild annoyance I have with rust that is based more on theoretic grounds rather than an actual practical
+One mild annoyance I have with Rust that is based more on theoretic grounds rather than an actual practical
 concern is that its immutable references aren't actually immutable:
 
 ```rust
@@ -329,7 +329,7 @@ of the outer `Cell` wrapper. Compare this with them using `!stable` mutability i
 any code at all[^2] and could simply continue writing their method.
 - `!stable t` is more discoverable than `Cell t`. This is more of a minor point, but as a dedicated language construct,
 `!stable` references may be easier for new users to reach for compared to `Cell`. Although either could easily be
-forgotten about, the later also requires remembering useful conversions such as
+forgotten about, the latter also requires remembering useful conversions such as
 [`Cell::from_mut`](https://doc.rust-lang.org/std/cell/struct.Cell.html#method.from_mut) and
 [`Cell::as_slice_of_cells`](https://doc.rust-lang.org/std/cell/struct.Cell.html#method.as_slice_of_cells).
 
@@ -348,16 +348,16 @@ isn't actually true anymore.**
 if they really do need to mutate through an "immutable" reference.
 
 ---
-## Experiment: Can We Track Whether A Types Interior is Aliased?
+## Experiment: Can We Track Whether A Type's Interior is Aliased?
 
-Before we discard `!stable t` entirely though we should note that the reason it loses it's advantage of being able
+Before we discard `!stable t` entirely though we should note that the reason it loses its advantage of being able
 to project into any type is only because `!shared t` also exists. Maybe the best solution would be to redesign
 the language to better support `!stable t` and `!shared t` together, if possible. One system I've seen
 toyed with in this mutability space as an alternative to Ante's shared references is to instead track whether
 a type is aliased in a field that may be dropped directly. So we want to have some notion for "a reference"
 and "a reference derived from another, which may be dropped if the first is mutated." To accomplish this,
 we're going to try to blend `!stable t` and `!shared t` since the former provides the projection we want
-and the later provides the mutation properties we need. For example, we'd like to be able to recursively
+and the latter provides the mutation properties we need. For example, we'd like to be able to recursively
 traverse through a tagged-union value, projecting references within until a mutation is desired. When we
 mutate we'll need to guarantee we don't have shared references inside the portion of the type that is
 being cut off from the rest. Can we have our cake and eat it too? Let's do an experiment.
@@ -428,7 +428,7 @@ There are a couple ways we could fix this, although I don't find any satisfactor
 
 ---
 
-# Lets Be Happy With What We Have
+# Let's Be Happy With What We Have
 
 For the reasons above, I don't think `!stable t` is useful enough to include as a core language
 feature in Ante. I hesitate to think it'd be useful enough to include in any language, truthfully.
@@ -554,7 +554,7 @@ within a function locally where aliasing is needed.
 Converting a `!own t` to a `!shared t` is perfectly safe to do - the original
 owned reference can't be used while the shared ones are active. So even if your code
 mostly uses owned references, they can still be locally weakened to shared references
-which can help avoid the aliasibility XOR mutability errors from `!own t` alone:
+which can help avoid the aliasability XOR mutability errors from `!own t` alone:
 
 ```ante
 // Neither of these helpers require exclusive access to Context
@@ -619,10 +619,10 @@ Either way, mutating these via shared, mutable references is still sound.
 So Ante will not be getting `!stable t` but at the same time, I don't think it needs it.
 `!shared t` is already surprisingly flexible, and along with shared types we get pretty
 much all we need to support a high level interface on an otherwise much lower-level
-language. This isn't to say it get's us 100% there - Ante still inherits Rust's several
+language. This isn't to say it gets us 100% there - Ante still inherits Rust's several
 kinds of closures (`Fn`, `FnMut`, `FnOnce`) which complicates functional programming a bit.
 I'm quite optimistic on the future of shared references though, and that is just one
-of feature of Ante. If you were at all intrigued by this article, consider keeping up with the project
+feature of Ante. If you were at all intrigued by this article, consider keeping up with the project
 from the [discord server](https://discord.gg/NPJncGBAws). The compiler is currently in the
 middle of a full rewrite after 5 years since the last so progress will be slow, yet changes
 will be constant.

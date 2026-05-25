@@ -2438,7 +2438,7 @@ sane defaults where possible. This can be seen in the ability to opt-out
 of move semantics and even temporary references much of the time by using
 shared types which resemble programming in a garbage-collected language
 with boxed values.</p>
-<p>Compared to other low-level languages, ante is memory safe like rust but tries
+<p>Compared to other low-level languages, ante is memory safe like Rust but tries
 to be easier in general, for example by allowing shared mutability by
 default. Generally, application-level Ante code is meant to be written with
 shared types to enable high-level code, while libraries are meant to use
@@ -2654,7 +2654,7 @@ insertion in other languages. The main difference being ante also has significan
 to help it clue into this problem.</p>
 <p>Ante&rsquo;s original solution was more of a band-aid. It followed the python example of continuing
 lines with <code>\</code> at the end of a line which would tell the lexer not to issue a newline token.
-There was also a similar rule for elliding newlines while we were inside <code>()</code> or <code>[]</code> pairs.
+There was also a similar rule for eliding newlines while we were inside <code>()</code> or <code>[]</code> pairs.
 This solution was quite annoying in practice however. Ante is much more expression-oriented
 than python and particularly when working with the <a href="#pipeline-operators">pipeline operators</a> we would end up with a long
 chain of lines ending with <code>\</code>:</p>
@@ -2673,7 +2673,7 @@ chain of lines ending with <code>\</code>:</p>
     <span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 </code></pre></div><p>In practice this ugly bit of syntax tended to discourage the otherwise good practice of
 splitting long lines onto multiple lines. Ante thus needed a better solution. The goals
-of the new solution were to be unambiguous, ergnomic, match a developer&rsquo;s mental model
+of the new solution were to be unambiguous, ergonomic, match a developer&rsquo;s mental model
 of their program, and to issue error messages if needed instead of silently inferring the wrong thing.</p>
 <p>This was initially difficult to solve but eventually ante landed on a solution based upon the
 observance that when programmers want to continue lines, they almost always use indentation
@@ -2689,7 +2689,7 @@ and assignments. This is the list of tokens the programmer would normally need a
 of code after - it is analogous to knowing when you need to type <code>{</code> in curly-braced languages.</p>
 <p>Note that an important part of this being implemented entirely in the lexer is that operator precedence
 after continued lines just works (it is harder than it may seem if continuation is a parser rule).</p>
-<p>When the lexer sees an indent that without one of these tokens preceeding it, it does not issue
+<p>When the lexer sees an indent without one of these tokens preceding it, it does not issue
 an indent token and also does not issue newline tokens for any expression at that same level of
 ignored indentation. Note that this is tracked on a per-block basis, so if we wanted we could
 also still use constructs like <code>if</code> inside these blocks with ignored indentation - since we&rsquo;d
@@ -2863,7 +2863,7 @@ library:</li>
 <li>Easier to work with: Because pairs are just normal data types, we get
 all the capabilities of normal types for free. For example, we know all pairs
 will have exactly two fields. This makes creating <code>impl</code>s for them much easier.
-Lets compare the task of converting a tuple to a string with doing the same for pairs.
+Let&rsquo;s compare the task of converting a tuple to a string with doing the same for pairs.
 With tuples we must <a href="https://hackage.haskell.org/package/base-4.14.1.0/docs/src/GHC.Show.html#line-268">create a different impl for every possible tuple size</a>.
 with pairs on the other hand the simple implementation works for all sizes:</li>
 </ol>
@@ -2872,7 +2872,7 @@ with pairs on the other hand the simple implementation works for all sizes:</li>
 </code></pre></div><ol start="3">
 <li>
 <p>Just as efficient: both pairs and tuples have roughly the same representation
-in memory (the exact same if you discount allignment differences and reordering of fields).</p>
+in memory (the exact same if you discount alignment differences and reordering of fields).</p>
 </li>
 <li>
 <p>More composable: having the right-associative <code>,</code> operator means we can
@@ -2890,7 +2890,7 @@ to extract a <code>List a, List (b, c)</code> for us. This means if we wanted, w
 </code></pre></div><ul>
 <li>
 <p>Another place this shows up in is when deconstructing pair values.
-Lets say we wanted to define a function <code>first</code> for getting the first
+Let&rsquo;s say we wanted to define a function <code>first</code> for getting the first
 element of any tuple of length &gt;= 2 (remember, we are using nested pairs,
 so there are no 1-tuples!), and <code>third</code> for getting the third
 element of any tuple of length &gt;= 3. We can define the functions:</p>
@@ -2929,7 +2929,7 @@ of parenthesis but in ante since tuples are just nested pairs you can just add a
 <span class="c1">// the following version is equally valid</span>
 <span class="nf">for</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">pairs</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">one</span><span class="p">,</span> <span class="n">two</span><span class="p">)</span> <span class="ow">-&gt;</span>
     <span class="n">print</span> <span class="s">&#34;Iteration $i: sum = ${one + two}&#34;</span>
-</code></pre></div><p>Finally, its necessary to mention that the earlier <code>Cast</code> example printed nested
+</code></pre></div><p>Finally, it&rsquo;s necessary to mention that the earlier <code>Cast</code> example printed nested
 pairs as <code>1, 2, 3</code> where as the <code>Show</code> instances in haskell printed tuples as <code>(1, 2, 3)</code>.
 If we wanted to surround our nested pairs with parenthesis we have to work a bit
 harder by specializing the impl for pairs:</p>
@@ -3304,7 +3304,7 @@ These extra fields are placed at the end of each variant&rsquo;s list of fields.
     <span class="o">|</span> <span class="kt">Add</span> <span class="n">lhs</span> <span class="n">rhs</span> <span class="n">loc</span> <span class="ow">-&gt;</span> <span class="kt">Add</span> <span class="p">(</span><span class="n">simplify</span> <span class="n">lhs</span><span class="p">)</span> <span class="p">(</span><span class="n">simplify</span> <span class="n">rhs</span><span class="p">)</span> <span class="n">loc</span>
 </code></pre></div><p>Each of the locations in the first two <code>Add</code> cases were written explicitly here to show where they would go, but if
 these fields are unneeded in a pattern match they can also be excluded with <code>..</code> which will
-automatically fill in an remaining fields in a pattern:</p>
+automatically fill in any remaining fields in a pattern:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">simplify</span> <span class="p">(</span><span class="n">expr</span><span class="o">:</span> <span class="kt">Expr</span><span class="p">)</span><span class="o">:</span> <span class="kt">Expr</span> <span class="ow">=</span>
     <span class="k">match</span> <span class="n">expr</span>
     <span class="o">|</span> <span class="kt">Int</span> <span class="n">x</span> <span class="o">..</span> <span class="ow">-&gt;</span> <span class="kt">Int</span> <span class="n">x</span>
@@ -3366,7 +3366,7 @@ parse out of the string:</p>
 <p>Ante has quite a few <a href="#integers">integer types</a> so one question
 that gets raised is what is the type of an integer literal?
 If we randomly choose a type like <code>I32</code> then when using all
-other integer types we&rsquo;d have to constaintly annotate our
+other integer types we&rsquo;d have to constantly annotate our
 operations with the type used which can be annoying. Imagine
 <code>a + 1u64</code> every few lines.</p>
 <p>Instead, integer literals are given the polymorphic <code>Int a</code> type:</p>
@@ -3580,7 +3580,7 @@ be any other reference of any kind to the same value while we hold the exclusive
 <span class="nf">ref1</span><span class="o">.*</span> <span class="o">:=</span> <span class="s">&#34;${message}, WorZd!&#34;</span>  <span class="c1">// &#34;Hello, WorZd!&#34;</span>
 <span class="nf">ref2</span><span class="o">.</span><span class="n">replace</span> <span class="s">&#34;Z&#34;</span> <span class="s">&#34;l&#34;</span>
 <span class="nf">print</span> <span class="n">ref2</span>                     <span class="c1">// &#34;Hello, World!&#34;</span>
-</code></pre></div><p>The <code>imm</code> and <code>uniq</code> reference kinds are used prevent operations that would be unsafe
+</code></pre></div><p>The <code>imm</code> and <code>uniq</code> reference kinds are used to prevent operations that would be unsafe
 on references which may be mutably shared. A common indication of when an operation may
 be unsafe if it is mutably shared is if they hand out references inside of a type with
 an unstable shape. For example, handing out a reference to a <code>Vec</code> element would be unsafe
@@ -3673,7 +3673,7 @@ assume <code>x</code> and <code>y</code> are distinct.</p>
 the final <code>print</code> or move <code>y.clear()</code> after it, we no longer get any errors. The alias restriction can be as local
 as we like, so as long as we can make a block of code where <code>v</code> isn&rsquo;t used at the same time as <code>y</code>, we are all good!</p>
 <p>The <code>Distinct a b</code> constraint is only issued when we use variables that may be mutated, which includes mutable
-references and moved values. Notably, this allows us convert many variables of the same type from <code>ref</code> to <code>imm</code> easily.
+references and moved values. Notably, this allows us to convert many variables of the same type from <code>ref</code> to <code>imm</code> easily.
 Since they are not mutable, they don&rsquo;t require a <code>Distinct a b</code> restriction, letting us alias the resulting <code>imm</code>
 references as well:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">promote_to_imm</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">ref</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="k">ref</span> <span class="n">b</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span>
@@ -3685,7 +3685,7 @@ constraint since they are both used immutably!</p>
 <p>One downside of the <code>Distinct a b</code> check is that promoting common types like <code>ref String</code> are more difficult to
 use with other variables in scope since <code>String</code>s are likely to be found within these other variables as well.</p>
 <p>Even with these restrictions, the ability to convert <code>ref</code> and <code>mut</code> to <code>imm</code> and <code>uniq</code>
-enables us write more functions with fewer requirements on the arguments they are called with (since they would
+enables us to write more functions with fewer requirements on the arguments they are called with (since they would
 now accept references which may be mutably aliased, including <code>shared mut</code> types). Consider the following function:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Context</span> <span class="ow">=</span> <span class="n">names</span><span class="o">:</span> <span class="kt">HashMap</span> <span class="kt">String</span> <span class="kt">NameData</span>
 
@@ -4135,7 +4135,7 @@ Being effects however, these do not need to be manually unpacked at each call si
 </code></pre></div><p>Handling these effects can be done via manual <code>handler</code> expressions, or
 a variety of helper functions in the <code>Std.Fail</code> and <code>Std.Throw</code> modules.
 Implementing these functions is generally simple. Effects are often described
-as resumeable exceptions, so if we want normal exceptions all we must do
+as resumable exceptions, so if we want normal exceptions all we must do
 is not call <code>resume</code> in the handler. A function like <code>try</code> will instead
 return <code>None</code> while <code>try_or</code> provides a default value on error instead.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">try</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Fail</span> <span class="ow">=&gt;</span> <span class="n">a</span><span class="p">)</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="n">a</span> <span class="ow">=</span>
@@ -4680,7 +4680,7 @@ D1  D2
 <p>Ante code is platform independent in that each Ante program is written against an interface
 for its target platform. It may not use functions not in this interface, and programs may not
 declare <code>extern</code> symbols in an ad-hoc manner like in other languages. Instead, <code>main</code> takes the
-platform it is targetting as an argument where each platform is an interface of functions available
+platform it is targeting as an argument where each platform is an interface of functions available
 on that platform:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">main</span> <span class="p">{</span><span class="kt">Linux</span><span class="p">}</span> <span class="ow">=</span>
     <span class="c1">// Linux provides access to syscalls such as fork, execve, and utilities such as io_uring</span>
