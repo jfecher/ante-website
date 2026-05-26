@@ -283,6 +283,31 @@
                     
                     
                     
+                    <a href="/docs/faq/#is-it-any-good">
+                        <li>Is it any good?</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
                     <a href="/docs/faq/#why-use-ante">
                         <li>Why use Ante?</li>
                     </a>
@@ -449,6 +474,9 @@
                           <hr>
 <h1 id="faq">FAQ</h1>
 <hr>
+<h2 id="is-it-any-good">Is it any good?</h2>
+<p>Yes.</p>
+<hr>
 <h2 id="why-use-ante">Why use Ante?</h2>
 <ul>
 <li>
@@ -458,13 +486,13 @@ generally a good rule to design around, shared mutability is extremely important
 <li>Safe, shared mutability enables Ante to model higher-level code from garbage-collected languages like Java or C#.</li>
 <li>Combined with Ante&rsquo;s core of ownership + borrowing, this means Ante code can be both high-level or lower-level closer to Rust.
 This is very important for both efficiency and ergonomics since both high-level and low-level code work better together.
-Today, when a language has both ordinary business logic and important fast loops it must either:
+Today, when a language has both ordinary business logic and hard performance constraints it must either:
 <ul>
 <li>Split their build &amp; complicate hiring by having developers work in multiple languages or split the team by language</li>
 <li>Commit to only a single high-level or low-level language where:
 <ul>
 <li>Using only a low-level language sacrifices the brevity and development speed of the business logic</li>
-<li>Using only a high-level language sacrifices the optimization potential of the fast loops.</li>
+<li>Using only a high-level language often sacrifices the level of control necessary to write optimizations to meet the performance constraints.</li>
 </ul>
 </li>
 </ul>
@@ -486,7 +514,7 @@ something should be modeled.</li>
 </li>
 <li>
 <p><strong>Capabilities</strong> increase the security of applications. If a pure library function is updated to secretly record user data,
-it must accept a <code>Network</code> object as an argument, likely creating a new error at its call site.</p>
+it must accept a <code>Network</code> or <code>IO</code> object as an argument, often creating a new error at its call site.</p>
 </li>
 <li>
 <p><strong>A focus on clean code</strong>: Ante is designed with a strong focus on code being enjoyable to write and easy to read. Ante code
@@ -507,8 +535,8 @@ are encouraged to do so. Feel free to post any libraries or applications you mak
 and create issues <a href="https://github.com/jfecher/ante">on github</a> for any bugs, confusing error messages, or other issues encountered.</p>
 <hr>
 <h2 id="have-you-considered-an-ml-like-module-system">Have you considered an ML-like module system?</h2>
-<p>I have - although I currently don&rsquo;t see them providing enough value to merit their inclusion. This could change in the future
-if I hear a strong enough argument for them over the status quo. Ante&rsquo;s abilities can already enable similar
+<p>I have - although I currently don&rsquo;t see it providing enough value to merit its inclusion. This could change in the future
+if I hear a strong enough argument for it over the status quo. Ante&rsquo;s abilities can already enable similar
 code since Ante does support existential types already, though types being unboxed makes type erasure when ascribing to
 a module type more difficult.</p>
 <hr>

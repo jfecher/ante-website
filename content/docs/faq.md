@@ -5,8 +5,12 @@ categories = ["docs"]
 +++
 
 ---
-
 # FAQ
+---
+## Is it any good?
+
+Yes.
+
 --- 
 ## Why use Ante?
 
@@ -15,11 +19,11 @@ categories = ["docs"]
   - Safe, shared mutability enables Ante to model higher-level code from garbage-collected languages like Java or C#.
   - Combined with Ante's core of ownership + borrowing, this means Ante code can be both high-level or lower-level closer to Rust.
     This is very important for both efficiency and ergonomics since both high-level and low-level code work better together.
-    Today, when a language has both ordinary business logic and important fast loops it must either:
+    Today, when a language has both ordinary business logic and hard performance constraints it must either:
     - Split their build & complicate hiring by having developers work in multiple languages or split the team by language
     - Commit to only a single high-level or low-level language where:
       - Using only a low-level language sacrifices the brevity and development speed of the business logic
-      - Using only a high-level language sacrifices the optimization potential of the fast loops.
+      - Using only a high-level language often sacrifices the level of control necessary to write optimizations to meet the performance constraints.
   - Ante enables using the same language for both, making business logic faster and easier to write compared to other low-level
     languages so that developers have more time to spend on optimizations and bug fixes.
 
@@ -29,7 +33,7 @@ categories = ["docs"]
   - Abilities being a single language concept combining traits/interfaces and effects mean there are fewer questions on how
     something should be modeled.
 - **Capabilities** increase the security of applications. If a pure library function is updated to secretly record user data,
-  it must accept a `Network` object as an argument, likely creating a new error at its call site.
+  it must accept a `Network` or `IO` object as an argument, often creating a new error at its call site.
 - **A focus on clean code**: Ante is designed with a strong focus on code being enjoyable to write and easy to read. Ante code
   is often free of excess punctuation and clutter. More terse code makes it easier to find bugs by reducing the number of places
   they can hide. Implicits in Ante strike a balance between abilities being always passed implicitly like traits/implicits are
@@ -48,8 +52,8 @@ and create issues [on github](https://github.com/jfecher/ante) for any bugs, con
 ---
 ## Have you considered an ML-like module system?
 
-I have - although I currently don't see them providing enough value to merit their inclusion. This could change in the future
-if I hear a strong enough argument for them over the status quo. Ante's abilities can already enable similar
+I have - although I currently don't see it providing enough value to merit its inclusion. This could change in the future
+if I hear a strong enough argument for it over the status quo. Ante's abilities can already enable similar
 code since Ante does support existential types already, though types being unboxed makes type erasure when ascribing to
 a module type more difficult.
 

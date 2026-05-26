@@ -14,10 +14,10 @@ in no particular order.
 ---
 # Overloading
 
-Given ante does not have true methods, some form of overloading could greatly help alleviate user frustration
+Some form of overloading could help alleviate user frustration
 by allowing modules like `Vec` and `HashMap` to both be imported despite defining conflicting names like `empty`,
-`of`, `insert`, `get`, etc. Overloading would also reduce the need for traits as users would no longer need to
-use traits to be lazy with their function names. It would however complicate documentation somewhat. An identifier
+`of`, `insert`, `get`, etc. Overloading would also reduce the need for abilities as users would no longer need to
+use abilities to be lazy with their function names. It would however complicate documentation somewhat. An identifier
 would no longer be uniquely determined by its full module path, referring to a specific instance of it must now
 specify the full module path and type of the function.
 
@@ -63,7 +63,7 @@ is actually at least 2 functions in scope with that name.
 
 It is an open question whether generalized function requirements should be resolved via the set of
 functions visible to the caller or just those visible to the definer. If it is the former, this functions
-as a sort of ad-hoc trait feature and the "only generalize if there are at least 2 functions in scope" of the
+as a sort of ad-hoc ability feature and the "only generalize if there are at least 2 functions in scope" of the
 definer rule seems more arbitrary if these functions won't be used for resolution anyway. For this reason,
 it is perhaps better to opt into this feature via a separate syntax, e.g. via `.` hinting at method
 calls in other languages:
@@ -78,8 +78,8 @@ This method is opt-in so users are less likely to accidentally hit it and get co
 largely follows the already-established type inference and generalization rules for `.` on fields.
 
 2. We can choose to never generalize and always issue an error if there are more than two functions
-that may match in scope. If the user still wishes to allow such functionality, they must use traits
-and impl the trait for each combination of types they want. This approach is less compatible with
+that may match in scope. If the user still wishes to allow such functionality, they must use abilities
+and implement the ability for each combination of types they want. This approach is less compatible with
 type inference and may lead to users avoiding type inference to be able to use overloading. It may
 also be a stumbling block for new programmers, though both of these proposals realistically may be.
 
@@ -137,19 +137,19 @@ It would also be possible to implement `derive` using this:
 ```ante
 comptime derive_functions = mut HashMap.new ()
 
-comptime register_derive (function: Code -> Code) (trait_name: Code): Unit =
-    insert derive_functions trait_name function
+comptime register_derive (function: Code -> Code) (ability_name: Code): Unit =
+    insert derive_functions ability_name function
 
-comptime derive (type_definition: Code) (trait_name: Code): Code =
+comptime derive (type_definition: Code) (ability_name: Code): Code =
     if not is_type_definition type_definition then
         error "derive can only be used on type definitions"
 
-    match get derive_functions trait_name
+    match get derive_functions ability_name
     | Some derive_function ->
         new_impl = derive_function type_definition
         concat type_definition new_impl
     | None ->
-        error "No derive function registered for ${trait_name}"
+        error "No derive function registered for ${ability_name}"
 ```
 
 Using this, we could register a handler by:
@@ -207,199 +207,56 @@ type MyType =
 ```
 
 ---
-# Allocator Effect
+# Abilities Object Types
 
-In low level code it can often be helpful to provide a custom allocator for a type.
-Languages like C++ and Rust realized the usefulness of this later on and needed to refactor types like `std::vector` and `std::vec::Vec`
-to be parameterized over an allocator. Zig on the other hand instead opts to have users manually thread through
-an allocator parameter to all functions that may allocate. This simplifies the types and makes it easier to make libraries
-that provide custom types also accept custom allocators. However, it can be quite burdensome to users to manually thread the allocator through everywhere.
-Can we do better?
-
-Yes we can. This pattern of "manually threading through X through our program" is the same as the `State` effect. We can design a similar
-effect for allocate which should compile to the same state-passing code but with the benefit of having the compiler thread through
-the allocator for us:
+Abilities are already types in Ante, but they are more akin to a dictionary of functions
+or a vtable than an actual object that can perform those operations. Usually an ability
+like `Display t` will be paired with an actual object of type `t`. It is often useful however,
+to bundle together an object with some abilities:
 
 ```ante
-effect Allocate a with
-    allocate: Unit -> Ptr a
+type DisplayObj = exists t env.
+    value: t
+    vtable: Display t env
+
+implicit display_displayobj {obj: DisplayObj}: Display DisplayObj = Display with
+    display obj = obj.vtable.display obj.value
 ```
 
-Now functions that may allocate are marked with an effect:
+There are some issues with this however:
+- This is a rough equivalent to `dyn Trait` in Rust, but there is no `impl Trait` equivalent
+- This relies on users manually creating wrappers for each ability they want to use
+- This only works for abilities with a single non-env argument
+
+To the second point, we could alleviate it a bit by making the type more generic:
 
 ```ante
-type Box a =
-    raw_ptr: Ptr a
-
-Box.of (value: a) : Box a can Allocate a =
-    Box (allocate a)
+type Obj (ability_: fn type type -> type) = exists t env.
+    value: t
+    vtable: ability_ t env
 ```
 
-Providing a custom allocator can now be done through a regular handler:
-
-```ante
-malloc_allocator (f: Unit -> a can Allocate b) : a =
-    handle f ()
-    | allocate () -> size_of (MkType : Type b) |> malloc |> resume
-
-_ = Box.of 3 with malloc_allocator
-```
-
-or if no handler is provided then `main` will automatically handle Allocate effects
-with a default handler (presumably deferring to malloc or region allocation).
-
-There are a number of open questions however:
-
-1. The interface to `allocate` is unclear, the interface above doesn't
-allow allocating dynamically sized arrays. An interface closer to
-`calloc` may be better here.
-
-2. A raw `Ptr` is returned by the Allocator interface. This means we can
-easily leak values if not careful. We could try to add a lifetime constraint
-of sorts, or perhaps this limitation may be acceptable for users that need
-the low level control.
-
-3. Allocators also need `deallocate` functionality which is not given. There
-are two options I see here: Add `deallocate` to the `Allocate` interface (more flexible),
-or expect all `Allocate` handlers to outlive their allocations and cleanup when
-the handler finishes (this would be another useful place for a lifetime parameter).
-The first approach seems more viable than the second since the second can be implemented
-in terms of the first by adding cleanup code to the end of the handler and using an
-empty `deallocate` match.
-
-4. This `Allocate a` effect would be so ubiquitous that it is perhaps unreasonable to expect
-users to type `can Allocate a, Allocate b` for every function that may allocate types a and b.
-If we get rid of the type variable and use a slightly different design:
-
-```ante
-effect Allocate with
-    allocate: Type a -> Ptr a
-```
-
-Then the effect could be folded into the `IO` effect alias: `IO = can Print, Allocate, ...`, though
-this would force all allocations within a function to use the same allocator (rather than just
-all allocations of the same type) which seems too limiting. Alternatively, we could encourage users
-to infer the effects for most functions rather than explicitly adding `can` clauses. This could possibly
-be added with an effect row `..` to specify some effects while inferring the rest: `foo: a -> a can Print, ..`.
-
----
-# Traits as Types
-
-Allowing traits to be used in a type position such that they match with any type
-that implements them could help ease some of the notational burden of traits. Prior
-art here includes `impl Trait` and `dyn Trait` in rust, existential types in haskell,
-any interface type in OO langs, and others.
-
-An ideal implementation would take advantage of ante being slightly higher level than
-rust to get rid of the distinction between `impl` and `dyn` trait to just choose the right
-one where possible. This should allow for both:
-
-```ante
-print (x: Show) : Unit =
-    printne "${show x}\n"
-```
-
-and
-
-```ante
-print_all (xs: Vec Show) : Unit =
-    printne '['
-    fields = map xs show |> join ", "
-    iter fields printne
-    printne ']'
-```
-
-Where the semantics of `print` likely translates to `fn print(x: impl Show)` in rust, and
-the semantics of `print_all` likely translate to `fn print_all(xs: Vec<dyn Show>)`. An
-alternative would be to have both functions be polymorphic over whether the underlying type
-is known or whether the trait is dynamic.
-
-## Multiple variable traits
-
-In traits with multiple type parameters or traits with type parameters which are not used
-directly in a function's parameters it is unclear which type a trait object would represent
-at runtime. For example, given the traits
-
-```ante
-trait Pair a b with
-    pack : a - b -> String
-
-trait Parse a with
-    parse : String -> a
-
-example1 (x: Pair) = pack ???
-
-example2 (y: Parse) = parse ?
-```
-
-What should a trait object for `Pair` represent? Arbitrarily picking one type seems out
-of the question. To be able to call `pack` we'd need to supply both parameters somehow.
-A valid response may be just to limit trait objects to single parameter traits with
-"object-safe" functions as rust does, but this may be more limiting than is needed. For
-example, if we change our syntax such that the existential type variable must be explicitly
-specified, then `Pair` becomes usable as a trait object as long as we specify a type to pack with:
-
-```ante
-example1 (x: Pair _ I32) = pack x 7
-
-example1b (x: Pair String _) = pack "hello" x
-```
-
-This would incur some notational burden but is otherwise explicit and strictly more
-flexible than the previous approach. `_` is likely not a good keyword to be used here
-however since it is already used for explicit currying in ante, and this may be
-applicable to type constructors some day.
-
-## Exists syntax
-
-It is worth briefly exploring a more explicit and flexible syntax via an `exists`
-keyword to introduce an existential type variable (rather than the default `forall` quantified
-type variables ante has). It sidesteps most of the issues with previous syntaxes for trait
-objects by separating the exists clause from where the type is used later in the signature:
-
-```ante
-example1 (x: e?) : String with Pair e? I32 = ...
-```
-
-Although flexible, this does not solve the original problem of improving the ergonomics of
-using traits in function signatures. Instead, it makes it worse.
-
-## Traits and effects
-
-Since traits in ante can be thought of as a restricted form of effects which must resume in
-a tail position and have an automatic impl search, a natural question that arises is "if there
-are trait objects, are there effect objects too?"
-
-At the time of writing, I'm leaning towards "no" as an answer for two reasons.
-1. Trait objects exist to ease notational burden of traits or to provide dynamic dispatch.
-   - Effects do not have the same notational burden since they do not need to have a type
-   implementing the effect passed in through the function's parameters. There would thus
-   be no benefit for most effects like `State s` because these are already only found in
-   the effects clause of a type signature. Using traits in this way would be useless since
-   without an accompanying `(iter: it)` parameter, a trait like `Iterator it elem` would
-   not be usable within a function to begin with.
-   - For similar reasons, effects do not need to be dynamically dispatched since they have
-   no type that can represent them and handlers should be statically known.
-2. Erasing effects in any way increases the difficulty of optimizing effects which would be
-   a hard sell when algebraic effects must already be carefully optimized out to not incur
-   great performance loss.
+Now we could make a `DisplayObj` via `Obj Display` or use it with other traits like `Obj Hash`.
+However, we can no longer define an implicit like `display_displayobj` before. We'd have
+to return a generic value of `a (Obj a) env` somehow, but we cannot construct such a generic value
+as-is. It may be possible if our `vtable` also held a constructor for the ability in question.
 
 ---
 # Derive Without Macros
 
-Trait deriving is an extremely useful feature for any language with traits and trait impls.
+Ability deriving is an extremely useful feature for any language with abilities and ability impls.
 It cuts down on so much boilerplate that I would even argue it to be necessary. Rust, for example,
 relies on implementing derives via procedural macros which are quite difficult for IDEs to handle,
 slow compile times, come with a hefty learning curve, and are required to be put in a separate crate.
 To provide a derive mechanism without these downsides, I propose a system based on GHC's [Datatype
 Generic Programming](https://wiki.haskell.org/GHC.Generics) in which we can define how to derive a
-trait by specifying rules for what to do for product types, sum types, and annotated types.
+ability by specifying rules for what to do for product types, sum types, and annotated types.
 
 Here's an example in ante (syntax not final):
 
 ```ante
-trait Hash a with
-    hash: a -> U64
+ability Hash a =
+    hash: fn a -> U64
 
 derive Hash a via match a
 | Product a b -> hash_combine (hash a) (hash b)
@@ -417,7 +274,7 @@ These would function somewhat as type-directed rules for the compiler to generat
 from a given type. The exact cases we would need may push toward a different list of cases
 (e.g. a simple Product pair type won't enable easy differentiation of the begin and end of a
 struct's fields) so the final design may be more general with a bit more noise (e.g. we could
-add StartStruct and StructEnd variants which may be useful for Serialization and other traits).
+add StartStruct and StructEnd variants which may be useful for Serialization and other abilities).
 
 The above strategy with Hash simply recurses on each field of the type. This is a common enough
 usecase that we can consider even providing this as a builtin strategy to save users some trouble:
@@ -426,82 +283,10 @@ usecase that we can consider even providing this as a builtin strategy to save u
 derive Hash a via recur hash_combine
 ```
 
-If the trait functions take more than the single `a` parameter it is unclear if an error should be
+If the ability functions take more than the single `a` parameter it is unclear if an error should be
 issued or the strategy can default to passing along these parameters as-is. We could try to generalize
 the `with` clause to accept a function taking all parameters and return values as well but this starts
 to cut into its brevity and ease of use over the more general approach.
-
----
-# Method Forwarding
-
-Without inheritance, it can still be useful to provide easier composition via a feature like Go's
-[struct embeddings](https://golangbyexample.com/inheritance-go-struct/):
-
-```go
-type person struct {
-    animal
-    job string
-}
-```
-
-This will forward all methods of `animal` to work with the type `person`. Notably, this does not make
-person a subtype of animal, it only generates new wrapper functions.
-
-Implementing a similar feature for ante is more difficult since ante doesn't have true methods. There
-are a few paths we could explore:
-
-1. Explicit inclusion of functions into a new type:
-
-  ```ante
-  // Create species, size, and ferocity wrapper functions around the `animal` field
-  !include animal species size ferocity
-  type Person =
-      animal: Animal
-      job: String
-  ```
-
-  Since these are arbitrary functions with no `self` parameter we must decide how to translate the
-  types within, say `Animal.species` to our new `Person.species` function. One approach would be
-  to naively translate all references of `Animal` to `Person`, but this gets difficult for parameters
-  with types like `Vec Animal` where we now must add an entire map operation. It would be simpler to
-  only change parameters matching exactly the type `Animal`, but this leaves out the common usecases
-  of pointer-wrapper types like `ref Animal`. We could try to only replace types `a` given `Deref a Animal`,
-  but involving impl search in this makes it increasingly complex.
-
-  With these complexities it may be better to have users write some boilerplate wrappers for the methods
-  since the boilerplate is at least easier in ante with type inference:
-
-  ```ante
-  species p = species p.animal
-  size p = size p.animal
-  ferocity p = ferocity p.animal
-  ```
-
-  But this is a rather unsatisfactory solution.
-
-2. Abandon the notion of forwarding arbitrary functions and limit it to only forward impls. This
-approach still has its own difficulties. Notably, there is no notion of a Self type for traits either,
-though it may be reasonable to manually specify which type to use for Self as the [derive without macros](#derive-without-macros)
-and [traits as types](#traits-as-types) proposals do. A similar effect to impl forwarding can be achieved
-with normal impl deriving for newtypes:
-
-```ante
-type NonZeroU32 = x: U32
-
-derives = impl (Add, Mul) NonZeroU32 via derive
-```
-
-However, a generalized forwarding mechanism could be made more generic. For example, it could allow
-deriving from some (but not all) fields:
-
-```ante
-type Wrapper =
-    a: I32
-    b: I32
-    context: OpaqueContext
-
-hash_wrapper = impl Hash Wrapper via forward a b
-```
 
 ---
 # Allocator Optimizations
@@ -819,25 +604,6 @@ today so it is not included in the language.
 
 # Borrowing Alternatives
 
-The current design of borrowing does not mesh well with the safe, shared mutability design.
-This is not because they are incompatible, but rather because they clash with Ante's goal
-of making developing programs easier by stemming from different definitions of "easy".
-
-Borrowing is "easy" because it is conceptually simpler than Rust's full set of borrowing
-rules with lifetime variables - but is less flexible as a result so users are more likely
-to run into errors when testing its limits (its introduction of implicit lifetime variables
-also makes lifetime errors more difficult to explain for the compiler). Meanwhile, the
-shared/owned distinction for mutable references is "easy" because it is more flexible and
-allows for more patterns - at the cost of being more to learn. These are opposites and it
-is worth re-examining the design for one or both to identify whether Ante prefers simpler
-or more flexible designs.
-
-I currently lean towards the more complex but more flexible angle mostly because the
-ship toward simplicity has sailed when Ante already has both algebraic effects and
-unboxed values with move semantics. That being said, there is something to be said for
-moderation and avoiding unnecessary complexity. Anyway, let's examine some alternatives
-for borrowing:
-
 ## Second-class reference parameters
 
 Ante's previous design for borrowing used second-class references similar to [Hylo](https://www.hylo-lang.org/).
@@ -922,107 +688,3 @@ is coming from in the first place and the maximum time it can be expected to be 
 additional unit tests may be needed to ensure lifetime errors do not arise in certain situations. At this
 point, explicit lifetimes may be preferable since they enforce this documentation is provided, prevent
 invalid code from being written, and require fewer unit tests.
-
-## Places
-
-Another alternative is to abandon Ante's goal of having no lifetime variables and instead adopt an
-approach much closer to Rust. This would give a clear story for thread-safety and internal mutability,
-allowing types like `GhostCell` which require similar compiler-enforced semantics to exist. Ante could
-continue with the more flexible lean in extending Rust's approach a bit by basing lifetimes off of
-"places" instead of source-code regions which is an approach which generalizes
-better to support self-referential structs and borrowing a subset of a struct's fields. Also unlike lifetimes,
-a place has a concrete syntax which can be referred to:
-
-```ante
-x = 3
-y: &'x I32 = &x
-
-borrow_foo (ctx: &Context) (unused: &Unused): &'ctx Foo = 
-    ctx.&foo
-
-// Lifetime variables are still required in the general case, such as disambiguating
-// a nested reference's lifetime or referring to a union variant's lifetime
-borrow_foo (ctx: & &'inner Context) (unused: &Unused): &'inner Foo =
-    ctx.&foo
-```
-
-Specifying that `y` borrows directly from `x` wouldn't be required (it can be inferred, as lifetimes often are in Rust),
-but this can provide new users another way to learn lifetimes by conceptualizing them as a note that we're borrowing from the
-corresponding variable.
-
-This scheme can be extended to support self-referential structs:
-
-```ante
-// Packet itself has no lifetime arguments so it can be freely moved, sent across threads, etc
-type Packet =
-    text: String
-    line_in_text: &'self.text String
-
-text = File.read_to_string "input.txt"
-line = text.substr (5..12)
-packet = Packet text line
-```
-
-And this scheme can also be extended to support referring to struct fields directly:
-
-```ante
-Context.get_foo &self: &'self.foo Foo =
-    self.&foo
-```
-
-Which enables these helper functions to be used in cases where `Context` is already borrowing an owned,
-mutable reference. Such a scenario is somewhat common in Rust and often results in the fields being
-accessed manually or an unnecessary `.clone()`.
-
-```ante
-Context.example (!own self) =
-    // Compiler can see that `get_foo` only borrows from `self.foo`
-    foo = self.get_foo ()
-
-    // Assume `iter_mut` requires a `!own` reference to `self.messages`
-    // Ok since this only borrows `self.messages` and the compiler can see that
-    // only `self.foo` is currently borrowed
-    self.messages.iter_mut fn msg ->
-        do_something_with msg foo
-```
-
-As-is though, `get_foo` above isn't sufficient in that although the compiler can see it only returns
-a borrowed foo, it still requires all of `self` to be called. So if we move the call to `get_foo` inside
-the loop we'd get an error:
-
-```ante
-Context.example (!own self) =
-    self.messages.iter_mut fn msg ->
-        // error: `self.messages.iter_mut` requires exclusive access to `self.messages` but
-        // `self.get_foo` is called which requires `self`.
-        foo = self.get_foo ()
-
-        do_something_with msg foo
-```
-
-For this to work, we'd presumably need to alter the definition of `get_foo` to only use certain
-fields of the struct. This could be done using Ante's existing anonymous struct types:
-
-```ante
-// The compiler would need to know that the anonymous struct type used here would mean only
-// `foo` can be used and use that information when checking lifetimes in the caller
-Context.get_foo (ctx: &{ foo: Foo, .. }): &Foo =
-    ctx.&foo
-
-// The above may be a bit much for a new user to not only write but also know that they should do so.
-// Luckily, Ante already infers the above type when no types are specified.
-Context.get_foo ctx =
-    ctx.&foo
-
-// Could also consider some syntactic sugar so that the type of `foo: Foo` doesn't need to
-// be repeated from the definition of `Context`:
-Context.get_foo3 (ctx: &Context { foo, .. }): &Foo =
-    ctx.&foo
-
-// Or leverage destructuring syntax
-Context.get_foo4 (&Context with foo ..): &Foo =
-    foo
-```
-
-This is a somewhat unnecessary addition which is more of a nice-to-have but could improve
-usability by reducing unnecessary aliasability-xor-mutability errors.

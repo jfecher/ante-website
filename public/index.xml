@@ -13,7 +13,8 @@
       <pubDate>Mon, 25 May 2026 00:00:00 +0000</pubDate>
       
       <guid>https://antelang.org/docs/faq/</guid>
-      <description>FAQ  Why use Ante?   Safe, shared mutability with unboxed types. It is common to hear that shared mutability should be avoided, and while generally a good rule to design around, shared mutability is extremely important for enabling other aspects of the language:
+      <description>FAQ  Is it any good? Yes.
+ Why use Ante?   Safe, shared mutability with unboxed types. It is common to hear that shared mutability should be avoided, and while generally a good rule to design around, shared mutability is extremely important for enabling other aspects of the language:
  Safe, shared mutability enables Ante to model higher-level code from garbage-collected languages like Java or C#. Combined with Ante&amp;rsquo;s core of ownership + borrowing, this means Ante code can be both high-level or lower-level closer to Rust.</description>
     </item>
     
@@ -97,7 +98,7 @@ Key:
       
       <guid>https://antelang.org/docs/ideas/</guid>
       <description>This page is an incomplete list of features that are currently being considered for ante but for one reason or another are not included in the language already. These features are listed in no particular order.
- Overloading Given ante does not have true methods, some form of overloading could greatly help alleviate user frustration by allowing modules like Vec and HashMap to both be imported despite defining conflicting names like empty, of, insert, get, etc.</description>
+ Overloading Some form of overloading could help alleviate user frustration by allowing modules like Vec and HashMap to both be imported despite defining conflicting names like empty, of, insert, get, etc. Overloading would also reduce the need for abilities as users would no longer need to use abilities to be lazy with their function names.</description>
     </item>
     
     <item>
