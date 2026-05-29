@@ -21,7 +21,7 @@ When writing low-level, memory-safe, and thread-safe programs, a nice feature th
 achieve all of these is an ownership model. Ownership models have been used by quite a few languages,
 but the language which popularized them was Rust. In Rust, the compiler will check our
 code to ensure we have no dangling references and cannot access already-freed memory (among other errors). For
-example, the next snippet is a compile-time error in rust:
+example, the next snippet is a compile-time error in Rust:
 
 ```rust
 let mut vec = vec![1, 2, 3];
@@ -39,7 +39,7 @@ This is great. Those familiar with Rust however, will note that this error is ac
 by a related feature to ownership: Rust's borrowing rules. It turns out that moving every object
 into and out of each function is not very convenient, so Rust also lets us create borrowed
 references to values. These references can be mutable or immutable, and their lifetimes are tied
-to that of the owned value. This particular error is prevented by Rust's "Aliasibility XOR Mutability"
+to that of the owned value. This particular error is prevented by Rust's "Aliasability XOR Mutability"
 rule, which I'll call AxM for short. AxM in Rust states that you can have aliasable borrowed
 references, or you can have mutability, but not both. So in the example above, since `Vec::push`
 requires a mutable `&mut Vec<i32>` reference, we got a compile-time error trying to call it since
@@ -90,7 +90,7 @@ returns an offset inside of the vector's storage simply isn't possible to write 
 if each vector were a `Vec<Rc<T>>` and instead of `&Rc<T>`, their get function returns a cloned `Rc<T>`. In
 reality, Pony uses a tracing garbage collector so there is no cloning going on, but I think this helps to
 illustrate the point that each element inside a Vector would itself be an owned pointer. This is why these
-languages don't encounter the same issue Rust has with returning a reference to an element in a aliasable
+languages don't encounter the same issue Rust has with returning a reference to an element in an aliasable
 mutable context.
 
 So other languages like Pony allow aliasable mutability but require us to box all values. Rust
@@ -295,7 +295,7 @@ out the `Rc` for another, potentially dropping the original while we held a refe
 Compared to `Rc<RefCell<T>>` in Rust, a `Rc t` in Ante can lend out shared references directly
 without a wrapper type. The runtime cost is also different: `Rc<RefCell<T>>` performs reference
 counting for the outer `Rc` and the inner `Ref`s handed out by the `RefCell`. An `Rc t` in Ante
-only needs to perform the out `Rc`. Any `mut t` that are handed out can
+only needs to perform the outer `Rc`. Any `mut t` that are handed out can
 be copied/aliased freely. Moreover, `RefCell<T>` introduces a possible panic to the code if
 a `RefMut` is ever aliased at runtime, this is not possible with `mut t` in Ante.
 

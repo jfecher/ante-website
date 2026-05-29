@@ -15,7 +15,7 @@ C++, and Rust. I still think there's room there for a language which tries to ma
 default but also allows users to manually do so if needed as an optimization. Other languages always
 have some degree of this of course - but doing so often requires using raw pointers, FFI, or generally
 sacrificing everything just to write somewhat more efficient code. I wanted this transition in Ante
-to be as easy as switching from reference-counted to non-reference-code in Rust.
+to be as easy as switching from reference-counted to non-reference-counted code in Rust.
 
 However, after the changes in [the first blog post](/blog/safe_shared_mutability), Ante is arguably
 even more complex than Rust. This is especially true once you factor in Ante's other features such
@@ -38,7 +38,7 @@ with smaller ones and building up to the largest of the bunch.
 
 # Minor Items
 
-## Effect Variable Ellision
+## Effect Variable Elision
 
 The simplest change is a mere syntactic one.
 
@@ -112,7 +112,7 @@ to remedy this flexibly by allowing any parameter to be the object, but I'm just
 in to practicality and arbitrarily choose the first parameter.
 
 With this, when traits are used in a type position the first parameter can be omitted and the function
-will be callable with any value that implements that trait. I'll also be elliding the `impl` prefix
+will be callable with any value that implements that trait. I'll also be eliding the `impl` prefix
 here based on some negative opinions I've heard from non-rustaceans on it. In their view it is a somewhat
 extraneous specification since OO langs often let an interface be used directly without an additional keyword.
 One could argue the `impl` helps key in when this is happening but since the goal is to inch Ante
@@ -208,7 +208,7 @@ that function will still be imported at the top of a file.
 
 Alright, now onto the main reason this article was written.
 
-It's no secret that perhaps the largest hurdle to learning Ante and Rust are their ownership
+It's no secret that perhaps the largest hurdle to learning Ante and Rust is their ownership
 semantics and borrowing rules. While there are other complex parts of both languages, ownership
 & borrowing is something that users encounter almost immediately when trying out either language.
 Time must be devoted up front to learning these before users can move on to more intermediate code.
@@ -251,7 +251,7 @@ owned module
 
 I think most users will want to set the mode for their entire project by default which is why specifying
 this will set the mode of the current module as well as all child modules. Similarly, if the current
-module is owned due to a parent module being owned, this can be overriden via:
+module is owned due to a parent module being owned, this can be overridden via:
 
 ```ante
 shared module
@@ -300,7 +300,7 @@ The `Shared a` type diverges from `Rc a` a bit in that it does not provide this 
 1. Although not entirely uncommon in other programming languages, having certain values have mutable
 reference semantics by default could be confusing. Mutating one value and having another change would
 be a type of spooky action at a distance behavior. Such a behavior would only happen in the shared mode
-which I think would be an unnecessary and confusing difference compared the owned mode.
+which I think would be an unnecessary and confusing difference compared to the owned mode.
 2. Not providing this function enables the compiler to implement `Shared a` in a possibly thread-safe
 way. For example, the compiler could detect when these values are used in a multithreaded context
 and switch to atomic reference counting (see [Perceus](https://www.microsoft.com/en-us/research/uploads/prod/2020/11/perceus-tr-v4.pdf)).
@@ -357,7 +357,7 @@ Programming languages are often made cumbersome through the accumulation of a th
 rather than just one stone wall. For this reason, I felt the need to write about more than just
 the new `shared` mode. I also want to draw attention to the fact that while languages can
 be, and often are, made simpler through additions, this is obviously a fine line to walk
-as a designer. If the addition doesn't hold it's weight then the language has just been made more
+as a designer. If the addition doesn't hold its weight then the language has just been made more
 complex for everyone as they have to learn about more features they may encounter that aren't
 even technically required for the language to function. It is of course possible to define a
 language without any such usability features but these languages tend to be too minimal to be

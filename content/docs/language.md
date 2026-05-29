@@ -15,7 +15,7 @@ of move semantics and even temporary references much of the time by using
 shared types which resemble programming in a garbage-collected language
 with boxed values.
 
-Compared to other low-level languages, ante is memory safe like rust but tries
+Compared to other low-level languages, ante is memory safe like Rust but tries
 to be easier in general, for example by allowing shared mutability by
 default. Generally, application-level Ante code is meant to be written with
 shared types to enable high-level code, while libraries are meant to use
@@ -38,8 +38,11 @@ integer types respectively of the same size as a pointer.
 // type via a suffix then we can use them with any other integer type.
 100 + 1usz == 101
 
-// Type error: operands of '+' must be of the same type
-3i8 + 3u8
+// When no integer type is specified, integers default to `I32`
+100 + 1 == 101
+
+// Ante does not implicitly cast integer types. The following is a type error:
+3u8 + 3u16
 
 // Large numbers can use _ to separate digits
 1_000_000
@@ -54,6 +57,7 @@ floats respectively. Floats have a similar syntax to integers, but with
 a `.` separating the decimal digits.
 
 ```ante
+// Floats without a specified type are polymorphic and default to `F64`
 3.0 + 4.5 / 1.5
 
 // 32-bit floats can be created with the F32 suffix
@@ -312,7 +316,7 @@ to help it clue into this problem.
 
 Ante's original solution was more of a band-aid. It followed the python example of continuing
 lines with `\` at the end of a line which would tell the lexer not to issue a newline token.
-There was also a similar rule for elliding newlines while we were inside `()` or `[]` pairs.
+There was also a similar rule for eliding newlines while we were inside `()` or `[]` pairs.
 This solution was quite annoying in practice however. Ante is much more expression-oriented
 than python and particularly when working with the [pipeline operators](#pipeline-operators) we would end up with a long
 chain of lines ending with `\`:
@@ -335,7 +339,7 @@ what_a_long_function_name \
 
 In practice this ugly bit of syntax tended to discourage the otherwise good practice of
 splitting long lines onto multiple lines. Ante thus needed a better solution. The goals
-of the new solution were to be unambiguous, ergnomic, match a developer's mental model
+of the new solution were to be unambiguous, ergonomic, match a developer's mental model
 of their program, and to issue error messages if needed instead of silently inferring the wrong thing.
 
 This was initially difficult to solve but eventually ante landed on a solution based upon the
@@ -355,7 +359,7 @@ of code after - it is analogous to knowing when you need to type `{` in curly-br
 Note that an important part of this being implemented entirely in the lexer is that operator precedence
 after continued lines just works (it is harder than it may seem if continuation is a parser rule).
 
-When the lexer sees an indent that without one of these tokens preceeding it, it does not issue
+When the lexer sees an indent without one of these tokens preceding it, it does not issue
 an indent token and also does not issue newline tokens for any expression at that same level of
 ignored indentation. Note that this is tracked on a per-block basis, so if we wanted we could
 also still use constructs like `if` inside these blocks with ignored indentation - since we'd
@@ -588,7 +592,7 @@ type Pair a b = first: a, second: b
 2. Easier to work with: Because pairs are just normal data types, we get
 all the capabilities of normal types for free. For example, we know all pairs
 will have exactly two fields. This makes creating `impl`s for them much easier.
-Lets compare the task of converting a tuple to a string with doing the same for pairs.
+Let's compare the task of converting a tuple to a string with doing the same for pairs.
 With tuples we must [create a different impl for every possible tuple size](https://hackage.haskell.org/package/base-4.14.1.0/docs/src/GHC.Show.html#line-268).
 with pairs on the other hand the simple implementation works for all sizes:
 
@@ -598,7 +602,7 @@ cast_pair_string = impl Cast (Pair a b) String via
 ```
 
 3. Just as efficient: both pairs and tuples have roughly the same representation
-in memory (the exact same if you discount allignment differences and reordering of fields).
+in memory (the exact same if you discount alignment differences and reordering of fields).
 
 4. More composable: having the right-associative `,` operator means we can
 easily combine pairs or add an element if needed. For example, if we had a function
@@ -615,7 +619,7 @@ unzip3 (list: List (a, b, c)): List a, List b, List c =
 ```
 
 - Another place this shows up in is when deconstructing pair values.
-Lets say we wanted to define a function `first` for getting the first
+Let's say we wanted to define a function `first` for getting the first
 element of any tuple of length >= 2 (remember, we are using nested pairs,
 so there are no 1-tuples!), and `third` for getting the third
 element of any tuple of length >= 3. We can define the functions:
@@ -661,7 +665,7 @@ for (enumerate pairs) fn (i, one, two) ->
     print "Iteration $i: sum = ${one + two}"
 ```
 
-Finally, its necessary to mention that the earlier `Cast` example printed nested
+Finally, it's necessary to mention that the earlier `Cast` example printed nested
 pairs as `1, 2, 3` where as the `Show` instances in haskell printed tuples as `(1, 2, 3)`.
 If we wanted to surround our nested pairs with parenthesis we have to work a bit
 harder by specializing the impl for pairs:
@@ -1164,7 +1168,7 @@ simplify (expr: Expr): Expr =
 
 Each of the locations in the first two `Add` cases were written explicitly here to show where they would go, but if
 these fields are unneeded in a pattern match they can also be excluded with `..` which will
-automatically fill in an remaining fields in a pattern:
+automatically fill in any remaining fields in a pattern:
 
 ```ante
 simplify (expr: Expr): Expr =
@@ -1254,7 +1258,7 @@ parse_and_print_int (s: String) : Unit =
 Ante has quite a few [integer types](#integers) so one question
 that gets raised is what is the type of an integer literal?
 If we randomly choose a type like `I32` then when using all
-other integer types we'd have to constaintly annotate our
+other integer types we'd have to constantly annotate our
 operations with the type used which can be annoying. Imagine
 `a + 1u64` every few lines.
 
@@ -1542,7 +1546,7 @@ ref2.replace "Z" "l"
 print ref2                     // "Hello, World!"
 ```
 
-The `imm` and `uniq` reference kinds are used prevent operations that would be unsafe
+The `imm` and `uniq` reference kinds are used to prevent operations that would be unsafe
 on references which may be mutably shared. A common indication of when an operation may
 be unsafe if it is mutably shared is if they hand out references inside of a type with
 an unstable shape. For example, handing out a reference to a `Vec` element would be unsafe
@@ -1666,7 +1670,7 @@ the final `print` or move `y.clear()` after it, we no longer get any errors. The
 as we like, so as long as we can make a block of code where `v` isn't used at the same time as `y`, we are all good!
 
 The `Distinct a b` constraint is only issued when we use variables that may be mutated, which includes mutable
-references and moved values. Notably, this allows us convert many variables of the same type from `ref` to `imm` easily.
+references and moved values. Notably, this allows us to convert many variables of the same type from `ref` to `imm` easily.
 Since they are not mutable, they don't require a `Distinct a b` restriction, letting us alias the resulting `imm`
 references as well:
 
@@ -1684,7 +1688,7 @@ One downside of the `Distinct a b` check is that promoting common types like `re
 use with other variables in scope since `String`s are likely to be found within these other variables as well.
 
 Even with these restrictions, the ability to convert `ref` and `mut` to `imm` and `uniq`
-enables us write more functions with fewer requirements on the arguments they are called with (since they would
+enables us to write more functions with fewer requirements on the arguments they are called with (since they would
 now accept references which may be mutably aliased, including `shared mut` types). Consider the following function:
 
 ```ante
@@ -2286,7 +2290,7 @@ parse_name (name: String) {Throw ParseError}: Name =
 Handling these effects can be done via manual `handler` expressions, or
 a variety of helper functions in the `Std.Fail` and `Std.Throw` modules.
 Implementing these functions is generally simple. Effects are often described
-as resumeable exceptions, so if we want normal exceptions all we must do
+as resumable exceptions, so if we want normal exceptions all we must do
 is not call `resume` in the handler. A function like `try` will instead
 return `None` while `try_or` provides a default value on error instead.
 
@@ -2965,7 +2969,7 @@ D1  D2
 Ante code is platform independent in that each Ante program is written against an interface
 for its target platform. It may not use functions not in this interface, and programs may not
 declare `extern` symbols in an ad-hoc manner like in other languages. Instead, `main` takes the
-platform it is targetting as an argument where each platform is an interface of functions available
+platform it is targeting as an argument where each platform is an interface of functions available
 on that platform:
 
 ```ante

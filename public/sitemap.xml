@@ -2,19 +2,28 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://antelang.org/blog/vision/</loc>
-    <lastmod>2025-10-24T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://antelang.org/</loc>
+    <lastmod>2026-05-25T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://antelang.org/categories/</loc>
+    <lastmod>2026-05-25T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://antelang.org/docs/</loc>
+    <lastmod>2026-05-25T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://antelang.org/categories/docs/</loc>
+    <lastmod>2026-05-25T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://antelang.org/docs/faq/</loc>
+    <lastmod>2026-05-25T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://antelang.org/blog/vision/</loc>
     <lastmod>2025-10-24T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://antelang.org/authors/</loc>
     <lastmod>2025-10-24T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://antelang.org/blog/</loc>
-    <lastmod>2025-10-24T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://antelang.org/categories/</loc>
     <lastmod>2025-10-24T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://antelang.org/categories/ideals/</loc>
@@ -55,12 +64,6 @@
   </url><url>
     <loc>https://antelang.org/blog/safe_shared_mutability/</loc>
     <lastmod>2024-01-29T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://antelang.org/docs/</loc>
-    <lastmod>2022-06-25T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://antelang.org/categories/docs/</loc>
-    <lastmod>2022-06-25T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://antelang.org/docs/roadmap/</loc>
     <lastmod>2022-06-25T00:00:00+00:00</lastmod>

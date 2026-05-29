@@ -360,7 +360,7 @@ a reference to the closure environment is `Send`:
 ```ante
 effect Fork with
     fork: Unit -> Bool
-    foo.resume: Fn env _ given Send &env
+    fork.resume: Fn env _ given Send &env
 
 multithread_fork (f: Unit -> a can Fork) : a =
     handle f ()
@@ -475,7 +475,7 @@ If we try to implement a similar example in future-Ante[^2]:
 effect Async with
     await: Unit -> Unit
 
-recursive () : Unit can Await =
+recursive () : Unit can Async =
     // This doesn't quite match the semantics of the Rust example above,
     // but lets us use a simpler definition for `await`
     await ()
