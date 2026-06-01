@@ -615,7 +615,8 @@ These also use a temporary <code>c&quot;_&quot;</code> syntax currently.</li>
 <hr>
 <h1 id="compiler-specific">Compiler-specific</h1>
 <ul>
-<li><input checked="" disabled="" type="checkbox"> LLVM backend</li>
+<li><input checked="" disabled="" type="checkbox"> LLVM backend (optional but preferred)</li>
+<li><input checked="" disabled="" type="checkbox"> C backend</li>
 <li><input disabled="" type="checkbox"> Cranelift backend</li>
 <li><input disabled="" type="checkbox"> Existentialization option for lowering generics in debug mode (making monomorphization optional)</li>
 <li><input disabled="" type="checkbox"> Compiler option to write inferred types into the file</li>
@@ -636,14 +637,15 @@ These also use a temporary <code>c&quot;_&quot;</code> syntax currently.</li>
 <ul>
 <li><input checked="" disabled="" type="checkbox"> Display errors in file</li>
 <li><input checked="" disabled="" type="checkbox"> Hover</li>
-<li><input disabled="" type="checkbox"> Display documentation on hover</li>
+<li><input checked="" disabled="" type="checkbox"> Display documentation on hover</li>
 <li><input checked="" disabled="" type="checkbox"> Go to definition</li>
 <li><input disabled="" type="checkbox"> Go to type</li>
 <li><input disabled="" type="checkbox"> Rename</li>
-<li><input disabled="" type="checkbox"> Import symbol</li>
+<li><input checked="" disabled="" type="checkbox"> Import symbol</li>
+<li><input checked="" disabled="" type="checkbox"> Import implicit</li>
 <li><input disabled="" type="checkbox"> Fill in match arms</li>
 <li><input checked="" disabled="" type="checkbox"> Vim plugin</li>
-<li><input disabled="" type="checkbox"> VS-Code plugin: One exists but it is not hooked up to the language server and its syntax is out of date</li>
+<li><input checked="" disabled="" type="checkbox"> VSCode plugin</li>
 </ul>
 </li>
 <li><input checked="" disabled="" type="checkbox"> Recoverable on error</li>
@@ -680,7 +682,6 @@ These also use a temporary <code>c&quot;_&quot;</code> syntax currently.</li>
 <hr>
 <h1 id="abilities">Abilities</h1>
 <ul>
-<li><input disabled="" type="checkbox"> Ability merger: traits &amp; effects are still separate concepts in the compiler</li>
 <li><input checked="" disabled="" type="checkbox"> Type checking</li>
 <li>[~] <code>implicit foo = bar</code> definitions
 <ul>

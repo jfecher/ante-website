@@ -118,7 +118,8 @@ All APIs are non-final.
 ---
 # Compiler-specific
 
-- [x] LLVM backend
+- [x] LLVM backend (optional but preferred)
+- [x] C backend
 - [ ] Cranelift backend
 - [ ] Existentialization option for lowering generics in debug mode (making monomorphization optional)
 - [ ] Compiler option to write inferred types into the file
@@ -132,14 +133,15 @@ All APIs are non-final.
 - [x] Language server.
   - [x] Display errors in file
   - [x] Hover
-  - [ ] Display documentation on hover
+  - [x] Display documentation on hover
   - [x] Go to definition
   - [ ] Go to type
   - [ ] Rename
-  - [ ] Import symbol
+  - [x] Import symbol
+  - [x] Import implicit
   - [ ] Fill in match arms
   - [x] Vim plugin
-  - [ ] VS-Code plugin: One exists but it is not hooked up to the language server and its syntax is out of date
+  - [x] VSCode plugin
 - [x] Recoverable on error
 - [x] Compiler only rechecks changed code in incremental mode
   - Disabled by default since it requires storing metadata for the project, enabled for the language server
@@ -165,7 +167,6 @@ All APIs are non-final.
 ---
 # Abilities
 
-- [ ] Ability merger: traits & effects are still separate concepts in the compiler
 - [x] Type checking
 - [~] `implicit foo = bar` definitions
   - Implemented but they can cause infinite loops in the type checker at top-level when used with mutual recursion.
