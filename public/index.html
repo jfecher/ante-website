@@ -290,7 +290,7 @@
                                 
                                     <div class="highlight-textalign-left">
                                         <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Abilities in Ante are just sugar for types holding closure values</span>
-<span class="nf">ability</span> <span class="kt">Add</span> <span class="n">t</span> <span class="ow">=</span>
+<span class="k">ability</span> <span class="kt">Add</span> <span class="n">t</span> <span class="ow">=</span>
     <span class="p">(</span><span class="o">+</span><span class="p">)</span><span class="o">:</span> <span class="k">fn</span> <span class="n">t</span> <span class="n">t</span> <span class="ow">-&gt;</span> <span class="n">t</span>
 
 <span class="c1">// Since they are just values, we can create them in normal constructor expressions</span>
@@ -324,7 +324,7 @@
                                 
                                     <div class="highlight-textalign-left">
                                         <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Effects are just abilities with `resume` functions, enabling effect handlers</span>
-<span class="nf">ability</span> <span class="kt">Throw</span> <span class="n">err</span> <span class="ow">=</span>
+<span class="k">ability</span> <span class="kt">Throw</span> <span class="n">err</span> <span class="ow">=</span>
     <span class="n">throw</span><span class="o">:</span> <span class="k">resume</span> <span class="k">fn</span> <span class="n">err</span> <span class="ow">-&gt;</span> <span class="kt">Never</span>
 
 <span class="c1">// And capabilities are just ability values, which are often passed as implicits</span>
@@ -387,7 +387,7 @@
                                 
                                     <div class="highlight-textalign-left">
                                         <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Generators are implemented via effects</span>
-<span class="nf">ability</span> <span class="kt">Emit</span> <span class="n">elem</span> <span class="ow">=</span>
+<span class="k">ability</span> <span class="kt">Emit</span> <span class="n">elem</span> <span class="ow">=</span>
     <span class="n">emit</span><span class="o">:</span> <span class="k">resume</span> <span class="k">fn</span> <span class="n">elem</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
 
 <span class="c1">// One advantage of generators is that they are easier to write than iterators.</span>
