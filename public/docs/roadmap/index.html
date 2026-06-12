@@ -428,8 +428,8 @@
                     
                     
                     
-                    <a href="/docs/roadmap/#effects">
-                        <li>Effects</li>
+                    <a href="/docs/roadmap/#abilities">
+                        <li>Abilities</li>
                     </a>
                     
                     
@@ -561,14 +561,19 @@ These also use a temporary <code>c&quot;_&quot;</code> syntax currently.</li>
 <li><input checked="" disabled="" type="checkbox"> Product and sum (struct and enum) type definitions</li>
 <li><input disabled="" type="checkbox"> Type aliases</li>
 <li><input checked="" disabled="" type="checkbox"> Type annotations</li>
+<li><input checked="" disabled="" type="checkbox"> Kind inference</li>
 <li><input checked="" disabled="" type="checkbox"> Implicits
 <ul>
 <li><input checked="" disabled="" type="checkbox"> <code>implicit</code> local variables</li>
 <li><input checked="" disabled="" type="checkbox"> <code>implicit</code> parameters</li>
 <li><input checked="" disabled="" type="checkbox"> Querying implicit values required for a function call</li>
-<li><input checked="" disabled="" type="checkbox"> Calling implicit functions in scope for their return value (required for traits)
+<li><input checked="" disabled="" type="checkbox"> Calling implicit functions in scope for their return value (implicits like <code>eq_maybe</code> are functions since they require other implicits as parameters)
 <ul>
-<li><input disabled="" type="checkbox"> Check to ensure only <code>pure</code> implicit functions can be called</li>
+<li><input disabled="" type="checkbox"> Check to ensure only pure implicit functions can be called
+<ul>
+<li>This was the original design but has been made more difficult by the move to capabilities</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -610,7 +615,8 @@ These also use a temporary <code>c&quot;_&quot;</code> syntax currently.</li>
 <hr>
 <h1 id="compiler-specific">Compiler-specific</h1>
 <ul>
-<li><input checked="" disabled="" type="checkbox"> LLVM backend</li>
+<li><input checked="" disabled="" type="checkbox"> LLVM backend (optional but preferred)</li>
+<li><input checked="" disabled="" type="checkbox"> C backend</li>
 <li><input disabled="" type="checkbox"> Cranelift backend</li>
 <li><input disabled="" type="checkbox"> Existentialization option for lowering generics in debug mode (making monomorphization optional)</li>
 <li><input disabled="" type="checkbox"> Compiler option to write inferred types into the file</li>
@@ -631,14 +637,15 @@ These also use a temporary <code>c&quot;_&quot;</code> syntax currently.</li>
 <ul>
 <li><input checked="" disabled="" type="checkbox"> Display errors in file</li>
 <li><input checked="" disabled="" type="checkbox"> Hover</li>
-<li><input disabled="" type="checkbox"> Display documentation on hover</li>
+<li><input checked="" disabled="" type="checkbox"> Display documentation on hover</li>
 <li><input checked="" disabled="" type="checkbox"> Go to definition</li>
 <li><input disabled="" type="checkbox"> Go to type</li>
 <li><input disabled="" type="checkbox"> Rename</li>
-<li><input disabled="" type="checkbox"> Import symbol</li>
+<li><input checked="" disabled="" type="checkbox"> Import symbol</li>
+<li><input checked="" disabled="" type="checkbox"> Import implicit</li>
 <li><input disabled="" type="checkbox"> Fill in match arms</li>
 <li><input checked="" disabled="" type="checkbox"> Vim plugin</li>
-<li><input disabled="" type="checkbox"> VS-Code plugin: One exists but it is not hooked up to the language server and its syntax is out of date</li>
+<li><input checked="" disabled="" type="checkbox"> VSCode plugin</li>
 </ul>
 </li>
 <li><input checked="" disabled="" type="checkbox"> Recoverable on error</li>
@@ -673,28 +680,38 @@ These also use a temporary <code>c&quot;_&quot;</code> syntax currently.</li>
 <li><input disabled="" type="checkbox"> <code>shared</code> modifier on types</li>
 </ul>
 <hr>
-<h1 id="effects">Effects</h1>
+<h1 id="abilities">Abilities</h1>
 <ul>
-<li><input disabled="" type="checkbox"> Ability merger: traits &amp; effects are still separate concepts in the compiler</li>
 <li><input checked="" disabled="" type="checkbox"> Type checking</li>
-<li><input checked="" disabled="" type="checkbox"> Runtime
+<li>[~] <code>implicit foo = bar</code> definitions
 <ul>
-<li><input checked="" disabled="" type="checkbox"> Handlers
-<ul>
-<li><input checked="" disabled="" type="checkbox"> Handlers for a single effect</li>
-<li><input checked="" disabled="" type="checkbox"> Handlers for multiple effects</li>
-<li><input disabled="" type="checkbox"> Handlers for multiple instances of the same effect (e.g. <code>Emit a, Emit b</code>)</li>
+<li>Implemented but they can cause infinite loops in the type checker at top-level when used with mutual recursion.</li>
+<li>The old <code>impl foo: Bar with ..</code> form is still included with some hacks to resolve the above loops and will be removed eventually.</li>
 </ul>
 </li>
+<li><input checked="" disabled="" type="checkbox"> Hidden <code>env</code> parameter
+<ul>
+<li>Abilities are structs of closures which may capture values in their environment unboxed.</li>
+<li>This is implemented but the representation will change in the future.</li>
+</ul>
+</li>
+<li><input checked="" disabled="" type="checkbox"> Runtime
+<ul>
+<li><input checked="" disabled="" type="checkbox"> Effect Handlers</li>
 <li><input checked="" disabled="" type="checkbox"> <code>resume</code>
 <ul>
 <li><input checked="" disabled="" type="checkbox"> Single resumptions</li>
 <li><input checked="" disabled="" type="checkbox"> 0 resumptions</li>
+<li><input checked="" disabled="" type="checkbox"> Tail-resume optimization</li>
+<li>[~] 0-resume optimization
+<ul>
+<li>A form of this is implemented but its design is broken since it will skip drops in the future once drops are auto-inserted by the compiler.</li>
+</ul>
+</li>
 </ul>
 </li>
 <li><input checked="" disabled="" type="checkbox"> Capabilities
 <ul>
-<li><input disabled="" type="checkbox"> Capabilities are second-class</li>
 <li><input disabled="" type="checkbox"> Capability-based Security
 <ul>
 <li>No <code>IO</code> effect yet. Other effects are handled as normal but users can escape these restraints by defining <code>extern</code> symbols which link to library code performing arbitrary effects.</li>

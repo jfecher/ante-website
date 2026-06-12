@@ -75,12 +75,14 @@ These also use a temporary `c"_"` syntax currently.
 - [x] Product and sum (struct and enum) type definitions
 - [ ] Type aliases
 - [x] Type annotations
+- [x] Kind inference
 - [x] Implicits
   - [x] `implicit` local variables
   - [x] `implicit` parameters
   - [x] Querying implicit values required for a function call
-  - [x] Calling implicit functions in scope for their return value (required for traits)
-    - [ ] Check to ensure only `pure` implicit functions can be called
+  - [x] Calling implicit functions in scope for their return value (implicits like `eq_maybe` are functions since they require other implicits as parameters)
+    - [ ] Check to ensure only pure implicit functions can be called
+      - This was the original design but has been made more difficult by the move to capabilities
 - [x] Trait sugar to create a dictionary type of the required functions
 - [x] Trait impl sugar for implicit values which is an instantiation of the trait type
 - [ ] Row polymorphic struct types
@@ -116,7 +118,8 @@ All APIs are non-final.
 ---
 # Compiler-specific
 
-- [x] LLVM backend
+- [x] LLVM backend (optional but preferred)
+- [x] C backend
 - [ ] Cranelift backend
 - [ ] Existentialization option for lowering generics in debug mode (making monomorphization optional)
 - [ ] Compiler option to write inferred types into the file
@@ -130,14 +133,15 @@ All APIs are non-final.
 - [x] Language server.
   - [x] Display errors in file
   - [x] Hover
-  - [ ] Display documentation on hover
+  - [x] Display documentation on hover
   - [x] Go to definition
   - [ ] Go to type
   - [ ] Rename
-  - [ ] Import symbol
+  - [x] Import symbol
+  - [x] Import implicit
   - [ ] Fill in match arms
   - [x] Vim plugin
-  - [ ] VS-Code plugin: One exists but it is not hooked up to the language server and its syntax is out of date
+  - [x] VSCode plugin
 - [x] Recoverable on error
 - [x] Compiler only rechecks changed code in incremental mode
   - Disabled by default since it requires storing metadata for the project, enabled for the language server
@@ -161,19 +165,23 @@ All APIs are non-final.
 - [ ] `shared` modifier on types
 
 ---
-# Effects
+# Abilities
 
-- [ ] Ability merger: traits & effects are still separate concepts in the compiler
 - [x] Type checking
+- [~] `implicit foo = bar` definitions
+  - Implemented but they can cause infinite loops in the type checker at top-level when used with mutual recursion.
+  - The old `impl foo: Bar with ..` form is still included with some hacks to resolve the above loops and will be removed eventually.
+- [x] Hidden `env` parameter
+  - Abilities are structs of closures which may capture values in their environment unboxed.
+  - This is implemented but the representation will change in the future.
 - [x] Runtime
-  - [x] Handlers
-    - [x] Handlers for a single effect
-    - [x] Handlers for multiple effects
-    - [ ] Handlers for multiple instances of the same effect (e.g. `Emit a, Emit b`)
+  - [x] Effect Handlers
   - [x] `resume`
     - [x] Single resumptions
     - [x] 0 resumptions
+    - [x] Tail-resume optimization
+    - [~] 0-resume optimization
+      - A form of this is implemented but its design is broken since it will skip drops in the future once drops are auto-inserted by the compiler.
   - [x] Capabilities
-    - [ ] Capabilities are second-class
     - [ ] Capability-based Security
       - No `IO` effect yet. Other effects are handled as normal but users can escape these restraints by defining `extern` symbols which link to library code performing arbitrary effects.
