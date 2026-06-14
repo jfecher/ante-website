@@ -325,7 +325,7 @@
                                     <div class="highlight-textalign-left">
                                         <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Effects are just abilities with `resume` functions, enabling effect handlers</span>
 <span class="k">ability</span> <span class="kt">Throw</span> <span class="n">err</span> <span class="ow">=</span>
-    <span class="n">throw</span><span class="o">:</span> <span class="k">resume</span> <span class="k">fn</span> <span class="n">t</span> <span class="ow">-&gt;</span> <span class="kt">Never</span>
+    <span class="n">throw</span><span class="o">:</span> <span class="k">resume</span> <span class="k">fn</span> <span class="n">err</span> <span class="ow">-&gt;</span> <span class="kt">Never</span>
 
 <span class="c1">// And capabilities are just ability values, which are often passed as implicits</span>
 <span class="nf">signup</span> <span class="p">(</span><span class="n">name</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">(</span><span class="n">email</span><span class="o">:</span> <span class="kt">Email</span><span class="p">)</span> <span class="p">{</span><span class="n">t</span><span class="o">:</span> <span class="kt">Throw</span> <span class="kt">ValidationErr</span><span class="p">}</span> <span class="p">{</span><span class="kt">Throw</span> <span class="kt">IOErr</span><span class="p">}</span> <span class="p">{</span><span class="kt">IO</span><span class="p">}</span><span class="o">:</span> <span class="kt">User</span> <span class="ow">=</span>

@@ -3,7 +3,7 @@ title: "Effects"
 code: |
     // Effects are just abilities with `resume` functions, enabling effect handlers
     ability Throw err =
-        throw: resume fn t -> Never
+        throw: resume fn err -> Never
 
     // And capabilities are just ability values, which are often passed as implicits
     signup (name: String) (email: Email) {t: Throw ValidationErr} {Throw IOErr} {IO}: User =

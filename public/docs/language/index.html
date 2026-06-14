@@ -2922,12 +2922,12 @@ of parenthesis but in ante since tuples are just nested pairs you can just add a
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">pairs</span> <span class="ow">=</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)]</span>
 
 <span class="c1">// Other languages require deconstructing with nested parenthesis:</span>
-<span class="nf">for</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">pairs</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">one</span><span class="p">,</span> <span class="n">two</span><span class="p">))</span> <span class="ow">-&gt;</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">pairs</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">one</span><span class="p">,</span> <span class="n">two</span><span class="p">))</span> <span class="ow">-&gt;</span>
     <span class="n">print</span> <span class="s">&#34;Iteration $i: sum = ${one + two}&#34;</span>
 
 <span class="c1">// But since `,` is just a normal operator,</span>
 <span class="c1">// the following version is equally valid</span>
-<span class="nf">for</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">pairs</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">one</span><span class="p">,</span> <span class="n">two</span><span class="p">)</span> <span class="ow">-&gt;</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">pairs</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">one</span><span class="p">,</span> <span class="n">two</span><span class="p">)</span> <span class="ow">-&gt;</span>
     <span class="n">print</span> <span class="s">&#34;Iteration $i: sum = ${one + two}&#34;</span>
 </code></pre></div><p>Finally, it&rsquo;s necessary to mention that the earlier <code>Cast</code> example printed nested
 pairs as <code>1, 2, 3</code> where as the <code>Show</code> instances in haskell printed tuples as <code>(1, 2, 3)</code>.
@@ -3007,8 +3007,8 @@ or else branch can either be single expressions or an indented block expression.
 </code></pre></div><h2 id="loops">Loops</h2>
 <p>Ante includes the traditional <code>for</code> and <code>while</code> loops along with <code>break</code> and <code>continue</code>.
 <code>for</code> loops must iterate over an increasing range. For anything more complex, streams must be used.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">0</span> <span class="o">..</span> <span class="mi">10</span> <span class="k">do</span>
-    <span class="k">if</span> <span class="n">i</span> <span class="o">%%</span> <span class="mi">3</span> <span class="k">then</span> <span class="n">continue</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">0</span> <span class="o">..</span> <span class="mi">10</span> <span class="k">do</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">%%</span> <span class="mi">3</span> <span class="k">then</span> <span class="k">continue</span>
     <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">7</span> <span class="k">then</span> <span class="n">break</span>
     <span class="n">println</span> <span class="n">i</span>
 
@@ -4396,7 +4396,7 @@ This function is also often named <code>yield</code>.</p>
 
 <span class="c1">/// Emit numbers from 0 to `n`, end-exclusive</span>
 <span class="nf">iota</span> <span class="n">n</span> <span class="ow">=</span> <span class="k">fn</span> <span class="p">{</span><span class="kt">Emit</span> <span class="kt">Usz</span><span class="p">}</span> <span class="ow">-&gt;</span>
-    <span class="n">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">0usz</span> <span class="o">..</span> <span class="n">n</span> <span class="k">do</span> <span class="n">emit</span> <span class="n">i</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">0usz</span> <span class="o">..</span> <span class="n">n</span> <span class="k">do</span> <span class="n">emit</span> <span class="n">i</span>
 
 <span class="c1">/// Applies `f` to each element from the stream, re-emitting each result.</span>
 <span class="c1">/// </span>
@@ -4439,15 +4439,15 @@ This function is also often named <code>yield</code>.</p>
 out of loops.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-an" data-lang="an"><span class="k">ability</span> <span class="kt">Loop</span> <span class="ow">=</span>
     <span class="n">break</span><span class="o">:</span> <span class="k">resume</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">Never</span>
-    <span class="n">continue</span><span class="o">:</span> <span class="k">resume</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">Never</span>
+    <span class="k">continue</span><span class="o">:</span> <span class="k">resume</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">Never</span>
 
 <span class="c1">/// Consumes the given stream, applying `f` to each element, with</span>
 <span class="c1">/// an additional Loop handler installed to allow breaking/continuing</span>
 <span class="c1">/// within the overall loop.</span>
  <span class="n">for_</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span><span class="kt">Stream</span> <span class="n">s</span> <span class="n">a</span><span class="p">}</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="n">a</span> <span class="kt">Loop</span> <span class="ow">=&gt;</span> <span class="n">b</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span>
      <span class="k">var</span> <span class="n">broke</span> <span class="ow">=</span> <span class="mi">false</span>
-     <span class="k">handler</span> <span class="n">h</span> <span class="n">for</span> <span class="n">emit</span> <span class="n">a</span> <span class="ow">-&gt;</span>
-         <span class="k">handler</span> <span class="n">l</span> <span class="n">for</span>
+     <span class="k">handler</span> <span class="n">h</span> <span class="k">for</span> <span class="n">emit</span> <span class="n">a</span> <span class="ow">-&gt;</span>
+         <span class="k">handler</span> <span class="n">l</span> <span class="k">for</span>
          <span class="o">|</span> <span class="n">break_</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="n">broke</span> <span class="o">:=</span> <span class="mi">true</span>
          <span class="o">|</span> <span class="n">continue_</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="p">()</span>
          <span class="k">in</span>
@@ -4458,8 +4458,8 @@ out of loops.</p>
 
 <span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span>
     <span class="c1">// Print `12457`:</span>
-    <span class="n">for</span> <span class="p">(</span><span class="n">iota</span> <span class="mi">10</span><span class="p">)</span> <span class="k">fn</span> <span class="n">i</span> <span class="p">{</span><span class="n">l</span><span class="p">}</span> <span class="ow">-&gt;</span>
-        <span class="k">if</span> <span class="n">i</span> <span class="o">%%</span> <span class="mi">3</span> <span class="k">then</span> <span class="n">continue</span> <span class="p">()</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">iota</span> <span class="mi">10</span><span class="p">)</span> <span class="k">fn</span> <span class="n">i</span> <span class="p">{</span><span class="n">l</span><span class="p">}</span> <span class="ow">-&gt;</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">%%</span> <span class="mi">3</span> <span class="k">then</span> <span class="k">continue</span> <span class="p">()</span>
         <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">7</span> <span class="k">then</span> <span class="n">break</span> <span class="p">()</span>
         <span class="n">print</span> <span class="n">i</span>
 </code></pre></div><p>Similarly, there is the <code>EarlyReturn</code> effect for early-returning. Since this is
