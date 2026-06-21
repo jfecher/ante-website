@@ -688,3 +688,93 @@ is coming from in the first place and the maximum time it can be expected to be 
 additional unit tests may be needed to ensure lifetime errors do not arise in certain situations. At this
 point, explicit lifetimes may be preferable since they enforce this documentation is provided, prevent
 invalid code from being written, and require fewer unit tests.
+
+---
+# Platform Independence
+
+Platform-specific code in other languages often requires preprocessing features such as `#ifdef`s or
+their equivalent macros to selectively enable code when some functions are available or an architecture
+is known. This has obvious downsides though, namely any code that is not currently enabled does not
+get checked by the compiler for correctness at all. If we think about it, `#ifdef`s enabling certain
+functions is very similar to programming against an interface, and Ante already has abilities for that
+purpose. Can we use abilities to replace preprocessor code?
+
+Firstly, programs may not declare `extern` symbols in an ad-hoc manner like in other languages.
+Instead, we want to force programs to use abilities to program against an interface of functions they
+need available. `main` would take the platform it is targeting as an argument where each platform is
+an interface of functions available on that platform:
+
+```ante
+main {Linux} =
+    // Linux provides access to syscalls such as fork, execve, and utilities such as io_uring
+
+main {Posix} =
+    // fork, execve, open, etc.
+
+main {Windows} =
+    // CreateThread, CreateProcess, etc
+```
+
+More commonly, `main` will take `IO` as an argument which is an abstracted interface implemented
+by several common platforms:
+
+```ante
+main {IO} = ...
+```
+
+Code written using `IO` is expected to be reasonably cross-platform, although code written with
+more narrower capabilities could be even more so. For example, a function requiring only the `Print`
+capability (a part of the overall `IO` capability) will be easier to use on more exotic platforms
+that don't support all of `IO`. For this reason, libraries are encouraged to only require capabilities
+they actually need rather than pulling in all of `IO` because it is convenient.
+
+## Linking Dynlibs
+
+Removing `extern` means there's no way to ad-hoc pull in symbols expected to be resolved by the linker.
+Instead, programs or libraries requiring dynamic libraries must use the same technique above to define
+an interface for the dynlib and program against it like what is done for platforms above. These
+interfaces can be defined as a type:
+
+```ante
+type Llvm =
+    LLVMShutdown: fn Unit -> Unit
+    LLVMGetVersion: fn (major: Ptr C.UInt) (minor: Ptr C.UInt) (patch: Ptr C.UInt) -> Unit
+    LLVMCreateMessage: fn (message: C.String) -> C.String
+    LLVMDisposeMessage: fn (message: C.String) -> Unit
+
+    type ContextRef = Ptr Unit
+    LLVMContextCreate: fn Unit -> ContextRef
+    ...
+```
+
+And given to `main` as an argument, usually to be passed implicitly
+
+```ante
+main {IO} {Llvm} = ...
+```
+
+From there, the package manager (with direction from the user) is expected to link the appropriate library
+to provide values for these symbols.
+
+One advantage of this versus ordinary externs is that platforms on which the underlying library is not
+available may still use the interface by implementing it themselves if possible in terms of functions
+that are available. For example, we could implement the `Llvm` type above with our own implementation
+without requiring the actual llvm library at all. It'd be a large task for a large library like llvm,
+but it would be possible, and practical on smaller scales or leaving some methods unimplemented.
+By forcing programming against an interface like this, Ante code could be platform and dynlib agnostic.
+
+## Implementing a new platform
+
+Getting code working for a new platform would require a few things:
+
+1. Depending on the platform, a new backend may be necessary. Getting Ante code working on the JVM or BEAM VM
+for example would require this. This could be added as a build step after Ante emits LLVM-IR.
+2. Any new primitives could be specified in a new interface and defined by the backend.
+3. Finally, existing capabilities like `IO` or `Print` could be implemented in terms of the functions
+in the new interface. Since `IO` and `Print` are interfaces themselves, this is as easy as implementing any
+other interface (although all of `IO` will be large):
+
+```ante
+impl print_jvm {Jvm}: Print with
+    print bytes = Jvm.writeBytes (bytes.as_ptr ()) 0 (bytes.len ())
+```

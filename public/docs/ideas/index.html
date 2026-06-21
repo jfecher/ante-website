@@ -688,6 +688,77 @@
                 
             
         
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                    
+                    
+                    
+                    <a href="/docs/ideas/#platform-independence">
+                        <li>Platform Independence</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/docs/ideas/#linking-dynlibs">
+                        <li>Linking Dynlibs</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
+            
+            
+                
+                    
+                    
+                    
+                        <ul class="toc-h1">
+                    
+                        <ul class="toc-h2">
+                    
+                    
+                    
+                    
+                    <a href="/docs/ideas/#implementing-a-new-platform">
+                        <li>Implementing a new platform</li>
+                    </a>
+                    
+                    
+                        </ul>
+                    
+                        </ul>
+                    
+                
+            
+        
     </div>
     
 
@@ -1270,7 +1341,71 @@ is coming from in the first place and the maximum time it can be expected to be 
 additional unit tests may be needed to ensure lifetime errors do not arise in certain situations. At this
 point, explicit lifetimes may be preferable since they enforce this documentation is provided, prevent
 invalid code from being written, and require fewer unit tests.</p>
+<hr>
+<h1 id="platform-independence">Platform Independence</h1>
+<p>Platform-specific code in other languages often requires preprocessing features such as <code>#ifdef</code>s or
+their equivalent macros to selectively enable code when some functions are available or an architecture
+is known. This has obvious downsides though, namely any code that is not currently enabled does not
+get checked by the compiler for correctness at all. If we think about it, <code>#ifdef</code>s enabling certain
+functions is very similar to programming against an interface, and Ante already has abilities for that
+purpose. Can we use abilities to replace preprocessor code?</p>
+<p>Firstly, programs may not declare <code>extern</code> symbols in an ad-hoc manner like in other languages.
+Instead, we want to force programs to use abilities to program against an interface of functions they
+need available. <code>main</code> would take the platform it is targeting as an argument where each platform is
+an interface of functions available on that platform:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">main</span> <span class="p">{</span><span class="kt">Linux</span><span class="p">}</span> <span class="ow">=</span>
+    <span class="c1">// Linux provides access to syscalls such as fork, execve, and utilities such as io_uring</span>
 
+<span class="nf">main</span> <span class="p">{</span><span class="kt">Posix</span><span class="p">}</span> <span class="ow">=</span>
+    <span class="c1">// fork, execve, open, etc.</span>
+
+<span class="nf">main</span> <span class="p">{</span><span class="kt">Windows</span><span class="p">}</span> <span class="ow">=</span>
+    <span class="c1">// CreateThread, CreateProcess, etc</span>
+</code></pre></div><p>More commonly, <code>main</code> will take <code>IO</code> as an argument which is an abstracted interface implemented
+by several common platforms:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">main</span> <span class="p">{</span><span class="kt">IO</span><span class="p">}</span> <span class="ow">=</span> <span class="o">...</span>
+</code></pre></div><p>Code written using <code>IO</code> is expected to be reasonably cross-platform, although code written with
+more narrower capabilities could be even more so. For example, a function requiring only the <code>Print</code>
+capability (a part of the overall <code>IO</code> capability) will be easier to use on more exotic platforms
+that don&rsquo;t support all of <code>IO</code>. For this reason, libraries are encouraged to only require capabilities
+they actually need rather than pulling in all of <code>IO</code> because it is convenient.</p>
+<h2 id="linking-dynlibs">Linking Dynlibs</h2>
+<p>Removing <code>extern</code> means there&rsquo;s no way to ad-hoc pull in symbols expected to be resolved by the linker.
+Instead, programs or libraries requiring dynamic libraries must use the same technique above to define
+an interface for the dynlib and program against it like what is done for platforms above. These
+interfaces can be defined as a type:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Llvm</span> <span class="ow">=</span>
+    <span class="kt">LLVMShutdown</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
+    <span class="kt">LLVMGetVersion</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="n">major</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="kt">C</span><span class="o">.</span><span class="kt">UInt</span><span class="p">)</span> <span class="p">(</span><span class="n">minor</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="kt">C</span><span class="o">.</span><span class="kt">UInt</span><span class="p">)</span> <span class="p">(</span><span class="n">patch</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="kt">C</span><span class="o">.</span><span class="kt">UInt</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
+    <span class="kt">LLVMCreateMessage</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="n">message</span><span class="o">:</span> <span class="kt">C</span><span class="o">.</span><span class="kt">String</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">C</span><span class="o">.</span><span class="kt">String</span>
+    <span class="kt">LLVMDisposeMessage</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="n">message</span><span class="o">:</span> <span class="kt">C</span><span class="o">.</span><span class="kt">String</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
+
+    <span class="k">type</span> <span class="kt">ContextRef</span> <span class="ow">=</span> <span class="kt">Ptr</span> <span class="kt">Unit</span>
+    <span class="kt">LLVMContextCreate</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">ContextRef</span>
+    <span class="o">...</span>
+</code></pre></div><p>And given to <code>main</code> as an argument, usually to be passed implicitly</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">main</span> <span class="p">{</span><span class="kt">IO</span><span class="p">}</span> <span class="p">{</span><span class="kt">Llvm</span><span class="p">}</span> <span class="ow">=</span> <span class="o">...</span>
+</code></pre></div><p>From there, the package manager (with direction from the user) is expected to link the appropriate library
+to provide values for these symbols.</p>
+<p>One advantage of this versus ordinary externs is that platforms on which the underlying library is not
+available may still use the interface by implementing it themselves if possible in terms of functions
+that are available. For example, we could implement the <code>Llvm</code> type above with our own implementation
+without requiring the actual llvm library at all. It&rsquo;d be a large task for a large library like llvm,
+but it would be possible, and practical on smaller scales or leaving some methods unimplemented.
+By forcing programming against an interface like this, Ante code could be platform and dynlib agnostic.</p>
+<h2 id="implementing-a-new-platform">Implementing a new platform</h2>
+<p>Getting code working for a new platform would require a few things:</p>
+<ol>
+<li>Depending on the platform, a new backend may be necessary. Getting Ante code working on the JVM or BEAM VM
+for example would require this. This could be added as a build step after Ante emits LLVM-IR.</li>
+<li>Any new primitives could be specified in a new interface and defined by the backend.</li>
+<li>Finally, existing capabilities like <code>IO</code> or <code>Print</code> could be implemented in terms of the functions
+in the new interface. Since <code>IO</code> and <code>Print</code> are interfaces themselves, this is as easy as implementing any
+other interface (although all of <code>IO</code> will be large):</li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">print_jvm</span> <span class="p">{</span><span class="kt">Jvm</span><span class="p">}</span><span class="o">:</span> <span class="kt">Print</span> <span class="k">with</span>
+    <span class="n">print</span> <span class="n">bytes</span> <span class="ow">=</span> <span class="kt">Jvm</span><span class="o">.</span><span class="n">writeBytes</span> <span class="p">(</span><span class="n">bytes</span><span class="o">.</span><span class="n">as_ptr</span> <span class="p">())</span> <span class="mi">0</span> <span class="p">(</span><span class="n">bytes</span><span class="o">.</span><span class="n">len</span> <span class="p">())</span>
+</code></pre></div>
                         </div>
                         
                         
