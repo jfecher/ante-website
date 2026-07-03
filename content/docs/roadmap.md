@@ -61,6 +61,7 @@ These also use a temporary `c"_"` syntax currently.
   - [x] Integer literal patterns
   - [x] Completeness & Redundancy checking
   - [x] 'Or' clause in pattern matching, combining patterns via `|`
+  - [x] Alias patterns ('name @ pattern')
   - [ ] Pattern guards: `| pattern if expr -> ...`
   - [x] `is` keyword for matching within expressions
 - [x] `loop` sugar
@@ -162,7 +163,9 @@ All APIs are non-final.
   - [ ] `uniq` cannot coexist with any other reference to the same value
   - [ ] Moves are prevented while any reference to the same value is alive
   - [ ] Lifetimes are checked
-- [ ] `shared` modifier on types
+- [~] `shared` modifier on types
+  - [x] Automatic heap allocation
+  - [ ] Shared mut types allow mutation
 
 ---
 # Abilities

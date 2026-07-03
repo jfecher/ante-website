@@ -545,6 +545,7 @@ These also use a temporary <code>c&quot;_&quot;</code> syntax currently.</li>
 <li><input checked="" disabled="" type="checkbox"> Integer literal patterns</li>
 <li><input checked="" disabled="" type="checkbox"> Completeness &amp; Redundancy checking</li>
 <li><input checked="" disabled="" type="checkbox"> &lsquo;Or&rsquo; clause in pattern matching, combining patterns via <code>|</code></li>
+<li><input checked="" disabled="" type="checkbox"> Alias patterns (&lsquo;name @ pattern&rsquo;)</li>
 <li><input disabled="" type="checkbox"> Pattern guards: <code>| pattern if expr -&gt; ...</code></li>
 <li><input checked="" disabled="" type="checkbox"> <code>is</code> keyword for matching within expressions</li>
 </ul>
@@ -677,7 +678,12 @@ These also use a temporary <code>c&quot;_&quot;</code> syntax currently.</li>
 <li><input disabled="" type="checkbox"> Lifetimes are checked</li>
 </ul>
 </li>
-<li><input disabled="" type="checkbox"> <code>shared</code> modifier on types</li>
+<li>[~] <code>shared</code> modifier on types
+<ul>
+<li><input checked="" disabled="" type="checkbox"> Automatic heap allocation</li>
+<li><input disabled="" type="checkbox"> Shared mut types allow mutation</li>
+</ul>
+</li>
 </ul>
 <hr>
 <h1 id="abilities">Abilities</h1>
