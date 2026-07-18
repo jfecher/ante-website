@@ -1,8 +1,8 @@
 weight: 2
 title: "Traits via Implicits"
 code: |
-    // Abilities in Ante are just sugar for types holding closure values
-    ability Add t =
+    // Traits in Ante are just sugar for types holding function values
+    trait Add t =
         (+): fn t t -> t
 
     // Since they are just values, we can create them in normal constructor expressions
@@ -10,7 +10,7 @@ code: |
     implicit ord_i32_descending = Ord I32 with
         cmp a b = Ordering.from_int (b - a)
 
-    // Ability values can be defined locally and closures can capture data,
+    // Trait values can be defined locally and closures can capture data,
     // making implementing them on interned types much easier
     implicit display_interned (ctx: InternCtx) = Display MyInternedType with
         display interned =

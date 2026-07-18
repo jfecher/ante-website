@@ -395,31 +395,6 @@
                 
             
         
-            
-            
-                
-                    
-                    
-                    
-                        <ul class="toc-h1">
-                    
-                        <ul class="toc-h2">
-                    
-                    
-                    
-                    
-                    <a href="/docs/faq/#isnamprsquot-reasoning-about-pure-functions-the-entire-point-of-an-effect-system">
-                        <li>Isn&amp;amp;rsquo;t reasoning about pure functions the entire point of an effect system?</li>
-                    </a>
-                    
-                    
-                        </ul>
-                    
-                        </ul>
-                    
-                
-            
-        
     </div>
     
 
@@ -505,21 +480,20 @@ languages so that developers have more time to spend on optimizations and bug fi
 <p>Inheriting Rust&rsquo;s model, Ante is one of the few languages with <strong>stronger thread safety</strong>.</p>
 </li>
 <li>
-<p><strong>Abilities</strong> in Ante solve the function coloring problem by enabling higher-order functions like <code>map</code> to work with async,
+<p><strong>Effects</strong> in Ante solve the function coloring problem by enabling higher-order functions like <code>map</code> to work with async,
 exceptions, generators, etc. with no code duplication.</p>
 <ul>
-<li>Abilities being a single language concept combining traits/interfaces and effects mean there are fewer questions on how
-something should be modeled.</li>
+<li>Effects are part of a function&rsquo;s type, documenting the side-effects that function may perform.</li>
+<li>Effects perform a similar role to monads but are much easier to use in practice, requiring no special combinators to use multiple of them,
+nor do they require wrapping values in wrapper types or learning what <code>&gt;&gt;=</code>/bind is.</li>
+<li>Effects increase the security of applications. If a pure library function is updated to secretly record user data,
+it must declare a <code>Net</code> or <code>IO</code> effect, making this change more difficult to hide.</li>
 </ul>
-</li>
-<li>
-<p><strong>Capabilities</strong> increase the security of applications. If a pure library function is updated to secretly record user data,
-it must accept a <code>Network</code> or <code>IO</code> object as an argument, often creating a new error at its call site.</p>
 </li>
 <li>
 <p><strong>A focus on clean code</strong>: Ante is designed with a strong focus on code being enjoyable to write and easy to read. Ante code
 is often free of excess punctuation and clutter. More terse code makes it easier to find bugs by reducing the number of places
-they can hide. Implicits in Ante strike a balance between abilities being always passed implicitly like traits/implicits are
+they can hide. Implicits in Ante strike a balance between traits being always passed implicitly like traits/implicits are
 in other languages, and being able to be passed explicitly when desired.</p>
 </li>
 <li>
@@ -536,8 +510,8 @@ and create issues <a href="https://github.com/jfecher/ante">on github</a> for an
 <hr>
 <h2 id="have-you-considered-an-ml-like-module-system">Have you considered an ML-like module system?</h2>
 <p>I have - although I currently don&rsquo;t see it providing enough value to merit its inclusion. This could change in the future
-if I hear a strong enough argument for it over the status quo. Ante&rsquo;s abilities can already enable similar
-code since Ante does support existential types already, though types being unboxed makes type erasure when ascribing to
+if I hear a strong enough argument for it over the status quo. Ante&rsquo;s traits can already enable similar
+code since Ante does support existential types already, though values being unboxed makes type erasure when ascribing to
 a module type more difficult.</p>
 <hr>
 <h2 id="how-can-a-language-be-both-high-and-low-level-and-what-is-meant-by-this">How can a language be both high and low level, and what is meant by this?</h2>
@@ -555,18 +529,6 @@ team to be split more cleanly with a smoother on-boarding process. New developer
 immediately, they can start with high-level code and slowly work their ways down the stairs from there if they wish.
 This is what Ante provides with its <code>shared</code> types to opt-out of ownership semantics.</p>
 <p>Read more about this in the post <a href="/blog/vision">A Vision for Future Low-level Languages</a></p>
-<hr>
-<h2 id="isnt-reasoning-about-pure-functions-the-entire-point-of-an-effect-system">Isn&rsquo;t reasoning about pure functions the entire point of an effect system?</h2>
-<p>This is a question you may ask after reading the <a href="/docs/language/#comparison-to-other-effect-systems">comparison to other effect systems</a>
-portion of Ante&rsquo;s documentation. It is a very reasonable question to ask - losing the ability to <em>easily</em> reason
-that a function is completely pure through the absence of effects in its type is the main downside to Ante&rsquo;s system
-where effects are passed through parameters instead. I say &ldquo;easily&rdquo; because all is not lost. The compiler can
-define abilities such as <code>Send</code>/<code>Sync</code> for reasoning about similar concepts like thread-safety. In general, abilities
-can still be used to restrict inputs in most cases. For example, a memoization function may wish to accept only pure functions.
-Since the types of each effect are still on the functions themselves (or captured in their environment), it would still be
-possible to define a <code>Pure</code> ability which is only implemented for functions not using any effects. So although we lose
-one clean way of expressing this, there is still a decent workaround, and Ante keeps the other advantages its parameter-based
-effect system has mentioned in the link above.</p>
 
                         </div>
                         

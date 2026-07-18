@@ -399,35 +399,35 @@ what_a_long_function_name
 
 Operators in Ante are normal names like `foo` or `bar`, just with special parser
 support so we can call them infix (`foo + bar`) instead of prefix (`+ foo bar`) like other names.
-Most operators are defined in [abilities](#abilities) in the prelude. Here are some
+Most operators are defined in [traits](#traits) in the prelude. Here are some
 common operators:
 
 ```ante
 // The standard set of numeric ops with operator precedence as you'd expect
-ability Add a =
+trait Add a =
     (+): fn a a -> a
 
-ability Sub a =
+trait Sub a =
     (-): fn a a -> a
 
-ability Mul a =
+trait Mul a =
     (*): fn a a -> a
 
-ability Div a =
+trait Div a =
     (/): fn a a -> a
 
 /// `%` is modulus rather than remainder. For unsigned numbers there is no
 /// difference, but for signed numbers `-3 % 5` would be `2` for modulus and `-3` for remainder.
-ability Mod a =
+trait Mod a =
     (%): fn a a -> a
 
-ability Eq a =
+trait Eq a =
     (==): fn (ref a) (ref a) -> Bool
 
 (!=) a b = not (a == b)
 
-// Comparison operators are implemented in terms of the `Cmp` ability
-ability Cmp a =
+// Comparison operators are implemented in terms of the `Cmp` trait
+trait Cmp a =
     compare: fn (ref a) (ref a) -> Ordering
 
 type Ordering = | Lesser | Equal | Greater
@@ -497,11 +497,11 @@ mutate (mut my_array.[1])
 ## Dereference Operator, Copy, and Clone
 
 Dereferencing reference in Ante requires the element type of the reference to implement
-either `Copy` or `Clone`. Both abilities have the same semantics in that they both perform
+either `Copy` or `Clone`. Both traits have the same semantics in that they both perform
 copies (although certain values like `Rc t` may be shared), but types implementing `Copy`
 are generally expected to be cheaper to copy than types only implementing `Clone`.
 
-These abilities can be called via the `copy` or `clone` functions, but there is also the
+These traits can be called via the `copy` or `clone` functions, but there is also the
 postfix `.*` operator available as an alias to `copy`. This operator has a higher precedence
 than function calls and can be more convenient in some cases.
 
@@ -524,6 +524,10 @@ providing its element type implements `Copy`. This means `foo` above could be re
 foo (person: ref Person) (id: ref U32) =
     bar person.age id
 ```
+
+There is also an equivalent coercion if an immutable reference (`ref` or `imm`) was expected
+but a value was provided to automatically reference the value. Mutable references must
+remain explicit however.
 
 > Note that there is no requirement for `Copy` types to be memcpy-able. Instead it is
 > used for types which are "cheap" to copy - usually meaning they don't need to allocate
@@ -1031,13 +1035,13 @@ algorithm which is based on an extended version of Hindley-Milner with let-polym
 and implicits, among other extensions.
 
 This means Ante can infer variable types, parameter types, function return types, and
-even infer which abilities are needed in generic function signatures.
+even infer which traits and effects are needed in generic function signatures.
 
 ```ante
 // Something is iterable if we can call `next` on it and
 // get either Some element and the rest of the iterator or
 // None and we finish iterating
-ability Iterator it elem =
+trait Iterator it elem =
     next: fn it -> Maybe (it, elem)
 
 first_equals it target =
@@ -1048,7 +1052,7 @@ first_equals it target =
 We never gave any type for `first_equals_two` yet ante infers its type for us as
 `fn a b {Iterator a b} {Eq b} -> Bool` - that is a function that returns a `Bool` and takes
 two generic parameters along with an [implicit parameter](#implicits) which is an instance
-of the iterator ability for an iterator of type `a` producing elements of type `b`.
+of the iterator trait for an iterator of type `a` producing elements of type `b`.
 
 ### Type Inference in Idiomatic Code
 
@@ -1070,7 +1074,7 @@ types for any particularly difficult functions they need before then to help wit
 types of other functions is less of an issue when you only have a handful of them and don't intend to write more.
 
 3. Even in larger code bases, inferred types on functions can still be useful in some rare cases like
-particularly trivial helper functions, or ability methods where the ability always dictates the function
+particularly trivial helper functions, or trait methods where the trait always dictates the function
 type anyway.
 
 4. In a teaching scenario, it can be useful to have the flexibility to defer teaching about types a little.
@@ -1376,7 +1380,7 @@ any amount of times, but prevent the underlying value from being moved until
 any references to it are no longer used.
 
 The only values which may be used more than once without borrowing them are those
-implementing the `Copy` ability. This ability signals a type may be trivially copied
+implementing the `Copy` trait. This trait signals a type may be trivially copied
 each time it is referred to:
 
 ```ante
@@ -1634,8 +1638,8 @@ promote_valid (x: mut t): local uniq t =
     x
 ```
 
-The way the compiler proves a variable is not mutably aliased locally is by requiring a `Distinct a b` ability constraint
-whenever a mutable variable of type `b` is used while a `local` reference to a type `a` is still alive. This ability is automatically
+The way the compiler proves a variable is not mutably aliased locally is by requiring a `Distinct a b` trait constraint
+whenever a mutable variable of type `b` is used while a `local` reference to a type `a` is still alive. This trait is automatically
 implemented by the compiler when the type `a` is not contained within the type `b`. For example, in
 the following code, we'd expect a constraint for `Distinct String I32` to be issued (and solved):
 
@@ -1833,7 +1837,7 @@ value. Just boxing container elements and union data is often sufficient.
 
 ## Thread Safety
 
-Ante uses the familiar `Send` and `Sync` abilities from Rust for safe concurrency. It does
+Ante uses the familiar `Send` and `Sync` traits from Rust for safe concurrency. It does
 not innovate here but continues with the safe, tried and true model.
 
 ---
@@ -1887,18 +1891,18 @@ main () =
     bar 0 {pi}
 ```
 
-Implicits are most commonly used for passing around [ability values](#abilities).
+Implicits are most commonly used for passing around [trait values](#traits).
 
 ---
-# Abilities
+# Traits
 
 While unrestricted generic functions are useful, often we don't want
 to abstract over "forall t." but rather abstract over all types that
 have certain operations available on them - like adding. In ante, this
-is done via abilities. You can define an ability as follows:
+is done via traits. You can define a trait as follows:
 
 ```ante
-ability Stringify t =
+trait Stringify t =
     stringify: fn t -> String
 ```
 
@@ -1911,26 +1915,29 @@ stringify_print (x: t) {Stringify t}: Unit =
     print (stringify x)
 ```
 
-Each ability is just a type definition internally with:
+Each trait is just a type definition internally with:
 
-- Each function in the ability translating to a field of type function.
-- A type variable that gets added to all abilities which gets passed to the closure environment of each
-function. This allows the ability to hold closure values as well which is important
-when building up new abilities, like `Eq (Vec elem)` from existing abilities like `Eq elem`.
-- An accessor function defined for retrieving the field from an implicit value of that ability.
+- Each function in the trait translating to a field of type function.
+- An accessor function defined for retrieving the field from an implicit value of that trait.
+- Any captured data in closures is stored after each function in the trait struct, effectively
+  making it a vtable. This makes trait objects dynamically sized. Captured data often occurs
+  when building trait implementations from other implementations, e.g. `eq_vec {eq_t: Eq t}: Eq (Vec t) = ...`
+  will need to reference `eq_t` when building the resulting impl for Vecs.
+- Overhead from passing around trait values may be optimized out by the compiler but is not currently guaranteed.
 
-If we were to desugar the `Stringify` ability above, we'd get the following:
+If we were to desugar the `Stringify` trait above, we'd get the following:
 
 ```ante
 type Stringify t env =
-    stringify: fn t [env] -> String
+    stringify: fn t -> String
+    // ... additional dynamic data depending on the impl ...
 
 // This lets us call `stringify my_obj` and the constructor will look for 
-// an implicit `Stringify t env` in scope to find how to stringify `t`.
-stringify {s: Stringify t env} x = s.stringify x
+// an implicit `Stringify t` in scope to find how to stringify `t`.
+stringify {s: Stringify t} x = s.stringify x
 ```
 
-Since abilities are just structs internally, we can construct them like any other struct:
+Since traits are just structs internally, we can construct them like any other struct:
 
 ```ante
 stringify_bool =
@@ -1941,11 +1948,9 @@ stringify_bool = Stringify with
     stringify b = if b then "true" else "false"
 ```
 
-> Ability values are sometimes called _capabilities_.
-
-Abilities are often passed as implicit parameters into function calls
+Traits are often passed as implicit parameters into function calls
 (see `stringify_print` above). Since implicit resolution only looks for implicit values in scope,
-we need to ensure any ability values we use are either marked `implicit`, imported via `import implicit`,
+we need to ensure any trait values we use are either marked `implicit`, imported via `import implicit`,
 or already in scope via an implicit parameter.
 
 ```ante
@@ -1959,14 +1964,14 @@ import implicit Example.stringify_bool
 
 ## Multiple Type Parameters
 
-Like any other type, abilities can also have multiple type parameters.
+Like any other type, traits can also have multiple type parameters.
 We can use this to define relations over multiple types. For example,
 we may want to be more general than the `stringify` function above and
-have an ability to cast to any result type. To do this we can have an
-ability that defines a cast function from one type to another:
+have a trait to cast to any result type. To do this we can have an
+trait that defines a cast function from one type to another:
 
 ```ante
-ability Cast a b =
+trait Cast a b =
     cast: fn a -> b
 
 // Assuming we defined a `Cast I32 String`, we could now cast
@@ -1977,38 +1982,38 @@ cast 3 : String
 ## Inferred Implicit Parameters
 
 When inferring a function's type, if that function requires an
-implicit ability that references a parameter type, the implicit will be inferred
+implicit that references a parameter type, the implicit will be inferred
 to be a parameter of the function itself. That is, the following definitions
-of `print_double` are mostly the same:
+of `double_cast` are mostly the same:
 
 ```ante
 // This:
-print_double x = print (x + x)
+double_cast x = cast (x + x)
 
 // Is inferred as:
-print_double (x: t) {Add t} {Copy t} {Display t} {Print}: Unit =
-    print (x + x)
+double_cast (x: t) {Add t} {Copy t} {Cast t u}: u =
+    cast (x + x)
 ```
 
 There is one small difference between the two: implicits inferred to be parameters
 cannot be explicitly specified by users at call sites:
 
 ```ante
-print_double x = print (x + x)
+double_cast x = print (x + x)
 
 main () =
     // error! `print_double` was not declared with any implicit arguments
-    print_double 2 {add_i32}
+    _ = double_cast 2 {add_i32}
 ```
 
-The reason for this is that if all abilities on a function are inferred, it would not
-be clear which order the abilities should be passed in. For this reason, an error is
+The reason for this is that if all implicits on a function are inferred, it would not
+be clear which order they should be passed in. For this reason, an error is
 issued if a user tries to specify implicit arguments on a function with inferred implicits.
 
 > Q: Why not have the compiler choose an ordering, such as ordering alphabetically?
 > 
-> A: If the compiler chose to order abilities alphabetically when inferred in a function
-> signature, that would make renaming an ability a breaking change since it may change
+> A: If the compiler chose to order implicits alphabetically when inferred in a function
+> signature, that would make renaming any type a breaking change since it may change
 > the ordering of function parameters.
 
 Since it is often a good idea to allow users of your library to specify implicits when
@@ -2018,7 +2023,7 @@ Ante's compiler option to write inferred types into the file.
 
 ## Named Impls
 
-Unlike trait implementations or typeclasses in other languages, ability values in Ante
+Unlike trait implementations or typeclasses in other languages, trait values in Ante
 are normal values, and like other normal values, they can be named and imported/exported
 by name.
 
@@ -2044,9 +2049,9 @@ for otherwise unnecessary wrapper types and boilerplate. Ante does not enforce g
 
 ## Coherence
 
-Ante has no concept of global coherence for capabilities, so it is perfectly valid to define overlapping
-capabilities or define capabilities for types outside of the modules the type or ability were declared in.
-If there are ever conflicts with multiple valid capabilities being found, an error is given at the callsite
+Ante has no concept of global coherence for traits, so it is perfectly valid to define overlapping
+implementations or define implementations for types outside of the modules the type or trait were declared in.
+If there are ever conflicts with multiple valid implementations being found, an error is given at the callsite
 and the user will have to manually specify which to use either by only importing one of these values
 or by explicitly specifying which [implicit parameter](#implicits) to use:
 
@@ -2060,68 +2065,21 @@ print (add.(++) 2 3)  //=> 5
 print (mul.(++) 2 3)  //=> 6
 ```
 
-The lack of global coherence also notably allows abilities to be used in some places typical
-traits or interfaces are not:
+> Q: What about constructs like HashMap which rely on a consistent Hash implementation?
+>
+> A: The plan is to have these types parameterized over the implementation chosen for them.
+> This generic can then be used to ensure consistency everywhere the type is used.
 
-### Logging and Mocking
+The lack of global coherence also notably allows traits to be used in some places typical
+traits or interfaces are not, such as interning.
 
-The ability to decide an ability's value at the callsite enables us to swap out the behavior
-of side-effectful operations to mock them for testing. This can be done in other languages without
-capabilities, but Ante's use of them for even `println` means we can often test code
-regardless of whether it was written with limiting side-effects and testing in mind.
-
-```an
-ability Print =
-    print: fn String -> Unit
-
-ability QueryDatabase =
-    querydb: fn String -> Response
-
-database f =
-    db = Database.connect "..."
-    result = f (QueryDatabase (db.send _))
-    close db
-    result
-
-ignore_db f =
-    f (QueryDatabase fn _ -> Response.Empty)
-
-business_logic (should_query: Bool) {Print} {QueryDatabase}: Unit =
-    if should_query then
-        print "querying..."
-        response = querydb "SELECT column FROM table"
-        ...
-        print "done with db"
-    else
-        print "did not query"
-
-// Print handling is builtin, let ante handle it
-main {Print} =
-    business_logic true ~> database
-
-// Mock our business function. Use a different handler for
-// testing instead of the database handler that will actually
-// connect to the database.
-test {Fail} =
-    p = Print fn msg ->
-        assert (msg == "did not query")
-
-    db = QueryDatabase fn _ ->
-        error "Tried to query when should_query = false!"
-
-    business_logic false {p} {db}
-
-    logs = business_logic true ~> ignore_db ~> collect_prints
-    assert (not is_empty logs)
-```
-
-### Interning
+### Example: Interning
 
 Interning values is a common optimization but unfortunately often makes these interned values
 more cumbersome to work with. For example, often when implementing traits they require wrapper
 objects to be created first to bundle them with the appropriate context first. Since we can
-define arbitrary functions to return ability values in Ante, we can define a closure which
-captures this context to implement any ability we need:
+define arbitrary functions to return trait values in Ante, we can define a closure which
+captures this context to implement any trait we need:
 
 ```ante
 type Data = bytes: Vec U8
@@ -2133,13 +2091,12 @@ type Context =
     map: Vec Data
 
 implicit display_data_id {ctx: ref Context} = Display DataId with 
-    display (id: DataId) {Emit String} =
-        data = ctx.map.get id ~> on_fail panic
-        display data
+    display (id: DataId) =
+        display (ctx.map.get id) ~> on_fail panic
 ```
 
 ---
-## Effects and Resume
+# Effects
 
 Effects are a control-flow abstraction similar to a resumable exception. They are a
 useful tool since they can be used to abstract over several kinds of non-local control-flow
@@ -2149,54 +2106,60 @@ useful tool since they can be used to abstract over several kinds of non-local c
 > they compose together more naturally without the need to decide the handler ordering
 > in the type itself.
 
-We can create an effect in Ante by prefixing `resume` before the type of a function in
-an ability:
+We can create an effect in Ante using the `effect` keyword to define a type holding several
+function values, similar to a trait:
 
 ```ante
-ability Yield t =
-    yield: resume fn t -> Unit
+effect Yield t =
+    yield: fn t -> Unit
 ```
 
-Calling such a function is the same as calling any other function from an ability. We
-require it as an implicit (if we wish) then, we call the function:
+Calling an effectful function like `yield` will perform the effect in the calling function.
+To perform the effect we must specify the calling function `can Yield` (or let it be inferred).
+If we were performing multiple effects, we can separate them with commas.
 
 ```ante
-yield_and_return_10 {Yield I32} =
+yield_and_return_10 (): I32 can Yield I32 =
     yield 5
     yield 7
     10
 ```
 
-Defining an instance of `Yield I32` is a bit different however. Because we want to
-construct a `resume fn` rather than a normal `fn`, we must use a special construct
-to do so: `handler <name> = <capability-expr> in <expr>`. This syntax defines a capability value
-with the given name, which will be visible in `<expr>`. The
-`<capability-expr>` portion must be a type constructor building an ability value.
-Additionally, the special `resume` function will be visible within any `resume fn`s
+Alone, `yield 5` means nothing. To give meaning to an effect, we must handle it with an
+effect handler. Handlers can be defined with the syntax: `handler <name> for <capability-expr> in <expr>`.
+This syntax defines a handler with the given name, which will be visible in `<expr>`. The
+`<capability-expr>` portion must list each function of an effect and its implementation, separated by `|` if needed.
+Additionally, the special `resume` function will be visible within any functions
 defined in `<capability-expr>`. This `resume` function is special - it lets us resume
-the function that called our effect function. We'll get into more of the implications
-of this later but for now let's see a basic handler:
+the function that called our effect function.
+
+> Named handlers are temporary and may be removed in the future. They are holdovers from Ante's previous
+> abilities feature and are meant to disambiguate between multiple handlers for the same effect.
+
+A good mental model of effects is that they're like checked exceptions which we can throw by performing the effect,
+catch by using effect handlers, but can also `resume` back to the code that performed the effect.
+We'll get into more of the implications of this later but for now let's see a basic handler:
 
 ```ante
-print_each_yield (f: fn (Yield t) => a) {Display t} {Print}: a =
-    handler yield_handler = Yield fn elem ->
+print_each_yield (f: fn Unit => a can Yield t) {Display t}: a can Print =
+    handler yield_handler for yield elem ->
         resume (println elem)
-    in f yield_handler
+    in f ()
 
 main () =
-    x = print_each_yield yield_and_return_10 //=> `5` and `7` are printed
-    assert (x == 10)
+    x = print_each_yield yield_and_return_10  // `5` and `7` are printed
+    assert_eq x 10
 ```
 
-Above we define a capability `yield_handler` and run `f` with that handler.
+Above we define a handler `yield_handler` and run `f` with that handler.
 Then in `main`, we call `print_each_yield` with the `yield_and_return_10` function from
 before as an argument. This will run that function, and when `yield 5` is encountered,
 we will print `5` out before hitting the next yield, printing `7`, and finally returning `10`.
 
 Aside from the new syntax, this should not be too surprising. The control-flow here is as
-we'd expect from any other function - and that is because when implementing `yield` we gave
+we'd expect from any other function - that is because when implementing `yield` we gave
 it a function which calls resume in a tail position (ie. as the last thing it does).
-When called in a tail-position, the code is performing the entire function, then finishing
+When called in a tail-position, the code is performing the entire function then finishing
 and resuming back to where `yield` was called.
 
 While we can do some interesting things still with only `resume` in a tail position, e.g:
@@ -2205,13 +2168,13 @@ we can collect each yielded value into a container:
 ```ante
 // Collect each `yield elem` in `f` into a `Seq`, returning it alongside
 // `f`'s original return value.
-collect_yields_into_seq (f: fn (Yield t) => a): a, Seq t =
+collect_yields_into_seq (f: fn Unit => a can Yield t): a, Seq t =
     var yielded = Seq.empty ()
     // ret will hold the result of `f collector`
-    ret = handler collector = Yield fn elem ->
+    ret = handler _ for yield elem ->
         yielded := yielded.push elem
         resume ()
-    in f collector
+    in f ()
     ret, yielded
 ```
 
@@ -2222,13 +2185,12 @@ If we choose not to call `resume` at all, we should expect the code calling `yie
 This may sound odd or undesired, but it is actually a very common use case: it is what exceptions do!
 
 ```ante
-abort_after_first_yield (f: fn (Yield I32) => I32): I32 =
-    handler aborter = Yield with
-        yield elem = elem
+abort_after_first_yield (f: fn Unit => I32 can Yield I32): I32 =
+    handler _ for yield elem -> elem
     // If there is a newline after `in`, the handler
     // will be in scope for the rest of the block
     in
-    f aborter
+    f ()
 
 main () =
     x = abort_after_first_yield yield_and_return_10
@@ -2257,24 +2219,24 @@ error handling. These roughly correspond to the `Maybe t` and `Result t e` types
 Being effects however, these do not need to be manually unpacked at each call site.
 
 ```ante
-/// The Fail ability represents a generic failure. It is meant to be used
+/// The Fail effect represents a generic failure. It is meant to be used
 /// when the reason why is obvious and needs no extra information.
-ability Fail =
-    fail: resume fn Unit -> Never
+effect Fail =
+    fail: fn Unit -> Never
 
 /// Throw on the other hand will throw a value to its handler.
 /// It can be thought of as an exception.
-ability Throw e =
-    throw: resume fn e -> Never
+effect Throw e =
+    throw: fn e -> Never
 
-safe_div (a: U32) (b: U32) {Fail}: U32 =
-    if b == 0 then fail ()
+safe_div (a: U32) (b: U32): U32 can Fail =
+    fail_if (b == 0)
     a / b
 
 type Name = first: String, last: String
 type ParseError = | NoName | NoLastName | ComplexName
 
-parse_name (name: String) {Throw ParseError}: Name =
+parse_name (name: String): Name can Throw ParseError =
     parts = Vec.of (name.split " ")
 
     if parts.len () == 0 then
@@ -2292,19 +2254,19 @@ a variety of helper functions in the `Std.Fail` and `Std.Throw` modules.
 Implementing these functions is generally simple. Effects are often described
 as resumable exceptions, so if we want normal exceptions all we must do
 is not call `resume` in the handler. A function like `try` will instead
-return `None` while `try_or` provides a default value on error instead.
+return `None` while `on_fail` provides a default value on error instead.
 
 ```ante
-try (f: fn Fail => a): Maybe a =
-    handler h = Fail fn () -> None in
-    Some (f h)
+try (f: fn Unit => a can Fail): Maybe a =
+    handler _ for fail () -> None in
+    Some (f ())
 
-catch (f: fn (Throw e) => a): Result a e =
-    handler h = Throw fn e -> Err e in
-    Ok (f h)
+catch (f: fn Unit => a can Throw e): Result a e =
+    handler _ for throw e -> Err e in
+    Ok (f ())
 
 print (safe_div 6 2 ~> try) //=> Some 3
-print (safe_div 6 0 ~> try_or 42) //=> 42
+print (safe_div 6 0 ~> on_fail do 42) //=> 42
 
 print (parse_name "First Last" ~> catch) //=> Ok (Name "First" "Last")
 print (parse_name "First" ~> catch) //=> Err NoLastName
@@ -2316,7 +2278,18 @@ different errors can also be naturally composed without requiring users
 to define their own error unions:
 
 ```ante
-foo {Throw FileError} {Throw ParseError} {Throw BarError} =
+foo (): Unit can Throw FileError, Throw ParseError, Throw BarError =
+    f = File.open "foo.txt"
+    contents = parse (read f)
+    bar contents
+```
+
+Effect union type aliases may still be declared to cut down on typing if desired:
+
+```
+effect MyEffects = Throw FileError, Throw ParseError, Throw BarError 
+
+foo (): Unit can MyEffects =
     f = File.open "foo.txt"
     contents = parse (read f)
     bar contents
@@ -2325,26 +2298,26 @@ foo {Throw FileError} {Throw ParseError} {Throw BarError} =
 ### Applying Handlers
 
 Most handler functions like `try` or `catch` above take a function as an argument to supply
-the handler for. Instead of manually wrapping each operation as in `try (fn {fail_handler} -> safe_div 6 2)`,
+the handler for. Instead of manually wrapping each operation as in `try (fn _ -> safe_div 6 2)`,
 it is convenient to have alternate ways to apply handlers, similar to how we can apply normal
 functions directly: `f x`, or with the pipeline operators: `f <| x`, `x |> f`.
 
 #### Applying Handlers with `~>`
 
-Since most effectful functions accept their capabilities as implicit arguments, `~>` works by automatically
-creating a closure with an implicit argument such that `try (fn {fail_handler} -> safe_div 6 2)` is equivalent
+`~>` works by automatically creating a closure such that `try (fn _ -> safe_div 6 2)` is equivalent
 to `safe_div 6 2 ~> try`.
 
 #### Applying Handlers with `do`
 
-`do` is the reverse of `~>`. Where `~>` has the function on the left and handler on the right, `do`
+`do x` is sugar for `fn _ -> x` and can be used as a trailing argument on functions. This makes it
+resemble the reverse of `~>`. Where `~>` has the function on the left and handler on the right, `do`
 has the function on the right and handler on the left. We can also compare these to `|>` and `<|`,
 where `|>` is to `~>` as `<|` is to `do`.
 
 It is most often used for handling entire blocks of code.
 
 ```ante
-try fn {h} ->
+try fn _ ->
     failable_function1 ()
     failable_function2 ()
     failable_function3 ()
@@ -2362,6 +2335,18 @@ failable_function2 ()
 failable_function3 ()
 ```
 
+Being sugar for a closure, `do` is also often used on functions like `on_fail`:
+
+```ante
+my_failable_fn 3 + 8
+    ~> on_fail do panic "oh no!"
+
+// Equivalent to:
+on_fail
+    (fn _ -> (my_failable_fn 3) + 8)
+    (fn _ -> panic "oh no!")
+```
+
 #### Applying Handlers with Currying
 
 Since the `~>` operator introduces a new implicit, for patterns where you're threading through
@@ -2370,7 +2355,7 @@ errors when using it. For this reason, generators in Ante are designed to return
 directly instead (essentially manually currying them). This is why you'll see the various stream functions defined as:
 
 ```ante
-map (s: s) {Stream s a} (f: fn a => b) = fn {Emit b} ->
+map (s: s) {Stream s a} (f: fn a => b) = fn () ->
     ...
 
 // And since these functions already return
@@ -2388,33 +2373,33 @@ to an exception that may be resumed. We can create a handler to better
 show this unique control-flow:
 
 ```ante
-ability MyEffect =
-    my_effect: resume fn String -> Unit
+effect MyEffect =
+    my_effect: fn String -> Unit
 
-debug_effect_control_flow (f: MyEffect => a): a =
-    handler h = MyEffect fn msg ->
+debug_effect_control_flow (f: Unit => a can MyEffect): a can Print =
+    handler _ for my_effect msg ->
         // Print the message
-        print "my_effect '${msg}' called!"
+        println "my_effect '${msg}' called!"
         // Resume the computation & finish it entirely (including other calls to my_effect!)
         r = resume 0
         // And only then print `finished`
-        print "resume '${msg}' finished"
+        println "resume '${msg}' finished"
         r
-    in f h
+    in f ()
 
-foo () {MyEffect} =
-    print "foo called!"
+foo () can MyEffect, Print =
+    println "foo called!"
     _ = my_effect "foo a"
     _ = my_effect "foo b"
-    print "foo finished"
+    println "foo finished"
 
-bar () {MyEffect} =
-    print "bar called!"
+bar () can MyEffect, Print =
+    println "bar called!"
     _ = my_effect "bar a"
     _ = my_effect "bar b"
-    print "bar finished"
+    println "bar finished"
 
-example {MyEffect} =
+example can MyEffect, Print =
     foo ()
     bar ()
 ```
@@ -2437,7 +2422,7 @@ resume 'foo a' finished
 ```
 
 Note that we do not get any of the "resume ... finished" print outs until the entire
-computation `f h` finishes. We are continually pushing stack frames to the handler to
+computation `f ()` finishes. We are continually pushing stack frames to the handler to
 finish later until all resumes finish from the last to the first as the stack frames
 are popped.
 
@@ -2454,19 +2439,19 @@ In case the above example was difficult to understand, we'll walk through an exa
 step-by-step how the function may be evaluated. This will be our example:
 
 ```an
-ability Foo =
-    foo: resume fn String -> I32
+effect Foo =
+    foo: fn String -> I32
 
-do_math (x: I32) {Foo}: I32 =
+do_math (x: I32): I32 can Foo =
     a = foo "zero"
     b = foo "bar"
     5 + a + b
 
-count_foo_calls (f: fn Foo => a): I32 =
-    // This handler is in scope for `f h; 0`,
+count_foo_calls (f: fn Unit => a can Foo): I32 =
+    // This handler is in scope for `f (); 0`,
     // so the `resume` call ends right after the `0`
-    handler h = Foo with foo _ -> 1 + resume 0 in
-    f h
+    handler _ for foo _ -> 1 + resume 0 in
+    f ()
     0
 
 do_math 5 ~> count_foo_calls  //=> 2
@@ -2481,7 +2466,7 @@ to see how it expands:
 do_math 5 ~> count_foo_calls
 
 // First we expand and substitute
-handler h = Foo with foo _ -> 1 + resume 0 in
+handler _ for foo _ -> 1 + resume 0 in
     a = foo "zero"
     b = foo "bar"
     5 + a + b
@@ -2489,7 +2474,7 @@ handler h = Foo with foo _ -> 1 + resume 0 in
 
 // Then reduce via our `foo` rule - continuing
 // the computation with the value 0 and adding 1 to the result
-handler h = Foo with foo _ -> 1 + resume 0 in
+handler _ for foo _ -> 1 + resume 0 in
   1 + (
     a = 0
     b = foo "bar"
@@ -2498,7 +2483,7 @@ handler h = Foo with foo _ -> 1 + resume 0 in
   )
 
 // Reduce via foo again for b
-handler h = Foo with foo _ -> 1 + resume 0 in
+handler _ for foo _ -> 1 + resume 0 in
   1 + (1 + (
     a = 0
     b = 0
@@ -2509,14 +2494,14 @@ handler h = Foo with foo _ -> 1 + resume 0 in
 // Now we finish evaluating the function and would
 // normally get a result of 5 - but it is sequenced immediately after,
 // discarding the `5` and returning a `0` instead.
-handler h = Foo with foo _ -> 1 + resume 0 in
+handler _ for foo _ -> 1 + resume 0 in
   1 + (1 + (
     5
     0
   ))
 
 // After sequencing:
-handler h = Foo with foo _ -> 1 + resume 0 in
+handler _ for foo _ -> 1 + resume 0 in
   1 + (1 + 0)
 
 // The handled expression is now done evaluating, so the `handler` is finished.
@@ -2526,50 +2511,6 @@ handler h = Foo with foo _ -> 1 + resume 0 in
 2
 ```
 
-### Comparison to Other Effect Systems
-
-Ante's effects differ from other effect systems where effects
-are tracked in the function's type itself since Ante's are part of a function's
-parameter list. Ante uses capabilities over a more classical effects system because:
-
-- Being function parameters, capabilities can be passed around normally or via implicits
-without requiring a separate mechanism in the language. 
-- Since they are not tracked on a row type on the function, there is no restriction that
-each capability used must have a unique type. Users are free to use two separate
-`State String` effects on the same function, have two separate `Fail` error-channels, etc.
-- Issues with type inference can be resolved more easily by explicitly specifying which
-capability to use when needed.
-- A codebase is free to require certain capabilities (or all of them) to only be explicitly
-passed around. They may wish to do this to more strictly handle security or performance for certain effects.
-- Many languages with effects convert effects into capability-passing anyway
-to compile them more efficiently. Requiring users to write this way in the first place means
-the compiler has less work to do and can thus compile programs faster.
-- If an ability in Ante wishes to permit effects depending on its implementation, with a classical effect
-system, it must abstract over both its environment (to capture other ability values) and the effects
-clause, e.g. `Eq t env eff`. With effects represented as capabilities, an ability must only abstract over
-its environment: `Eq t env`. This `env` parameter is determined by the impl and is hidden to users.
-Hiding an effect parameter the same way could have surprising results to users when their function
-is inferred to have different effects based on the ability value that was chosen (and these
-effects would then change the type of the function they're used within). Similarly,
-generic functions would need to specify the effect parameters of the abilities they use, which complicates
-function signatures often for little benefit.
-
-The main downside of capabilities compared to effects is that you lose the ability to
-specify that a function is completely free of effects - ie. that it is pure. Capabilities in
-Ante may be captured as part of a closure's environment, and while you could require a passed-in
-function have no environment, this would often be unnecessarily limiting. I will argue, however,
-that requiring a function to be completely pure is a similarly limiting design trap.
-
-For example, when we memoize a function, we often want that function to be pure - yet even
-with this constraint there are many effects we may still want to allow. For example,
-interned values may wish to have a `Context` effect so that they can retrieve their
-actual data from their context. If a function like `display` required purity, users would no
-longer be able to retrieve the contexts to properly display interned values (they would
-need to create a wrapper object first). For these reasons, true purity is often a trap.
-It is often better to specify what is desired more directly. For thread-safety for example,
-instead of requiring purity of the spawned function, Ante requires it to be `Send`/`Sync`,
-which effects can implement as long as their captured environment is `Send`/`Sync`.
-
 ### Resuming Multiple Times
 
 In other languages with effects and handlers it may be possible to resume
@@ -2578,7 +2519,7 @@ issues with mutability and efficiency, but may be allowed in the future.
 
 Instead, `resume` in Ante is typed as a `FnOnce` which limits it to only
 being called once. The plus side of this is that it opens up more opportunities
-for implementing effects in an efficient way.
+for implementing effects in an efficient way and limits unexpected interactions.
 
 ### Useful Effects
 
@@ -2595,40 +2536,42 @@ The `emit` effect provides a way to implement generators.
 This function is also often named `yield`.
 
 ```ante
-ability Emit a =
-    emit: resume fn a -> Unit
+effect Emit a =
+    emit: fn a -> Unit
 
-/// Stream the contents of `t` into the `Emit a` capability
+/// Streams the contents of `t` to the emit handler
 ///
 /// Most streams are generator functions, others are containers that supply a
 /// function to emit each element.
-ability Stream t a =
-    stream: fn t (Emit a) -> Unit
+trait Stream t a =
+    stream: fn t -> Unit can Emit a
 
 /// Emit numbers from 0 to `n`, end-exclusive
-iota n = fn {Emit Usz} ->
+/// This returns a function (along with most other functions below) since a
+/// `fn Unit => Unit can Emit a` is itself a stream.
+iota n = fn () ->
     for i in 0usz .. n do emit i
 
 /// Applies `f` to each element from the stream, re-emitting each result.
 /// 
 /// Given `a1, a2, .., aN`, emit `f a1, f a2, .., f aN`
-map (s: s) {Stream s a} (f: fn a => b) = fn {e: Emit b} ->
-    handler h = Emit fn a ->
-        e.emit (f a)
+map (s: s) {Stream s a} (f: fn a => b) = fn () ->
+    handler _ for emit a ->
+        emit (f a)
         resume ()
-    in stream s h
+    in stream s
 
 /// Re-emits only the elements from the original stream for which `f elem` is true
 ///
 /// E.g. `filter (iota 5) (_ > 2)` will emit `3` and `4`.
-filter (s: s) {Stream s a} (f: fn (ref a) => Bool) = fn (e: Emit a) ->
-    handler h = Emit with emit a ->
-        if f (ref a) then e.emit a
+filter (s: s) {Stream s a} (f: fn (ref a) => Bool) = fn () ->
+    handler _ for emit a ->
+        if f (ref a) then emit a
         resume ()
-    in stream s h
+    in stream s
 
 /// Infinite stream example
-fibonacci {Emit U64}: Unit =
+fibonacci (): Unit can Emit U64 =
     var current, next = 0, 1
     while true do
         emit current
@@ -2654,28 +2597,28 @@ We can combine generators with a `Loop` effect that lets us `continue` and `brea
 out of loops.
 
 ```an
-ability Loop =
-    break: resume fn Unit -> Never
-    continue: resume fn Unit -> Never
+effect Loop =
+    break_: fn Unit -> Never
+    continue_: fn Unit -> Never
 
 /// Consumes the given stream, applying `f` to each element, with
 /// an additional Loop handler installed to allow breaking/continuing
 /// within the overall loop.
- for_ (s: s) {Stream s a} (f: fn a Loop => b): Unit =
+ for_ (s: s) {Stream s a} (f: fn a => b can Loop): Unit =
      var broke = false
-     handler h for emit a ->
-         handler l for
+     handler _ for emit a ->
+         handler _ for
          | break_ () -> broke := true
          | continue_ () -> ()
          in
-             f a l
+             f a
              ()
          if not broke then resume ()
      Stream.stream s h
 
 main () =
     // Print `12457`:
-    for (iota 10) fn i {l} ->
+    for (iota 20) fn i ->
         if i %% 3 then continue ()
         if i > 7 then break ()
         print i
@@ -2685,16 +2628,16 @@ Similarly, there is the `EarlyReturn` effect for early-returning. Since this is
 an effect, we can use it even to early return out of multiple closures:
 
 ```ante
-ability EarlyReturn a =
-    early_return: resume fn a -> Never
+effect EarlyReturn a =
+    early_return: fn a -> Never
 
-with_early_return (f: fn (EarlyReturn t) => t): t =
-    handler h = EarlyReturn fn x -> x in
+with_early_return (f: fn Unit => t can EarlyReturn t): t =
+    handler _ for early_return x -> x in
     f h
 
 /// Find the index of the given element in the sequence.
 /// Fails if there is no matching element.
-find_in_seq (seq: Seq t) (target: ref t) {Eq t} {Fail}: Usz =
+find_in_seq (seq: Seq t) (target: ref t) {Eq t}: Usz can Fail =
     with_early_return do
     enumerate seq |> iter fn (i, elem) ->
         if target == elem then
@@ -2703,18 +2646,77 @@ find_in_seq (seq: Seq t) (target: ref t) {Eq t} {Fail}: Usz =
     fail ()
 
 /// If we wanted, we can even refactor `find_in_seq` into multiple functions
-find_in_seq2 (seq: Seq t) (target: ref t) {Eq t} {Fail}: Usz =
+find_in_seq2 (seq: Seq t) (target: ref t) {Eq t}: Usz can Fail =
     with_early_return do
     enumerate seq |> iter (early_return_if_items_match _ target)
     fail ()
 
-early_return_if_items_match (i: Usz, a: ref t) (b: ref t) {Eq t} {EarlyReturn Usz}: Unit =
+early_return_if_items_match (i: Usz, a: ref t) (b: ref t) {Eq t}: Unit can EarlyReturn Usz =
     if a == b then early_return i
 ```
 
 > In future versions of Ante, the `return` keyword may be removed and replaced with
 > the `EarlyReturn` effect entirely. This will only happen once the compiler can guarantee
 > the efficiency of `EarlyReturn` is always equivalent to that of a native `return`.
+
+### Logging and Mocking
+
+Testing logging output can be done in other languages, but this often involves refactoring code to
+be generic over a logging interface which can be mocked. Since effects in Ante must be used
+on any effectful function, and we can already swap out their implementation, we get this
+abstraction for free.
+
+```an
+effect Print =
+    print: fn String -> Unit
+
+effect QueryDatabase =
+    querydb: fn String -> Response
+
+database f can IO =
+    db = Database.connect "..."
+    result = handler _ can querydb msg ->
+        resume (db.send msg)
+    in f ()
+    close db
+    result
+
+ignore_db f =
+    handler _ can querydb _ -> resume Response.Empty in
+    f ()
+
+business_logic (should_query: Bool): Unit can Print, QueryDatabase =
+    if should_query then
+        print "querying..."
+        response = querydb "SELECT column FROM table"
+        ...
+        print "done with db"
+    else
+        print "did not query"
+
+// Print handling is builtin, let ante handle it
+main () can Print, IO =
+    business_logic true ~> database
+
+// Mock our business function. Use a different handler for
+// testing instead of the database handler that will actually
+// connect to the database.
+test () can Fail =
+    handler _ for print msg ->
+        assert (msg == "did not query")
+        resume ()
+    in
+
+    handler _ for query_db _ ->
+        error "Tried to query when should_query = false!"
+        resume ()
+    in
+
+    business_logic false
+
+    logs = business_logic true ~> ignore_db ~> collect_prints
+    assert (not is_empty logs)
+```
 
 #### Others
 
@@ -2727,16 +2729,15 @@ random state, or parsers, among others.
 
 ## Capability-based Security
 
-By requiring capabilities for each effect (and external library) used by a function, Ante has
-capability-based security. Libraries that do not require a `Network` effect for example may
+By requiring each effect used by a function to be documented in its type, Ante has
+capability-based security. Libraries functions without a `can Net` effect for example may
 not access the network. A pure function in a library one day may not be updated to secretly
-log user data in the future without adding a `Network` effect - a breaking change.
+log user data in the future without adding a `Net` effect - a breaking change.
 
-There is a caveat here: since most effect capabilities are passed as implicits, if a function
-already has an implicit `Network` in scope, a once-innocent function like `innocent`:
+There is a caveat here: if a function already has a `can Net` clause, a once-innocent function like `innocent`:
 
 ```ante
-foo (bar: Bar) {Network} =
+foo (bar: Bar) can Net =
     innocent bar
     my_network_fn ()
 
@@ -2744,16 +2745,16 @@ foo (bar: Bar) {Network} =
 innocent (bar: Bar) = ...
 ```
 
-May be updated to maliciously use a `Network` effect and `foo` wouldn't require a source update
-since an implicit was already available:
+May be updated to maliciously use a `Net` effect and `foo` wouldn't require a source update
+since it already is declared as `can Net`:
 
 ```ante
-foo (bar: Bar) {Network} =
+foo (bar: Bar) can Net =
     innocent bar
     my_network_fn ()
 
 // In another library (updated):
-innocent (bar: Bar) {Network} =
+innocent (bar: Bar) can Net =
     send_user_data_to_private_servers bar
 ```
 
@@ -2762,19 +2763,19 @@ is still weaker than other capability-based security models where everything mus
 To mitigate this:
 
 - The package manager can warn when a library is updated to require additional capabilities
-- A particularly cautious programmer can require every capability be passed explicitly in the first place:
+- Ensure untrusted library functions are called in contexts with minimal effects. 
 
 ```ante
-foo (bar: Bar) (net: Network) =
-    innocent bar  // error! no implicit of type `Network` found
-    my_network_fn () {net}
+foo (bar: Bar): Unit =
+    innocent bar  // error! This requires a `Net` effect but `foo` is marked pure
+    my_non_network_fn ()
 
 // In another library:
-innocent (bar: Bar) {Network} =
+innocent (bar: Bar) can Net =
     send_user_data_to_private_servers bar
 ```
 
-Even with this downside however, Ante remains significantly more secure than existing programming
+Even with this downside however, Ante remains more secure than existing programming
 languages where all effects are untracked.
 
 ---

@@ -1,5 +1,5 @@
 weight: 2
 name: "Secure"
 icon: "fa fa-lock"
-description: "Ante has capability-based security. If you don't pass an IO object to a function, it can't use it. It cannot even use external linked-in code without being allowed to do so."
+description: "Ante has capability-based security. If a function does not declare it `can IO`, then it cannot use IO. It cannot even use external linked-in code without being allowed to do so."
 link: "docs/language/#capability-based-security"

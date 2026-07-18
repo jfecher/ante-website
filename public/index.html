@@ -289,8 +289,8 @@
                                 <h1>Traits via Implicits</h1>
                                 
                                     <div class="highlight-textalign-left">
-                                        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Abilities in Ante are just sugar for types holding closure values</span>
-<span class="k">ability</span> <span class="kt">Add</span> <span class="n">t</span> <span class="ow">=</span>
+                                        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Traits in Ante are just sugar for types holding function values</span>
+<span class="k">trait</span> <span class="kt">Add</span> <span class="n">t</span> <span class="ow">=</span>
     <span class="p">(</span><span class="o">+</span><span class="p">)</span><span class="o">:</span> <span class="k">fn</span> <span class="n">t</span> <span class="n">t</span> <span class="ow">-&gt;</span> <span class="n">t</span>
 
 <span class="c1">// Since they are just values, we can create them in normal constructor expressions</span>
@@ -298,7 +298,7 @@
 <span class="k">implicit</span> <span class="n">ord_i32_descending</span> <span class="ow">=</span> <span class="kt">Ord</span> <span class="kt">I32</span> <span class="k">with</span>
     <span class="n">cmp</span> <span class="n">a</span> <span class="n">b</span> <span class="ow">=</span> <span class="kt">Ordering</span><span class="o">.</span><span class="n">from_int</span> <span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span>
 
-<span class="c1">// Ability values can be defined locally and closures can capture data,</span>
+<span class="c1">// Trait values can be defined locally and closures can capture data,</span>
 <span class="c1">// making implementing them on interned types much easier</span>
 <span class="k">implicit</span> <span class="n">display_interned</span> <span class="p">(</span><span class="n">ctx</span><span class="o">:</span> <span class="kt">InternCtx</span><span class="p">)</span> <span class="ow">=</span> <span class="kt">Display</span> <span class="kt">MyInternedType</span> <span class="k">with</span>
     <span class="n">display</span> <span class="n">interned</span> <span class="ow">=</span>
@@ -323,19 +323,19 @@
                                 <h1>Effects</h1>
                                 
                                     <div class="highlight-textalign-left">
-                                        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Effects are just abilities with `resume` functions, enabling effect handlers</span>
-<span class="k">ability</span> <span class="kt">Throw</span> <span class="n">err</span> <span class="ow">=</span>
-    <span class="n">throw</span><span class="o">:</span> <span class="k">resume</span> <span class="k">fn</span> <span class="n">err</span> <span class="ow">-&gt;</span> <span class="kt">Never</span>
+                                        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Throw</span> <span class="n">err</span> <span class="ow">=</span>
+    <span class="n">throw</span><span class="o">:</span> <span class="k">fn</span> <span class="n">err</span> <span class="ow">-&gt;</span> <span class="kt">Never</span>
 
-<span class="c1">// And capabilities are just ability values, which are often passed as implicits</span>
-<span class="nf">signup</span> <span class="p">(</span><span class="n">name</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">(</span><span class="n">email</span><span class="o">:</span> <span class="kt">Email</span><span class="p">)</span> <span class="p">{</span><span class="n">t</span><span class="o">:</span> <span class="kt">Throw</span> <span class="kt">ValidationErr</span><span class="p">}</span> <span class="p">{</span><span class="kt">Throw</span> <span class="kt">IOErr</span><span class="p">}</span> <span class="p">{</span><span class="kt">IO</span><span class="p">}</span><span class="o">:</span> <span class="kt">User</span> <span class="ow">=</span>
-    <span class="c1">// Unlike monads, capabilities are trivial to combine: they are just implicit parameters</span>
-    <span class="n">cfg</span> <span class="ow">=</span> <span class="n">read_cfg_from_disk</span> <span class="p">()</span> <span class="c1">// Requires `Throw IOErr` and `IO`</span>
-    <span class="c1">// And they can be passed explicitly if desired (or required)</span>
-    <span class="n">validate</span> <span class="n">name</span> <span class="n">email</span> <span class="p">{</span><span class="n">t</span><span class="p">}</span>
+<span class="c1">// Functions must declare which effects they use. E.g. The type system</span>
+<span class="c1">// prevents a function without the Net effect from accessing the network</span>
+<span class="nf">signup</span> <span class="p">(</span><span class="n">name</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">(</span><span class="n">email</span><span class="o">:</span> <span class="kt">Email</span><span class="p">)</span><span class="o">:</span> <span class="kt">User</span> <span class="k">can</span> <span class="kt">IO</span><span class="p">,</span> <span class="kt">Throw</span> <span class="kt">ValidationErr</span><span class="p">,</span> <span class="kt">Throw</span> <span class="kt">IOErr</span> <span class="ow">=</span>
+    <span class="c1">// Unlike monads, effects are trivial to combine.</span>
+    <span class="c1">// signup throws multiple error kinds but we don&#39;t need an error union to combine them.</span>
+    <span class="n">cfg</span> <span class="ow">=</span> <span class="n">read_cfg_from_disk</span> <span class="p">()</span> <span class="c1">// can IO, Throw IOErr</span>
+    <span class="n">validate</span> <span class="n">name</span> <span class="n">email</span>  <span class="c1">// can Throw ValidationErr</span>
 
 <span class="c1">// No function coloring problem: map_vec trivially works with exceptions, async, etc.</span>
-<span class="c1">// Any capabilities required by `f` are captured in its closure</span>
+<span class="c1">// Any effects required by `f` are reflected in its type and in the effects of `map_vec`&#39;s callsite.</span>
 <span class="nf">map_vec</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="n">t</span> <span class="ow">=&gt;</span> <span class="n">u</span><span class="p">)</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">u</span> <span class="ow">=</span>
     <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span> <span class="p">(</span><span class="n">map</span> <span class="n">v</span> <span class="n">f</span><span class="p">)</span>
 </code></pre></div>
@@ -387,16 +387,16 @@
                                 
                                     <div class="highlight-textalign-left">
                                         <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Generators are implemented via effects</span>
-<span class="k">ability</span> <span class="kt">Emit</span> <span class="n">elem</span> <span class="ow">=</span>
-    <span class="n">emit</span><span class="o">:</span> <span class="k">resume</span> <span class="k">fn</span> <span class="n">elem</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
+<span class="k">effect</span> <span class="kt">Emit</span> <span class="n">elem</span> <span class="ow">=</span>
+    <span class="n">emit</span><span class="o">:</span> <span class="k">fn</span> <span class="n">elem</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
 
 <span class="c1">// One advantage of generators is that they are easier to write than iterators.</span>
-<span class="c1">// We&#39;ll supply the `Emit a` value but the caller needs to provide a capability for `Emit b`</span>
-<span class="nf">map</span> <span class="p">(</span><span class="n">stream</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="kt">Emit</span> <span class="n">a</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="n">a</span> <span class="ow">=&gt;</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span><span class="kt">Emit</span> <span class="n">b</span><span class="p">}</span> <span class="ow">=</span>
-    <span class="k">handler</span> <span class="n">emit_a</span> <span class="ow">=</span> <span class="kt">Emit</span> <span class="k">fn</span> <span class="n">elem</span> <span class="ow">-&gt;</span>
+<span class="c1">// Our input stream can `Emit a` and `map` can `Emit b`</span>
+<span class="nf">map</span> <span class="p">(</span><span class="n">stream</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">=&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="n">a</span> <span class="ow">=&gt;</span> <span class="n">b</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="n">b</span> <span class="ow">=</span>
+    <span class="k">handler</span> <span class="n">emit_a</span> <span class="k">for</span> <span class="n">emit</span> <span class="n">elem</span> <span class="ow">-&gt;</span>
         <span class="n">emit</span> <span class="p">(</span><span class="n">f</span> <span class="n">elem</span><span class="p">)</span>
         <span class="k">resume</span> <span class="p">()</span>
-    <span class="k">in</span> <span class="n">stream</span> <span class="n">emit_a</span>
+    <span class="k">in</span> <span class="n">stream</span> <span class="p">()</span>
 
 <span class="c1">// From: `a,b,c\n1,2,3\n4,5,6`</span>
 <span class="c1">// Return: `[[&#34;1&#34;, &#34;2&#34;, &#34;3&#34;], [&#34;4&#34;, &#34;5&#34;, &#34;6&#34;]]`</span>
@@ -468,7 +468,7 @@
                             </div>
                         </a>
                         <h3>Secure</h3>
-                        <p>Ante has capability-based security. If you don&rsquo;t pass an IO object to a function, it can&rsquo;t use it. It cannot even use external linked-in code without being allowed to do so.</p>
+                        <p>Ante has capability-based security. If a function does not declare it <code>can IO</code>, then it cannot use IO. It cannot even use external linked-in code without being allowed to do so.</p>
                     </div>
                 </div>
 		
@@ -476,13 +476,13 @@
 		
 				<div class="col-md-4">
                     <div class="box-simple">
-                        <a href="docs/language/#abilities">
+                        <a href="docs/language/#effects">
                             <div class="icon">
                                 <i class="fa fa-cube"></i>
                             </div>
                         </a>
-                        <h3>Abilities</h3>
-                        <p>Abilities combine traits and an effect system and provide great code reuse. They are easier to use when compared to monads and provide clearer type errors when things are not as expected.</p>
+                        <h3>Effects</h3>
+                        <p>An effect system provide&rsquo;s great code reuse and reduces spooky action at a distance. Effects are easier to use when compared to monads and provide clearer type errors when things are not as expected.</p>
                     </div>
                 </div>
 		
@@ -530,7 +530,7 @@
                             </div>
                         </a>
                         <h3>Easier Lifetime Variables</h3>
-                        <p>Instead of abstract or numbered names, Ante&rsquo;s lifetime variables are named after the variable(s) they borrow, making error messages more clear</p>
+                        <p>Instead of abstract or numbered names, Ante&rsquo;s lifetime variables are based on places which are named after the variable(s) they borrow, making error messages more clear</p>
                     </div>
                 </div>
 		

@@ -28,15 +28,16 @@ Yes.
     languages so that developers have more time to spend on optimizations and bug fixes.
 
 - Inheriting Rust's model, Ante is one of the few languages with **stronger thread safety**.
-- **Abilities** in Ante solve the function coloring problem by enabling higher-order functions like `map` to work with async,
+- **Effects** in Ante solve the function coloring problem by enabling higher-order functions like `map` to work with async,
   exceptions, generators, etc. with no code duplication.
-  - Abilities being a single language concept combining traits/interfaces and effects mean there are fewer questions on how
-    something should be modeled.
-- **Capabilities** increase the security of applications. If a pure library function is updated to secretly record user data,
-  it must accept a `Network` or `IO` object as an argument, often creating a new error at its call site.
+  - Effects are part of a function's type, documenting the side-effects that function may perform.
+  - Effects perform a similar role to monads but are much easier to use in practice, requiring no special combinators to use multiple of them,
+    nor do they require wrapping values in wrapper types or learning what `>>=`/bind is.
+  - Effects increase the security of applications. If a pure library function is updated to secretly record user data,
+    it must declare a `Net` or `IO` effect, making this change more difficult to hide.
 - **A focus on clean code**: Ante is designed with a strong focus on code being enjoyable to write and easy to read. Ante code
   is often free of excess punctuation and clutter. More terse code makes it easier to find bugs by reducing the number of places
-  they can hide. Implicits in Ante strike a balance between abilities being always passed implicitly like traits/implicits are
+  they can hide. Implicits in Ante strike a balance between traits being always passed implicitly like traits/implicits are
   in other languages, and being able to be passed explicitly when desired.
 - **Flexibility**: Ante acknowledges there are practical tradeoffs between different paradigms. For example, being a low-level
   language, mutation is a given, but at the same time Ante provides alternatives for most scenarios so that while unsafe tools
@@ -53,8 +54,8 @@ and create issues [on github](https://github.com/jfecher/ante) for any bugs, con
 ## Have you considered an ML-like module system?
 
 I have - although I currently don't see it providing enough value to merit its inclusion. This could change in the future
-if I hear a strong enough argument for it over the status quo. Ante's abilities can already enable similar
-code since Ante does support existential types already, though types being unboxed makes type erasure when ascribing to
+if I hear a strong enough argument for it over the status quo. Ante's traits can already enable similar
+code since Ante does support existential types already, though values being unboxed makes type erasure when ascribing to
 a module type more difficult.
 
 ---
@@ -76,17 +77,3 @@ immediately, they can start with high-level code and slowly work their ways down
 This is what Ante provides with its `shared` types to opt-out of ownership semantics.
 
 Read more about this in the post [A Vision for Future Low-level Languages](/blog/vision)
-
----
-## Isn't reasoning about pure functions the entire point of an effect system?
-
-This is a question you may ask after reading the [comparison to other effect systems](/docs/language/#comparison-to-other-effect-systems)
-portion of Ante's documentation. It is a very reasonable question to ask - losing the ability to _easily_ reason
-that a function is completely pure through the absence of effects in its type is the main downside to Ante's system
-where effects are passed through parameters instead. I say "easily" because all is not lost. The compiler can
-define abilities such as `Send`/`Sync` for reasoning about similar concepts like thread-safety. In general, abilities
-can still be used to restrict inputs in most cases. For example, a memoization function may wish to accept only pure functions.
-Since the types of each effect are still on the functions themselves (or captured in their environment), it would still be
-possible to define a `Pure` ability which is only implemented for functions not using any effects. So although we lose
-one clean way of expressing this, there is still a decent workaround, and Ante keeps the other advantages its parameter-based
-effect system has mentioned in the link above.

@@ -2,16 +2,16 @@ weight: 5
 title: "Generators"
 code: |
     // Generators are implemented via effects
-    ability Emit elem =
-        emit: resume fn elem -> Unit
+    effect Emit elem =
+        emit: fn elem -> Unit
 
     // One advantage of generators is that they are easier to write than iterators.
-    // We'll supply the `Emit a` value but the caller needs to provide a capability for `Emit b`
-    map (stream: fn (Emit a) -> Unit) (f: fn a => b) {Emit b} =
-        handler emit_a = Emit fn elem ->
+    // Our input stream can `Emit a` and `map` can `Emit b`
+    map (stream: fn Unit => Unit can Emit a) (f: fn a => b): Unit can Emit b =
+        handler emit_a for emit elem ->
             emit (f elem)
             resume ()
-        in stream emit_a
+        in stream ()
 
     // From: `a,b,c\n1,2,3\n4,5,6`
     // Return: `[["1", "2", "3"], ["4", "5", "6"]]`
