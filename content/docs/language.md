@@ -601,7 +601,7 @@ With tuples we must [create a different impl for every possible tuple size](http
 with pairs on the other hand the simple implementation works for all sizes:
 
 ```ante
-cast_pair_string = impl Cast (Pair a b) String via
+impl cast_pair_string: Cast (Pair a b) String with
     cast (a, b) = "$a, $b"
 ```
 
