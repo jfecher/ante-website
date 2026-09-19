@@ -203,3 +203,32 @@ td {
 th {
     white-space: normal;
 }
+
+/* Collapsible sections of page content and their mirror in the sidebar.
+ * This prevents bootstrap from changing summary to display: block, which removes the disclosure triangle.
+ */
+details > summary {
+    display: list-item;
+    cursor: pointer;
+    color: var(--primary-accent);
+    margin: 0.5em 0;
+}
+
+details > summary:hover,
+details > summary:focus {
+    color: var(--link-focus);
+    text-decoration: underline;
+}
+
+.toc-details > summary {
+    padding-left: 64px;
+}
+
+.sidebar-pages {
+    list-style: none;
+    padding-left: 1em;
+}
+
+.sidebar-pages > li.current > a {
+    font-weight: bold;
+}

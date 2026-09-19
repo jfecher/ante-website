@@ -1,0 +1,1662 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="robots" content="all,follow">
+<meta name="googlebot" content="index,follow,snippet,archive">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Std.C</title>
+<meta name="author" content="Jake Fecher" />
+
+
+
+
+<meta name="keywords" content="ante, programming, language, antelang, lang">
+
+
+<meta name="description" content="">
+
+<meta name="generator" content="Hugo 0.89.0-DEV" />
+
+
+<link href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800' rel='stylesheet' type='text/css'>
+
+
+<link rel="stylesheet" href="//use.fontawesome.com/releases/v5.11.2/css/all.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+
+<link href="/css/animate.css" rel="stylesheet">
+
+
+
+  <link href="/css/style.red.css" rel="stylesheet" id="theme-stylesheet">
+
+
+
+<link href="/css/custom.css" rel="stylesheet">
+
+
+
+  <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+
+
+<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon" />
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
+
+
+<link href="/css/owl.carousel.css" rel="stylesheet">
+<link href="/css/owl.theme.css" rel="stylesheet">
+
+
+<link rel="alternate" href="https://antelang.org/index.xml" type="application/rss+xml" title="Ante">
+
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+
+<meta name="twitter:title" content="Std.C">
+
+<meta name="twitter:description" content="">
+
+
+      <meta charset="utf-8">
+  <meta name="robots" content="all,follow">
+  <meta name="googlebot" content="index,follow,snippet,archive">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Std.C</title>
+  <meta name="author" content="" />
+
+  <meta name="keywords" content="ante, programming, language, antelang, lang">	
+  <meta name="description" content="For exploring algebraic effects, safe shared mutability, and other novel features">
+
+  <meta name="generator" content="Hugo 0.89.0-DEV" />
+
+  <link href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800' rel='stylesheet' type='text/css'>
+
+  
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+  
+  <link href="https://antelang.org/css/animate.css" rel="stylesheet">
+
+  
+  
+    <link href="https://antelang.org/css/style.red.css" rel="stylesheet" id="theme-stylesheet">
+  
+
+
+  
+  <link href="https://antelang.org/css/custom.css" rel="stylesheet">
+ 
+  
+  <link rel="stylesheet" href="https://antelang.org/css/syntax.css">
+
+  
+  
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  
+
+  
+  <link rel="shortcut icon" href="https://antelang.org/img/favicon.ico" type="image/x-icon" />
+  <link rel="apple-touch-icon" href="https://antelang.org/img/apple-touch-icon.png" />
+  
+
+  <link href="https://antelang.org/css/owl.carousel.css" rel="stylesheet">
+  <link href="https://antelang.org/css/owl.theme.css" rel="stylesheet">
+
+  <link rel="alternate" href="https://antelang.org/index.xml" type="application/rss+xml" title="Ante">
+
+  
+  <meta property="og:title" content="Std.C" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://antelang.org/docs/stdlib/c//" />
+  <meta property="og:image" content="" />
+
+  </head>
+
+  <body>
+    <div id="all">
+        
+
+        
+
+    <div class="navbar navbar-default yamm" role="navigation" id="navbar">
+
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand home" href="https://antelang.org/">
+                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="Std.C" class="hidden-xs hidden-sm">
+                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="Std.C" class="visible-xs visible-sm">
+                    <span class="sr-only">Std.C - go to homepage</span>
+                </a>
+                
+<div class="navbar-buttons">
+        <div class="navbar-collapse collapse" id="navigation">
+            <ul class="nav navbar-nav navbar-right">
+            
+            <li class="dropdown">
+                <a href="https://antelang.org//docs/language">Tour</a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//docs/stdlib">Stdlib</a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//docs/ideas">Ideas</a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//docs/roadmap">Roadmap</a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//blog">Blog</a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//docs/faq">FAQ</a>
+            </li>
+
+            <li class="dropdown">
+                <a href="https://github.com/jfecher/ante"><i class="fa fa-15x fa-github"></i></a>
+            </li>
+            <li class="dropdown">
+                <a href="https://reddit.com/r/ante"><i class="fab fa-15x fa-reddit"></i></a>
+            </li>
+            <li class="dropdown">
+                <a href="https://discord.gg/NPJncGBAws"><i class="fab fa-15x fa-discord"></i></a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//index.xml"><i class="fa fa-15x fa-rss"></i></a>
+            </li>
+
+            </ul>
+        </div>
+        <button type="button" class="navbar-toggle btn-template-main" onclick="document.getElementById('navigation').classList.toggle('collapse')">
+    <span class="sr-only">Toggle Navigation</span>
+        <i class="fa fa-align-justify"></i>
+    </button>
+</div>
+
+            </div>
+            
+
+            
+            
+
+            <div class="collapse clearfix" id="search">
+
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search">
+                        <span class="input-group-btn">
+
+                    <button type="submit" class="btn btn-template-main"><i class="fa fa-search"></i></button>
+
+                </span>
+                    </div>
+                </form>
+
+            </div>
+            
+
+        </div>
+    </div>
+    
+
+
+
+
+
+        <div id="heading-breadcrumbs">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Std.C</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+        <div id="content">
+            <div class="container" id="post-container">
+                <div class="row">
+                    
+
+                    <div class="col-md-3">
+                        
+                        <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>Contents</h1>
+    </div>
+
+    
+    
+    
+    
+    <ul class="sidebar-pages">
+        
+        
+        <li class="current">
+            <a href="/docs/stdlib/c/">Std.C</a>
+            
+
+
+<div class="table-of-contents toc bd-callout">
+    
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#types">
+                    <li>Types</li>
+                </a>
+                
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#string">
+                    <li>String</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                    <ul class="toc-h3">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#stringnew">
+                    <li>String.new</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#voidptr">
+                    <li>VoidPtr</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#file">
+                    <li>File</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#filepos">
+                    <li>FilePos</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#clock">
+                    <li>Clock</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#functions">
+                    <li>Functions</li>
+                </a>
+                
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#puts">
+                    <li>puts</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#putchar">
+                    <li>putchar</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#getchar">
+                    <li>getchar</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#exit">
+                    <li>exit</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#system">
+                    <li>system</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#strlen">
+                    <li>strlen</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#malloc">
+                    <li>malloc</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#calloc">
+                    <li>calloc</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#realloc">
+                    <li>realloc</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#free">
+                    <li>free</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#memcpy">
+                    <li>memcpy</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#memcmp">
+                    <li>memcmp</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#fopen">
+                    <li>fopen</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#fclose">
+                    <li>fclose</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#fputs">
+                    <li>fputs</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#fputc">
+                    <li>fputc</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#fwrite">
+                    <li>fwrite</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#fgetc">
+                    <li>fgetc</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#fgets">
+                    <li>fgets</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#ungetc">
+                    <li>ungetc</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#fgetpos">
+                    <li>fgetpos</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#ftell">
+                    <li>ftell</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#fsetpos">
+                    <li>fsetpos</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#fseek">
+                    <li>fseek</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#feof">
+                    <li>feof</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#ferror">
+                    <li>ferror</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#clock_gettime">
+                    <li>clock_gettime</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#nanosleep">
+                    <li>nanosleep</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#implicits">
+                    <li>Implicits</li>
+                </a>
+                
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#copy_cstring">
+                    <li>copy_cstring</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/c/#copy_file">
+                    <li>copy_file</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+</div>
+
+
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/char/">Std.Char</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/earlyreturn/">Std.EarlyReturn</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/env/">Std.Env</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/fail/">Std.Fail</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/hash/">Std.Hash</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/hashmap/">Std.HashMap</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/hashset/">Std.HashSet</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/io/">Std.IO</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/math/">Std.Math</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/prelude/">Std.Prelude</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/rc/">Std.Rc</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/seq/">Std.Seq</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/slice/">Std.Slice</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/stream/">Std.Stream</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/string/">Std.String</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/sync/">Std.Sync</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/throw/">Std.Throw</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/time/">Std.Time</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/vec/">Std.Vec</a>
+            
+        </li>
+        
+    </ul>
+    
+
+    
+  </div>
+</div>
+
+                        
+                    </div>
+                    
+
+                    <div class="col-md-9" id="blog-post">
+
+                        
+
+                        <div id="post-content">
+                          <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Std</span><span class="o">.</span><span class="kt">C</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an">Source</a></p>
+<hr>
+<h1 id="types">Types</h1>
+<hr>
+<h2 id="string">String</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">String</span> <span class="ow">=</span>
+    <span class="n">ptr</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="kt">Char</span>
+</code></pre></div><p>A C string is a pointer to a null-terminated character array.
+This is meant to be used qualified as <code>C.String</code></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L9">source</a></p>
+<hr>
+<h3 id="stringnew">String.new</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">String</span><span class="o">.</span><span class="n">new</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">Std</span><span class="o">.</span><span class="kt">Prelude</span><span class="o">.</span><span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">String</span>
+</code></pre></div><p>Copy a prelude string, append a &lsquo;\0&rsquo;, and return it as a new C.String</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L14">source</a></p>
+<hr>
+<h2 id="voidptr">VoidPtr</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">VoidPtr</span> <span class="ow">=</span> <span class="kt">Ptr</span> <span class="kt">U8</span>
+</code></pre></div><p>A convenience type for translating C APIs</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L18">source</a></p>
+<hr>
+<h2 id="file">File</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">File</span> <span class="ow">=</span>
+    <span class="n">f</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="kt">Unit</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L57">source</a></p>
+<hr>
+<h2 id="filepos">FilePos</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">FilePos</span> <span class="ow">=</span>
+    <span class="n">f</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="kt">Unit</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L58">source</a></p>
+<hr>
+<h2 id="clock">Clock</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Clock</span> <span class="ow">=</span>
+    <span class="n">sec</span><span class="o">:</span> <span class="kt">I64</span>
+    <span class="n">nsec</span><span class="o">:</span> <span class="kt">I64</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L83">source</a></p>
+<hr>
+<h1 id="functions">Functions</h1>
+<hr>
+<h2 id="puts">puts</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">puts</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">String</span> <span class="ow">-&gt;</span> <span class="kt">I32</span> <span class="k">can</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L22">source</a></p>
+<hr>
+<h2 id="putchar">putchar</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">putchar</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Char</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L23">source</a></p>
+<hr>
+<h2 id="getchar">getchar</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">getchar</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">I32</span> <span class="k">can</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L24">source</a></p>
+<hr>
+<h2 id="exit">exit</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">exit</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">I32</span> <span class="ow">-&gt;</span> <span class="kt">Never</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L25">source</a></p>
+<hr>
+<h2 id="system">system</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">system</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">String</span> <span class="ow">-&gt;</span> <span class="kt">I32</span> <span class="k">can</span> <span class="kt">IO</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L26">source</a></p>
+<hr>
+<h2 id="strlen">strlen</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">strlen</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">String</span> <span class="ow">-&gt;</span> <span class="kt">Usz</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L27">source</a></p>
+<hr>
+<h2 id="malloc">malloc</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">malloc</span> <span class="p">(</span><span class="n">size</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="n">a</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L38">source</a></p>
+<hr>
+<h2 id="calloc">calloc</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">calloc</span> <span class="p">(</span><span class="n">items</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="p">(</span><span class="n">size</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="n">a</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L41">source</a></p>
+<hr>
+<h2 id="realloc">realloc</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">realloc</span> <span class="p">(</span><span class="n">ptr</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">size</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="n">a</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L44">source</a></p>
+<hr>
+<h2 id="free">free</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">free</span> <span class="p">(</span><span class="n">ptr</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="n">a</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L47">source</a></p>
+<hr>
+<h2 id="memcpy">memcpy</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">memcpy</span> <span class="p">(</span><span class="n">dest</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">src</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="n">b</span><span class="p">)</span> <span class="p">(</span><span class="n">count</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="n">a</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L50">source</a></p>
+<hr>
+<h2 id="memcmp">memcmp</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">memcmp</span> <span class="p">(</span><span class="n">lhs</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">rhs</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="n">b</span><span class="p">)</span> <span class="p">(</span><span class="n">size</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="kt">I32</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L53">source</a></p>
+<hr>
+<h2 id="fopen">fopen</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">fopen</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">String</span> <span class="kt">String</span> <span class="ow">-&gt;</span> <span class="kt">File</span> <span class="k">can</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L63">source</a></p>
+<hr>
+<h2 id="fclose">fclose</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">fclose</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">File</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L64">source</a></p>
+<hr>
+<h2 id="fputs">fputs</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">fputs</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">String</span> <span class="kt">File</span> <span class="ow">-&gt;</span> <span class="kt">I32</span> <span class="k">can</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L66">source</a></p>
+<hr>
+<h2 id="fputc">fputc</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">fputc</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">I32</span> <span class="kt">File</span> <span class="ow">-&gt;</span> <span class="kt">I32</span> <span class="k">can</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L67">source</a></p>
+<hr>
+<h2 id="fwrite">fwrite</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">fwrite</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">VoidPtr</span> <span class="kt">Usz</span> <span class="kt">Usz</span> <span class="kt">File</span> <span class="ow">-&gt;</span> <span class="kt">Usz</span> <span class="k">can</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L68">source</a></p>
+<hr>
+<h2 id="fgetc">fgetc</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">fgetc</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">File</span> <span class="ow">-&gt;</span> <span class="kt">I32</span> <span class="k">can</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L70">source</a></p>
+<hr>
+<h2 id="fgets">fgets</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">fgets</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">String</span> <span class="kt">I32</span> <span class="kt">File</span> <span class="ow">-&gt;</span> <span class="kt">String</span> <span class="k">can</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L71">source</a></p>
+<hr>
+<h2 id="ungetc">ungetc</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">ungetc</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">I32</span> <span class="kt">File</span> <span class="ow">-&gt;</span> <span class="kt">I32</span> <span class="k">can</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L72">source</a></p>
+<hr>
+<h2 id="fgetpos">fgetpos</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">fgetpos</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">File</span> <span class="kt">FilePos</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L74">source</a></p>
+<hr>
+<h2 id="ftell">ftell</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">ftell</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">File</span> <span class="ow">-&gt;</span> <span class="kt">I32</span> <span class="k">can</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L75">source</a></p>
+<hr>
+<h2 id="fsetpos">fsetpos</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">fsetpos</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">File</span> <span class="kt">FilePos</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L76">source</a></p>
+<hr>
+<h2 id="fseek">fseek</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">fseek</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">File</span> <span class="kt">I32</span> <span class="kt">I32</span> <span class="ow">-&gt;</span> <span class="kt">I32</span> <span class="k">can</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L77">source</a></p>
+<hr>
+<h2 id="feof">feof</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">feof</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">File</span> <span class="ow">-&gt;</span> <span class="kt">I32</span> <span class="k">can</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L79">source</a></p>
+<hr>
+<h2 id="ferror">ferror</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">ferror</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">File</span> <span class="ow">-&gt;</span> <span class="kt">I32</span> <span class="k">can</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L80">source</a></p>
+<hr>
+<h2 id="clock_gettime">clock_gettime</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">clock_gettime</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">I32</span> <span class="p">(</span><span class="kt">Ptr</span> <span class="kt">Clock</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">I32</span> <span class="k">can</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L88">source</a></p>
+<hr>
+<h2 id="nanosleep">nanosleep</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">nanosleep</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="kt">Ptr</span> <span class="kt">Clock</span><span class="p">)</span> <span class="p">(</span><span class="kt">Ptr</span> <span class="kt">Clock</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">I32</span> <span class="k">can</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L89">source</a></p>
+<hr>
+<h1 id="implicits">Implicits</h1>
+<hr>
+<details>
+<summary>Show Implicits</summary>
+<h2 id="copy_cstring">copy_cstring</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">copy_cstring</span><span class="o">:</span> <span class="kt">Copy</span> <span class="kt">String</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L10">source</a></p>
+<hr>
+<h2 id="copy_file">copy_file</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">copy_file</span><span class="o">:</span> <span class="kt">Copy</span> <span class="kt">File</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L60">source</a></p>
+</details>
+
+                        </div>
+                        
+                        
+
+                    </div>
+                    
+
+                    
+
+                    
+                    <div class="col-md-3 right-float"/>
+
+                    
+
+                </div>
+                
+
+            </div>
+            
+        </div>
+        
+
+        <footer id="footer">
+    <div class="container">
+
+        
+
+        <div class="col-md-4 col-sm-6">
+
+            
+            <h4>Recent posts</h4>
+
+            <div class="blog-entries">
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="https://antelang.org/blog/vision/">
+                          
+                            <img src="/img/banners/anteater3.jpg" class="img-responsive" alt="A Vision for Future Low-Level Languages">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/blog/vision/">A Vision for Future Low-Level Languages</a></h5>
+                    </div>
+                </div>
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="https://antelang.org/blog/stable_mutable_refs/">
+                          
+                            <img src="/img/banners/antelope_flowers_cropped.jpg" class="img-responsive" alt="Stable, Mutable References">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/blog/stable_mutable_refs/">Stable, Mutable References</a></h5>
+                    </div>
+                </div>
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="https://antelang.org/blog/why_effects/">
+                          
+                            <img src="/img/banners/lanterns.jpg" class="img-responsive" alt="Why Algebraic Effects?">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/blog/why_effects/">Why Algebraic Effects?</a></h5>
+                    </div>
+                </div>
+                
+            </div>
+
+            <hr class="hidden-md hidden-lg">
+            
+
+        </div>
+        
+
+        
+
+    </div>
+    
+</footer>
+
+
+
+
+
+
+
+<div id="copyright">
+    <div class="container">
+        <div class="col-md-12">
+            
+            <p class="pull-right">
+              Template by <a href="https://bootstrapious.com/p/universal-business-e-commerce-template">Bootstrapious</a>.
+              
+
+              Ported to Hugo by <a href="https://github.com/devcows/hugo-universal-theme">DevCows</a>.
+            </p>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+    </div>
+    
+
+    
+<script src="//code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Counter-Up/1.0/jquery.counterup.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-parallax/1.1.3/jquery-parallax.js"></script>
+
+<script src="https://antelang.org/js/front.js"></script>
+<script src="https://antelang.org/js/details-toc.js"></script>
+
+
+<script src="https://antelang.org/js/owl.carousel.min.js"></script>
+
+
+  </body>
+</html>

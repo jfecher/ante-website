@@ -182,6 +182,9 @@
                 <a href="https://antelang.org//docs/language">Tour</a>
             </li>
             <li class="dropdown">
+                <a href="https://antelang.org//docs/stdlib">Stdlib</a>
+            </li>
+            <li class="dropdown">
                 <a href="https://antelang.org//docs/ideas">Ideas</a>
             </li>
             <li class="dropdown">
@@ -272,313 +275,317 @@
     
     
     
-    <div class="table-of-contents toc bd-callout">
-        
-        
-            
-            
-                
-                    
-                    
-                    
-                        <ul class="toc-h1">
-                    
-                    
-                    
-                    
-                    <a href="/blog/stable_mutable_refs/#introduction">
-                        <li>Introduction</li>
-                    </a>
-                    
-                    
-                        </ul>
-                    
-                
-            
-        
-            
-            
-                
-                    
-                    
-                    
-                        <ul class="toc-h1">
-                    
-                    
-                    
-                    
-                    <a href="/blog/stable_mutable_refs/#stable-t">
-                        <li>!stable t</li>
-                    </a>
-                    
-                    
-                        </ul>
-                    
-                
-            
-        
-            
-            
-                
-                    
-                    
-                    
-                        <ul class="toc-h1">
-                    
-                    
-                    
-                    
-                    <a href="/blog/stable_mutable_refs/#get-to-the-point">
-                        <li>Get to the Point</li>
-                    </a>
-                    
-                    
-                        </ul>
-                    
-                
-            
-        
-            
-            
-                
-                    
-                    
-                    
-                        <ul class="toc-h1">
-                    
-                    
-                    
-                    
-                    <a href="/blog/stable_mutable_refs/#interior-mutability">
-                        <li>Interior Mutability</li>
-                    </a>
-                    
-                    
-                        </ul>
-                    
-                
-            
-        
-            
-            
-                
-                    
-                    
-                    
-                        <ul class="toc-h1">
-                    
-                        <ul class="toc-h2">
-                    
-                    
-                    
-                    
-                    <a href="/blog/stable_mutable_refs/#another-immutable-reference">
-                        <li>Another Immutable Reference?</li>
-                    </a>
-                    
-                    
-                        </ul>
-                    
-                        </ul>
-                    
-                
-            
-        
-            
-            
-                
-                    
-                    
-                    
-                        <ul class="toc-h1">
-                    
-                        <ul class="toc-h2">
-                    
-                    
-                    
-                    
-                    <a href="/blog/stable_mutable_refs/#allegations-against-stable-t">
-                        <li>Allegations against !stable t</li>
-                    </a>
-                    
-                    
-                        </ul>
-                    
-                        </ul>
-                    
-                
-            
-        
-            
-            
-                
-                    
-                    
-                    
-                        <ul class="toc-h1">
-                    
-                        <ul class="toc-h2">
-                    
-                    
-                    
-                    
-                    <a href="/blog/stable_mutable_refs/#experiment-can-we-track-whether-a-typeamprsquos-interior-is-aliased">
-                        <li>Experiment: Can We Track Whether A Type&amp;amp;rsquo;s Interior is Aliased?</li>
-                    </a>
-                    
-                    
-                        </ul>
-                    
-                        </ul>
-                    
-                
-            
-        
-            
-            
-                
-                    
-                    
-                    
-                        <ul class="toc-h1">
-                    
-                    
-                    
-                    
-                    <a href="/blog/stable_mutable_refs/#letamprsquos-be-happy-with-what-we-have">
-                        <li>Let&amp;amp;rsquo;s Be Happy With What We Have</li>
-                    </a>
-                    
-                    
-                        </ul>
-                    
-                
-            
-        
-            
-            
-                
-                    
-                    
-                    
-                        <ul class="toc-h1">
-                    
-                        <ul class="toc-h2">
-                    
-                    
-                    
-                    
-                    <a href="/blog/stable_mutable_refs/#we-have-gc-at-home">
-                        <li>We Have GC at Home</li>
-                    </a>
-                    
-                    
-                        </ul>
-                    
-                        </ul>
-                    
-                
-            
-        
-            
-            
-                
-                    
-                    
-                    
-                        <ul class="toc-h1">
-                    
-                        <ul class="toc-h2">
-                    
-                    
-                    
-                    
-                    <a href="/blog/stable_mutable_refs/#cell-style">
-                        <li>Cell-Style</li>
-                    </a>
-                    
-                    
-                        </ul>
-                    
-                        </ul>
-                    
-                
-            
-        
-            
-            
-                
-                    
-                    
-                    
-                        <ul class="toc-h1">
-                    
-                        <ul class="toc-h2">
-                    
-                    
-                    
-                    
-                    <a href="/blog/stable_mutable_refs/#shared-temporary">
-                        <li>Shared Temporary</li>
-                    </a>
-                    
-                    
-                        </ul>
-                    
-                        </ul>
-                    
-                
-            
-        
-            
-            
-                
-                    
-                    
-                    
-                        <ul class="toc-h1">
-                    
-                        <ul class="toc-h2">
-                    
-                    
-                    
-                    
-                    <a href="/blog/stable_mutable_refs/#cyclic-data">
-                        <li>Cyclic Data</li>
-                    </a>
-                    
-                    
-                        </ul>
-                    
-                        </ul>
-                    
-                
-            
-        
-            
-            
-                
-                    
-                    
-                    
-                        <ul class="toc-h1">
-                    
-                    
-                    
-                    
-                    <a href="/blog/stable_mutable_refs/#closing-thoughts">
-                        <li>Closing Thoughts</li>
-                    </a>
-                    
-                    
-                        </ul>
-                    
-                
-            
-        
-    </div>
     
 
+
+<div class="table-of-contents toc bd-callout">
+    
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                
+                
+                
+                <a href="/blog/stable_mutable_refs/#introduction">
+                    <li>Introduction</li>
+                </a>
+                
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                
+                
+                
+                <a href="/blog/stable_mutable_refs/#stable-t">
+                    <li>!stable t</li>
+                </a>
+                
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                
+                
+                
+                <a href="/blog/stable_mutable_refs/#get-to-the-point">
+                    <li>Get to the Point</li>
+                </a>
+                
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                
+                
+                
+                <a href="/blog/stable_mutable_refs/#interior-mutability">
+                    <li>Interior Mutability</li>
+                </a>
+                
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/blog/stable_mutable_refs/#another-immutable-reference">
+                    <li>Another Immutable Reference?</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/blog/stable_mutable_refs/#allegations-against-stable-t">
+                    <li>Allegations against !stable t</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/blog/stable_mutable_refs/#experiment-can-we-track-whether-a-types-interior-is-aliased">
+                    <li>Experiment: Can We Track Whether A Type&amp;amp;rsquo;s Interior is Aliased?</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                
+                
+                
+                <a href="/blog/stable_mutable_refs/#lets-be-happy-with-what-we-have">
+                    <li>Let&amp;amp;rsquo;s Be Happy With What We Have</li>
+                </a>
+                
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/blog/stable_mutable_refs/#we-have-gc-at-home">
+                    <li>We Have GC at Home</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/blog/stable_mutable_refs/#cell-style">
+                    <li>Cell-Style</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/blog/stable_mutable_refs/#shared-temporary">
+                    <li>Shared Temporary</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/blog/stable_mutable_refs/#cyclic-data">
+                    <li>Cyclic Data</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                
+                
+                
+                <a href="/blog/stable_mutable_refs/#closing-thoughts">
+                    <li>Closing Thoughts</li>
+                </a>
+                
+                
+                    </ul>
+                
+            
+        
+    
+</div>
+
+
+    
 
     
   </div>
@@ -1338,6 +1345,7 @@ if they really do need to mutate through an &ldquo;immutable&rdquo; reference.&#
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-parallax/1.1.3/jquery-parallax.js"></script>
 
 <script src="https://antelang.org/js/front.js"></script>
+<script src="https://antelang.org/js/details-toc.js"></script>
 
 
 <script src="https://antelang.org/js/owl.carousel.min.js"></script>

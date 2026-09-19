@@ -17,6 +17,9 @@ newContentEditor = "vim"
 # default, blue, green, marsala, pink, red, turquoise, violet
 
 [markup]
+  # Support <details> in markdown
+  [markup.goldmark.renderer]
+    unsafe = true
   [markup.highlight]
     guessSyntax = true
     noClasses = false

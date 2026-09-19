@@ -2,6 +2,46 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://antelang.org/docs/stdlib/c/</loc>
+  </url><url>
+    <loc>https://antelang.org/docs/stdlib/char/</loc>
+  </url><url>
+    <loc>https://antelang.org/docs/stdlib/earlyreturn/</loc>
+  </url><url>
+    <loc>https://antelang.org/docs/stdlib/env/</loc>
+  </url><url>
+    <loc>https://antelang.org/docs/stdlib/fail/</loc>
+  </url><url>
+    <loc>https://antelang.org/docs/stdlib/hash/</loc>
+  </url><url>
+    <loc>https://antelang.org/docs/stdlib/hashmap/</loc>
+  </url><url>
+    <loc>https://antelang.org/docs/stdlib/hashset/</loc>
+  </url><url>
+    <loc>https://antelang.org/docs/stdlib/io/</loc>
+  </url><url>
+    <loc>https://antelang.org/docs/stdlib/math/</loc>
+  </url><url>
+    <loc>https://antelang.org/docs/stdlib/prelude/</loc>
+  </url><url>
+    <loc>https://antelang.org/docs/stdlib/rc/</loc>
+  </url><url>
+    <loc>https://antelang.org/docs/stdlib/seq/</loc>
+  </url><url>
+    <loc>https://antelang.org/docs/stdlib/slice/</loc>
+  </url><url>
+    <loc>https://antelang.org/docs/stdlib/stream/</loc>
+  </url><url>
+    <loc>https://antelang.org/docs/stdlib/string/</loc>
+  </url><url>
+    <loc>https://antelang.org/docs/stdlib/sync/</loc>
+  </url><url>
+    <loc>https://antelang.org/docs/stdlib/throw/</loc>
+  </url><url>
+    <loc>https://antelang.org/docs/stdlib/time/</loc>
+  </url><url>
+    <loc>https://antelang.org/docs/stdlib/vec/</loc>
+  </url><url>
     <loc>https://antelang.org/</loc>
     <lastmod>2026-05-25T00:00:00+00:00</lastmod>
   </url><url>
@@ -73,6 +113,8 @@
   </url><url>
     <loc>https://antelang.org/docs/language/</loc>
     <lastmod>2021-03-01T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://antelang.org/docs/stdlib/</loc>
   </url><url>
     <loc>https://antelang.org/tags/</loc>
   </url>

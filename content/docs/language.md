@@ -2589,7 +2589,7 @@ main () =
     iter fibonacci println  // 0, 1, 1, 2, 3, 5, 8, ...
 ```
 
-See the [Stream module in the stdlib](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an) for more functions on streams.
+See the [Stream module in the stdlib](/docs/stdlib/stream/) for more functions on streams.
 
 #### Loops and Early-Returns
 

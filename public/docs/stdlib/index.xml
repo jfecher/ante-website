@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Standard Library on Ante</title>
+    <link>https://antelang.org/docs/stdlib/</link>
+    <description>Recent content in Standard Library on Ante</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language><atom:link href="https://antelang.org/docs/stdlib/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Std.C</title>
+      <link>https://antelang.org/docs/stdlib/c/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/docs/stdlib/c/</guid>
+      <description>import Std.C Source
+ Types  String type String = ptr: Ptr Char A C string is a pointer to a null-terminated character array. This is meant to be used qualified as C.String
+source
+ String.new String.new (s: Std.Prelude.String): String Copy a prelude string, append a &amp;lsquo;\0&amp;rsquo;, and return it as a new C.String
+source
+ VoidPtr type VoidPtr = Ptr U8 A convenience type for translating C APIs
+source</description>
+    </item>
+    
+    <item>
+      <title>Std.Char</title>
+      <link>https://antelang.org/docs/stdlib/char/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/docs/stdlib/char/</guid>
+      <description>import Std.Char Source
+ Functions  is_ascii is_ascii (c: Char): Bool source
+ is_digit is_digit (c: Char): Bool source
+ is_alpha is_alpha (c: Char): Bool source
+ is_alphanumeric is_alphanumeric (c: Char): Bool source
+ is_whitespace is_whitespace (c: Char): Bool source
+ to_ascii_lower to_ascii_lower (c: Char): Char source
+ to_ascii_upper to_ascii_upper (c: Char): Char source
+ to_digit to_digit (c: Char): Maybe U8 If this char is a digit in base 10, return the digit as an integer.</description>
+    </item>
+    
+    <item>
+      <title>Std.EarlyReturn</title>
+      <link>https://antelang.org/docs/stdlib/earlyreturn/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/docs/stdlib/earlyreturn/</guid>
+      <description>import Std.EarlyReturn Source
+ Effects  EarlyReturn effect EarlyReturn t = early_return: fn t -&amp;gt; Never source
+ Functions  with_early_return with_early_return (f: t can EarlyReturn t): t source</description>
+    </item>
+    
+    <item>
+      <title>Std.Env</title>
+      <link>https://antelang.org/docs/stdlib/env/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/docs/stdlib/env/</guid>
+      <description>import Std.Env Source
+ Functions  args args (): Unit can Emit String, Fs Stream the CLI arguments the program was invoked with, including the program name as the first element. Note:
+ The program name as argument 0 is only a convention, it is not guaranteed It is possible for external code to mutate these CLI arguments  source</description>
+    </item>
+    
+    <item>
+      <title>Std.Fail</title>
+      <link>https://antelang.org/docs/stdlib/fail/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/docs/stdlib/fail/</guid>
+      <description>import Std.Fail Source
+ Effects  Fail effect Fail = fail: fn Unit -&amp;gt; Never source
+ Functions  try try (f: a can Fail, e): Maybe a can e source
+ on_fail on_fail (f: a can Fail, e) (default: a can e): a can e source
+ assert assert (cond: Bool): Unit can Fail Fails if cond is false Note that this is the inverse of fail_if
+source
+ fail_if fail_if (cond: Bool): Unit can Fail Fails if cond is true Note that this is the inverse of assert</description>
+    </item>
+    
+    <item>
+      <title>Std.Hash</title>
+      <link>https://antelang.org/docs/stdlib/hash/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/docs/stdlib/hash/</guid>
+      <description>import Std.Hash Source
+ Traits  Hash trait Hash t = hash: fn t -&amp;gt; U64 source
+ Functions  hash_combine hash_combine (h1: U64) (h2: U64): U64 Combine two hashes to form a new one. This is order-sensitive so (a, b) and (b, a) hash differently. Uses a mixing constant of 2^64 / phi.
+source
+ Implicits   Show Implicits hash_string impl hash_string: Hash String FNV-1a 64-bit with an offset basis of 14695981039346656037 (0xcbf29ce484222325), and prime of 1099511628211 (0x100000001b3).</description>
+    </item>
+    
+    <item>
+      <title>Std.HashMap</title>
+      <link>https://antelang.org/docs/stdlib/hashmap/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/docs/stdlib/hashmap/</guid>
+      <description>import Std.HashMap Source
+ Types  HashMap type HashMap k v = len: Usz capacity: Usz entries: Ptr (Entry k v) A linear-scan mutable HashMap using a resize factor of 2.0
+source
+ HashMap.len HashMap.len (m: ref HashMap k v): Usz Returns the length of this HashMap
+source
+ HashMap.is_empty HashMap.is_empty (m: ref HashMap k v): Bool Returns true if this HashMap is empty. Equivalent to map.len () == 0</description>
+    </item>
+    
+    <item>
+      <title>Std.HashSet</title>
+      <link>https://antelang.org/docs/stdlib/hashset/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/docs/stdlib/hashset/</guid>
+      <description>import Std.HashSet Source
+ Types  HashSet type HashSet k = inner: HashMap k Unit source
+ HashSet.len HashSet.len (set: ref HashSet v): Usz source
+ HashSet.is_empty HashSet.is_empty (set: ref HashSet k): Bool source
+ HashSet.empty HashSet.empty (): HashSet k source
+ HashSet.of HashSet.of (s: s) {_: Stream s k e} {_: Hash k} {_: Eq k e}: HashSet k can Panic, e source
+ HashSet.clear HashSet.clear (set: mut HashSet k): Unit source</description>
+    </item>
+    
+    <item>
+      <title>Std.IO</title>
+      <link>https://antelang.org/docs/stdlib/io/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/docs/stdlib/io/</guid>
+      <description>import Std.IO Source
+ Types  File type File = c_file: C.File source
+ File.open File.open (path: String) (mode: String): File can Fs source
+ File.close File.close (file: File): Unit can Fs source
+ File.eof File.eof (f: ref File): Bool can Fs Convenience function for using feof with better types
+source
+ File.write File.write (f: mut File) (text: String): Unit can Fs source
+ File.next_char File.next_char (f: ref File): Char can Fs source</description>
+    </item>
+    
+    <item>
+      <title>Std.Math</title>
+      <link>https://antelang.org/docs/stdlib/math/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/docs/stdlib/math/</guid>
+      <description>import Std.Math Source
+ Traits  CheckedNum trait CheckedNum t = checked_add: fn t t -&amp;gt; t can Fail checked_sub: fn t t -&amp;gt; t can Fail checked_mul: fn t t -&amp;gt; t can Fail source
+ Functions  sqrt sqrt: fn F64 -&amp;gt; F64 source
+ sqrtf sqrtf: fn F32 -&amp;gt; F32 source
+ cbrt cbrt: fn F64 -&amp;gt; F64 source
+ pow pow: fn F64 F64 -&amp;gt; F64 source</description>
+    </item>
+    
+    <item>
+      <title>Std.Prelude</title>
+      <link>https://antelang.org/docs/stdlib/prelude/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/docs/stdlib/prelude/</guid>
+      <description>The prelude is imported automatically into every Ante file
+Source
+ Types  String type String = data: Ptr Char refcount: Ptr U32 length: U32 offset: U32 source
+ String.from_parts String.from_parts (pointer: Ptr Char) (length: U32): String Construct a fresh, unaliased string from an owned pointer to characters and a length.
+source
+ Maybe type Maybe t = | None | Some t source
+ Maybe.unwrap Maybe.unwrap (m: Maybe t): t can Panic source</description>
+    </item>
+    
+    <item>
+      <title>Std.Rc</title>
+      <link>https://antelang.org/docs/stdlib/rc/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/docs/stdlib/rc/</guid>
+      <description>import Std.Rc Source
+ Types  Rc type Rc t = ptr: Ptr (U32, t) A non-threadsafe reference-counted pointer.
+source
+ Rc.of Rc.of (value: t): Rc t source
+ Rc.as_ref Rc.as_ref (rc: imm Rc t): ref t Returns a shared reference into the inner element. Since other Rc clones of the same value may exist and may mutate the element via [Rc.as_mut], this can only be a shared ref reference instead of a fully immutable imm reference.</description>
+    </item>
+    
+    <item>
+      <title>Std.Seq</title>
+      <link>https://antelang.org/docs/stdlib/seq/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/docs/stdlib/seq/</guid>
+      <description>import Std.Seq Source
+ Types  Seq type Seq t = len: U32 data: Ptr (Data t) A persistent, contiguous, and growable sequence of elements. Performance is meant to be comparable to a mutable Vec.
+Common operations:
+ push: O(1) amortized but can be O(N) with worst-case sharing patterns. pop: O(1) get: O(1) clone: O(1)  Internally, each Seq holds its length as well as a Data object shared by potentially many Seq objects.</description>
+    </item>
+    
+    <item>
+      <title>Std.Slice</title>
+      <link>https://antelang.org/docs/stdlib/slice/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/docs/stdlib/slice/</guid>
+      <description>import Std.Slice Source
+ Types  Slice type Slice &amp;#39;a t = data: ref &amp;#39;a t len: Usz source
+ Functions  slice slice (array: ref &amp;#39;a Array n t): Slice &amp;#39;a t source</description>
+    </item>
+    
+    <item>
+      <title>Std.Stream</title>
+      <link>https://antelang.org/docs/stdlib/stream/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/docs/stdlib/stream/</guid>
+      <description>import Std.Stream Source
+ Traits  Stream trait Stream t a (e: effect) = stream: fn t -&amp;gt; Unit can Emit a, e Stream the contents of t, emitting each element via the Emit a effect
+source
+ Effects  Emit effect Emit a = emit: fn a -&amp;gt; Unit Emit a single item of type a. Another name for this is Yield.
+source
+ Loop effect Loop = break_: fn Unit -&amp;gt; Never continue_: fn Unit -&amp;gt; Never Common control-flow effects for looping</description>
+    </item>
+    
+    <item>
+      <title>Std.String</title>
+      <link>https://antelang.org/docs/stdlib/string/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/docs/stdlib/string/</guid>
+      <description>import Std.String Source
+ Functions  reverse reverse (var s: String): String can Fs source
+ split (split: fn String Char -&amp;gt; (fn Unit [String, Char] -&amp;gt; Unit can Emit String, Fs) is pure) (s: String) (c: Char) Split a string at the given character. Emits substrings separated by the given character.
+For example split &amp;quot;foo bar baz &amp;quot; will emit all of: [&amp;ldquo;foo&amp;rdquo;, &amp;ldquo;bar&amp;rdquo;, &amp;ldquo;&amp;rdquo;, &amp;ldquo;baz&amp;rdquo;, &amp;ldquo;&amp;quot;]
+source
+ substr substr (var s: String) (begin: Usz) (end: Usz): String Returns a substring into the given string.</description>
+    </item>
+    
+    <item>
+      <title>Std.Sync</title>
+      <link>https://antelang.org/docs/stdlib/sync/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/docs/stdlib/sync/</guid>
+      <description>import Std.Sync Source
+ Types  Atomic type Atomic t = value: t source
+ Atomic.load Atomic.load (a: ref Atomic t): t source
+ Atomic.store Atomic.store (a: ref Atomic t) (value: t): Unit source
+ Atomic.swap Atomic.swap (a: ref Atomic t) (value: t): t Replace the value, returning the previous one.
+source
+ Atomic.compare_and_swap Atomic.compare_and_swap (a: ref Atomic t) (current: t) (desired: t): t If the current value equals current, replace it with desired.</description>
+    </item>
+    
+    <item>
+      <title>Std.Throw</title>
+      <link>https://antelang.org/docs/stdlib/throw/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/docs/stdlib/throw/</guid>
+      <description>import Std.Throw Source
+ Types  Result type Result t e = | Ok t | Err e source
+ Effects  Throw effect Throw t = throw: fn t -&amp;gt; Never source
+ Functions  catch catch (f: a can Throw e): Result a e source
+ catch_or catch_or (f: a can Throw e) (default: a): a source
+ catch_or_else catch_or_else (f: a can Throw e) (default: fn e [_] -&amp;gt; a): a source</description>
+    </item>
+    
+    <item>
+      <title>Std.Time</title>
+      <link>https://antelang.org/docs/stdlib/time/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/docs/stdlib/time/</guid>
+      <description>import Std.Time Source
+ Types  Duration type Duration = nanos: I64 A duration in nanoseconds
+source
+ Duration.from_secs Duration.from_secs (s: I64): Duration source
+ Duration.from_millis Duration.from_millis (ms: I64): Duration source
+ Duration.from_micros Duration.from_micros (us: I64): Duration source
+ Duration.from_nanos Duration.from_nanos (ns: I64): Duration source
+ Duration.as_secs Duration.as_secs (d: Duration): I64 source
+ Duration.as_millis Duration.as_millis (d: Duration): I64 source
+ Duration.as_micros Duration.as_micros (d: Duration): I64 source
+ Duration.as_nanos Duration.as_nanos (d: Duration): I64 source</description>
+    </item>
+    
+    <item>
+      <title>Std.Vec</title>
+      <link>https://antelang.org/docs/stdlib/vec/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/docs/stdlib/vec/</guid>
+      <description>import Std.Vec Source
+ Types  Vec type Vec t = data: Ptr t len: Usz cap: Usz source
+ Vec.empty (Vec.empty: fn Unit -&amp;gt; Vec _ is pure) () source
+ Vec.is_empty (Vec.is_empty: fn (ref (Vec a)) -&amp;gt; Bool is pure) (v: ref (Vec a)) source
+ Vec.len (Vec.len: fn (ref (Vec a)) -&amp;gt; Usz is pure) (v: ref (Vec a)) source
+ Vec.capacity (Vec.capacity: fn (ref (Vec a)) -&amp;gt; Usz is pure) (v: ref (Vec a)) source</description>
+    </item>
+    
+  </channel>
+</rss>

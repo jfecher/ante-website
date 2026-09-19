@@ -1,0 +1,1742 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="robots" content="all,follow">
+<meta name="googlebot" content="index,follow,snippet,archive">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Std.String</title>
+<meta name="author" content="Jake Fecher" />
+
+
+
+
+<meta name="keywords" content="ante, programming, language, antelang, lang">
+
+
+<meta name="description" content="">
+
+<meta name="generator" content="Hugo 0.89.0-DEV" />
+
+
+<link href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800' rel='stylesheet' type='text/css'>
+
+
+<link rel="stylesheet" href="//use.fontawesome.com/releases/v5.11.2/css/all.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+
+<link href="/css/animate.css" rel="stylesheet">
+
+
+
+  <link href="/css/style.red.css" rel="stylesheet" id="theme-stylesheet">
+
+
+
+<link href="/css/custom.css" rel="stylesheet">
+
+
+
+  <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+
+
+<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon" />
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
+
+
+<link href="/css/owl.carousel.css" rel="stylesheet">
+<link href="/css/owl.theme.css" rel="stylesheet">
+
+
+<link rel="alternate" href="https://antelang.org/index.xml" type="application/rss+xml" title="Ante">
+
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+
+<meta name="twitter:title" content="Std.String">
+
+<meta name="twitter:description" content="">
+
+
+      <meta charset="utf-8">
+  <meta name="robots" content="all,follow">
+  <meta name="googlebot" content="index,follow,snippet,archive">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Std.String</title>
+  <meta name="author" content="" />
+
+  <meta name="keywords" content="ante, programming, language, antelang, lang">	
+  <meta name="description" content="For exploring algebraic effects, safe shared mutability, and other novel features">
+
+  <meta name="generator" content="Hugo 0.89.0-DEV" />
+
+  <link href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800' rel='stylesheet' type='text/css'>
+
+  
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+  
+  <link href="https://antelang.org/css/animate.css" rel="stylesheet">
+
+  
+  
+    <link href="https://antelang.org/css/style.red.css" rel="stylesheet" id="theme-stylesheet">
+  
+
+
+  
+  <link href="https://antelang.org/css/custom.css" rel="stylesheet">
+ 
+  
+  <link rel="stylesheet" href="https://antelang.org/css/syntax.css">
+
+  
+  
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  
+
+  
+  <link rel="shortcut icon" href="https://antelang.org/img/favicon.ico" type="image/x-icon" />
+  <link rel="apple-touch-icon" href="https://antelang.org/img/apple-touch-icon.png" />
+  
+
+  <link href="https://antelang.org/css/owl.carousel.css" rel="stylesheet">
+  <link href="https://antelang.org/css/owl.theme.css" rel="stylesheet">
+
+  <link rel="alternate" href="https://antelang.org/index.xml" type="application/rss+xml" title="Ante">
+
+  
+  <meta property="og:title" content="Std.String" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://antelang.org/docs/stdlib/string//" />
+  <meta property="og:image" content="" />
+
+  </head>
+
+  <body>
+    <div id="all">
+        
+
+        
+
+    <div class="navbar navbar-default yamm" role="navigation" id="navbar">
+
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand home" href="https://antelang.org/">
+                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="Std.String" class="hidden-xs hidden-sm">
+                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="Std.String" class="visible-xs visible-sm">
+                    <span class="sr-only">Std.String - go to homepage</span>
+                </a>
+                
+<div class="navbar-buttons">
+        <div class="navbar-collapse collapse" id="navigation">
+            <ul class="nav navbar-nav navbar-right">
+            
+            <li class="dropdown">
+                <a href="https://antelang.org//docs/language">Tour</a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//docs/stdlib">Stdlib</a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//docs/ideas">Ideas</a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//docs/roadmap">Roadmap</a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//blog">Blog</a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//docs/faq">FAQ</a>
+            </li>
+
+            <li class="dropdown">
+                <a href="https://github.com/jfecher/ante"><i class="fa fa-15x fa-github"></i></a>
+            </li>
+            <li class="dropdown">
+                <a href="https://reddit.com/r/ante"><i class="fab fa-15x fa-reddit"></i></a>
+            </li>
+            <li class="dropdown">
+                <a href="https://discord.gg/NPJncGBAws"><i class="fab fa-15x fa-discord"></i></a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//index.xml"><i class="fa fa-15x fa-rss"></i></a>
+            </li>
+
+            </ul>
+        </div>
+        <button type="button" class="navbar-toggle btn-template-main" onclick="document.getElementById('navigation').classList.toggle('collapse')">
+    <span class="sr-only">Toggle Navigation</span>
+        <i class="fa fa-align-justify"></i>
+    </button>
+</div>
+
+            </div>
+            
+
+            
+            
+
+            <div class="collapse clearfix" id="search">
+
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search">
+                        <span class="input-group-btn">
+
+                    <button type="submit" class="btn btn-template-main"><i class="fa fa-search"></i></button>
+
+                </span>
+                    </div>
+                </form>
+
+            </div>
+            
+
+        </div>
+    </div>
+    
+
+
+
+
+
+        <div id="heading-breadcrumbs">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Std.String</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+        <div id="content">
+            <div class="container" id="post-container">
+                <div class="row">
+                    
+
+                    <div class="col-md-3">
+                        
+                        <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>Contents</h1>
+    </div>
+
+    
+    
+    
+    
+    <ul class="sidebar-pages">
+        
+        
+        <li>
+            <a href="/docs/stdlib/c/">Std.C</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/char/">Std.Char</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/earlyreturn/">Std.EarlyReturn</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/env/">Std.Env</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/fail/">Std.Fail</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/hash/">Std.Hash</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/hashmap/">Std.HashMap</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/hashset/">Std.HashSet</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/io/">Std.IO</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/math/">Std.Math</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/prelude/">Std.Prelude</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/rc/">Std.Rc</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/seq/">Std.Seq</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/slice/">Std.Slice</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/stream/">Std.Stream</a>
+            
+        </li>
+        
+        
+        <li class="current">
+            <a href="/docs/stdlib/string/">Std.String</a>
+            
+
+
+<div class="table-of-contents toc bd-callout">
+    
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#functions">
+                    <li>Functions</li>
+                </a>
+                
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#reverse">
+                    <li>reverse</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#split">
+                    <li>split</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#substr">
+                    <li>substr</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#string_of">
+                    <li>string_of</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#join">
+                    <li>join</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#bytes">
+                    <li>bytes</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#chars">
+                    <li>chars</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#starts_with">
+                    <li>starts_with</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#ends_with">
+                    <li>ends_with</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#contains">
+                    <li>contains</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#trim_start">
+                    <li>trim_start</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#trim_end">
+                    <li>trim_end</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#trim">
+                    <li>trim</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#parse_i32">
+                    <li>parse_i32</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#parse_i8">
+                    <li>parse_i8</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#parse_i16">
+                    <li>parse_i16</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#parse_i64">
+                    <li>parse_i64</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#parse_isz">
+                    <li>parse_isz</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#parse_u8">
+                    <li>parse_u8</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#parse_u16">
+                    <li>parse_u16</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#parse_u32">
+                    <li>parse_u32</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#parse_u64">
+                    <li>parse_u64</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#parse_usz">
+                    <li>parse_usz</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#parse_signed_int">
+                    <li>parse_signed_int</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#parse_unsigned_int">
+                    <li>parse_unsigned_int</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#from_c_string">
+                    <li>from_c_string</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#to_ascii_lowercase">
+                    <li>to_ascii_lowercase</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#to_ascii_uppercase">
+                    <li>to_ascii_uppercase</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#implicits">
+                    <li>Implicits</li>
+                </a>
+                
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#eq_string">
+                    <li>eq_string</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#try_cast_string_i8">
+                    <li>try_cast_string_i8</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#try_cast_string_i16">
+                    <li>try_cast_string_i16</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#try_cast_string_i32">
+                    <li>try_cast_string_i32</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#try_cast_string_i64">
+                    <li>try_cast_string_i64</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#try_cast_string_isz">
+                    <li>try_cast_string_isz</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#try_cast_string_u8">
+                    <li>try_cast_string_u8</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#try_cast_string_u16">
+                    <li>try_cast_string_u16</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#try_cast_string_u32">
+                    <li>try_cast_string_u32</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#try_cast_string_u64">
+                    <li>try_cast_string_u64</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/string/#try_cast_string_usz">
+                    <li>try_cast_string_usz</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+</div>
+
+
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/sync/">Std.Sync</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/throw/">Std.Throw</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/time/">Std.Time</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/vec/">Std.Vec</a>
+            
+        </li>
+        
+    </ul>
+    
+
+    
+  </div>
+</div>
+
+                        
+                    </div>
+                    
+
+                    <div class="col-md-9" id="blog-post">
+
+                        
+
+                        <div id="post-content">
+                          <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Std</span><span class="o">.</span><span class="kt">String</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an">Source</a></p>
+<hr>
+<h1 id="functions">Functions</h1>
+<hr>
+<h2 id="reverse">reverse</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">reverse</span> <span class="p">(</span><span class="k">var</span> <span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">String</span> <span class="k">can</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L19">source</a></p>
+<hr>
+<h2 id="split">split</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">split</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">String</span> <span class="kt">Char</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[</span><span class="kt">String</span><span class="p">,</span> <span class="kt">Char</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="kt">String</span><span class="p">,</span> <span class="kt">Fs</span><span class="p">)</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">(</span><span class="n">c</span><span class="o">:</span> <span class="kt">Char</span><span class="p">)</span>
+</code></pre></div><p>Split a string at the given character. Emits substrings
+separated by the given character.</p>
+<p>For example <code>split &quot;foo bar  baz &quot;</code> will emit all of:
+[&ldquo;foo&rdquo;, &ldquo;bar&rdquo;, &ldquo;&rdquo;, &ldquo;baz&rdquo;, &ldquo;&quot;]</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L45">source</a></p>
+<hr>
+<h2 id="substr">substr</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">substr</span> <span class="p">(</span><span class="k">var</span> <span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">(</span><span class="n">begin</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="p">(</span><span class="n">end</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="kt">String</span>
+</code></pre></div><p>Returns a substring into the given string. The given
+<code>begin..end</code> range represents an end-exclusive byte range
+of the substring to create.</p>
+<p>This function does not allocate - the resulting substring
+increments the reference count of the original string.</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L63">source</a></p>
+<hr>
+<h2 id="string_of">string_of</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">string_of</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Stream</span> <span class="n">s</span> <span class="kt">Char</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">String</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="n">e</span>
+</code></pre></div><p>Collect each character from the given stream into a String</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L72">source</a></p>
+<hr>
+<h2 id="join">join</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">join</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Stream</span> <span class="n">s</span> <span class="kt">String</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">String</span> <span class="k">can</span> <span class="n">e</span>
+</code></pre></div><p>Join each string from the stream into one string.</p>
+<p>If a separator is desired between each string, use this
+in combination with <code>intersperse</code>, e.g. <code>join &lt;| intersperse my_stream (fn () -&gt; &quot;&quot;)</code></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L83">source</a></p>
+<hr>
+<h2 id="bytes">bytes</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">bytes</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">String</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[</span><span class="kt">String</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="kt">U8</span><span class="p">)</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span>
+</code></pre></div><p>Emits each byte in this string</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L87">source</a></p>
+<hr>
+<h2 id="chars">chars</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">chars</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">String</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[(</span><span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[</span><span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[</span><span class="kt">String</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="kt">U8</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="kt">U8</span><span class="p">),</span> <span class="p">(</span><span class="kt">Stream</span> <span class="p">(</span><span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[</span><span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[</span><span class="kt">String</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="kt">U8</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="kt">U8</span><span class="p">)</span> <span class="kt">U8</span> <span class="n">pure</span><span class="p">),</span> <span class="p">(</span><span class="k">fn</span> <span class="kt">U8</span> <span class="ow">-&gt;</span> <span class="kt">Char</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="kt">Char</span><span class="p">)</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span>
+</code></pre></div><p>Emits each character in this string</p>
+<p>TODO: No utf-8 checking is done and this currently just emits each byte</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L97">source</a></p>
+<hr>
+<h2 id="starts_with">starts_with</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">starts_with</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">String</span><span class="p">)</span> <span class="p">(</span><span class="n">prefix</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">Bool</span>
+</code></pre></div><p>True if <code>s</code> begins with <code>prefix</code>.</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L101">source</a></p>
+<hr>
+<h2 id="ends_with">ends_with</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">ends_with</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">String</span><span class="p">)</span> <span class="p">(</span><span class="n">suffix</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">Bool</span>
+</code></pre></div><p>True if <code>s</code> ends with <code>suffix</code>.</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L106">source</a></p>
+<hr>
+<h2 id="contains">contains</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">contains</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">String</span><span class="p">)</span> <span class="p">(</span><span class="n">needle</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">Bool</span>
+</code></pre></div><p>True if <code>needle</code> appears anywhere in <code>s</code>. O(n*m) naive scan.</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L113">source</a></p>
+<hr>
+<h2 id="trim_start">trim_start</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">trim_start</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">String</span> <span class="k">can</span> <span class="kt">Fs</span>
+</code></pre></div><p>Return a substring with leading ASCII whitespace removed.</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L124">source</a></p>
+<hr>
+<h2 id="trim_end">trim_end</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">trim_end</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">String</span> <span class="k">can</span> <span class="kt">Fs</span>
+</code></pre></div><p>Return a substring with trailing ASCII whitespace removed.</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L133">source</a></p>
+<hr>
+<h2 id="trim">trim</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">trim</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">String</span> <span class="k">can</span> <span class="kt">Fs</span>
+</code></pre></div><p>Return a substring with both leading and trailing ASCII whitespace removed.</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L144">source</a></p>
+<hr>
+<h2 id="parse_i32">parse_i32</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">parse_i32</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">I32</span> <span class="k">can</span> <span class="kt">Fail</span><span class="p">,</span> <span class="kt">Fs</span>
+</code></pre></div><p>Parse a base-10 I32 from a string.</p>
+<p>Fails for empty strings, sign-only strings, non-digits, or overflow.</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L150">source</a></p>
+<hr>
+<h2 id="parse_i8">parse_i8</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">parse_i8</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">I8</span> <span class="k">can</span> <span class="kt">Fail</span><span class="p">,</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L153">source</a></p>
+<hr>
+<h2 id="parse_i16">parse_i16</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">parse_i16</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">I16</span> <span class="k">can</span> <span class="kt">Fail</span><span class="p">,</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L156">source</a></p>
+<hr>
+<h2 id="parse_i64">parse_i64</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">parse_i64</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">I64</span> <span class="k">can</span> <span class="kt">Fail</span><span class="p">,</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L159">source</a></p>
+<hr>
+<h2 id="parse_isz">parse_isz</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">parse_isz</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">Isz</span> <span class="k">can</span> <span class="kt">Fail</span><span class="p">,</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L162">source</a></p>
+<hr>
+<h2 id="parse_u8">parse_u8</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">parse_u8</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">U8</span> <span class="k">can</span> <span class="kt">Fail</span><span class="p">,</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L165">source</a></p>
+<hr>
+<h2 id="parse_u16">parse_u16</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">parse_u16</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">U16</span> <span class="k">can</span> <span class="kt">Fail</span><span class="p">,</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L168">source</a></p>
+<hr>
+<h2 id="parse_u32">parse_u32</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">parse_u32</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">U32</span> <span class="k">can</span> <span class="kt">Fail</span><span class="p">,</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L171">source</a></p>
+<hr>
+<h2 id="parse_u64">parse_u64</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">parse_u64</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">U64</span> <span class="k">can</span> <span class="kt">Fail</span><span class="p">,</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L174">source</a></p>
+<hr>
+<h2 id="parse_usz">parse_usz</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">parse_usz</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">Usz</span> <span class="k">can</span> <span class="kt">Fail</span><span class="p">,</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L177">source</a></p>
+<hr>
+<h2 id="parse_signed_int">parse_signed_int</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">parse_signed_int</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">{</span><span class="n">n</span><span class="o">:</span> <span class="kt">Num</span> <span class="n">t</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">CheckedNum</span> <span class="n">t</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Cast</span> <span class="kt">I32</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Copy</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span><span class="p">,</span> <span class="kt">Fs</span><span class="p">,</span> <span class="n">e</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L180">source</a></p>
+<hr>
+<h2 id="parse_unsigned_int">parse_unsigned_int</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">parse_unsigned_int</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">{</span><span class="n">n</span><span class="o">:</span> <span class="kt">Num</span> <span class="n">t</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">CheckedNum</span> <span class="n">t</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Cast</span> <span class="kt">U8</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Copy</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span><span class="p">,</span> <span class="kt">Fs</span><span class="p">,</span> <span class="n">e</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L215">source</a></p>
+<hr>
+<h2 id="from_c_string">from_c_string</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">from_c_string</span> <span class="p">(</span><span class="n">cstr</span><span class="o">:</span> <span class="kt">C</span><span class="o">.</span><span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">String</span>
+</code></pre></div><p>Copy a null-terminated C string into a new string.</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L273">source</a></p>
+<hr>
+<h2 id="to_ascii_lowercase">to_ascii_lowercase</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">to_ascii_lowercase</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">String</span>
+</code></pre></div><p>Returns the given string with each ASCII letter converted to lowercase.
+The original string is never mutated.</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L282">source</a></p>
+<hr>
+<h2 id="to_ascii_uppercase">to_ascii_uppercase</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">to_ascii_uppercase</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">String</span>
+</code></pre></div><p>Returns the given string with each ASCII letter converted to uppercase.
+The original string is never mutated.</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L292">source</a></p>
+<hr>
+<h1 id="implicits">Implicits</h1>
+<hr>
+<details>
+<summary>Show Implicits</summary>
+<h2 id="eq_string">eq_string</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">eq_string</span><span class="o">:</span> <span class="kt">Eq</span> <span class="kt">String</span> <span class="n">pure</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L14">source</a></p>
+<hr>
+<h2 id="try_cast_string_i8">try_cast_string_i8</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">try_cast_string_i8</span><span class="o">:</span> <span class="kt">TryCast</span> <span class="kt">String</span> <span class="kt">I8</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L242">source</a></p>
+<hr>
+<h2 id="try_cast_string_i16">try_cast_string_i16</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">try_cast_string_i16</span><span class="o">:</span> <span class="kt">TryCast</span> <span class="kt">String</span> <span class="kt">I16</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L245">source</a></p>
+<hr>
+<h2 id="try_cast_string_i32">try_cast_string_i32</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">try_cast_string_i32</span><span class="o">:</span> <span class="kt">TryCast</span> <span class="kt">String</span> <span class="kt">I32</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L248">source</a></p>
+<hr>
+<h2 id="try_cast_string_i64">try_cast_string_i64</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">try_cast_string_i64</span><span class="o">:</span> <span class="kt">TryCast</span> <span class="kt">String</span> <span class="kt">I64</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L251">source</a></p>
+<hr>
+<h2 id="try_cast_string_isz">try_cast_string_isz</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">try_cast_string_isz</span><span class="o">:</span> <span class="kt">TryCast</span> <span class="kt">String</span> <span class="kt">Isz</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L254">source</a></p>
+<hr>
+<h2 id="try_cast_string_u8">try_cast_string_u8</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">try_cast_string_u8</span><span class="o">:</span> <span class="kt">TryCast</span> <span class="kt">String</span> <span class="kt">U8</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L257">source</a></p>
+<hr>
+<h2 id="try_cast_string_u16">try_cast_string_u16</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">try_cast_string_u16</span><span class="o">:</span> <span class="kt">TryCast</span> <span class="kt">String</span> <span class="kt">U16</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L260">source</a></p>
+<hr>
+<h2 id="try_cast_string_u32">try_cast_string_u32</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">try_cast_string_u32</span><span class="o">:</span> <span class="kt">TryCast</span> <span class="kt">String</span> <span class="kt">U32</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L263">source</a></p>
+<hr>
+<h2 id="try_cast_string_u64">try_cast_string_u64</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">try_cast_string_u64</span><span class="o">:</span> <span class="kt">TryCast</span> <span class="kt">String</span> <span class="kt">U64</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L266">source</a></p>
+<hr>
+<h2 id="try_cast_string_usz">try_cast_string_usz</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">try_cast_string_usz</span><span class="o">:</span> <span class="kt">TryCast</span> <span class="kt">String</span> <span class="kt">Usz</span> <span class="kt">Fs</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L269">source</a></p>
+</details>
+
+                        </div>
+                        
+                        
+
+                    </div>
+                    
+
+                    
+
+                    
+                    <div class="col-md-3 right-float"/>
+
+                    
+
+                </div>
+                
+
+            </div>
+            
+        </div>
+        
+
+        <footer id="footer">
+    <div class="container">
+
+        
+
+        <div class="col-md-4 col-sm-6">
+
+            
+            <h4>Recent posts</h4>
+
+            <div class="blog-entries">
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="https://antelang.org/blog/vision/">
+                          
+                            <img src="/img/banners/anteater3.jpg" class="img-responsive" alt="A Vision for Future Low-Level Languages">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/blog/vision/">A Vision for Future Low-Level Languages</a></h5>
+                    </div>
+                </div>
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="https://antelang.org/blog/stable_mutable_refs/">
+                          
+                            <img src="/img/banners/antelope_flowers_cropped.jpg" class="img-responsive" alt="Stable, Mutable References">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/blog/stable_mutable_refs/">Stable, Mutable References</a></h5>
+                    </div>
+                </div>
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="https://antelang.org/blog/why_effects/">
+                          
+                            <img src="/img/banners/lanterns.jpg" class="img-responsive" alt="Why Algebraic Effects?">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/blog/why_effects/">Why Algebraic Effects?</a></h5>
+                    </div>
+                </div>
+                
+            </div>
+
+            <hr class="hidden-md hidden-lg">
+            
+
+        </div>
+        
+
+        
+
+    </div>
+    
+</footer>
+
+
+
+
+
+
+
+<div id="copyright">
+    <div class="container">
+        <div class="col-md-12">
+            
+            <p class="pull-right">
+              Template by <a href="https://bootstrapious.com/p/universal-business-e-commerce-template">Bootstrapious</a>.
+              
+
+              Ported to Hugo by <a href="https://github.com/devcows/hugo-universal-theme">DevCows</a>.
+            </p>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+    </div>
+    
+
+    
+<script src="//code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Counter-Up/1.0/jquery.counterup.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-parallax/1.1.3/jquery-parallax.js"></script>
+
+<script src="https://antelang.org/js/front.js"></script>
+<script src="https://antelang.org/js/details-toc.js"></script>
+
+
+<script src="https://antelang.org/js/owl.carousel.min.js"></script>
+
+
+  </body>
+</html>
