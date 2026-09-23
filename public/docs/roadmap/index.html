@@ -371,6 +371,7 @@ Intended to be used in looping functions: <code>each i do ...</code> and <code>f
 <h1 id="futurer">Futurer</h1>
 <p>The following features are unimplemented but are not my top priority to implement in the near future.</p>
 <ul>
+<li>Design &amp; impl of a <code>comptime</code> system enough to write your own <code>derive</code>s but also cached by the compiler&rsquo;s incremental metadata</li>
 <li><code>Char</code> is 1 byte rather than 4 currently. There is an open design question of
 whether Ante should use Rust&rsquo;s model for chars (4 bytes), Swift&rsquo;s model (variable bytes), or something else.</li>
 <li>Bit shift functions</li>

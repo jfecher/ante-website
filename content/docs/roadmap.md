@@ -25,6 +25,7 @@ Intended to be used in looping functions: `each i do ...` and `for i in vec do .
 
 The following features are unimplemented but are not my top priority to implement in the near future.
 
+- Design & impl of a `comptime` system enough to write your own `derive`s but also cached by the compiler's incremental metadata
 - `Char` is 1 byte rather than 4 currently. There is an open design question of
 whether Ante should use Rust's model for chars (4 bytes), Swift's model (variable bytes), or something else.
 - Bit shift functions
