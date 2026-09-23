@@ -266,8 +266,8 @@
                 
                 
                 
-                <a href="/docs/roadmap/#literals">
-                    <li>Literals</li>
+                <a href="/docs/roadmap/#near-future">
+                    <li>Near Future</li>
                 </a>
                 
                 
@@ -287,155 +287,8 @@
                 
                 
                 
-                <a href="/docs/roadmap/#operators">
-                    <li>Operators</li>
-                </a>
-                
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                
-                
-                
-                <a href="/docs/roadmap/#functions-and-control-flow">
-                    <li>Functions and Control Flow</li>
-                </a>
-                
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                
-                
-                
-                <a href="/docs/roadmap/#types">
-                    <li>Types</li>
-                </a>
-                
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                
-                
-                
-                <a href="/docs/roadmap/#modules">
-                    <li>Modules</li>
-                </a>
-                
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                
-                
-                
-                <a href="/docs/roadmap/#stdlib">
-                    <li>Stdlib</li>
-                </a>
-                
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                
-                
-                
-                <a href="/docs/roadmap/#compiler-specific">
-                    <li>Compiler-specific</li>
-                </a>
-                
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                
-                
-                
-                <a href="/docs/roadmap/#ownership--mutation">
-                    <li>Ownership &amp;amp;amp; Mutation</li>
-                </a>
-                
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                
-                
-                
-                <a href="/docs/roadmap/#abilities">
-                    <li>Abilities</li>
+                <a href="/docs/roadmap/#futurer">
+                    <li>Futurer</li>
                 </a>
                 
                 
@@ -496,244 +349,42 @@
                         
 
                         <div id="post-content">
-                          <blockquote>
-<p>Ante&rsquo;s compiler has recently finished a complete rewrite and is now incremental,
-concurrent, and fault-tolerant - although general performance still has much room for improvement.</p>
-</blockquote>
-<p>This page is for an in-depth roadmap of ante to show which features are currently implemented
-in the compiler.</p>
-<p>All designs in the <a href="/docs/ideas">ideas</a> page are not implemented as their design is still non-final and may
-not be selected at all.</p>
-<p>Key:</p>
+                          <p>Most features on the tour page are currently implemented to varying degrees. Below is a rough
+list of features being worked on.</p>
+<h1 id="near-future">Near Future</h1>
 <ul>
-<li><input checked="" disabled="" type="checkbox"> Implemented</li>
-<li>[~] Partially implemented</li>
-<li><input disabled="" type="checkbox"> Not implemented</li>
-</ul>
-<p>Note that since the compiler is still immature, a feature marked as implemented may not be completely
-bug-free or may have some unimplemented corner cases. These are not expected however, and users encountering
-any bugs with these features should create an issue on github.</p>
-<hr>
-<h1 id="literals">Literals</h1>
+<li>Large rework of the design of the four reference types</li>
+<li>Existentialization as an alternative to monomorphization for faster debug builds</li>
+<li>Inserting <code>drop</code> automatically after a variable&rsquo;s last use</li>
+<li>Default handlers for <code>Panic</code>, <code>Print</code>, and some other effects in <code>main</code></li>
+<li>Renaming of the <code>Fs</code>, <code>Net</code> primitive effects</li>
+<li>Compiler option to write inferred types into the file</li>
+<li>Formatter</li>
+<li>Language Server: Better support for struct members and methods</li>
+<li>Possible new sugar <code>&lt;pattern&gt; do &lt;expr&gt; === fn &lt;pattern&gt; -&gt; &lt;expr&gt;</code> and <code>&lt;pattern&gt; in &lt;expr1&gt; do &lt;expr2&gt; === &lt;expr1&gt; fn &lt;pattern&gt; -&gt; &lt;expr2&gt;</code>.
+Intended to be used in looping functions: <code>each i do ...</code> and <code>for i in vec do ...</code>
 <ul>
-<li><input checked="" disabled="" type="checkbox"> Polymorphic integers (defaulting to <code>I32</code>)</li>
-<li><input checked="" disabled="" type="checkbox"> Polymorphic floats (defaulting to <code>F64</code>)</li>
-<li><input checked="" disabled="" type="checkbox"> Unit literal <code>()</code></li>
-<li><input checked="" disabled="" type="checkbox"> Bool literals <code>true</code> and <code>false</code></li>
-<li><input checked="" disabled="" type="checkbox"> Strings</li>
-<li>[~] <code>Char</code> - implemented but is 1 byte rather than 4. There is an open design question of
-whether ante should use Rust&rsquo;s model for chars (4 bytes), Swift&rsquo;s model (variable bytes), or something else.
-These also use a temporary <code>c&quot;_&quot;</code> syntax currently.</li>
-<li><input checked="" disabled="" type="checkbox"> Array literals</li>
-<li><input disabled="" type="checkbox"> Slices</li>
-</ul>
-<hr>
-<h1 id="operators">Operators</h1>
-<ul>
-<li><input checked="" disabled="" type="checkbox"> Basic arithmetic, <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, comparisons, etc.</li>
-<li><input checked="" disabled="" type="checkbox"> Pipeline operators <code>|&gt;</code> and <code>&lt;|</code></li>
-<li><input checked="" disabled="" type="checkbox"> Assignment <code>:=</code></li>
-<li><input checked="" disabled="" type="checkbox"> Compound assignment operators <code>+=</code>, <code>-=</code>, <code>*=</code>, <code>/=</code>, <code>%=</code></li>
-<li><input checked="" disabled="" type="checkbox"> <code>.</code> Field access</li>
-<li><input checked="" disabled="" type="checkbox"> <code>.</code> Method calls - these may change in the future due to the conflict with struct field access</li>
-<li><input checked="" disabled="" type="checkbox"> <code>is</code> operator for pattern matching without <code>match</code></li>
-</ul>
-<hr>
-<h1 id="functions-and-control-flow">Functions and Control Flow</h1>
-<ul>
-<li><input checked="" disabled="" type="checkbox"> Free functions</li>
-<li><input checked="" disabled="" type="checkbox"> Closures</li>
-<li><input checked="" disabled="" type="checkbox"> Explicit currying via <code>_</code></li>
-<li><input checked="" disabled="" type="checkbox"> if</li>
-<li><input checked="" disabled="" type="checkbox"> <code>match</code> and pattern matching
-<ul>
-<li><input checked="" disabled="" type="checkbox"> Variable/match-all patterns</li>
-<li><input checked="" disabled="" type="checkbox"> Constructor patterns</li>
-<li><input checked="" disabled="" type="checkbox"> Integer literal patterns</li>
-<li><input checked="" disabled="" type="checkbox"> Completeness &amp; Redundancy checking</li>
-<li><input checked="" disabled="" type="checkbox"> &lsquo;Or&rsquo; clause in pattern matching, combining patterns via <code>|</code></li>
-<li><input checked="" disabled="" type="checkbox"> Alias patterns (&lsquo;name @ pattern&rsquo;)</li>
-<li><input disabled="" type="checkbox"> Pattern guards: <code>| pattern if expr -&gt; ...</code></li>
-<li><input checked="" disabled="" type="checkbox"> <code>is</code> keyword for matching within expressions</li>
-</ul>
-</li>
-<li><input checked="" disabled="" type="checkbox"> <code>loop</code> sugar</li>
-<li><input checked="" disabled="" type="checkbox"> <code>for</code> loops</li>
-<li><input checked="" disabled="" type="checkbox"> <code>while</code> loops</li>
-<li><input checked="" disabled="" type="checkbox"> <code>break</code>/<code>continue</code></li>
-</ul>
-<hr>
-<h1 id="types">Types</h1>
-<ul>
-<li><input checked="" disabled="" type="checkbox"> Global type inference (HM)</li>
-<li><input checked="" disabled="" type="checkbox"> Product and sum (struct and enum) type definitions</li>
-<li><input disabled="" type="checkbox"> Type aliases</li>
-<li><input checked="" disabled="" type="checkbox"> Type annotations</li>
-<li><input checked="" disabled="" type="checkbox"> Kind inference</li>
-<li><input checked="" disabled="" type="checkbox"> Implicits
-<ul>
-<li><input checked="" disabled="" type="checkbox"> <code>implicit</code> local variables</li>
-<li><input checked="" disabled="" type="checkbox"> <code>implicit</code> parameters</li>
-<li><input checked="" disabled="" type="checkbox"> Querying implicit values required for a function call</li>
-<li><input checked="" disabled="" type="checkbox"> Calling implicit functions in scope for their return value (implicits like <code>eq_maybe</code> are functions since they require other implicits as parameters)
-<ul>
-<li><input disabled="" type="checkbox"> Check to ensure only pure implicit functions can be called
-<ul>
-<li>This was the original design but has been made more difficult by the move to capabilities</li>
+<li>Problem: this conflicts with <code>do &lt;expr&gt;</code> being sugar for <code>fn () -&gt; &lt;expr&gt;</code>.</li>
 </ul>
 </li>
 </ul>
-</li>
-</ul>
-</li>
-<li><input checked="" disabled="" type="checkbox"> Trait sugar to create a dictionary type of the required functions</li>
-<li><input checked="" disabled="" type="checkbox"> Trait impl sugar for implicit values which is an instantiation of the trait type</li>
-<li><input disabled="" type="checkbox"> Row polymorphic struct types</li>
-</ul>
-<hr>
-<h1 id="modules">Modules</h1>
+<h1 id="futurer">Futurer</h1>
+<p>The following features are unimplemented but are not my top priority to implement in the near future.</p>
 <ul>
-<li><input checked="" disabled="" type="checkbox"> Basic module hierarchy</li>
-<li><input checked="" disabled="" type="checkbox"> <code>import</code> one or more symbols from a module</li>
-<li><input checked="" disabled="" type="checkbox"> <code>export</code> only a subset of symbols from a module</li>
-<li><input disabled="" type="checkbox"> Renaming imports</li>
-<li><input disabled="" type="checkbox"> Re-exports</li>
-<li><input disabled="" type="checkbox"> <code>import implicit</code> for introducing implicit values. Currently these use a normal <code>import</code> statement.</li>
-</ul>
-<hr>
-<h1 id="stdlib">Stdlib</h1>
-<p>All APIs are non-final.</p>
-<ul>
-<li><input checked="" disabled="" type="checkbox"> <code>Prelude</code> module auto-imported into each file
-<ul>
-<li><input disabled="" type="checkbox"> Opt out of importing prelude into a given file or project</li>
-</ul>
-</li>
-<li><input checked="" disabled="" type="checkbox"> <code>C</code> module in stdlib for C interop</li>
-<li><input checked="" disabled="" type="checkbox"> <code>Vec</code>: Mutable, growable vectors</li>
-<li><input checked="" disabled="" type="checkbox"> <code>HashMap</code></li>
-<li><input checked="" disabled="" type="checkbox"> <code>Seq</code>: Persistent vector with O(1) pop, get, and clone, and amortized O(1) push.</li>
-<li><input checked="" disabled="" type="checkbox"> <code>Rc</code></li>
-<li>[~] <code>String</code>: Methods lack any kind of UTF-8 verification</li>
-<li>[~] <code>IO</code>: Existing module is extremely bare bones.</li>
-<li><input checked="" disabled="" type="checkbox"> <code>Stream</code>: The <code>Emit</code> effect and <code>Stream</code> trait for push-based streams.</li>
-<li><input checked="" disabled="" type="checkbox"> <code>Fail</code>: Effects for generic failure &amp; throwing a specific value</li>
-<li><input disabled="" type="checkbox"> Others: Help wanted! Designing which modules the stdlib should include</li>
-</ul>
-<hr>
-<h1 id="compiler-specific">Compiler-specific</h1>
-<ul>
-<li><input checked="" disabled="" type="checkbox"> LLVM backend (optional but preferred)</li>
-<li><input checked="" disabled="" type="checkbox"> C backend</li>
-<li><input disabled="" type="checkbox"> Cranelift backend</li>
-<li><input disabled="" type="checkbox"> Existentialization option for lowering generics in debug mode (making monomorphization optional)</li>
-<li><input disabled="" type="checkbox"> Compiler option to write inferred types into the file</li>
-<li><input disabled="" type="checkbox"> Formatter</li>
-<li><input disabled="" type="checkbox"> Platforms
-<ul>
-<li><input disabled="" type="checkbox"> Interfaces for common platforms defined</li>
-<li><input disabled="" type="checkbox"> <code>IO</code> interface defined
-<ul>
-<li>The compiler uses <code>extern</code> declarations currently not in its design and relies on Posix symbols</li>
-</ul>
-</li>
-<li><input disabled="" type="checkbox"> Linker provides values for platform parameters to <code>main</code>.</li>
-<li><input disabled="" type="checkbox"> Linker provides values for dynamic library parameters to <code>main</code>.</li>
-</ul>
-</li>
-<li><input checked="" disabled="" type="checkbox"> Language server.
-<ul>
-<li><input checked="" disabled="" type="checkbox"> Display errors in file</li>
-<li><input checked="" disabled="" type="checkbox"> Hover</li>
-<li><input checked="" disabled="" type="checkbox"> Display documentation on hover</li>
-<li><input checked="" disabled="" type="checkbox"> Go to definition</li>
-<li><input disabled="" type="checkbox"> Go to type</li>
-<li><input disabled="" type="checkbox"> Rename</li>
-<li><input checked="" disabled="" type="checkbox"> Import symbol</li>
-<li><input checked="" disabled="" type="checkbox"> Import implicit</li>
-<li><input disabled="" type="checkbox"> Fill in match arms</li>
-<li><input checked="" disabled="" type="checkbox"> Vim plugin</li>
-<li><input checked="" disabled="" type="checkbox"> VSCode plugin</li>
-</ul>
-</li>
-<li><input checked="" disabled="" type="checkbox"> Recoverable on error</li>
-<li><input checked="" disabled="" type="checkbox"> Compiler only rechecks changed code in incremental mode
-<ul>
-<li>Disabled by default since it requires storing metadata for the project, enabled for the language server</li>
-</ul>
-</li>
-<li><input checked="" disabled="" type="checkbox"> Concurrent</li>
-</ul>
-<hr>
-<h1 id="ownership--mutation">Ownership &amp; Mutation</h1>
-<ul>
-<li><input checked="" disabled="" type="checkbox"> <code>var</code> for local mutable variables</li>
-<li><input checked="" disabled="" type="checkbox"> Mutating owned values and mutable references to values.</li>
-<li><input checked="" disabled="" type="checkbox"> Move tracking</li>
-<li><input disabled="" type="checkbox"> <code>Drop</code> called after a variable&rsquo;s last non-move use
-<ul>
-<li><input disabled="" type="checkbox"> <code>Drop</code>-unwinding for uncalled <code>resume</code>s when handling effects.</li>
-</ul>
-</li>
-<li><input checked="" disabled="" type="checkbox"> <code>Copy</code> exempting variables from moves</li>
-<li><input disabled="" type="checkbox"> Borrowing
-<ul>
-<li><input checked="" disabled="" type="checkbox"> <code>ref</code>, <code>mut</code>, <code>imm</code>, and <code>uniq</code> references exist</li>
-<li><input disabled="" type="checkbox"> <code>imm</code> and <code>uniq</code> cannot coexist with <code>ref</code> and <code>mut</code> to the same value</li>
-<li><input disabled="" type="checkbox"> <code>uniq</code> cannot coexist with any other reference to the same value</li>
-<li><input disabled="" type="checkbox"> Moves are prevented while any reference to the same value is alive</li>
-<li><input disabled="" type="checkbox"> Lifetimes are checked</li>
-</ul>
-</li>
-<li>[~] <code>shared</code> modifier on types
-<ul>
-<li><input checked="" disabled="" type="checkbox"> Automatic heap allocation</li>
-<li><input disabled="" type="checkbox"> Shared mut types allow mutation</li>
-</ul>
-</li>
-</ul>
-<hr>
-<h1 id="abilities">Abilities</h1>
-<ul>
-<li><input checked="" disabled="" type="checkbox"> Type checking</li>
-<li>[~] <code>implicit foo = bar</code> definitions
-<ul>
-<li>Implemented but they can cause infinite loops in the type checker at top-level when used with mutual recursion.</li>
-<li>The old <code>impl foo: Bar with ..</code> form is still included with some hacks to resolve the above loops and will be removed eventually.</li>
-</ul>
-</li>
-<li><input checked="" disabled="" type="checkbox"> Hidden <code>env</code> parameter
-<ul>
-<li>Abilities are structs of closures which may capture values in their environment unboxed.</li>
-<li>This is implemented but the representation will change in the future.</li>
-</ul>
-</li>
-<li><input checked="" disabled="" type="checkbox"> Runtime
-<ul>
-<li><input checked="" disabled="" type="checkbox"> Effect Handlers</li>
-<li><input checked="" disabled="" type="checkbox"> <code>resume</code>
-<ul>
-<li><input checked="" disabled="" type="checkbox"> Single resumptions</li>
-<li><input checked="" disabled="" type="checkbox"> 0 resumptions</li>
-<li><input checked="" disabled="" type="checkbox"> Tail-resume optimization</li>
-<li>[~] 0-resume optimization
-<ul>
-<li>A form of this is implemented but its design is broken since it will skip drops in the future once drops are auto-inserted by the compiler.</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><input checked="" disabled="" type="checkbox"> Capabilities
-<ul>
-<li><input disabled="" type="checkbox"> Capability-based Security
-<ul>
-<li>No <code>IO</code> effect yet. Other effects are handled as normal but users can escape these restraints by defining <code>extern</code> symbols which link to library code performing arbitrary effects.</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
+<li><code>Char</code> is 1 byte rather than 4 currently. There is an open design question of
+whether Ante should use Rust&rsquo;s model for chars (4 bytes), Swift&rsquo;s model (variable bytes), or something else.</li>
+<li>Bit shift functions</li>
+<li>Pattern guards such as <code>| pattern if expr -&gt; ...</code></li>
+<li>Performance guarantees on <code>for_</code> to be as fast as the native <code>for</code> loop</li>
+<li>A check to ensure only pure implicit functions can be called implicitly</li>
+<li>Row polymorphic struct types</li>
+<li>Cranelift backend</li>
+<li>Language Server: Fill in match arms action</li>
+<li>Proper unwinding when <code>resume</code> is dropped</li>
+<li>Modules: <code>as name</code>, re-exports, <code>import implicit</code></li>
+<li>Marker type on each <code>trait impl</code></li>
+<li>Rework of closure types</li>
+<li>Rework of effect ergonomics. <code>~&gt;</code> works but is awkward. <code>Stream</code> defines its own returning-a-function pattern which generally works well.</li>
 </ul>
 
                         </div>
