@@ -307,7 +307,7 @@ source
       
       <guid>https://antelang.org/docs/roadmap/</guid>
       <description>Most features on the tour page are currently implemented to varying degrees. Below is a rough list of features being worked on.
-Near Future  Large rework of the design of the four reference types Existentialization as an alternative to monomorphization for faster debug builds Inserting drop automatically after a variable&amp;rsquo;s last use Default handlers for Panic, Print, and some other effects in main Renaming of the Fs, Net primitive effects Compiler option to write inferred types into the file Formatter Language Server: Better support for struct members and methods Possible new sugar &amp;lt;pattern&amp;gt; do &amp;lt;expr&amp;gt; === fn &amp;lt;pattern&amp;gt; -&amp;gt; &amp;lt;expr&amp;gt; and &amp;lt;pattern&amp;gt; in &amp;lt;expr1&amp;gt; do &amp;lt;expr2&amp;gt; === &amp;lt;expr1&amp;gt; fn &amp;lt;pattern&amp;gt; -&amp;gt; &amp;lt;expr2&amp;gt;.</description>
+Near Future  Language Server: Better support for struct members and methods Inserting drop automatically after a variable&amp;rsquo;s last use Default handlers for Panic, Print, and some other effects in main Renaming of the Fs, Net primitive effects Compiler option to write inferred types into the file Formatter Rework or removal of ~&amp;gt; operator for effect handling  Futurer The following features are unimplemented but are not my top priority to implement in the near future.</description>
     </item>
     
     <item>

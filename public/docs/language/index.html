@@ -1262,8 +1262,8 @@
                 
                 
                 
-                <a href="/docs/language/#borrow-sets">
-                    <li>Borrow Sets</li>
+                <a href="/docs/language/#places">
+                    <li>Places</li>
                 </a>
                 
                 
@@ -1293,8 +1293,8 @@
                 
                 
                 
-                <a href="/docs/language/#types-with-borrow-sets">
-                    <li>Types with Borrow Sets</li>
+                <a href="/docs/language/#types-with-places">
+                    <li>Types with Places</li>
                 </a>
                 
                 
@@ -1324,8 +1324,8 @@
                 
                 
                 
-                <a href="/docs/language/#shared-mutability-and-reference-kinds">
-                    <li>Shared Mutability and Reference Kinds</li>
+                <a href="/docs/language/#shared-mutability-and-stability">
+                    <li>Shared Mutability and Stability</li>
                 </a>
                 
                 
@@ -1355,8 +1355,173 @@
                 
                 
                 
-                <a href="/docs/language/#reference-promotions">
-                    <li>Reference Promotions</li>
+                <a href="/docs/language/#tracking-stability">
+                    <li>Tracking Stability</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                    <ul class="toc-h3">
+                
+                    <ul class="toc-h4">
+                
+                
+                
+                
+                <a href="/docs/language/#the-mutate-effect">
+                    <li>The Mutate effect</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                    <ul class="toc-h3">
+                
+                    <ul class="toc-h4">
+                
+                
+                
+                
+                <a href="/docs/language/#in-loops">
+                    <li>In Loops</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                    <ul class="toc-h3">
+                
+                    <ul class="toc-h4">
+                
+                
+                
+                
+                <a href="/docs/language/#in-traits-and-effect-handlers">
+                    <li>In Traits and Effect Handlers</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                    <ul class="toc-h3">
+                
+                    <ul class="toc-h4">
+                
+                
+                
+                
+                <a href="/docs/language/#distinct-places">
+                    <li>Distinct Places</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                    <ul class="toc-h3">
+                
+                    <ul class="toc-h4">
+                
+                
+                
+                
+                <a href="/docs/language/#thread-safety-of-references">
+                    <li>Thread Safety of References</li>
                 </a>
                 
                 
@@ -3380,236 +3545,328 @@ is desired, they can be created via <code>mut &lt;expr&gt;</code>:</p>
 </code></pre></div><p>Trying to move the underlying value while the reference is still alive will result in an error.
 Additionally, we cannot return a reference to an outer scope after the variable it references may be dropped.
 To keep track of when a reference is valid, each reference stores the set of variables it may borrow from in its type.</p>
-<h3 id="borrow-sets">Borrow Sets</h3>
-<p>Each reference in Ante is parameterized by an element type and a borrow set.
-The full form of a reference type is <code>&lt;reference-kind&gt; s t</code> where <code>s</code> is the borrow set and <code>t</code> is the element type.
-The borrow set can often be omitted from the type, in which case the borrow set will either be inferred or
-a fresh borrow set will be used.</p>
-<p>The borrow set parameter represents which variable(s) a reference borrows from. In the following example:</p>
+<h3 id="places">Places</h3>
+<p>Each reference in Ante is parameterized by an element type and a place, where the place refers to what path(s) the
+borrowed reference may refer to.
+The full form of a reference type is <code>&lt;reference-kind&gt; p t</code> where <code>p</code> is the place and <code>t</code> is the element type.
+The place can often be omitted from the type, in which case it will either be inferred or
+a fresh place will be used.</p>
+<p>The place parameter represents what a reference may borrow from. In the following example:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo</span> <span class="ow">=</span> <span class="mi">32</span>
 <span class="nf">bar</span> <span class="ow">=</span> <span class="k">ref</span> <span class="n">foo</span>
 </code></pre></div><p><code>bar</code> will have the type <code>ref 'foo I32</code> because it is a reference to the variable <code>foo</code> which holds an <code>I32</code>.</p>
-<p>Sometimes, the exact variable a reference borrows from is unknown:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">example1</span> <span class="p">(</span><span class="n">foo</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;foo</span> <span class="kt">I32</span><span class="p">)</span> <span class="p">(</span><span class="n">bar</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;bar</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
-    <span class="c1">// Is the return type `ref &#39;foo I32` or `ref &#39;bar I32`?</span>
-    <span class="k">if</span> <span class="n">random</span> <span class="p">()</span> <span class="k">then</span> <span class="n">foo</span> <span class="k">else</span> <span class="n">bar</span>
-</code></pre></div><p>This is why references have a borrow <em>set</em> rather than always a single variable. For the
-example above, the reference type returned would be <code>ref '(foo, bar) I32</code>. When calling
-<code>example1</code>, the returned reference will be valid for only as long as <em>both</em> arguments
-to the function are:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">example2</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;a</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
+<p>It is also possible for a reference to borrow from possibly multiple places:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo</span> <span class="ow">=</span> <span class="s">&#34;foo&#34;</span>
+<span class="nf">bar</span> <span class="ow">=</span> <span class="s">&#34;bar&#34;</span>
+<span class="nf">baz</span> <span class="ow">=</span> <span class="k">if</span> <span class="n">rand</span> <span class="p">()</span> <span class="k">then</span> <span class="k">ref</span> <span class="n">foo</span> <span class="k">else</span> <span class="k">ref</span> <span class="n">bar</span>
+</code></pre></div><p>Above, <code>baz</code> will have the type <code>ref '(foo, bar) String</code> because it may refer to either <code>foo</code> or <code>bar</code>.
+When using <code>baz</code>, it will be valid for as long as <em>both</em> <code>foo</code> and <code>bar</code> remain in scope and are not moved.</p>
+<p>Places can also refer to paths, as well as anonymous values in the local scope:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">pair</span> <span class="ow">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span>
+<span class="nf">one</span> <span class="ow">=</span> <span class="k">ref</span> <span class="n">pair</span><span class="o">.</span><span class="n">first</span>
+
+<span class="nf">three</span> <span class="ow">=</span> <span class="k">ref</span> <span class="mi">3</span>
+<span class="nf">foo</span> <span class="n">three</span>
+</code></pre></div><p>In this case, <code>one</code> has type <code>ref 'pair.first I32</code> and <code>three</code> has type <code>ref 'a I32</code> where <code>a</code> is
+a fresh name generated by the compiler, only valid for the current scope. It is as if the user had
+written:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">a</span> <span class="ow">=</span> <span class="mi">3</span>
+<span class="nf">three</span> <span class="ow">=</span> <span class="k">ref</span> <span class="n">a</span>
+<span class="nf">foo</span> <span class="n">three</span>
+</code></pre></div><p>Trying to return a reference past the scope where its places remain valid gives an error:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">example</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;a</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
     <span class="n">b</span> <span class="ow">=</span> <span class="mi">1</span>
-    <span class="n">example1</span> <span class="n">a</span> <span class="p">(</span><span class="k">ref</span> <span class="n">b</span><span class="p">)</span>  <span class="c1">// error! returned reference borrows from `b` but `b` is dropped here while the reference is still used!</span>
-</code></pre></div><p>In the example above we call <code>example1</code> to return one of the two references but <code>b</code> is local
-to <code>example2</code> and will be dropped when the function finishes! If this code were allowed we
-would return a dangling reference which will likely lead to a runtime crash when later
-dereferenced. Luckily, Ante prevents this for us with the above error.</p>
-<p>When used in a function signature, borrow sets may be elided. When this happens, the following
-rules are used for determining what the borrow set is assumed to be:</p>
+    <span class="k">if</span> <span class="mi">true</span> <span class="k">then</span> <span class="n">a</span> <span class="k">else</span> <span class="k">ref</span> <span class="n">b</span>  <span class="c1">// error! This reference to b outlives its scope</span>
+</code></pre></div><p>If this code were allowed we would return a dangling reference which will likely lead
+to a runtime crash when later dereferenced. Luckily, Ante prevents this for us with the above error.</p>
+<p>When used in a function signature, places may be elided. When this happens, the following
+rules are used for determining what the place is assumed to be:</p>
 <ul>
-<li>If it is in a parameter, the borrow set is assumed to be a unique, fresh variable.</li>
+<li>If it is in a parameter, the place is assumed to be a unique, fresh variable.</li>
 <li>If it is in a return type:
 <ul>
-<li>If there is a single borrow set in the parameters, the return type must refer to that same set</li>
-<li>If there are multiple possible borrow sets (usually because there are multiple parameters), an error will be issued requiring users to explicitly specify which borrow set to use.</li>
+<li>If there is a single place in the parameters, the return type must refer to that same place</li>
+<li>If there are multiple possible places (usually because there are multiple parameters), an error will be issued requiring users to explicitly specify which one to use.</li>
 </ul>
 </li>
 </ul>
-<p>Using these rules, we can rewrite <code>example1</code>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">example1</span> <span class="p">(</span><span class="n">foo</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">I32</span><span class="p">)</span> <span class="p">(</span><span class="n">bar</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">I32</span><span class="p">)</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">&#39;(foo, bar)</span> <span class="kt">I32</span> <span class="ow">=</span>
-    <span class="k">if</span> <span class="n">random</span> <span class="p">()</span> <span class="k">then</span> <span class="n">foo</span> <span class="k">else</span> <span class="n">bar</span>
-</code></pre></div><p>Most of the time, these rules mean we can omit borrow sets unless the function both takes multiple reference parameters
-and returns a reference.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">concat_foo</span> <span class="p">(</span><span class="n">foo1</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Foo</span><span class="p">)</span> <span class="p">(</span><span class="n">foo2</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Foo</span><span class="p">)</span> <span class="o">:</span> <span class="kt">String</span> <span class="ow">=</span>
+<p>Most of the time, these rules mean we can omit places unless the function both takes multiple
+reference parameters and returns a reference.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">concat_foo</span> <span class="p">(</span><span class="n">foo1</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Foo</span><span class="p">)</span> <span class="p">(</span><span class="n">foo2</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Foo</span><span class="p">)</span><span class="o">:</span> <span class="kt">String</span> <span class="ow">=</span>
     <span class="n">foo1</span><span class="o">.</span><span class="n">msg</span> <span class="o">++</span> <span class="n">foo2</span><span class="o">.</span><span class="n">msg</span>
-</code></pre></div><h4 id="types-with-borrow-sets">Types with Borrow Sets</h4>
-<p>Borrow sets can also be added to type definitions. This is necessary if a type needs
+</code></pre></div><h4 id="types-with-places">Types with Places</h4>
+<p>Places can also be added to type definitions. This is necessary if a type needs
 to hold onto a temporary reference, although most of the time users should favor
-wrapper types such as <code>Rc t</code> as these will generally be easier to work with. Borrow
-set parameters are distinguished from regular type parameters by the <code>'</code> sigil:</p>
+wrapper types such as <code>Arc t</code> as these will generally be easier to work with. Place
+parameters are distinguished from regular type parameters by the <code>'</code> sigil:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Context</span> <span class="n">&#39;l</span> <span class="ow">=</span>
     <span class="n">global_context</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;l</span> <span class="kt">GlobalContext</span>
 </code></pre></div><hr>
-<h3 id="shared-mutability-and-reference-kinds">Shared Mutability and Reference Kinds</h3>
+<h3 id="shared-mutability-and-stability">Shared Mutability and Stability</h3>
 <p>Although largely built-upon Rust, Ante&rsquo;s borrowing semantics differ in that it
-allows shared (aliasable) mutability via different reference kinds. Ante has
-the following kinds of references:</p>
-<ul>
-<li><code>ref</code>: Disallows mutation but may be aliased with other <code>ref</code> or <code>mut</code> references.</li>
-<li><code>mut</code>: Allows mutation and may be aliased with other <code>ref</code> or <code>mut</code> references.</li>
-<li><code>imm</code>: Disallows mutation and may only be aliased with other <code>imm</code> references.
-<ul>
-<li>This is exactly equivalent to <code>&amp;T</code> in Rust.</li>
-</ul>
-</li>
-<li><code>uniq</code>: Allows mutation and may not be aliased.
-<ul>
-<li>This is exactly equivalent to <code>&amp;mut T</code> in Rust.</li>
-</ul>
-</li>
-</ul>
-<p><code>ref</code> and <code>mut</code> reference kinds in Ante allow shared mutability and thus have no
-equivalent in Rust but can be thought of as similar to <code>&amp;Cell&lt;T&gt;</code>.</p>
-<p>Here&rsquo;s a table showing the two axes of what operations these reference types allow:</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th style="text-align:center">Allows mutable aliasing</th>
-<th style="text-align:center">Disallows mutable aliasing</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Immutable</td>
-<td style="text-align:center"><code>ref</code></td>
-<td style="text-align:center"><code>imm</code></td>
-</tr>
-<tr>
-<td>Mutable</td>
-<td style="text-align:center"><code>mut</code></td>
-<td style="text-align:center"><code>uniq</code></td>
-</tr>
-</tbody>
-</table>
-<p>So if we have a <code>ref</code> or a <code>mut</code> reference, there can be any number of other <code>ref</code> or <code>mut</code>
-references to the same value at the same time. If we have a <code>imm</code> reference, there may only be other <code>imm</code>
-references to the same value. Finally, if we have an exclusive reference (<code>uniq</code>), there will not
-be any other reference of any kind to the same value while we hold the exclusive reference.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">var</span> <span class="n">message</span> <span class="ow">=</span> <span class="s">&#34;Hello&#34;</span>
+allows shared (aliasable) mutability. This is done by tracking the &ldquo;shape-stability&rdquo;
+of a type.</p>
+<p>While shared mutability may not be safe in general to allow since it can cause
+dangling references, among other issues:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">bad</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">b</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Maybe</span> <span class="kt">String</span><span class="p">)</span> <span class="p">(</span><span class="n">c</span><span class="o">:</span> <span class="kt">String</span><span class="p">,</span> <span class="kt">String</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="n">elem</span> <span class="ow">=</span> <span class="n">a</span><span class="o">.</span><span class="n">get</span> <span class="mi">1</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">clear</span> <span class="p">()</span>
+    <span class="n">println</span> <span class="n">elem</span>  <span class="c1">// Dangling ref!</span>
 
-<span class="c1">// Create two shared, mutable references to the same string value</span>
-<span class="nf">ref1</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">String</span> <span class="ow">=</span> <span class="k">mut</span> <span class="n">message</span>
-<span class="nf">ref2</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">String</span> <span class="ow">=</span> <span class="k">mut</span> <span class="n">message</span>
+    <span class="n">s</span> <span class="ow">=</span> <span class="k">if</span> <span class="n">b</span> <span class="k">is</span> <span class="kt">Some</span> <span class="n">s</span> <span class="k">then</span> <span class="n">s</span> <span class="k">else</span> <span class="n">panic</span> <span class="s">&#34;&#34;</span>
+    <span class="n">b</span> <span class="o">:=</span> <span class="kt">None</span>
+    <span class="n">println</span> <span class="n">s</span>  <span class="c1">// Dangling ref!</span>
 
-<span class="c1">// It is safe to modify the string through shared, mutable references</span>
-<span class="nf">ref1</span><span class="o">.*</span> <span class="o">:=</span> <span class="s">&#34;${message}, WorZd!&#34;</span>  <span class="c1">// &#34;Hello, WorZd!&#34;</span>
-<span class="nf">ref2</span><span class="o">.</span><span class="n">replace</span> <span class="s">&#34;Z&#34;</span> <span class="s">&#34;l&#34;</span>
-<span class="nf">print</span> <span class="n">ref2</span>                     <span class="c1">// &#34;Hello, World!&#34;</span>
-</code></pre></div><p>The <code>imm</code> and <code>uniq</code> reference kinds are used to prevent operations that would be unsafe
-on references which may be mutably shared. A common indication of when an operation may
-be unsafe if it is mutably shared is if they hand out references inside of a type with
-an unstable shape. For example, handing out a reference to a <code>Vec</code> element would be unsafe
-in a shared context since the <code>Vec</code>&rsquo;s contents may be reallocated by another reference.
-To prevent this, <code>Vec.get</code> requires an immutable reference:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Raises Fail if the index is out of bounds</span>
-<span class="nf">get</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">imm</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="p">{</span><span class="kt">Fail</span><span class="p">}</span><span class="o">:</span> <span class="k">imm</span> <span class="n">t</span>
-</code></pre></div><p>Other Vec functions like <code>push</code> or <code>pop</code> would still be safe to call on shared <code>mut</code>
-references to Vecs since they do not hand out references to elements. If we ever
-need a Vec element when all we have is a <code>ref Vec t</code>, we can still retrieve
-an element through something like <code>Vec.get_cloned</code>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Raises Fail if the index is out of bounds</span>
-<span class="nf">get_cloned</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="p">{</span><span class="kt">Clone</span> <span class="n">t</span><span class="p">}</span> <span class="p">{</span><span class="kt">Fail</span><span class="p">}</span><span class="o">:</span> <span class="n">t</span>
-</code></pre></div><p>As a result, if you know you&rsquo;re going to be working with mutably shared Vecs
-or other container types, and your element type is expensive to clone, you may
-want to wrap each element in a pointer type to reduce the cost of cloning: <code>Vec (Rc t)</code>.</p>
-<p>A good rule of thumb is that shared references (<code>ref</code> and <code>mut</code>) can be used for any operations except ones
-which project the reference value into a value which may be dropped if its parent reference
-is mutated. This includes something like the <code>a</code> in <code>Maybe a</code> which would be dropped
-if the value is set to <code>None</code>, but notably excludes fields of a struct.</p>
-<h4 id="reference-promotions">Reference Promotions</h4>
+    <span class="n">name</span> <span class="ow">=</span> <span class="k">ref</span> <span class="n">c</span><span class="o">.</span><span class="n">first</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">first</span> <span class="o">:=</span> <span class="s">&#34;Foo&#34;</span>
+    <span class="n">println</span> <span class="n">name</span>  <span class="c1">// Ok!</span>
+</code></pre></div><p>If the above were allowed, it&rsquo;d be very bad! Shared mutability can be dangerous, but
+at the same time it isn&rsquo;t always unsafe, and being more permissive can help avoid
+slowing down users by rejecting fewer valid programs. When looking at the above example,
+what differentiates the mutation of <code>a</code> and <code>b</code> from <code>c</code>&rsquo;s is that only <code>c</code> is shape-stable.
+If we imagine what <code>c</code> and <code>name</code> look like in memory before and after the mutation:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">Before mutation:
+
+    name
+      |
+      V
+c:  ( (first_ptr, first_len, ..), (second_ptr, second_len, ..) )
+
+After mutation:
+
+    name
+      |
+      V
+c:  ( (first_ptr, first_len, ..), (second_ptr, second_len, ..) )
+</code></pre></div><p>We can see that the pointer to <code>name</code> stably points to the first <code>String</code> struct value
+in <code>c</code> regardless of how <code>c</code> is mutated. Now compare this with the <code>Vec</code> example of <code>a</code> and <code>elem</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">Before mutation:
+
+a: (elem_ptr, length, capacity)
+        |
+        V
+        [0, 1, 2, 3]
+            ^
+            |
+           elem
+
+After mutation:
+
+a: (elem_ptr, length, capacity)
+        |
+        V
+        []
+            ^
+            |
+           elem
+</code></pre></div><p><code>elem</code> clearly points to nothing now! The difference between these scenarios is that the <em>shape of the data changed</em>.
+When the shape of some data changes, any references to it may be invalidated since what they point to may no longer be there.
+If an operation may cause the shape of data to be changed, it is shape-unstable (or simply &lsquo;unstable&rsquo;).</p>
+<h4 id="tracking-stability">Tracking Stability</h4>
+<p>To prevent issues like the above while still allowing shared mutability, Ante tracks stability in the type system.
+Specifically, stability is tracked on places. An unstable place is marked with <code>!</code>. We can still get references
+to unstable places:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">example1</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="n">a</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;v</span><span class="o">!</span> <span class="n">t</span> <span class="ow">=</span> <span class="n">v</span><span class="o">.</span><span class="n">get</span> <span class="mi">0</span>
+    <span class="n">b</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;v</span><span class="o">!</span> <span class="n">t</span> <span class="ow">=</span> <span class="n">v</span><span class="o">.</span><span class="n">get</span> <span class="mi">0</span>
+    <span class="n">println</span> <span class="n">a</span>  <span class="c1">// ok!</span>
+    <span class="n">println</span> <span class="n">b</span>  <span class="c1">// ok!</span>
+</code></pre></div><p>However, whenever a reference with place <code>p</code> is mutated, any unstable references with <code>p</code> as a parent, such as
+<code>ref 'p! I32</code> or <code>ref 'p.bar!.baz I32</code>, will be invalidated:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">example2</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="kt">String</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="n">a</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;v</span><span class="o">!</span> <span class="kt">String</span> <span class="ow">=</span> <span class="n">v</span><span class="o">.</span><span class="n">get</span> <span class="mi">0</span>
+    <span class="n">b</span><span class="o">:</span> <span class="k">mut</span> <span class="n">&#39;v</span><span class="o">!</span> <span class="kt">String</span> <span class="ow">=</span> <span class="n">v</span><span class="o">.</span><span class="n">get_mut</span> <span class="mi">0</span>
+
+    <span class="n">println</span> <span class="n">a</span>  <span class="c1">// ok!</span>
+
+    <span class="n">b</span> <span class="o">:=</span> <span class="s">&#34;foo&#34;</span> <span class="c1">// ok!</span>
+    <span class="n">println</span> <span class="n">b</span>  <span class="c1">// ok! Mutating &#39;v! above only invalidates &#39;v!!</span>
+
+    <span class="n">v</span><span class="o">.</span><span class="n">clear</span> <span class="p">()</span> <span class="c1">// note: &#39;v mutated here</span>
+    <span class="n">println</span> <span class="n">b</span>  <span class="c1">// error: &#39;v was mutated on the line above, which may invalidate b.</span>
+</code></pre></div><p>Generally, most collection types (with the exception of arrays) will be shape-unstable in their element types,
+and pointer types that allow shared mutability like <code>Rc</code> will be shape-unstable as well.</p>
+<p><code>Rc</code> specifically, because each clone of it shares the same underlying value has a place attached to it: <code>Rc 'p t</code>
+is a reference-counted pointer to some data <code>p</code> of type <code>t</code>. This is sufficient to support type-safe shared
+mutability on reference-counted pointers, including supporting cyclic data types:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">List</span> <span class="n">&#39;p</span> <span class="n">t</span> <span class="ow">=</span>
+   <span class="o">|</span> <span class="kt">Nil</span>
+   <span class="o">|</span> <span class="kt">Cons</span> <span class="n">t</span> <span class="p">(</span><span class="kt">Rc</span> <span class="n">&#39;p</span> <span class="p">(</span><span class="kt">List</span> <span class="n">&#39;p</span> <span class="n">t</span><span class="p">))</span>
+
+<span class="c1">// Note that projecting through a Rc gives unstable refs:</span>
+<span class="kt">Rc</span><span class="o">.</span><span class="n">get</span> <span class="p">(</span><span class="n">rc</span><span class="o">:</span> <span class="k">mut</span> <span class="n">&#39;outer</span> <span class="kt">Rc</span> <span class="n">&#39;inner</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">&#39;(outer!, inner)</span> <span class="n">t</span> <span class="ow">=</span> <span class="o">...</span>
+
+<span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span>
+    <span class="k">var</span> <span class="n">f</span> <span class="ow">=</span> <span class="kt">Rc</span><span class="o">.</span><span class="n">of</span> <span class="p">(</span><span class="kt">Cons</span> <span class="mi">false</span> <span class="p">(</span><span class="kt">Rc</span><span class="o">.</span><span class="n">of</span> <span class="kt">Nil</span><span class="p">))</span>  <span class="c1">// false -&gt; []</span>
+    <span class="k">var</span> <span class="n">t</span> <span class="ow">=</span> <span class="kt">Rc</span><span class="o">.</span><span class="n">of</span> <span class="p">(</span><span class="kt">Cons</span> <span class="mi">true</span> <span class="n">f</span><span class="p">)</span>             <span class="c1">// true -&gt; false -&gt; []</span>
+    <span class="k">if</span> <span class="n">f</span> <span class="k">is</span> <span class="kt">Cons</span> <span class="n">_</span> <span class="n">tail</span> <span class="k">then</span>
+        <span class="c1">// Note that `tail: mut &#39;(f!!, a!) Rc &#39;a (List &#39;a Bool)`</span>
+        <span class="c1">// where &#39;a is shared by `f` and `t`. The double `!` comes from the instability of the Rc and the inner union.</span>
+        <span class="c1">// Taken as a whole, this means mutating either `f`, the list union, or inside the List may invalidate `tail`.</span>
+        <span class="n">tail</span> <span class="o">:=</span> <span class="n">t</span>
+
+        <span class="c1">// If we matched again:</span>
+        <span class="c1">//   if tail is Cons _ tail2 then</span>
+        <span class="c1">// We would get:</span>
+        <span class="c1">//   `tail2: mut &#39;(f!!!!, a!!!, a!) Rc &#39;a (List &#39;a Bool)`</span>
+        <span class="c1">// Which would be invalidated by even more mutations. Cyclic refs are fragile in this way, by necessity.</span>
+
+    <span class="n">emit_list</span> <span class="n">t</span>
+        <span class="o">|&gt;</span> <span class="n">take</span> <span class="mi">5</span>
+        <span class="o">|&gt;</span> <span class="n">iter</span> <span class="n">println</span>  <span class="c1">// true, false, true, false, true</span>
+
+<span class="nf">emit_list</span> <span class="p">(</span><span class="n">l</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">List</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span> <span class="k">do</span>
+    <span class="k">if</span> <span class="n">l</span> <span class="k">is</span> <span class="kt">Cons</span> <span class="n">elem</span> <span class="n">tail</span> <span class="k">then</span>
+        <span class="n">emit</span> <span class="n">elem</span>
+        <span class="n">emit_list</span> <span class="n">tail</span>
+</code></pre></div><p>Although due to Rc semantics, <code>t</code>&rsquo;s memory is still leaked at end of scope!</p>
 <blockquote>
-<p>These rules are a work in progress!</p>
+<p>&ldquo;This is complex and I don&rsquo;t understand it!&rdquo;</p>
+<p>The good news is you largely don&rsquo;t need to! For the most part, the standard library defines
+primitives like <code>Rc.get</code> itself and users don&rsquo;t need to worry about manually upholding invariants.
+Places can be inferred as well, so it is always valid to omit them and have the compiler write
+in the correct types to the source file if desired. You can also use <a href="#shared-types">shared types</a>
+which provide a cleaner interface over types like <code>Rc</code>.</p>
 </blockquote>
-<p>Converting from a reference which does not allow shared mutability (<code>imm</code> or <code>uniq</code>) to one that does (<code>ref</code> or <code>mut</code>) is trivial and is always allowed:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// This works with uniq to mut as well</span>
-<span class="nf">imm_to_ref</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">imm</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span>
-    <span class="n">requires_ref</span> <span class="n">x</span>  <span class="c1">// ok</span>
-    <span class="n">foo</span> <span class="ow">=</span> <span class="n">return_ref</span> <span class="n">x</span>  <span class="c1">// ok</span>
-    <span class="o">...</span>
+<h4 id="the-mutate-effect">The <code>Mutate</code> effect</h4>
+<p>When a reference <code>mut 'e t</code> is mutated, the compiler issues a <code>Mutate 'e</code> effect. This effect
+is what is used to invalidate any value of a type referencing <code>'e!</code> afterward. For convenience,
+this effect is currently automatically added to a function&rsquo;s
+signature whenever the function mentions a mutable reference parameter.</p>
+<p>The <code>Mutate 'p</code> effect cannot be manually handled by users but will be automatically handled once
+the function signature it is propagated to no longer references <code>'p</code>. In the case of mutating a
+combination of places such as <code>Mutate '(a, b)</code> with only <code>'a</code> going out of scope, the <code>Mutate '(a, b)</code>
+effect will be propagated as <code>Mutate 'b</code> instead.</p>
+<p><code>Mutate 'p</code> ensures mutation is safe even in generic code:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">twice</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="n">a</span> <span class="n">a</span> <span class="ow">=&gt;</span> <span class="kt">Unit</span><span class="p">)</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="n">a</span><span class="p">)</span> <span class="p">{</span><span class="kt">Copy</span> <span class="n">a</span><span class="p">}</span> <span class="ow">=</span>
+    <span class="n">f</span> <span class="n">x</span> <span class="n">x</span>
 
-<span class="nf">requires_ref</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span> <span class="o">...</span>
-<span class="nf">return_ref</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span> <span class="ow">=</span> <span class="n">y</span>
-</code></pre></div><p>Above we know that <code>y</code> is a temporary reference only valid within <code>requires_ref</code>, so once the call ends we can continue
-using <code>x</code> as an <code>imm t</code> reference - it isn&rsquo;t possible for <code>y</code> to outlive its temporary lifetime. When <code>return_ref</code> is called
-we borrow <code>x</code> as a <code>ref</code> again, and this time may not use <code>x</code> again until <code>foo</code> is dropped.</p>
-<p>Weakening references like is done above is very simple, but going the other way around from <code>ref</code> to <code>imm</code> or from <code>mut</code> to
-<code>uniq</code> is more difficult. This type of conversion is called a &ldquo;reference promotion&rdquo; since the resulting reference
-is more powerful than the original.</p>
-<blockquote>
-<p>Reference promotions are meant as an optimization tool to avoid clones and provide more code reuse by
-enabling <code>ref</code> and <code>mut</code> to be used in more function parameters. This lowers requirements for callers
-who are now free to pass owned (<code>imm</code>, <code>uniq</code>) or mutably shared (<code>ref</code>, <code>mut</code>) data.</p>
+<span class="nf">mutate_b</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="k">mut</span> <span class="n">&#39;a</span> <span class="kt">Vec</span> <span class="kt">I32</span><span class="p">)</span> <span class="p">(</span><span class="n">b</span><span class="o">:</span> <span class="k">mut</span> <span class="n">&#39;b</span> <span class="kt">Vec</span> <span class="kt">I32</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Mutate</span> <span class="n">&#39;b</span> <span class="ow">=</span> <span class="o">...</span>
+
+<span class="nf">caller</span> <span class="p">()</span> <span class="ow">=</span>
+    <span class="k">var</span> <span class="n">v</span> <span class="ow">=</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+
+    <span class="c1">// note: mutate_b used as `fn (mut &#39;v Vec I32) (mut &#39;v Vec I32) -&gt; Unit can Mutate &#39;v`</span>
+    <span class="c1">// error: &#39;v is mutably aliased in mutate_b</span>
+    <span class="n">twice</span> <span class="n">mutate_b</span> <span class="p">(</span><span class="k">mut</span> <span class="n">v</span><span class="p">)</span>
+</code></pre></div><p>Another example with an effect and aliasing in a closure environment:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">run</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">=&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="n">e</span><span class="p">)</span> <span class="p">(</span><span class="n">xs</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Vec</span> <span class="kt">I32</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="n">e</span> <span class="ow">=</span>
+    <span class="n">first</span> <span class="ow">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">get</span> <span class="mi">0</span>
+    <span class="n">f</span> <span class="p">()</span>             <span class="c1">// If e is Mutate &#39;xs, the next line would be unsafe</span>
+    <span class="n">println</span> <span class="n">first</span>
+
+<span class="nf">caller</span> <span class="p">()</span> <span class="ow">=</span>
+    <span class="k">var</span> <span class="n">v</span> <span class="ow">=</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+
+    <span class="c1">// note: run used as `fn (fn Unit [mut &#39;v Vec I32] -&gt; Unit can Mutate &#39;v) (ref &#39;v Vec I32) -&gt; Unit can Mutate &#39;v`</span>
+    <span class="c1">// error: &#39;v is mutably aliased in run</span>
+    <span class="n">run</span> <span class="p">(</span><span class="k">do</span> <span class="n">v</span><span class="o">.</span><span class="n">clear</span> <span class="p">())</span> <span class="n">v</span>
+</code></pre></div><h4 id="in-loops">In Loops</h4>
+<p>Similar to how a variable declared outside a loop cannot be moved within a loop, a variable
+declared outside a loop cannot be used in a loop at all if it&rsquo;d be invalidated later in the
+same loop body:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo1</span> <span class="p">()</span> <span class="ow">=</span>
+    <span class="k">var</span> <span class="n">v</span> <span class="ow">=</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+    <span class="n">one</span> <span class="ow">=</span> <span class="n">v</span><span class="o">.</span><span class="n">get</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">0</span> <span class="o">..</span> <span class="mi">3</span> <span class="k">do</span>
+        <span class="n">println</span> <span class="n">one</span>  <span class="c1">// error: one may already be invalidated by code later in the loop</span>
+        <span class="n">v</span><span class="o">.</span><span class="n">clear</span> <span class="p">()</span>   <span class="c1">// note: one invalidated here, causing the next iteration to use a dangling reference</span>
+</code></pre></div><p>Similarly, a closure that invalidates its own capture is a <code>FnOnce</code>, so the following is prevented:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo2</span> <span class="p">()</span> <span class="ow">=</span>
+    <span class="k">var</span> <span class="n">v</span> <span class="ow">=</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+    <span class="n">one</span> <span class="ow">=</span> <span class="n">v</span><span class="o">.</span><span class="n">get</span> <span class="mi">0</span>
+
+    <span class="c1">// error: repeat requires a Fn, but was passed a FnOnce</span>
+    <span class="n">repeat</span> <span class="mi">3</span> <span class="k">fn</span> <span class="n">_</span> <span class="ow">-&gt;</span>
+        <span class="n">println</span> <span class="n">one</span>
+        <span class="n">v</span><span class="o">.</span><span class="n">clear</span> <span class="p">()</span>  <span class="c1">// note: closure is a FnOnce because it invalidates a capture here</span>
+</code></pre></div><h4 id="in-traits-and-effect-handlers">In Traits and Effect Handlers</h4>
+<p>For simplicity, effect handlers and traits do not have place parameters, but this means they have
+some restrictions:</p>
+<ul>
+<li>Trait implementations cannot capture places in their closure environment.</li>
+<li>Effect handler branches cannot <code>Mutate</code> any places used in the handled expression.</li>
+<li>Effect handler branches may be entered several times and are thus treated as loop bodies where
+they are not allowed to use any places that are invalidated later in the handler body (by any branch).</li>
+</ul>
+<p>Also note that any effects performed in a handled expression are also seen by each handler branch,
+so the following:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">bad1</span> <span class="p">()</span> <span class="ow">=</span>
+    <span class="k">var</span> <span class="n">v</span> <span class="ow">=</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+    <span class="k">handle</span>
+        <span class="n">emit</span> <span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">get</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">v</span><span class="o">.</span><span class="n">clear</span> <span class="p">()</span>
+    <span class="o">|</span> <span class="n">emit</span> <span class="n">elem</span> <span class="ow">-&gt;</span>
+        <span class="k">resume</span> <span class="p">()</span>     <span class="c1">// calls v.clear ()</span>
+        <span class="n">println</span> <span class="n">elem</span>  <span class="c1">// println after the clear</span>
+</code></pre></div><p>Is prevented by the <code>Mutate 'v</code> effect of the handled expression which invalidates the element reference.
+Note that this will invalidate <code>elem</code> even before <code>resume</code> is called as well.</p>
+<p>Any temporary place passed to an effect handler is assumed to be dropped when <code>resume</code> is called:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">bad2</span> <span class="p">()</span> <span class="ow">=</span>
+    <span class="k">handle</span>
+        <span class="n">v</span> <span class="ow">=</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+        <span class="n">emit</span> <span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">get</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="o">|</span> <span class="n">emit</span> <span class="n">elem</span> <span class="ow">-&gt;</span>
+        <span class="k">resume</span> <span class="p">()</span>     <span class="c1">// handled expr finishes, v is dropped</span>
+        <span class="n">println</span> <span class="n">elem</span>  <span class="c1">// error: elem used here after being dropped by `resume`</span>
+</code></pre></div><p>Specifically, <code>elem</code> is given the type <code>ref '(_, resume) I32</code>, which is invalidated
+once <code>resume</code> is moved by being called. Additionally, because of the anonymous local place <code>'_</code>
+given to <code>elem</code>, the handle branch is not allowed to mutate <code>elem</code> which prevents code
+like <code>bad3</code> from compiling:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">bad3</span> <span class="p">()</span> <span class="ow">=</span>
+    <span class="k">handle</span>
+        <span class="k">var</span> <span class="n">v</span> <span class="ow">=</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+        <span class="n">first</span> <span class="ow">=</span> <span class="n">v</span><span class="o">.</span><span class="n">get</span> <span class="mi">0</span>
+        <span class="n">emit</span> <span class="p">(</span><span class="k">mut</span> <span class="n">v</span><span class="p">)</span>
+        <span class="n">println</span> <span class="n">first</span>
+    <span class="o">|</span> <span class="n">emit</span> <span class="n">v2</span> <span class="ow">-&gt;</span>
+        <span class="n">v2</span><span class="o">.</span><span class="n">clear</span> <span class="p">()</span>  <span class="c1">// error: Cannot mutate v2 which is shared by the handled expression</span>
+        <span class="k">resume</span> <span class="p">()</span>
+</code></pre></div><blockquote>
+<p>This restriction may be removed in the future. It may be possible to assume <code>emit r</code> for some
+mutable reference <code>r</code> issues a <code>Mutate 'r_elem</code> effect which can then be tracked and used
+to invalidate <code>first</code>.</p>
 </blockquote>
-<p>A reference promotion occurs when a <code>imm</code> or <code>uniq</code> reference is required but only a <code>ref</code> or <code>mut</code> reference
-is provided. When promoting a reference, instead of getting a <code>imm t</code> or <code>uniq t</code>, a <code>local imm t</code>
-or <code>local uniq t</code> is received instead. Compared to the non-local versions, local references only
-require us to show to the compiler that the reference is not <em>locally</em> mutably aliased. In other words,
-a <code>local uniq t</code> doesn&rsquo;t need to be unique globally, it only needs to be unique while it is still being used.
-This allows for aliases to exist further up the call stack as long as they aren&rsquo;t accessed while the local
-reference is alive.</p>
-<p>Note that in the case of cyclic types, a variable is counted as a possible alias to itself and thus cannot
-be promoted.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">shared_to_owned</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span>
-    <span class="n">requires_owned</span> <span class="n">x</span> <span class="mi">0</span>  <span class="c1">// ok! `x` is not used with any possible mutable aliases</span>
-
-<span class="nf">requires_owned</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="k">imm</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">z</span><span class="o">:</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span> <span class="o">...</span>
-
-<span class="nf">promote_invalid</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">mut</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">uniq</span> <span class="n">t</span> <span class="ow">=</span>
-    <span class="c1">// Converting to `uniq t` is okay - but we can&#39;t return these without keeping the `local` part</span>
-    <span class="c1">// error! Cannot return a uniq reference promoted from a mut reference - it may be aliased by the caller</span>
-    <span class="n">x</span>
-
-<span class="nf">promote_valid</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">mut</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">local</span> <span class="k">uniq</span> <span class="n">t</span> <span class="ow">=</span>
-    <span class="c1">// ok! Using this in the calling scope will come with the restrictions `local` provides</span>
-    <span class="n">x</span>
-</code></pre></div><p>The way the compiler proves a variable is not mutably aliased locally is by requiring a <code>Distinct a b</code> trait constraint
-whenever a mutable variable of type <code>b</code> is used while a <code>local</code> reference to a type <code>a</code> is still alive. This trait is automatically
-implemented by the compiler when the type <code>a</code> is not contained within the type <code>b</code>. For example, in
-the following code, we&rsquo;d expect a constraint for <code>Distinct String I32</code> to be issued (and solved):</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">convert_string_ref</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">String</span><span class="p">)</span> <span class="p">(</span><span class="n">i</span><span class="o">:</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
-    <span class="n">promotion</span><span class="o">:</span> <span class="k">uniq</span> <span class="kt">String</span> <span class="ow">=</span> <span class="n">s</span>
-    <span class="n">print</span> <span class="n">i</span>  <span class="c1">// i is used while `promotion` is still used, `Distinct String I32` is searched for &amp; satisfied</span>
-    <span class="n">print</span> <span class="n">promotion</span>
-</code></pre></div><p>This constraint is important for preventing use of values which may have been dropped:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">invalid_shared_to_owned</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span>
-    <span class="c1">// `get` requires an `imm` reference so this must promote to `local imm Vec t`</span>
-    <span class="n">element_ref</span> <span class="ow">=</span> <span class="n">v</span><span class="o">.</span><span class="n">get</span> <span class="mi">0</span> <span class="o">|&gt;</span> <span class="n">unwrap</span>
-    <span class="n">print</span> <span class="n">element_ref</span>  <span class="c1">// ok</span>
-
-    <span class="n">y</span><span class="o">.</span><span class="n">clear</span> <span class="p">()</span>  <span class="c1">// Error! Using `y: mut Vec t` may mutate the promoted reference from `v.get 0`</span>
-                <span class="c1">// causing any references derived from this `v` to be dropped!</span>
-                <span class="c1">// Note: No impl found for `Distinct (Vec t) (Vec t)`, so the compiler inferred these values may alias</span>
-
-    <span class="n">print</span> <span class="n">element_ref</span>
-</code></pre></div><p>If we passed the same vector for both parameters to <code>invalid_shared_to_owned</code> we would be clearing the same vector we&rsquo;re
-still holding an element reference from. Luckily, this code does not compile because the compiler rightly cannot
-assume <code>x</code> and <code>y</code> are distinct.</p>
-<p>Note that this is only an issue because <code>y.clear()</code> is called while <code>element_ref</code> is still used later. If we remove
-the final <code>print</code> or move <code>y.clear()</code> after it, we no longer get any errors. The alias restriction can be as local
-as we like, so as long as we can make a block of code where <code>v</code> isn&rsquo;t used at the same time as <code>y</code>, we are all good!</p>
-<p>The <code>Distinct a b</code> constraint is only issued when we use variables that may be mutated, which includes mutable
-references and moved values. Notably, this allows us to convert many variables of the same type from <code>ref</code> to <code>imm</code> easily.
-Since they are not mutable, they don&rsquo;t require a <code>Distinct a b</code> restriction, letting us alias the resulting <code>imm</code>
-references as well:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">promote_to_imm</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">ref</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="k">ref</span> <span class="n">b</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span>
-    <span class="n">requires_imm</span> <span class="n">x</span> <span class="n">y</span>
-
-<span class="nf">requires_imm</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">imm</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="k">imm</span> <span class="n">b</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span> <span class="o">...</span>
-</code></pre></div><p>Although we promoted two generic types above, there is no need to require a <code>Distinct a b</code> or <code>Distinct b a</code>
-constraint since they are both used immutably!</p>
-<p>One downside of the <code>Distinct a b</code> check is that promoting common types like <code>ref String</code> are more difficult to
-use with other variables in scope since <code>String</code>s are likely to be found within these other variables as well.</p>
-<p>Even with these restrictions, the ability to convert <code>ref</code> and <code>mut</code> to <code>imm</code> and <code>uniq</code>
-enables us to write more functions with fewer requirements on the arguments they are called with (since they would
-now accept references which may be mutably aliased, including <code>shared mut</code> types). Consider the following function:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Context</span> <span class="ow">=</span> <span class="n">names</span><span class="o">:</span> <span class="kt">HashMap</span> <span class="kt">String</span> <span class="kt">NameData</span>
-
-<span class="k">type</span> <span class="kt">NameData</span> <span class="ow">=</span> <span class="n">uses</span><span class="o">:</span> <span class="kt">U32</span>
-
-<span class="kt">Context</span><span class="o">.</span><span class="n">use_name</span> <span class="p">(</span><span class="n">context</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Context</span><span class="p">)</span> <span class="p">(</span><span class="n">name</span><span class="o">:</span> <span class="k">imm</span> <span class="kt">String</span><span class="p">)</span> <span class="ow">=</span>
-    <span class="c1">// Strings are contained within `Context`, but the `Distinct Context String` requirement is one-way.</span>
-    <span class="c1">// Standard borrowing rules will prevent callers from calling this method with a `name` borrowed from `context`</span>
-    <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">names</span><span class="o">.</span><span class="n">get_uniq</span> <span class="n">name</span> <span class="k">is</span> <span class="kt">Some</span> <span class="n">data</span> <span class="k">then</span>
-        <span class="n">data</span><span class="o">.</span><span class="n">uses</span> <span class="o">+=</span> <span class="mi">1</span>
-</code></pre></div><p>Because the <code>HashMap.get_uniq</code> method requires a <code>uniq HashMap a b</code>, we would normally be required to have a
-<code>uniq Context</code> as well. Since there are no possible aliases to the context in scope however, we
-can locally treat it as <code>uniq</code> and get a <code>uniq NameData</code> anyway. Users of <code>Context.use_name</code> are
-now less constrained in how they use their <code>Context</code> since they may pass in an owned or shared object.</p>
+<p>If mutating a value passed to an effect handler is needed, <code>uniq</code> references should be
+used instead. A branch may mutate a <code>uniq</code> reference&rsquo;s place but not any that may be shared
+still (such as those through an <code>Rc</code>):</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">ok</span> <span class="p">()</span> <span class="ow">=</span>
+    <span class="k">handle</span>
+        <span class="n">v</span> <span class="ow">=</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+        <span class="n">first</span> <span class="ow">=</span> <span class="n">v</span><span class="o">.</span><span class="n">get</span> <span class="mi">0</span>
+        <span class="n">emit</span> <span class="p">(</span><span class="k">uniq</span> <span class="n">v</span><span class="p">)</span>  <span class="c1">// note: first dropped here when v was used again, which it borrows from</span>
+        <span class="n">println</span> <span class="n">first</span>  <span class="c1">// error: Conflicting borrow, first is no longer valid</span>
+    <span class="o">|</span> <span class="n">emit</span> <span class="n">v2</span> <span class="ow">-&gt;</span>
+        <span class="n">v2</span><span class="o">.</span><span class="n">clear</span> <span class="p">()</span>  <span class="c1">// ok</span>
+        <span class="k">resume</span> <span class="p">()</span>
+</code></pre></div><h4 id="distinct-places">Distinct Places</h4>
+<p>Sometimes, code may only be safe if separate places are distinct:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;a</span> <span class="kt">Vec</span> <span class="kt">I32</span><span class="p">)</span> <span class="p">(</span><span class="n">b</span><span class="o">:</span> <span class="k">mut</span> <span class="n">&#39;b</span> <span class="kt">Vec</span> <span class="kt">I32</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Mutate</span> <span class="n">&#39;b</span> <span class="ow">=</span>
+    <span class="n">a_elem</span> <span class="ow">=</span> <span class="n">a</span><span class="o">.</span><span class="n">get</span> <span class="mi">0</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">clear</span> <span class="p">()</span>
+    <span class="n">println</span> <span class="n">a</span>   <span class="c1">// This would be unsafe if b aliases a</span>
+</code></pre></div><p>If <code>foo</code>&rsquo;s caller is allowed to pass the same vector for <code>a</code> and <code>b</code> then we would print
+a dangling reference to a cleared element. To prevent this, the compiler ensures any place
+used in a <code>Mutate</code> effect must be distinct from other places given to the function:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">caller1</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="n">foo</span> <span class="n">v</span> <span class="n">v</span>  <span class="c1">// error! &#39;a cannot alias &#39;b in call to foo, but &#39;v was used for both</span>
+</code></pre></div><h4 id="thread-safety-of-references">Thread Safety of References</h4>
+<p>Since <code>ref</code> and <code>mut</code> both allow mutable aliasing, neither implement <code>Send</code> nor <code>Sync</code>.
+Instead, Ante provides additional reference types <code>imm</code> and <code>uniq</code>. These additional reference
+types are rarely used, typically only in multithreaded code, and come with stricter invariants:</p>
+<ul>
+<li>While <code>imm t</code> is being borrowed, we can only borrow other <code>imm</code> references from <code>t</code>.</li>
+<li>While <code>uniq t</code> is being borrowed, we cannot borrow any other references from <code>t</code>.</li>
+</ul>
+<p>Since <code>uniq t</code> allows for mutability while <code>imm t</code> does not, we can freely <code>Send (imm t)</code> or <code>Sync (imm t)</code>
+between threads, and can still <code>Send (uniq t)</code> as well. Once in another thread,
+<code>imm t</code> can be used where a <code>ref t</code> is expected and <code>uniq t</code> can be used where any other reference
+type is expected.</p>
 <h3 id="shared-types">Shared Types</h3>
-<p>Shared types are a way to opt-out of
-ownership rules for a type by automatically wrapping it in a copy-able wrapper.
-These types can be declared via <code>shared type</code> and also do not require explicit boxing (they are always boxed):</p>
+<p>Shared types are a way to opt-out of ownership rules for a type by automatically wrapping
+it in a copy-able wrapper. These types can be declared via <code>shared type</code> and also do not
+require explicit boxing (they are always boxed):</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Immutable shared type</span>
 <span class="k">shared</span> <span class="k">type</span> <span class="kt">Expr</span> <span class="ow">=</span>
     <span class="o">|</span> <span class="kt">Int</span> <span class="kt">I32</span>
@@ -3628,15 +3885,14 @@ gradually transitioning new users to use ownership rules it can be helpful if th
 about it for fewer types - even if they still need to handle it for built-in types like <code>Vec a</code>.
 These are also useful in cases when types need to be boxed anyway, such as <code>Expr</code> above or
 the various shared, immutable container types.</p>
-<p>Taking the reference of a field of a <code>shared</code> type will always yield a shared reference back
-(similar to a <code>Arc t</code>) since the shared type may be cloned and shared elsewhere.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">expr</span> <span class="ow">=</span> <span class="kt">Expr</span><span class="o">.</span><span class="kt">Int</span> <span class="mi">3</span>
-
-<span class="c1">// We can obtain imm references inside shared types since they may not be mutated</span>
-<span class="nf">my_ref</span><span class="o">:</span> <span class="k">imm</span> <span class="kt">Expr</span> <span class="ow">=</span> <span class="k">imm</span> <span class="n">expr</span>
+<p>It is possible to obtain <code>ref</code>s to fields inside of <code>shared</code> types, but it is not possible to
+receive <code>mut</code> references to them since <code>shared</code> types are immutable:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">var_name1</span> <span class="p">(</span><span class="n">e</span><span class="o">:</span> <span class="kt">Expr</span><span class="p">)</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">String</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span>
+    <span class="k">if</span> <span class="n">e</span> <span class="k">is</span> <span class="kt">Var</span> <span class="n">s</span> <span class="k">then</span> <span class="n">s</span>  <span class="c1">// we&#39;d get an error if we tried to return `mut String` here</span>
+    <span class="k">else</span> <span class="n">fail</span> <span class="p">()</span>
 </code></pre></div><h4 id="shared-mutable-types">Shared Mutable Types</h4>
-<p>In addition to <code>shared type</code>, which declares a shared, but immutable type, we can declare a shared, mutable type
-via <code>shared mut type</code>:</p>
+<p>In addition to <code>shared type</code>, which declares a shared, but immutable type, we can declare a shared,
+mutable type via <code>shared mut type</code>:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">shared</span> <span class="k">mut</span> <span class="k">type</span> <span class="kt">MutExpr</span> <span class="ow">=</span>
     <span class="o">|</span> <span class="kt">Int</span> <span class="kt">I32</span>
     <span class="o">|</span> <span class="kt">Var</span> <span class="kt">String</span>
@@ -3649,53 +3905,59 @@ via <code>shared mut type</code>:</p>
     <span class="k">var</span> <span class="n">alias1</span> <span class="ow">=</span> <span class="n">my_expr</span>
     <span class="n">alias2</span> <span class="ow">=</span> <span class="n">my_expr</span>
 
-    <span class="n">alias1</span> <span class="o">:=</span> <span class="kt">Int</span> <span class="mi">0</span>
-    <span class="n">assert_eq</span> <span class="n">my_expr</span> <span class="p">(</span><span class="kt">Int</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="n">assert_eq</span> <span class="n">alias2</span> <span class="p">(</span><span class="kt">Int</span> <span class="mi">0</span><span class="p">)</span>
-</code></pre></div><p>Unlike normal shared types, shared mutable types allow mutation into their shared contents and are thus not thread-safe.</p>
-<p>Since their contents may be mutated while other copies exist, we cannot obtain an <code>imm</code> reference to the contents
-of a <code>shared mut</code> type. We can however, obtain <code>ref</code> or <code>mut</code> references:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">expr</span> <span class="ow">=</span> <span class="kt">MutExpr</span><span class="o">.</span><span class="kt">Int</span> <span class="mi">3</span>
+    <span class="c1">// `alias1 := Int 0` would just rebind `alias1`</span>
+    <span class="k">if</span> <span class="n">alias1</span> <span class="k">is</span> <span class="kt">Add</span> <span class="n">lhs</span> <span class="n">_</span> <span class="k">then</span>
+        <span class="n">lhs</span> <span class="o">:=</span> <span class="kt">Int</span> <span class="mi">0</span>
 
-<span class="nf">ref1</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Expr</span> <span class="ow">=</span> <span class="k">ref</span> <span class="n">expr</span>
-<span class="nf">ref2</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Expr</span> <span class="ow">=</span> <span class="k">mut</span> <span class="n">expr</span>
-</code></pre></div><p>Since taking the reference of a tagged-union&rsquo;s field requires a <code>imm</code> or <code>uniq</code> reference (tagged-unions do
-not have stable shapes since they may be mutated to a different union variant), when matching on
-<code>shared mut</code> types, they are automatically copied:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">eval1</span> <span class="p">(</span><span class="n">e</span><span class="o">:</span> <span class="kt">Expr</span><span class="p">)</span> <span class="ow">=</span>
-    <span class="k">match</span> <span class="k">ref</span> <span class="n">e</span>  <span class="c1">// error: Getting a reference to a union&#39;s fields requires an `imm` or `uniq` reference</span>
-    <span class="o">|</span> <span class="kt">Int</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">x</span>
-    <span class="o">...</span>
+    <span class="n">assert_eq</span> <span class="n">my_expr</span> <span class="p">(</span><span class="kt">Add</span> <span class="p">(</span><span class="kt">Int</span> <span class="mi">0</span><span class="p">)</span> <span class="p">(</span><span class="kt">Var</span> <span class="s">&#34;foo&#34;</span><span class="p">))</span>
+    <span class="n">assert_eq</span> <span class="n">alias2</span> <span class="p">(</span><span class="kt">Add</span> <span class="p">(</span><span class="kt">Int</span> <span class="mi">0</span><span class="p">)</span> <span class="p">(</span><span class="kt">Var</span> <span class="s">&#34;foo&#34;</span><span class="p">))</span>
+</code></pre></div><blockquote>
+<p>Using shared mutable types is meant to feel like using types in a high-level, garbage-collected
+language like Java</p>
+</blockquote>
+<p>Unlike normal shared types, shared mutable types allow mutation into their shared contents and are
+thus not thread-safe. Similar to <code>Rc 'p t</code>, we must also track the places these types may refer to,
+so an implicit place parameter is added to each <code>shared mut type</code> to keep shared mutability safe.</p>
+<p>We can obtain <code>ref</code> or <code>mut</code> references inside <code>shared mut type</code>s. When we do, the place these references
+refer to will be the same as the implicit place variable on the type:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">var_name2</span> <span class="p">(</span><span class="n">e</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">MutExpr</span><span class="p">)</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">String</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span>
+    <span class="k">if</span> <span class="n">e</span> <span class="k">is</span> <span class="kt">Var</span> <span class="n">s</span> <span class="k">then</span> <span class="n">s</span>
+    <span class="k">else</span> <span class="n">fail</span> <span class="p">()</span>
 
-<span class="nf">eval2</span> <span class="p">(</span><span class="n">e</span><span class="o">:</span> <span class="kt">Expr</span><span class="p">)</span> <span class="ow">=</span>
-    <span class="k">match</span> <span class="n">e</span>  <span class="c1">// Ok (copied)</span>
-    <span class="o">|</span> <span class="kt">Int</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">x</span>
+<span class="c1">// Or with explicit places:</span>
+<span class="nf">var_name2</span> <span class="p">(</span><span class="n">e</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;outer</span> <span class="kt">MutExpr</span> <span class="n">&#39;inner</span><span class="p">)</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">&#39;(outer!!, inner!)</span> <span class="kt">String</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
+
+<span class="nf">foo</span> <span class="p">(</span><span class="n">expr</span><span class="o">:</span> <span class="kt">MutExpr</span> <span class="n">&#39;e</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="n">name</span> <span class="ow">=</span> <span class="n">var_name2</span> <span class="n">expr</span>
     <span class="o">...</span>
+</code></pre></div><p>Shared types are meant to be an easy to use alternative to explicit boxing. As an example, here&rsquo;s the cyclic
+<code>List</code> example from earlier, rewritten to use a <code>shared mut type List</code> instead:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">shared</span> <span class="k">mut</span> <span class="k">type</span> <span class="kt">List</span> <span class="n">t</span> <span class="ow">=</span>
+    <span class="o">|</span> <span class="kt">Nil</span>
+    <span class="o">|</span> <span class="kt">Cons</span> <span class="n">t</span> <span class="p">(</span><span class="kt">List</span> <span class="n">t</span><span class="p">)</span>
+
+<span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span>
+    <span class="n">f</span> <span class="ow">=</span> <span class="kt">Cons</span> <span class="mi">false</span> <span class="kt">Nil</span>  <span class="c1">// false -&gt; []</span>
+    <span class="n">t</span> <span class="ow">=</span> <span class="kt">Cons</span> <span class="mi">true</span> <span class="n">f</span>     <span class="c1">// true -&gt; false -&gt; []</span>
+
+    <span class="k">if</span> <span class="n">f</span> <span class="k">is</span> <span class="kt">Cons</span> <span class="n">_</span> <span class="n">tail</span> <span class="k">then</span>
+        <span class="n">tail</span> <span class="o">:=</span> <span class="n">t</span>
+
+    <span class="n">emit_list</span> <span class="n">t</span>
+        <span class="o">|&gt;</span> <span class="n">take</span> <span class="mi">5</span>
+        <span class="o">|&gt;</span> <span class="n">iter</span> <span class="n">println</span>  <span class="c1">// true, false, true, false, true</span>
+
+<span class="nf">emit_list</span> <span class="p">(</span><span class="n">l</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">List</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span> <span class="k">do</span>
+    <span class="k">if</span> <span class="n">l</span> <span class="k">is</span> <span class="kt">Cons</span> <span class="n">elem</span> <span class="n">tail</span> <span class="k">then</span>
+        <span class="n">emit</span> <span class="n">elem</span>
+        <span class="n">emit_list</span> <span class="n">tail</span>
 </code></pre></div><h3 id="internal-mutability">Internal Mutability</h3>
-<p>Since mutating through an immutably borrowed reference <code>imm t</code> is otherwise impossible,
-Ante provides several types for internal mutability. <code>RefCell t</code> will be
-a familiar sight to those used to Rust, but using this type entails runtime
-checking to uphold the properties of the <code>imm</code>/<code>uniq</code> references (either a mutable reference
-can be made or multiple immutable references, but never both at once).</p>
-<p>Since Ante natively supports shared references, it is also possibly to obtain a
-shared reference directly through a shared pointer type like an <code>Rc t</code>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">as_mut</span> <span class="p">(</span><span class="n">rc</span><span class="o">:</span> <span class="k">uniq</span> <span class="kt">Rc</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">mut</span> <span class="n">t</span> <span class="ow">=</span> <span class="o">...</span>
-</code></pre></div><p>Note that like most pointer types, we still need an owned reference of the
-pointer itself to obtain a reference to the inside. Otherwise,
-the value would be able to drop out from under us if another shared reference
-to the pointer swapped out the Rc struct itself for another. As a result, mutating
-an <code>Rc t</code> often requires cloning the outer Rc to ensure it isn&rsquo;t dropped while the
-inner references are lent out.</p>
-<p>If we wanted to create a shared mutable container where each element is also
-mutably shared, we could use a <code>Vec (Rc t)</code> with this technique. Note that the
-<code>Vec</code> itself doesn&rsquo;t need to be boxed since we can hand out shared, mutable references
-from owned values already. If want to store the same <code>Vec</code> reference in other data types
-then we would need an <code>Rc</code> or other shared wrapper around the <code>Vec</code>. To make using
-shared mutable references easier and minimize cloning costs, consider using <code>shared</code>
-types to do the pointer-wrapping for you.</p>
-<p>This is essentially how many higher level languages make shared mutability work: by boxing
-each value. When we employ this strategy in Ante however, we don&rsquo;t even need to box every
-value. Just boxing container elements and union data is often sufficient.</p>
+<p>Although Ante provides type-system-checked shared mutability by tracking stability in a type,
+it is sometimes necessary to track the validity at runtime instead. For this, Ante provides
+several types implementing internal mutability to mutate what is otherwise an immutable-looking <code>ref t</code> type.
+<code>RefCell t</code> will be a familiar sight to those used to Rust, but using this type entails runtime
+checking to uphold reference safety: either a mutable reference can be made or multiple immutable
+references, but never both at once.</p>
 <h2 id="thread-safety">Thread Safety</h2>
 <p>Ante uses the familiar <code>Send</code> and <code>Sync</code> traits from Rust for safe concurrency. It does
 not innovate here but continues with the safe, tried and true model.</p>
@@ -3900,12 +4162,11 @@ If we were performing multiple effects, we can separate them with commas.</p>
     <span class="n">yield</span> <span class="mi">7</span>
     <span class="mi">10</span>
 </code></pre></div><p>Alone, <code>yield 5</code> means nothing. To give meaning to an effect, we must handle it with an
-effect handler. Handlers can be defined with the syntax: <code>handler &lt;name&gt; for &lt;capability-expr&gt; in &lt;expr&gt;</code>.
-This syntax defines a handler with the given name, which will be visible in <code>&lt;expr&gt;</code>. The
-<code>&lt;capability-expr&gt;</code> portion must list each function of an effect and its implementation, separated by <code>|</code> if needed.
-Additionally, the special <code>resume</code> function will be visible within any functions
-defined in <code>&lt;capability-expr&gt;</code>. This <code>resume</code> function is special - it lets us resume
-the function that called our effect function.</p>
+effect handler. Handlers can be defined with the syntax: <code>handle &lt;expr&gt; | &lt;capability-pattern&gt; -&gt; &lt;expr&gt; | ...</code>.
+This syntax defines a handler for the effect in <code>&lt;capability-pattern&gt;</code>. The
+<code>| &lt;capability-expr&gt; -&gt; &lt;expr&gt;</code> portion must list each function of an effect and its implementation, separated by <code>|</code> if needed,
+similar to match branches. Additionally, the special <code>resume</code> function will be visible within each handle
+branch. This <code>resume</code> function is special - it lets us resume the function that called our effect function.</p>
 <blockquote>
 <p>Named handlers are temporary and may be removed in the future. They are holdovers from Ante&rsquo;s previous
 abilities feature and are meant to disambiguate between multiple handlers for the same effect.</p>
@@ -3914,9 +4175,9 @@ abilities feature and are meant to disambiguate between multiple handlers for th
 catch by using effect handlers, but can also <code>resume</code> back to the code that performed the effect.
 We&rsquo;ll get into more of the implications of this later but for now let&rsquo;s see a basic handler:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">print_each_yield</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">=&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Yield</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="kt">Display</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Print</span> <span class="ow">=</span>
-    <span class="k">handler</span> <span class="n">yield_handler</span> <span class="k">for</span> <span class="n">yield</span> <span class="n">elem</span> <span class="ow">-&gt;</span>
+    <span class="k">handle</span> <span class="n">f</span> <span class="p">()</span>
+    <span class="o">|</span> <span class="n">yield</span> <span class="n">elem</span> <span class="ow">-&gt;</span>
         <span class="k">resume</span> <span class="p">(</span><span class="n">println</span> <span class="n">elem</span><span class="p">)</span>
-    <span class="k">in</span> <span class="n">f</span> <span class="p">()</span>
 
 <span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span>
     <span class="n">x</span> <span class="ow">=</span> <span class="n">print_each_yield</span> <span class="n">yield_and_return_10</span>  <span class="c1">// `5` and `7` are printed</span>
@@ -3937,21 +4198,18 @@ we can collect each yielded value into a container:</p>
 <span class="nf">collect_yields_into_seq</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">=&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Yield</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="n">a</span><span class="p">,</span> <span class="kt">Seq</span> <span class="n">t</span> <span class="ow">=</span>
     <span class="k">var</span> <span class="n">yielded</span> <span class="ow">=</span> <span class="kt">Seq</span><span class="o">.</span><span class="n">empty</span> <span class="p">()</span>
     <span class="c1">// ret will hold the result of `f collector`</span>
-    <span class="n">ret</span> <span class="ow">=</span> <span class="k">handler</span> <span class="n">_</span> <span class="k">for</span> <span class="n">yield</span> <span class="n">elem</span> <span class="ow">-&gt;</span>
+    <span class="n">ret</span> <span class="ow">=</span> <span class="k">handle</span> <span class="n">f</span> <span class="p">()</span>
+    <span class="o">|</span> <span class="n">yield</span> <span class="n">elem</span> <span class="ow">-&gt;</span>
         <span class="n">yielded</span> <span class="o">:=</span> <span class="n">yielded</span><span class="o">.</span><span class="n">push</span> <span class="n">elem</span>
         <span class="k">resume</span> <span class="p">()</span>
-    <span class="k">in</span> <span class="n">f</span> <span class="p">()</span>
     <span class="n">ret</span><span class="p">,</span> <span class="n">yielded</span>
 </code></pre></div><p>The real power of effects comes from when we call <code>resume</code> outside of tail-calls. For example,
 we can choose to call it in the <em>middle</em> of our yield implementation or even <em>not call it at all</em>.</p>
 <p>If we choose not to call <code>resume</code> at all, we should expect the code calling <code>yield</code> to never resume!
 This may sound odd or undesired, but it is actually a very common use case: it is what exceptions do!</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">abort_after_first_yield</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">=&gt;</span> <span class="kt">I32</span> <span class="k">can</span> <span class="kt">Yield</span> <span class="kt">I32</span><span class="p">)</span><span class="o">:</span> <span class="kt">I32</span> <span class="ow">=</span>
-    <span class="k">handler</span> <span class="n">_</span> <span class="k">for</span> <span class="n">yield</span> <span class="n">elem</span> <span class="ow">-&gt;</span> <span class="n">elem</span>
-    <span class="c1">// If there is a newline after `in`, the handler</span>
-    <span class="c1">// will be in scope for the rest of the block</span>
-    <span class="k">in</span>
-    <span class="n">f</span> <span class="p">()</span>
+    <span class="k">handle</span> <span class="n">f</span> <span class="p">()</span>
+    <span class="o">|</span> <span class="n">yield</span> <span class="n">elem</span> <span class="ow">-&gt;</span> <span class="n">elem</span>
 
 <span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span>
     <span class="n">x</span> <span class="ow">=</span> <span class="n">abort_after_first_yield</span> <span class="n">yield_and_return_10</span>
@@ -4007,12 +4265,12 @@ as resumable exceptions, so if we want normal exceptions all we must do
 is not call <code>resume</code> in the handler. A function like <code>try</code> will instead
 return <code>None</code> while <code>on_fail</code> provides a default value on error instead.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">try</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">=&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Fail</span><span class="p">)</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="n">a</span> <span class="ow">=</span>
-    <span class="k">handler</span> <span class="n">_</span> <span class="k">for</span> <span class="n">fail</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="kt">None</span> <span class="k">in</span>
-    <span class="kt">Some</span> <span class="p">(</span><span class="n">f</span> <span class="p">())</span>
+    <span class="k">handle</span> <span class="kt">Some</span> <span class="p">(</span><span class="n">f</span> <span class="p">())</span>
+    <span class="o">|</span> <span class="n">fail</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="kt">None</span>
 
 <span class="nf">catch</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">=&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Throw</span> <span class="n">e</span><span class="p">)</span><span class="o">:</span> <span class="kt">Result</span> <span class="n">a</span> <span class="n">e</span> <span class="ow">=</span>
-    <span class="k">handler</span> <span class="n">_</span> <span class="k">for</span> <span class="n">throw</span> <span class="n">e</span> <span class="ow">-&gt;</span> <span class="kt">Err</span> <span class="n">e</span> <span class="k">in</span>
-    <span class="kt">Ok</span> <span class="p">(</span><span class="n">f</span> <span class="p">())</span>
+    <span class="k">handle</span> <span class="kt">Ok</span> <span class="p">(</span><span class="n">f</span> <span class="p">())</span>
+    <span class="o">|</span> <span class="n">throw</span> <span class="n">e</span> <span class="ow">-&gt;</span> <span class="kt">Err</span> <span class="n">e</span>
 
 <span class="nf">print</span> <span class="p">(</span><span class="n">safe_div</span> <span class="mi">6</span> <span class="mi">2</span> <span class="o">~&gt;</span> <span class="n">try</span><span class="p">)</span> <span class="c1">//=&gt; Some 3</span>
 <span class="nf">print</span> <span class="p">(</span><span class="n">safe_div</span> <span class="mi">6</span> <span class="mi">0</span> <span class="o">~&gt;</span> <span class="n">on_fail</span> <span class="k">do</span> <span class="mi">42</span><span class="p">)</span> <span class="c1">//=&gt; 42</span>
@@ -4094,7 +4352,8 @@ show this unique control-flow:</p>
     <span class="n">my_effect</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">String</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
 
 <span class="nf">debug_effect_control_flow</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">MyEffect</span><span class="p">)</span><span class="o">:</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Print</span> <span class="ow">=</span>
-    <span class="k">handler</span> <span class="n">_</span> <span class="k">for</span> <span class="n">my_effect</span> <span class="n">msg</span> <span class="ow">-&gt;</span>
+    <span class="k">handle</span> <span class="n">f</span> <span class="p">()</span>
+    <span class="o">|</span> <span class="n">my_effect</span> <span class="n">msg</span> <span class="ow">-&gt;</span>
         <span class="c1">// Print the message</span>
         <span class="n">println</span> <span class="s">&#34;my_effect &#39;${msg}&#39; called!&#34;</span>
         <span class="c1">// Resume the computation &amp; finish it entirely (including other calls to my_effect!)</span>
@@ -4102,7 +4361,6 @@ show this unique control-flow:</p>
         <span class="c1">// And only then print `finished`</span>
         <span class="n">println</span> <span class="s">&#34;resume &#39;${msg}&#39; finished&#34;</span>
         <span class="n">r</span>
-    <span class="k">in</span> <span class="n">f</span> <span class="p">()</span>
 
 <span class="nf">foo</span> <span class="p">()</span> <span class="k">can</span> <span class="kt">MyEffect</span><span class="p">,</span> <span class="kt">Print</span> <span class="ow">=</span>
     <span class="n">println</span> <span class="s">&#34;foo called!&#34;</span>
@@ -4156,9 +4414,8 @@ step-by-step how the function may be evaluated. This will be our example:</p>
 <span class="nf">count_foo_calls</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">=&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Foo</span><span class="p">)</span><span class="o">:</span> <span class="kt">I32</span> <span class="ow">=</span>
     <span class="c1">// This handler is in scope for `f (); 0`,</span>
     <span class="c1">// so the `resume` call ends right after the `0`</span>
-    <span class="k">handler</span> <span class="n">_</span> <span class="k">for</span> <span class="n">foo</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="k">resume</span> <span class="mi">0</span> <span class="k">in</span>
-    <span class="n">f</span> <span class="p">()</span>
-    <span class="mi">0</span>
+    <span class="k">handle</span> <span class="n">f</span> <span class="p">();</span> <span class="mi">0</span>
+    <span class="o">|</span> <span class="n">foo</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="k">resume</span> <span class="mi">0</span>
 
 <span class="nf">do_math</span> <span class="mi">5</span> <span class="o">~&gt;</span> <span class="n">count_foo_calls</span>  <span class="c1">//=&gt; 2</span>
 </code></pre></div><p>This example can be confusing at first - how can we always return
@@ -4168,43 +4425,47 @@ to see how it expands:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">do_math</span> <span class="mi">5</span> <span class="o">~&gt;</span> <span class="n">count_foo_calls</span>
 
 <span class="c1">// First we expand and substitute</span>
-<span class="k">handler</span> <span class="n">_</span> <span class="k">for</span> <span class="n">foo</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="k">resume</span> <span class="mi">0</span> <span class="k">in</span>
+<span class="k">handle</span>
     <span class="n">a</span> <span class="ow">=</span> <span class="n">foo</span> <span class="s">&#34;zero&#34;</span>
     <span class="n">b</span> <span class="ow">=</span> <span class="n">foo</span> <span class="s">&#34;bar&#34;</span>
     <span class="mi">5</span> <span class="o">+</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
     <span class="mi">0</span>
+<span class="o">|</span> <span class="n">foo</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="k">resume</span> <span class="mi">0</span>
 
 <span class="c1">// Then reduce via our `foo` rule - continuing</span>
 <span class="c1">// the computation with the value 0 and adding 1 to the result</span>
-<span class="k">handler</span> <span class="n">_</span> <span class="k">for</span> <span class="n">foo</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="k">resume</span> <span class="mi">0</span> <span class="k">in</span>
+<span class="k">handle</span> 
   <span class="mi">1</span> <span class="o">+</span> <span class="p">(</span>
     <span class="n">a</span> <span class="ow">=</span> <span class="mi">0</span>
     <span class="n">b</span> <span class="ow">=</span> <span class="n">foo</span> <span class="s">&#34;bar&#34;</span>
     <span class="mi">5</span> <span class="o">+</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
     <span class="mi">0</span>
   <span class="p">)</span>
+<span class="o">|</span> <span class="n">foo</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="k">resume</span> <span class="mi">0</span>
 
 <span class="c1">// Reduce via foo again for b</span>
-<span class="k">handler</span> <span class="n">_</span> <span class="k">for</span> <span class="n">foo</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="k">resume</span> <span class="mi">0</span> <span class="k">in</span>
+<span class="k">handle</span> 
   <span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span>
     <span class="n">a</span> <span class="ow">=</span> <span class="mi">0</span>
     <span class="n">b</span> <span class="ow">=</span> <span class="mi">0</span>
     <span class="mi">5</span> <span class="o">+</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
     <span class="mi">0</span>
   <span class="p">))</span>
+<span class="o">|</span> <span class="n">foo</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="k">resume</span> <span class="mi">0</span>
 
 <span class="c1">// Now we finish evaluating the function and would</span>
 <span class="c1">// normally get a result of 5 - but it is sequenced immediately after,</span>
 <span class="c1">// discarding the `5` and returning a `0` instead.</span>
-<span class="k">handler</span> <span class="n">_</span> <span class="k">for</span> <span class="n">foo</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="k">resume</span> <span class="mi">0</span> <span class="k">in</span>
+<span class="k">handle</span> 
   <span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span>
     <span class="mi">5</span>
     <span class="mi">0</span>
   <span class="p">))</span>
+<span class="o">|</span> <span class="n">foo</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="k">resume</span> <span class="mi">0</span>
 
 <span class="c1">// After sequencing:</span>
-<span class="k">handler</span> <span class="n">_</span> <span class="k">for</span> <span class="n">foo</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="k">resume</span> <span class="mi">0</span> <span class="k">in</span>
-  <span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">0</span><span class="p">)</span>
+<span class="k">handle</span> <span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">0</span><span class="p">)</span>
+<span class="o">|</span> <span class="n">foo</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="k">resume</span> <span class="mi">0</span>
 
 <span class="c1">// The handled expression is now done evaluating, so the `handler` is finished.</span>
 <span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">0</span><span class="p">)</span>
@@ -4246,19 +4507,19 @@ This function is also often named <code>yield</code>.</p>
 <span class="c1">/// </span>
 <span class="c1">/// Given `a1, a2, .., aN`, emit `f a1, f a2, .., f aN`</span>
 <span class="nf">map</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span><span class="kt">Stream</span> <span class="n">s</span> <span class="n">a</span><span class="p">}</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="n">a</span> <span class="ow">=&gt;</span> <span class="n">b</span><span class="p">)</span> <span class="ow">=</span> <span class="k">fn</span> <span class="p">()</span> <span class="ow">-&gt;</span>
-    <span class="k">handler</span> <span class="n">_</span> <span class="k">for</span> <span class="n">emit</span> <span class="n">a</span> <span class="ow">-&gt;</span>
+    <span class="k">handle</span> <span class="n">stream</span> <span class="n">s</span>
+    <span class="o">|</span> <span class="n">emit</span> <span class="n">a</span> <span class="ow">-&gt;</span>
         <span class="n">emit</span> <span class="p">(</span><span class="n">f</span> <span class="n">a</span><span class="p">)</span>
         <span class="k">resume</span> <span class="p">()</span>
-    <span class="k">in</span> <span class="n">stream</span> <span class="n">s</span>
 
 <span class="c1">/// Re-emits only the elements from the original stream for which `f elem` is true</span>
 <span class="c1">///</span>
 <span class="c1">/// E.g. `filter (iota 5) (_ &gt; 2)` will emit `3` and `4`.</span>
 <span class="nf">filter</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span><span class="kt">Stream</span> <span class="n">s</span> <span class="n">a</span><span class="p">}</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">a</span><span class="p">)</span> <span class="ow">=&gt;</span> <span class="kt">Bool</span><span class="p">)</span> <span class="ow">=</span> <span class="k">fn</span> <span class="p">()</span> <span class="ow">-&gt;</span>
-    <span class="k">handler</span> <span class="n">_</span> <span class="k">for</span> <span class="n">emit</span> <span class="n">a</span> <span class="ow">-&gt;</span>
+    <span class="k">handle</span> <span class="n">stream</span> <span class="n">s</span>
+    <span class="o">|</span> <span class="n">emit</span> <span class="n">a</span> <span class="ow">-&gt;</span>
         <span class="k">if</span> <span class="n">f</span> <span class="p">(</span><span class="k">ref</span> <span class="n">a</span><span class="p">)</span> <span class="k">then</span> <span class="n">emit</span> <span class="n">a</span>
         <span class="k">resume</span> <span class="p">()</span>
-    <span class="k">in</span> <span class="n">stream</span> <span class="n">s</span>
 
 <span class="c1">/// Infinite stream example</span>
 <span class="nf">fibonacci</span> <span class="p">()</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="kt">U64</span> <span class="ow">=</span>
@@ -4288,17 +4549,15 @@ out of loops.</p>
 <span class="c1">/// Consumes the given stream, applying `f` to each element, with</span>
 <span class="c1">/// an additional Loop handler installed to allow breaking/continuing</span>
 <span class="c1">/// within the overall loop.</span>
- <span class="n">for_</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span><span class="kt">Stream</span> <span class="n">s</span> <span class="n">a</span><span class="p">}</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="n">a</span> <span class="ow">=&gt;</span> <span class="n">b</span> <span class="k">can</span> <span class="kt">Loop</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span>
-     <span class="k">var</span> <span class="n">broke</span> <span class="ow">=</span> <span class="mi">false</span>
-     <span class="k">handler</span> <span class="n">_</span> <span class="k">for</span> <span class="n">emit</span> <span class="n">a</span> <span class="ow">-&gt;</span>
-         <span class="k">handler</span> <span class="n">_</span> <span class="k">for</span>
-         <span class="o">|</span> <span class="n">break_</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="n">broke</span> <span class="o">:=</span> <span class="mi">true</span>
-         <span class="o">|</span> <span class="n">continue_</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="p">()</span>
-         <span class="k">in</span>
-             <span class="n">f</span> <span class="n">a</span>
-             <span class="p">()</span>
-         <span class="k">if</span> <span class="k">not</span> <span class="n">broke</span> <span class="k">then</span> <span class="k">resume</span> <span class="p">()</span>
-     <span class="kt">Stream</span><span class="o">.</span><span class="n">stream</span> <span class="n">s</span> <span class="n">h</span>
+<span class="nf">for_</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span><span class="kt">Stream</span> <span class="n">s</span> <span class="n">a</span><span class="p">}</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="n">a</span> <span class="ow">=&gt;</span> <span class="n">b</span> <span class="k">can</span> <span class="kt">Loop</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span>
+    <span class="k">var</span> <span class="n">broke</span> <span class="ow">=</span> <span class="mi">false</span>
+    <span class="k">handle</span> <span class="kt">Stream</span><span class="o">.</span><span class="n">stream</span> <span class="n">s</span> <span class="n">h</span>
+    <span class="o">|</span> <span class="n">emit</span> <span class="n">a</span> <span class="ow">-&gt;</span>
+        <span class="k">handle</span> <span class="n">f</span> <span class="n">a</span><span class="p">;</span> <span class="p">()</span>
+        <span class="o">|</span> <span class="n">break_</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="n">broke</span> <span class="o">:=</span> <span class="mi">true</span>
+        <span class="o">|</span> <span class="n">continue_</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="p">()</span>
+
+        <span class="k">if</span> <span class="k">not</span> <span class="n">broke</span> <span class="k">then</span> <span class="k">resume</span> <span class="p">()</span>
 
 <span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span>
     <span class="c1">// Print `12457`:</span>
@@ -4312,8 +4571,8 @@ an effect, we can use it even to early return out of multiple closures:</p>
     <span class="n">early_return</span><span class="o">:</span> <span class="k">fn</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Never</span>
 
 <span class="nf">with_early_return</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">=&gt;</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">EarlyReturn</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="n">t</span> <span class="ow">=</span>
-    <span class="k">handler</span> <span class="n">_</span> <span class="k">for</span> <span class="n">early_return</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">x</span> <span class="k">in</span>
-    <span class="n">f</span> <span class="n">h</span>
+    <span class="k">handle</span> <span class="n">f</span> <span class="p">()</span>
+    <span class="o">|</span> <span class="n">early_return</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">x</span>
 
 <span class="c1">/// Find the index of the given element in the sequence.</span>
 <span class="c1">/// Fails if there is no matching element.</span>
@@ -4378,17 +4637,13 @@ abstraction for free.</p>
 <span class="c1">// testing instead of the database handler that will actually</span>
 <span class="c1">// connect to the database.</span>
 <span class="nf">test</span> <span class="p">()</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span>
-    <span class="k">handler</span> <span class="n">_</span> <span class="k">for</span> <span class="n">print</span> <span class="n">msg</span> <span class="ow">-&gt;</span>
+    <span class="k">handle</span> <span class="n">business_logic</span> <span class="mi">false</span>
+    <span class="o">|</span> <span class="n">print</span> <span class="n">msg</span> <span class="ow">-&gt;</span>
         <span class="n">assert</span> <span class="p">(</span><span class="n">msg</span> <span class="o">==</span> <span class="s">&#34;did not query&#34;</span><span class="p">)</span>
         <span class="k">resume</span> <span class="p">()</span>
-    <span class="k">in</span>
-
-    <span class="k">handler</span> <span class="n">_</span> <span class="k">for</span> <span class="n">query_db</span> <span class="n">_</span> <span class="ow">-&gt;</span>
+    <span class="o">|</span> <span class="n">query_db</span> <span class="n">_</span> <span class="ow">-&gt;</span>
         <span class="n">error</span> <span class="s">&#34;Tried to query when should_query = false!&#34;</span>
         <span class="k">resume</span> <span class="p">()</span>
-    <span class="k">in</span>
-
-    <span class="n">business_logic</span> <span class="mi">false</span>
 
     <span class="n">logs</span> <span class="ow">=</span> <span class="n">business_logic</span> <span class="mi">true</span> <span class="o">~&gt;</span> <span class="n">ignore_db</span> <span class="o">~&gt;</span> <span class="n">collect_prints</span>
     <span class="n">assert</span> <span class="p">(</span><span class="k">not</span> <span class="n">is_empty</span> <span class="n">logs</span><span class="p">)</span>

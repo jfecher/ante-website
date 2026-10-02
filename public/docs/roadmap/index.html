@@ -353,20 +353,13 @@
 list of features being worked on.</p>
 <h1 id="near-future">Near Future</h1>
 <ul>
-<li>Large rework of the design of the four reference types</li>
-<li>Existentialization as an alternative to monomorphization for faster debug builds</li>
+<li>Language Server: Better support for struct members and methods</li>
 <li>Inserting <code>drop</code> automatically after a variable&rsquo;s last use</li>
 <li>Default handlers for <code>Panic</code>, <code>Print</code>, and some other effects in <code>main</code></li>
 <li>Renaming of the <code>Fs</code>, <code>Net</code> primitive effects</li>
 <li>Compiler option to write inferred types into the file</li>
 <li>Formatter</li>
-<li>Language Server: Better support for struct members and methods</li>
-<li>Possible new sugar <code>&lt;pattern&gt; do &lt;expr&gt; === fn &lt;pattern&gt; -&gt; &lt;expr&gt;</code> and <code>&lt;pattern&gt; in &lt;expr1&gt; do &lt;expr2&gt; === &lt;expr1&gt; fn &lt;pattern&gt; -&gt; &lt;expr2&gt;</code>.
-Intended to be used in looping functions: <code>each i do ...</code> and <code>for i in vec do ...</code>
-<ul>
-<li>Problem: this conflicts with <code>do &lt;expr&gt;</code> being sugar for <code>fn () -&gt; &lt;expr&gt;</code>.</li>
-</ul>
-</li>
+<li>Rework or removal of <code>~&gt;</code> operator for effect handling</li>
 </ul>
 <h1 id="futurer">Futurer</h1>
 <p>The following features are unimplemented but are not my top priority to implement in the near future.</p>
@@ -385,7 +378,6 @@ whether Ante should use Rust&rsquo;s model for chars (4 bytes), Swift&rsquo;s mo
 <li>Modules: <code>as name</code>, re-exports, <code>import implicit</code></li>
 <li>Marker type on each <code>trait impl</code></li>
 <li>Rework of closure types</li>
-<li>Rework of effect ergonomics. <code>~&gt;</code> works but is awkward. <code>Stream</code> defines its own returning-a-function pattern which generally works well.</li>
 </ul>
 
                         </div>
