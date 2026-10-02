@@ -9,17 +9,13 @@ list of features being worked on.
 
 # Near Future
 
-- Large rework of the design of the four reference types
-- Existentialization as an alternative to monomorphization for faster debug builds
+- Language Server: Better support for struct members and methods
 - Inserting `drop` automatically after a variable's last use
 - Default handlers for `Panic`, `Print`, and some other effects in `main`
 - Renaming of the `Fs`, `Net` primitive effects
 - Compiler option to write inferred types into the file
 - Formatter
-- Language Server: Better support for struct members and methods
-- Possible new sugar `<pattern> do <expr> === fn <pattern> -> <expr>` and `<pattern> in <expr1> do <expr2> === <expr1> fn <pattern> -> <expr2>`.
-Intended to be used in looping functions: `each i do ...` and `for i in vec do ...`
-  - Problem: this conflicts with `do <expr>` being sugar for `fn () -> <expr>`.
+- Rework or removal of `~>` operator for effect handling
 
 # Futurer
 
@@ -39,4 +35,3 @@ whether Ante should use Rust's model for chars (4 bytes), Swift's model (variabl
 - Modules: `as name`, re-exports, `import implicit`
 - Marker type on each `trait impl`
 - Rework of closure types
-- Rework of effect ergonomics. `~>` works but is awkward. `Stream` defines its own returning-a-function pattern which generally works well.
