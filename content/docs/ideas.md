@@ -16,8 +16,8 @@ in no particular order.
 
 Some form of overloading could help alleviate user frustration
 by allowing modules like `Vec` and `HashMap` to both be imported despite defining conflicting names like `empty`,
-`of`, `insert`, `get`, etc. Overloading would also reduce the need for abilities as users would no longer need to
-use abilities to be lazy with their function names. It would however complicate documentation somewhat. An identifier
+`of`, `insert`, `get`, etc. Overloading would also reduce the need for traits as users would no longer need to
+use traits to be lazy with their function names. It would however complicate documentation somewhat. An identifier
 would no longer be uniquely determined by its full module path. Referring to a specific instance of it would now need to
 specify the full module path and type of the function.
 
@@ -32,7 +32,7 @@ foo (map: HashMap I32 String) =
     print elem
 ```
 
-Here, the type checker has both `get: HashMap a b - a -> Maybe b` and `get: Vec a - Usz -> Maybe a` in scope.
+Here, the type checker has both `get: fn (HashMap a b) a -> Maybe b` and `get: fn (Vec a) Usz -> Maybe a` in scope.
 Since it knows `map: HashMap I32 String`, there is only one valid choice and the code is thus unambiguous. It's worth
 noting there may be implementation concerns - if we have more than 2 of these in scope, the resolution
 order of these constraints could affect whether subsequent constraints can be inferred to a single instance or not.
@@ -45,15 +45,13 @@ foo map =
     print elem
 ```
 
-This `foo` would be valid for both `map: HashMap (Int a) b` and `map: Vec b` (given `Print b`).
+This `foo` would be valid for both `map: HashMap (Int a) b` and `map: Vec b` (given `Display b`).
 There are two options here:
 
 1. We can be more flexible and generalize the constraint:
 
 ```ante
-foo: a -> Unit given
-    get: a -> Int b -> c,
-    Print c
+foo: a {.get: fn a I32 -> c} {Display c} -> Unit can Print
 ```
 
 In which case we end up with a kind of compile-time duck typing. Worst case scenario, if we made
@@ -63,7 +61,7 @@ are actually at least 2 functions in scope with that name.
 
 It is an open question whether generalized function requirements should be resolved via the set of
 functions visible to the caller or just those visible to the definer. If it is the former, this functions
-as a sort of ad-hoc ability feature and the "only generalize if there are at least 2 functions in scope" of the
+as a sort of ad-hoc trait feature and the "only generalize if there are at least 2 functions in scope" of the
 definer rule seems more arbitrary if these functions won't be used for resolution anyway. For this reason,
 it is perhaps better to opt into this feature via a separate syntax, e.g. via `.` hinting at method
 calls in other languages:
@@ -78,8 +76,8 @@ This method is opt-in so users are less likely to accidentally hit it and get co
 largely follows the already-established type inference and generalization rules for `.` on fields.
 
 2. We can choose to never generalize and always issue an error if there are more than two functions
-that may match in scope. If the user still wishes to allow such functionality, they must use abilities
-and implement the ability for each combination of types they want. This approach is less compatible with
+that may match in scope. If the user still wishes to allow such functionality, they must use traits
+and implement the trait for each combination of types they want. This approach is less compatible with
 type inference and may lead to users avoiding type inference to be able to use overloading. It may
 also be a stumbling block for new programmers, though both of these proposals realistically may be.
 
@@ -98,7 +96,7 @@ Other `Code` objects can be interpolated into this via `$`. `comptime` functions
 captured with a `comptime` variable.
 
 ```ante
-comptime loop_unroll (iterations: U8) (body: U8 -> Code) : Code =
+comptime loop_unroll (iterations: U8) (body: fn U8 -> Code): Code =
     loop (i = 0) ->
         if i >= iterations
         then quote ()
@@ -106,14 +104,14 @@ comptime loop_unroll (iterations: U8) (body: U8 -> Code) : Code =
             $(body i)
             $(recur (i + 1))
 
-comptime pow (base: Code) (exponent: U8) : Code =
+comptime pow (base: Code) (exponent: U8): Code =
     quote
-        result = mut 1
+        var result = 1
         $(loop_unroll exponent fn _ ->
             quote result *= $base)
         result
 
-x = mut 2
+var x = 2
 x = pow (quote x) 5
 print x  //=> 32
 
@@ -135,21 +133,21 @@ type checking until there are no more compile-time functions to be evaluated.
 It would also be possible to implement `derive` using this:
 
 ```ante
-comptime derive_functions = mut HashMap.new ()
+comptime var derive_functions = HashMap.empty ()
 
-comptime register_derive (function: Code -> Code) (ability_name: Code): Unit =
-    insert derive_functions ability_name function
+comptime register_derive (function: fn Code -> Code) (trait_name: Code): Unit =
+    insert derive_functions trait_name function
 
-comptime derive (type_definition: Code) (ability_name: Code): Code =
+comptime derive (type_definition: Code) (trait_name: Code): Code =
     if not is_type_definition type_definition then
         error "derive can only be used on type definitions"
 
-    match get derive_functions ability_name
+    match get derive_functions trait_name
     | Some derive_function ->
         new_impl = derive_function type_definition
         concat type_definition new_impl
     | None ->
-        error "No derive function registered for ${ability_name}"
+        error "No derive function registered for ${trait_name}"
 ```
 
 Using this, we could register a handler by:
@@ -178,14 +176,14 @@ derive_eq (type_definition: Code): Code =
     typename = type_name type_definition
     generics = generics type_definition
 
-    quote impl Eq ($typename $generics) with
+    quote impl eq_$typename: Eq ($typename $generics) with
         eq $arg1 $arg2 = $body
 
 
 /// Transforms:
 ///   [`a`, `b`, .., `z`]
 /// Into:
-///   arg1.a == arg2.a and arg2.b == arg2.b and ... and arg1.z == arg2.z
+///   arg1.a == arg2.a and arg1.b == arg2.b and ... and arg1.z == arg2.z
 comptime derive_eq_struct_helper (arg1: Code) (arg2: Code) (typ: Code): Code =
     fields = fields_of_type typ
     field_names = vecmap fields field_name
@@ -207,12 +205,12 @@ type MyType =
 ```
 
 ---
-# Abilities Object Types
+# Trait Object Types
 
-Abilities are already types in Ante, but they are more akin to a dictionary of functions
-or a vtable than an actual object that can perform those operations. Usually an ability
+Traits are already types in Ante, but they are more akin to a dictionary of functions
+or a vtable than an actual object that can perform those operations. Usually a trait
 like `Display t` will be paired with an actual object of type `t`. It is often useful however,
-to bundle together an object with some abilities:
+to bundle together an object with some traits:
 
 ```ante
 type DisplayObj = exists t env.
@@ -225,37 +223,37 @@ implicit display_displayobj {obj: DisplayObj}: Display DisplayObj = Display with
 
 There are some issues with this however:
 - This is a rough equivalent to `dyn Trait` in Rust, but there is no `impl Trait` equivalent
-- This relies on users manually creating wrappers for each ability they want to use
-- This only works for abilities with a single non-env argument
+- This relies on users manually creating wrappers for each trait they want to use
+- This only works for traits with a single non-env argument
 
 To the second point, we could alleviate it a bit by making the type more generic:
 
 ```ante
-type Obj (ability_: fn type type -> type) = exists t env.
+type Obj (trait_: fn type type -> type) = exists t env.
     value: t
-    vtable: ability_ t env
+    vtable: trait_ t env
 ```
 
 Now we could make a `DisplayObj` via `Obj Display` or use it with other traits like `Obj Hash`.
 However, we can no longer define an implicit like `display_displayobj` as before. We'd have
 to return a generic value of `a (Obj a) env` somehow, but we cannot construct such a generic value
-as-is. It may be possible if our `vtable` also held a constructor for the ability in question.
+as-is. It may be possible if our `vtable` also held a constructor for the trait in question.
 
 ---
 # Derive Without Macros
 
-Ability deriving is an extremely useful feature for any language with abilities and ability impls.
+Trait deriving is an extremely useful feature for any language with traits and trait impls.
 It cuts down on so much boilerplate that I would even argue it to be necessary. Rust, for example,
 relies on implementing derives via procedural macros which are quite difficult for IDEs to handle,
 slow compile times, come with a hefty learning curve, and are required to be put in a separate crate.
 To provide a derive mechanism without these downsides, I propose a system based on GHC's [Datatype
 Generic Programming](https://wiki.haskell.org/GHC.Generics) in which we can define how to derive an
-ability by specifying rules for what to do for product types, sum types, and annotated types.
+trait by specifying rules for what to do for product types, sum types, and annotated types.
 
 Here's an example in Ante (syntax not final):
 
 ```ante
-ability Hash a =
+trait Hash a =
     hash: fn a -> U64
 
 derive Hash a via match a
@@ -267,14 +265,14 @@ derive Hash a via match a
 
 type Foo = x: I32, y: I32
 
-hash_foo = impl Hash Foo via derive
+implicit hash_foo: Hash Foo = derive
 ```
 
 These would function somewhat as type-directed rules for the compiler to generate impls
 from a given type. The exact cases we would need may push toward a different list of cases
 (e.g. a simple Product pair type won't enable easy differentiation of the beginning and end of a
 struct's fields) so the final design may be more general with a bit more noise (e.g. we could
-add StartStruct and StructEnd variants which may be useful for Serialization and other abilities).
+add `StructStart` and `StructEnd` variants which may be useful for Serialization and other traits).
 
 The above strategy with Hash simply recurses on each field of the type. This is a common enough
 use case that we can consider even providing this as a built-in strategy to save users some trouble:
@@ -283,9 +281,9 @@ use case that we can consider even providing this as a built-in strategy to save
 derive Hash a via recur hash_combine
 ```
 
-If the ability functions take more than the single `a` parameter it is unclear if an error should be
+If the trait functions take more than the single `a` parameter it is unclear if an error should be
 issued or the strategy can default to passing along these parameters as-is. We could try to generalize
-the `with` clause to accept a function taking all parameters and return values as well but this starts
+the `via` clause to accept a function taking all parameters and return values as well but this starts
 to cut into its brevity and ease of use over the more general approach.
 
 ---
@@ -436,7 +434,7 @@ type Ast =
     | Let (name: String) (value: Ast) (body: Ast)
     | Add Ast Ast
 
-free_vars (ast: Ast) : Set String =
+free_vars (ast: Ast): Set String =
     match ast
     | Var name -> [name]
     | Int _ -> []
@@ -447,7 +445,7 @@ free_vars (ast: Ast) : Set String =
 And written with the cata/fold scheme:
 
 ```ante
-free_vars (ast: Ast) : Set String =
+free_vars (ast: Ast): Set String =
     fold ast
     | Var name -> [name]
     | Int _ -> []
@@ -479,7 +477,7 @@ inference and basic type checking (without manual proofs) are undecidable.
 Refinement types can be used to ensure indexing into a vector is always valid:
 
 ```ante
-get (a: Vec t) (index: Usz where index < len a) : t = ...
+get (a: Vec t) (index: Usz where index < len a): t = ...
 
 a = [1, 2, 3]
 get a 2  // valid
@@ -500,21 +498,21 @@ to only sorted vectors:
 
 ```ante
 // You can name a return type for use in refinements
-sort (vec: Vec t) : ret: Vec t where sorted ret = ...
+sort (vec: Vec t): ret: Vec t where sorted ret = ...
 
-binary_search (vec: Vec t where sorted vec) (elem: t) : Maybe (index: Usz where index < len vec) = ...
+binary_search (vec: Vec t where sorted vec) (elem: t): Maybe (index: Usz where index < len vec) = ...
 ```
 
 Type aliases can be used to cut down on the annotations:
 
 ```ante
-SortedVec t = a: Vec t where sorted a
+type alias SortedVec t = a: Vec t where sorted a
 
-Index vec = x:Usz where x < len vec
+type alias Index vec = x: Usz where x < len vec
 
-sort (vec: Vec t) : SortedVec t = ...
+sort (vec: Vec t): SortedVec t = ...
 
-binary_search (vec: SortedVec t) (elem: t) : Maybe (Index vec) = ...
+binary_search (vec: SortedVec t) (elem: t): Maybe (Index vec) = ...
 ```
 
 Each of these refinements would be in the type system and would be checked during compile-time with the help of an SMT solver.
@@ -530,12 +528,12 @@ it has the ability to automatically extend the lifetime of its contents
 depending on how far down the call stack the compiler infers that it
 may reach.
 
-If included in the language, `Ref`s can be created with `new : a -> Ref a`
-and the underlying value can be accessed with `deref : Ref a -> a`. Here's
+If included in the language, `Ref`s can be created with `new: fn a -> Ref a`
+and the underlying value can be accessed with `deref: fn (Ref a) -> a`. Here's
 a simple example:
 
 ```ante
-get_value () : Ref I32 =
+get_value (): Ref I32 =
     new 3
 
 value = get_value ()
@@ -642,9 +640,9 @@ type Ctx = logs: Cell (Vec String)
 
 // Mutable references no longer exist so we can no longer tell from the
 // signature of `log` that it mutates `self`
-Ctx.log &self (new_log: String) =
+Ctx.log (ref self) (new_log: String) =
     // Pushing to a vector is now a 3-step process
-    mut logs = self.logs.take ()
+    var logs = self.logs.take ()
     logs.push new_log
     self.logs.set logs
 ```
@@ -652,7 +650,7 @@ Using `RefCell` is not much better:
 ```ante
 type Ctx = logs: RefCell (Vec String)
 
-Ctx.log &self (new_log: String) =
+Ctx.log (ref self) (new_log: String) =
     self.logs.borrow_mut () |>.push new_log
 ```
 
@@ -668,13 +666,13 @@ errors at runtime - potentially only in rare cases. Consider:
 ```ante
 type Error =
    // Take a reference to log to avoid cloning the string
-   | InvalidLog (log: &String)
+   | InvalidLog (log: ref String)
 
-Ctx.try_push_log &self (log: String): Unit can Throw Error =
+Ctx.try_push_log (ref self) (log: String): Unit can Throw Error =
     self.log log
 
     if too_many_logs self then
-        last_log: &String = self.get_last_log ()
+        last_log: ref String = self.get_last_log ()
         throw (InvalidLog last_log)
 ```
 
@@ -696,11 +694,11 @@ Platform-specific code in other languages often requires preprocessing features 
 their equivalent macros to selectively enable code when some functions are available or an architecture
 is known. This has obvious downsides though, namely that any code that is not currently enabled does not
 get checked by the compiler for correctness at all. If we think about it, `#ifdef`s enabling certain
-functions is very similar to programming against an interface, and Ante already has abilities for that
-purpose. Can we use abilities to replace preprocessor code?
+functions is very similar to programming against an interface, and Ante already has traits for that
+purpose. Can we use traits to replace preprocessor code?
 
 Firstly, programs may not declare `extern` symbols in an ad-hoc manner like in other languages.
-Instead, we want to force programs to use abilities to program against an interface of functions they
+Instead, we want to force programs to use traits to program against an interface of functions they
 need available. `main` would take the platform it is targeting as an argument where each platform is
 an interface of functions available on that platform:
 

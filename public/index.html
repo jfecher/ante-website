@@ -296,14 +296,14 @@
 <span class="k">trait</span> <span class="kt">Add</span> <span class="n">t</span> <span class="ow">=</span>
     <span class="p">(</span><span class="o">+</span><span class="p">)</span><span class="o">:</span> <span class="k">fn</span> <span class="n">t</span> <span class="n">t</span> <span class="ow">-&gt;</span> <span class="n">t</span>
 
-<span class="c1">// Since they are just values, we can create them in normal constructor expressions</span>
+<span class="c1">// Since they are just values, we can create them in constructor expressions</span>
 <span class="c1">// and no global coherence or orphan restrictions are required</span>
-<span class="k">implicit</span> <span class="n">ord_i32_descending</span> <span class="ow">=</span> <span class="kt">Ord</span> <span class="kt">I32</span> <span class="k">with</span>
+<span class="k">impl</span> <span class="n">cmp_i32_descending</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="kt">I32</span> <span class="k">with</span>
     <span class="n">cmp</span> <span class="n">a</span> <span class="n">b</span> <span class="ow">=</span> <span class="kt">Ordering</span><span class="o">.</span><span class="n">from_int</span> <span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span>
 
 <span class="c1">// Trait values can be defined locally and closures can capture data,</span>
 <span class="c1">// making implementing them on interned types much easier</span>
-<span class="k">implicit</span> <span class="n">display_interned</span> <span class="p">(</span><span class="n">ctx</span><span class="o">:</span> <span class="kt">InternCtx</span><span class="p">)</span> <span class="ow">=</span> <span class="kt">Display</span> <span class="kt">MyInternedType</span> <span class="k">with</span>
+<span class="k">impl</span> <span class="n">display_interned</span> <span class="p">(</span><span class="n">ctx</span><span class="o">:</span> <span class="kt">InternCtx</span><span class="p">)</span><span class="o">:</span> <span class="kt">Display</span> <span class="kt">MyInternedType</span> <span class="k">with</span>
     <span class="n">display</span> <span class="n">interned</span> <span class="ow">=</span>
         <span class="c1">// Use `ctx` from the closure environment</span>
         <span class="n">data</span> <span class="ow">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">get</span> <span class="n">interned</span>
@@ -396,10 +396,10 @@
 <span class="c1">// One advantage of generators is that they are easier to write than iterators.</span>
 <span class="c1">// Our input stream can `Emit a` and `map` can `Emit b`</span>
 <span class="nf">map</span> <span class="p">(</span><span class="n">stream</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">=&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="n">a</span> <span class="ow">=&gt;</span> <span class="n">b</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="n">b</span> <span class="ow">=</span>
-    <span class="k">handler</span> <span class="n">emit_a</span> <span class="k">for</span> <span class="n">emit</span> <span class="n">elem</span> <span class="ow">-&gt;</span>
+    <span class="k">handle</span> <span class="n">stream</span> <span class="p">()</span>
+    <span class="o">|</span> <span class="n">emit</span> <span class="n">elem</span> <span class="ow">-&gt;</span>
         <span class="n">emit</span> <span class="p">(</span><span class="n">f</span> <span class="n">elem</span><span class="p">)</span>
         <span class="k">resume</span> <span class="p">()</span>
-    <span class="k">in</span> <span class="n">stream</span> <span class="p">()</span>
 
 <span class="c1">// From: `a,b,c\n1,2,3\n4,5,6`</span>
 <span class="c1">// Return: `[[&#34;1&#34;, &#34;2&#34;, &#34;3&#34;], [&#34;4&#34;, &#34;5&#34;, &#34;6&#34;]]`</span>
@@ -451,7 +451,7 @@
 		
 				<div class="col-md-4">
                     <div class="box-simple">
-                        <a href="docs/language/#shared-mutability-and-reference-kinds">
+                        <a href="docs/language/#shared-mutability-and-stability">
                             <div class="icon">
                                 <i class="fa fa-bug"></i>
                             </div>
@@ -527,13 +527,13 @@
 		
 				<div class="col-md-4">
                     <div class="box-simple">
-                        <a href="docs/language/#borrow-sets">
+                        <a href="docs/language/#places">
                             <div class="icon">
                                 <i class="fa fa-trash"></i>
                             </div>
                         </a>
                         <h3>Easier Lifetime Variables</h3>
-                        <p>Instead of abstract or numbered names, Ante&rsquo;s lifetime variables are based on places which are named after the variable(s) they borrow, making error messages more clear.</p>
+                        <p>Instead of abstract or numbered names, Ante&rsquo;s equivalent (called &lsquo;places&rsquo;) are named after the variable(s) they borrow, making error messages more clear.</p>
                     </div>
                 </div>
 		

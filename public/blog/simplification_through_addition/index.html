@@ -668,7 +668,7 @@ the first argument of a trait with its own hidden generic named <code>Self</code
 <code>Clone</code> generally corresponds to a trait with one more generic in Ante: <code>Clone t</code>. This actually
 helps simplify complex trait bounds but in the context
 of trait objects, it makes choosing which generic should be the actual object more difficult.
-There have been some <a href="/docs/ideas/#trait-objects">ideas</a> floating around for quite a while on how
+There have been some <a href="/docs/ideas/#trait-object-types">ideas</a> floating around for quite a while on how
 to remedy this flexibly by allowing any parameter to be the object, but I&rsquo;m just going to give
 in to practicality and arbitrarily choose the first parameter.</p>
 <p>With this, when traits are used in a type position the first parameter can be omitted and the function

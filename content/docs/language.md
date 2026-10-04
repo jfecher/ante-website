@@ -421,6 +421,9 @@ trait Div a =
 trait Mod a =
     (%): fn a a -> a
 
+/// `%%` is a convenience operator for checking if `a` is divisible by `b` without a remainder
+(%%) a b = a % b == 0
+
 trait Eq a =
     (==): fn (ref a) (ref a) -> Bool
 
@@ -545,7 +548,7 @@ iterator functions:
 
 ```ante
 // Parse a csv's data into a matrix of integers
-parse_csv (text: String) : Vec (Vec I32) =
+parse_csv (text: String): Vec (Vec I32) =
     lines text
         |> skip 1  // Skip the column labels line
         |> split ","
@@ -660,12 +663,12 @@ of parentheses but in Ante since tuples are just nested pairs you can just add a
 pairs = [(1, 2), (3, 4)]
 
 // Other languages require deconstructing with nested parentheses:
-for (enumerate pairs) fn (i, (one, two)) ->
+for (i, (one, two)) in enumerate pairs do
     print "Iteration $i: sum = ${one + two}"
 
 // But since `,` is just a normal operator,
 // the following version is equally valid
-for (enumerate pairs) fn (i, one, two) ->
+for i, one, two in enumerate pairs do
     print "Iteration $i: sum = ${one + two}"
 ```
 
@@ -798,7 +801,7 @@ For more complex loops, Ante favors recursive functions like `map`, `foldl`, `it
 iter (0..10) println   // prints 0-9 inclusive
 
 // `for_` allows using `continue_` and `break_` via the `Loop` effect
-for_ (enumerate array) fn (index, elem) {Loop} ->
+for_ (enumerate array) fn (i, elem) ->
     if i %% 3 then continue_ ()
     if i > 7 then break_ ()
     print elem
@@ -854,7 +857,7 @@ list<unsigned int> get_digits(unsigned int x) {
 This can be translated into Ante as the following loop:
 
 ```ante
-get_digits (x: U32) : List U32 =
+get_digits (x: U32): List U32 =
     loop x (digits = Nil) ->
         if x == 0 then return digits
         last_digit = x % 10
@@ -897,11 +900,11 @@ warning unless its name starts with an underscore:
 ```ante
 match foo
 | Some bar -> () // warning: `bar` is unused
-| None
+| None -> ()
 
 match foo
 | Some _bar -> () // ok!
-| None
+| None -> ()
 ```
 
 If a type has many fields to match on but several are unneeded, they can be omitted
@@ -1046,10 +1049,10 @@ trait Iterator it elem =
 
 first_equals it target =
     match next it
-    | Some (x, _) -> x == target
+    | Some (_, x) -> x == target
     | _ -> false
 ```
-We never gave any type for `first_equals_two` yet Ante infers its type for us as
+We never gave any type for `first_equals` yet Ante infers its type for us as
 `fn a b {Iterator a b} {Eq b} -> Bool` - that is a function that returns a `Bool` and takes
 two generic parameters along with an [implicit parameter](#implicits) which is an instance
 of the iterator trait for an iterator of type `a` producing elements of type `b`.
@@ -1241,7 +1244,7 @@ for each individual variant like `Shape.Square.area`, `Shape.Circle.area`, etc.
 ## Type Annotations
 
 Even with global type inference, there are still situations where
-types need to be manually specified. For these cases, the `x : t`
+types need to be manually specified. For these cases, the `x: t`
 type annotation syntax can be used. This is valid anywhere an expression
 or irrefutable pattern is expected. It is often used in practice
 for annotating parameter types and for deciding an unbounded generic
@@ -1250,7 +1253,7 @@ Both operations are generic so we'll need to specify what type we should
 parse out of the string:
 
 ```ante
-parse_and_print_int (s: String) : Unit =
+parse_and_print_int (s: String): Unit =
     x = parse s : I32
     // alternatively we could do
     // x: I32 = parse s
@@ -1278,7 +1281,7 @@ keeps this generic type. This sometimes pops up in function signatures:
 
 ```ante
 // This works with any integer type
-add1 (x: Int a) : Int a =
+add1 (x: Int a): Int a =
     x + 1
 ```
 
@@ -1289,7 +1292,7 @@ constraint - i.e. it must be a primitive integer or we get a compile-time error)
 
 ```ante
 // Fine, we're still generic over a
-foo () : Int a =
+foo (): Int a =
     0
 
 x: I32 = 1  // also fine, we constrained 1 : I32 now
@@ -1321,8 +1324,9 @@ Note that functions in Ante always have at least one argument. Zero-argument fun
 are usually encoded as functions accepting a single unit value as an argument, e.g. `fn Unit -> I32`,
 which there is also sugar for: `fn -> I32`.
 
-Function types can also have an optional effect clause at the end. More on this
-in [Effects in Function Types](#effects-in-function-types).
+Function types can also have an optional effect clause at the end such as
+`fn a -> b can Fail`, `fn a -> b can Fail, Panic`, or `fn a -> b is pure` for a function that uses no effects.
+More on effects in [Effects](#effects).
 
 ## Anonymous Struct Types
 
@@ -1354,7 +1358,7 @@ Using this, we can type `get_foo` as a function which takes
 any struct that has a field named `foo` of type `b`:
 
 ```ante
-get_foo (x: { foo: b }) : b =
+get_foo (x: { foo: b }): b =
     x.foo
 ```
 
@@ -1363,7 +1367,7 @@ that itself is printable and a `prefix` field that must be a string:
 
 ```ante
 // Type inferred as:
-//   fn (prefix: String, debug: a) {Print a} -> Unit
+//   fn (prefix: String, debug: a) {Display a} -> Unit can Print
 print_debug x =
     prefix = x.prefix ++ ": "
     print prefix
@@ -1833,7 +1837,7 @@ Sometimes, code may only be safe if separate places are distinct:
 foo (a: ref 'a Vec I32) (b: mut 'b Vec I32): Unit can Mutate 'b =
     a_elem = a.get 0
     b.clear ()
-    println a   // This would be unsafe if b aliases a
+    println a_elem   // This would be unsafe if b aliases a
 ```
 
 If `foo`'s caller is allowed to pass the same vector for `a` and `b` then we would print
@@ -2146,7 +2150,7 @@ cannot be explicitly specified by users at call sites:
 double_cast x = print (x + x)
 
 main () =
-    // error! `print_double` was not declared with any implicit arguments
+    // error! `double_cast` was not declared with any implicit arguments
     _ = double_cast 2 {add_i32}
 ```
 
@@ -2271,13 +2275,10 @@ yield_and_return_10 (): I32 can Yield I32 =
 
 Alone, `yield 5` means nothing. To give meaning to an effect, we must handle it with an
 effect handler. Handlers can be defined with the syntax: `handle <expr> | <capability-pattern> -> <expr> | ...`.
-This syntax defines a handler for the effect in `<capability-pattern>`. The
-`| <capability-expr> -> <expr>` portion must list each function of an effect and its implementation, separated by `|` if needed,
+This syntax defines a handler for the effect in `<capability-pattern>`. The `| <capability-pattern> -> <expr>`
+portion must list each function of an effect and its implementation, separated by `|` if needed,
 similar to match branches. Additionally, the special `resume` function will be visible within each handle
 branch. This `resume` function is special - it lets us resume the function that called our effect function.
-
-> Named handlers are temporary and may be removed in the future. They are holdovers from Ante's previous
-> abilities feature and are meant to disambiguate between multiple handlers for the same effect.
 
 A good mental model of effects is that they're like checked exceptions which we can throw by performing the effect,
 catch by using effect handlers, but can also `resume` back to the code that performed the effect.
@@ -2294,7 +2295,7 @@ main () =
     assert_eq x 10
 ```
 
-Above we define a handler `yield_handler` and run `f` with that handler.
+Above we define a handler inside `print_each_yield` and run `f` with that handler.
 Then in `main`, we call `print_each_yield` with the `yield_and_return_10` function from
 before as an argument. This will run that function, and when `yield 5` is encountered,
 we will print `5` out before hitting the next yield, printing `7`, and finally returning `10`.
@@ -2313,7 +2314,7 @@ we can collect each yielded value into a container:
 // `f`'s original return value.
 collect_yields_into_seq (f: fn Unit => a can Yield t): a, Seq t =
     var yielded = Seq.empty ()
-    // ret will hold the result of `f collector`
+    // ret will hold the result of `f ()`
     ret = handle f ()
     | yield elem ->
         yielded := yielded.push elem
@@ -2342,8 +2343,8 @@ not resume the call, so `5` is returned from `abort_after_first_yield` as well, 
 the value of `x` at the end.
 
 If we resumed in the middle of our `yield` function (and performed more work afterward), then
-that additional work would not be run until after the entire block expression the `handler`
-is visible within ends. This control-flow can be difficult to conceptualize. As a mental model,
+that additional work would not be run until after the entire handled expression. This control-flow
+can be difficult to conceptualize. As a mental model,
 you can think of performing an effect as suspending the current call stack, jumping to the handler,
 executing it, and jumping back when resume is called. If the handler didn't finish (i.e. there is more
 work to do after the resume call), it will accumulate extra stack frames to run when the computation
@@ -2426,7 +2427,7 @@ foo (): Unit can Throw FileError, Throw ParseError, Throw BarError =
 
 Effect union type aliases may still be declared to cut down on typing if desired:
 
-```
+```ante
 effect MyEffects = Throw FileError, Throw ParseError, Throw BarError 
 
 foo (): Unit can MyEffects =
@@ -2522,7 +2523,7 @@ debug_effect_control_flow (f: Unit => a can MyEffect): a can Print =
         // Print the message
         println "my_effect '${msg}' called!"
         // Resume the computation & finish it entirely (including other calls to my_effect!)
-        r = resume 0
+        r = resume ()
         // And only then print `finished`
         println "resume '${msg}' finished"
         r
@@ -2539,7 +2540,7 @@ bar () can MyEffect, Print =
     _ = my_effect "bar b"
     println "bar finished"
 
-example can MyEffect, Print =
+example () can MyEffect, Print =
     foo ()
     bar ()
 ```
@@ -2578,7 +2579,7 @@ can guarantee certain performance characteristics of the effect no matter its im
 In case the above example was difficult to understand, we'll walk through an example showing
 step-by-step how the function may be evaluated. This will be our example:
 
-```an
+```ante
 effect Foo =
     foo: fn String -> I32
 
@@ -2739,7 +2740,7 @@ See the [Stream module in the stdlib](/docs/stdlib/stream/) for more functions o
 We can combine generators with a `Loop` effect that lets us `continue` and `break`
 out of loops.
 
-```an
+```ante
 effect Loop =
     break_: fn Unit -> Never
     continue_: fn Unit -> Never
@@ -2749,7 +2750,7 @@ effect Loop =
 /// within the overall loop.
 for_ (s: s) {Stream s a} (f: fn a => b can Loop): Unit =
     var broke = false
-    handle Stream.stream s h
+    handle Stream.stream s
     | emit a ->
         handle f a; ()
         | break_ () -> broke := true
@@ -2759,7 +2760,7 @@ for_ (s: s) {Stream s a} (f: fn a => b can Loop): Unit =
 
 main () =
     // Print `12457`:
-    for (iota 20) fn i ->
+    for_ (iota 20) fn i ->
         if i %% 3 then continue ()
         if i > 7 then break ()
         print i
@@ -2800,14 +2801,14 @@ early_return_if_items_match (i: Usz, a: ref t) (b: ref t) {Eq t}: Unit can Early
 > the `EarlyReturn` effect entirely. This will only happen once the compiler can guarantee
 > the efficiency of `EarlyReturn` is always equivalent to that of a native `return`.
 
-### Logging and Mocking
+#### Logging and Mocking
 
 Testing logging output can be done in other languages, but this often involves refactoring code to
 be generic over a logging interface which can be mocked. Since effects in Ante must be used
 on any effectful function, and we can already swap out their implementation, we get this
 abstraction for free.
 
-```an
+```ante
 effect Print =
     print: fn String -> Unit
 
@@ -2816,15 +2817,14 @@ effect QueryDatabase =
 
 database f can IO =
     db = Database.connect "..."
-    result = handler _ can querydb msg ->
-        resume (db.send msg)
-    in f ()
+    result = handle f ()
+        | querydb msg -> resume (db.send msg)
     close db
     result
 
 ignore_db f =
-    handler _ can querydb _ -> resume Response.Empty in
-    f ()
+    handle f ()
+    | querydb _ -> resume Response.Empty
 
 business_logic (should_query: Bool): Unit can Print, QueryDatabase =
     if should_query then
@@ -2847,7 +2847,7 @@ test () can Fail =
     | print msg ->
         assert (msg == "did not query")
         resume ()
-    | query_db _ ->
+    | querydb _ ->
         error "Tried to query when should_query = false!"
         resume ()
 

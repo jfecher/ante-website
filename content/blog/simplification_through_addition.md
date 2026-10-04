@@ -107,7 +107,7 @@ the first argument of a trait with its own hidden generic named `Self`. A trait 
 `Clone` generally corresponds to a trait with one more generic in Ante: `Clone t`. This actually
 helps simplify complex trait bounds but in the context
 of trait objects, it makes choosing which generic should be the actual object more difficult.
-There have been some [ideas](/docs/ideas/#trait-objects) floating around for quite a while on how
+There have been some [ideas](/docs/ideas/#trait-object-types) floating around for quite a while on how
 to remedy this flexibly by allowing any parameter to be the object, but I'm just going to give
 in to practicality and arbitrarily choose the first parameter.
 

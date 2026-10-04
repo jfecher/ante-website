@@ -838,7 +838,7 @@ mutability schemes. Both <code>!stable t</code> and <code>!shared t</code> bette
 <span class="c1">// Is x mutated? Almost definitely!</span>
 <span class="c1">// Insights: whatever is mutated won&#39;t be within a shape-unstable member of the type.</span>
 <span class="c1">// So the `String` inside `y` won&#39;t be directly mutated but the outer `Option` may be!</span>
-<span class="nf">bar3</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="o">!</span><span class="k">shared</span> <span class="kt">FooPlain</span><span class="p">)</span> <span class="ow">=</span> <span class="o">...</span>
+<span class="nf">bar4</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="o">!</span><span class="k">shared</span> <span class="kt">FooPlain</span><span class="p">)</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><hr>
 <h1 id="interior-mutability">Interior Mutability</h1>
 <p>One mild annoyance I have with Rust that is based more on theoretic grounds rather than an actual practical

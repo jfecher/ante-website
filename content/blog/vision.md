@@ -244,7 +244,7 @@ mutability break borrowing rules?
 
 Well yes, but actually no. It breaks Rust's borrowing rules, but not Ante's. The short of it is that Ante
 extends Rust's borrowing rules to allow shared mutability based on Rust's `Cell<T>` type. You can
-read more about it in [the documentation for reference kinds](/docs/language/#shared-mutability-and-reference-kinds)
+read more about it in [the documentation for reference kinds](/docs/language/#shared-mutability-and-stability)
 or in [the blog post where they were first introduced](/blog/safe-shared-mutability).
 
 We can roughly translate the `NonEmptyList` example to the following with each `shared mut` type removed:
@@ -292,7 +292,7 @@ all separately instead of as part of one abstraction.
 
 ...Yes, this is the segue into effect handlers.
 
-This won't be an explainer for effect handlers (for that, see [Ante's own documentation on them](/docs/language/#algebraic-effects)),
+This won't be an explainer for effect handlers (for that, see [Ante's own documentation on them](/docs/language/#effects)),
 just an argument why they're useful.
 
 Effects are pervasive in programming - even in functional programming - and it is useful to have a more structured

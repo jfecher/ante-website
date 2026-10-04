@@ -602,7 +602,7 @@
 languages of tomorrow. They&rsquo;re one of the core features of Ante, as well as being the focus of many research
 languages including <a href="https://koka-lang.github.io/koka/doc/index.html">Koka</a>, <a href="https://effekt-lang.org/">Effekt</a>, <a href="https://www.eff-lang.org/">Eff</a>,
 and <a href="https://flix.dev/">Flix</a>. However, while many articles or documentation snippets try to explain <em>what</em> effect handlers are (including
-<a href="/docs/language#algebraic-effects">Ante&rsquo;s own documentation</a>), few really go in-depth on <em>why</em> you would want to use them.
+<a href="/docs/language#effects">Ante&rsquo;s own documentation</a>), few really go in-depth on <em>why</em> you would want to use them.
 In this post I&rsquo;ll explain exactly that and will include as complete a list as possible on all the use cases of algebraic effects.</p>
 <h2 id="a-note-on-syntax-and-semantics">A Note on Syntax and Semantics</h2>
 <p>I&rsquo;ll be using Ante pseudocode for much of this article. If you&rsquo;re not familiar with effect handlers or Ante I encourage you to read the documentation link
@@ -623,7 +623,7 @@ why it is useful first (hence this blog post!). So I&rsquo;ll give a quick eleva
 <span class="o">|</span> <span class="n">say_message</span> <span class="p">()</span> <span class="ow">-&gt;</span>
     <span class="n">print</span> <span class="s">&#34;Hello World!&#34;</span>  <span class="c1">// print out Hello World!</span>
     <span class="k">resume</span> <span class="p">()</span>             <span class="c1">// then resume the computation, returning 42</span>
-</code></pre></div><p>If you have further questions I again encourage you to read <a href="/docs/language#algebraic-effects">some documentation</a> on effects, but now
+</code></pre></div><p>If you have further questions I again encourage you to read <a href="/docs/language#effects">some documentation</a> on effects, but now
 that we can recognize effects when they&rsquo;re used I&rsquo;ll get into why exactly the idea of exceptions-you-can-resume is so useful!</p>
 <hr>
 <h2 id="user-definable-control-flow">User-definable control-flow</h2>
@@ -988,10 +988,10 @@ them<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3<
 these effects are usually handled in <code>main</code> automatically - so what benefit does it actually
 provide by making programmers mark these functions?</p>
 <p>For one, a number of functions actually require other non-side-effectful (i.e. pure) functions
-as input. When spawning threads for example, we can&rsquo;t allow the spawning thread to call into
+as input. When spawning threads for example, we can&rsquo;t allow the spawned thread to call into
 handlers owned by our thread:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Spawn all the given functions as threads and wait until they complete</span>
-<span class="nf">spawn_all</span> <span class="p">(</span><span class="n">functions</span><span class="o">:</span> <span class="kt">Vec</span> <span class="p">(</span><span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="n">pure</span><span class="p">))</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">IO</span> <span class="ow">=</span> <span class="o">...</span>
+<span class="nf">spawn_all</span> <span class="p">(</span><span class="n">functions</span><span class="o">:</span> <span class="kt">Vec</span> <span class="p">(</span><span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="k">is</span> <span class="n">pure</span><span class="p">))</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">IO</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><p>There is also a technique for concurrency called Software Transactional Memory (STM) which
 requires pure functions. It works by running many functions simultaneously and if a value is
 ever mutated out from under one thread while it was performing a transaction, it just restarts

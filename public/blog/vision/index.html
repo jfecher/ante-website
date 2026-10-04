@@ -750,7 +750,7 @@ is persistent but is closer to a vector than a linked list in terms of performan
 mutability break borrowing rules?</p>
 <p>Well yes, but actually no. It breaks Rust&rsquo;s borrowing rules, but not Ante&rsquo;s. The short of it is that Ante
 extends Rust&rsquo;s borrowing rules to allow shared mutability based on Rust&rsquo;s <code>Cell&lt;T&gt;</code> type. You can
-read more about it in <a href="/docs/language/#shared-mutability-and-reference-kinds">the documentation for reference kinds</a>
+read more about it in <a href="/docs/language/#shared-mutability-and-stability">the documentation for reference kinds</a>
 or in <a href="/blog/safe-shared-mutability">the blog post where they were first introduced</a>.</p>
 <p>We can roughly translate the <code>NonEmptyList</code> example to the following with each <code>shared mut</code> type removed:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">NonEmptyList</span> <span class="n">a</span> <span class="ow">=</span>
@@ -784,7 +784,7 @@ I expect everyone reading this to already be familiar with it. Yet many language
 to repeating themselves or segmenting their ecosystem implementing features like exceptions, async, or generators
 all separately instead of as part of one abstraction.</p>
 <p>&hellip;Yes, this is the segue into effect handlers.</p>
-<p>This won&rsquo;t be an explainer for effect handlers (for that, see <a href="/docs/language/#algebraic-effects">Ante&rsquo;s own documentation on them</a>),
+<p>This won&rsquo;t be an explainer for effect handlers (for that, see <a href="/docs/language/#effects">Ante&rsquo;s own documentation on them</a>),
 just an argument why they&rsquo;re useful.</p>
 <p>Effects are pervasive in programming - even in functional programming - and it is useful to have a more structured
 way to reason about them and make use of them. Ad-hoc approaches can lead to problems like

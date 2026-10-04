@@ -8,10 +8,10 @@ code: |
     // One advantage of generators is that they are easier to write than iterators.
     // Our input stream can `Emit a` and `map` can `Emit b`
     map (stream: fn Unit => Unit can Emit a) (f: fn a => b): Unit can Emit b =
-        handler emit_a for emit elem ->
+        handle stream ()
+        | emit elem ->
             emit (f elem)
             resume ()
-        in stream ()
 
     // From: `a,b,c\n1,2,3\n4,5,6`
     // Return: `[["1", "2", "3"], ["4", "5", "6"]]`

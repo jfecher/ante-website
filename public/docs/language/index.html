@@ -2228,6 +2228,8 @@
                 
                     <ul class="toc-h3">
                 
+                    <ul class="toc-h4">
+                
                 
                 
                 
@@ -2235,6 +2237,8 @@
                     <li>Logging and Mocking</li>
                 </a>
                 
+                
+                    </ul>
                 
                     </ul>
                 
@@ -2811,6 +2815,9 @@ common operators:</p>
 <span class="k">trait</span> <span class="kt">Mod</span> <span class="n">a</span> <span class="ow">=</span>
     <span class="p">(</span><span class="o">%</span><span class="p">)</span><span class="o">:</span> <span class="k">fn</span> <span class="n">a</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="n">a</span>
 
+<span class="c1">/// `%%` is a convenience operator for checking if `a` is divisible by `b` without a remainder</span>
+<span class="p">(</span><span class="o">%%</span><span class="p">)</span> <span class="n">a</span> <span class="n">b</span> <span class="ow">=</span> <span class="n">a</span> <span class="o">%</span> <span class="n">b</span> <span class="o">==</span> <span class="mi">0</span>
+
 <span class="k">trait</span> <span class="kt">Eq</span> <span class="n">a</span> <span class="ow">=</span>
     <span class="p">(</span><span class="o">==</span><span class="p">)</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="k">ref</span> <span class="n">a</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span>
 
@@ -2898,7 +2905,7 @@ serve to pipe the results from one function to the input of another.</p>
 desugars to <code>g (f x y) z</code>. This operator is particularly useful for chaining
 iterator functions:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Parse a csv&#39;s data into a matrix of integers</span>
-<span class="nf">parse_csv</span> <span class="p">(</span><span class="n">text</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Vec</span> <span class="p">(</span><span class="kt">Vec</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
+<span class="nf">parse_csv</span> <span class="p">(</span><span class="n">text</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">Vec</span> <span class="p">(</span><span class="kt">Vec</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
     <span class="n">lines</span> <span class="n">text</span>
         <span class="o">|&gt;</span> <span class="n">skip</span> <span class="mi">1</span>  <span class="c1">// Skip the column labels line</span>
         <span class="o">|&gt;</span> <span class="n">split</span> <span class="s">&#34;,&#34;</span>
@@ -2993,12 +3000,12 @@ of parentheses but in Ante since tuples are just nested pairs you can just add a
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">pairs</span> <span class="ow">=</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)]</span>
 
 <span class="c1">// Other languages require deconstructing with nested parentheses:</span>
-<span class="k">for</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">pairs</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">one</span><span class="p">,</span> <span class="n">two</span><span class="p">))</span> <span class="ow">-&gt;</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">one</span><span class="p">,</span> <span class="n">two</span><span class="p">))</span> <span class="k">in</span> <span class="n">enumerate</span> <span class="n">pairs</span> <span class="k">do</span>
     <span class="n">print</span> <span class="s">&#34;Iteration $i: sum = ${one + two}&#34;</span>
 
 <span class="c1">// But since `,` is just a normal operator,</span>
 <span class="c1">// the following version is equally valid</span>
-<span class="k">for</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">pairs</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">one</span><span class="p">,</span> <span class="n">two</span><span class="p">)</span> <span class="ow">-&gt;</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">one</span><span class="p">,</span> <span class="n">two</span> <span class="k">in</span> <span class="n">enumerate</span> <span class="n">pairs</span> <span class="k">do</span>
     <span class="n">print</span> <span class="s">&#34;Iteration $i: sum = ${one + two}&#34;</span>
 </code></pre></div><p>Finally, it&rsquo;s necessary to mention that the earlier <code>Cast</code> example printed nested
 pairs as <code>1, 2, 3</code> whereas the <code>Show</code> instances in Haskell printed tuples as <code>(1, 2, 3)</code>.
@@ -3088,7 +3095,7 @@ or else branch can either be single expressions or an indented block expression.
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">iter</span> <span class="p">(</span><span class="mi">0</span><span class="o">..</span><span class="mi">10</span><span class="p">)</span> <span class="n">println</span>   <span class="c1">// prints 0-9 inclusive</span>
 
 <span class="c1">// `for_` allows using `continue_` and `break_` via the `Loop` effect</span>
-<span class="nf">for_</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">array</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">elem</span><span class="p">)</span> <span class="p">{</span><span class="kt">Loop</span><span class="p">}</span> <span class="ow">-&gt;</span>
+<span class="nf">for_</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">array</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">elem</span><span class="p">)</span> <span class="ow">-&gt;</span>
     <span class="k">if</span> <span class="n">i</span> <span class="o">%%</span> <span class="mi">3</span> <span class="k">then</span> <span class="n">continue_</span> <span class="p">()</span>
     <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">7</span> <span class="k">then</span> <span class="n">break_</span> <span class="p">()</span>
     <span class="n">print</span> <span class="n">elem</span>
@@ -3127,7 +3134,7 @@ which builds up a list of the number’s digits, mutating the number as it goes:
     <span class="k">return</span> <span class="n">ret</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div><p>This can be translated into Ante as the following loop:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">get_digits</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">U32</span><span class="p">)</span> <span class="o">:</span> <span class="kt">List</span> <span class="kt">U32</span> <span class="ow">=</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">get_digits</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">U32</span><span class="p">)</span><span class="o">:</span> <span class="kt">List</span> <span class="kt">U32</span> <span class="ow">=</span>
     <span class="k">loop</span> <span class="n">x</span> <span class="p">(</span><span class="n">digits</span> <span class="ow">=</span> <span class="kt">Nil</span><span class="p">)</span> <span class="ow">-&gt;</span>
         <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">then</span> <span class="k">return</span> <span class="n">digits</span>
         <span class="n">last_digit</span> <span class="ow">=</span> <span class="n">x</span> <span class="o">%</span> <span class="mi">10</span>
@@ -3156,11 +3163,11 @@ creating a new variable binding and match-all pattern in doing so.</p>
 warning unless its name starts with an underscore:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">match</span> <span class="n">foo</span>
 <span class="o">|</span> <span class="kt">Some</span> <span class="n">bar</span> <span class="ow">-&gt;</span> <span class="p">()</span> <span class="c1">// warning: `bar` is unused</span>
-<span class="o">|</span> <span class="kt">None</span>
+<span class="o">|</span> <span class="kt">None</span> <span class="ow">-&gt;</span> <span class="p">()</span>
 
 <span class="k">match</span> <span class="n">foo</span>
 <span class="o">|</span> <span class="kt">Some</span> <span class="n">_bar</span> <span class="ow">-&gt;</span> <span class="p">()</span> <span class="c1">// ok!</span>
-<span class="o">|</span> <span class="kt">None</span>
+<span class="o">|</span> <span class="kt">None</span> <span class="ow">-&gt;</span> <span class="p">()</span>
 </code></pre></div><p>If a type has many fields to match on but several are unneeded, they can be omitted
 with <code>..</code>:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">MyStruct</span> <span class="ow">=</span>
@@ -3269,9 +3276,9 @@ even infer which traits and effects are needed in generic function signatures.</
 
 <span class="nf">first_equals</span> <span class="n">it</span> <span class="n">target</span> <span class="ow">=</span>
     <span class="k">match</span> <span class="n">next</span> <span class="n">it</span>
-    <span class="o">|</span> <span class="kt">Some</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="n">x</span> <span class="o">==</span> <span class="n">target</span>
+    <span class="o">|</span> <span class="kt">Some</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="n">x</span> <span class="o">==</span> <span class="n">target</span>
     <span class="o">|</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="mi">false</span>
-</code></pre></div><p>We never gave any type for <code>first_equals_two</code> yet Ante infers its type for us as
+</code></pre></div><p>We never gave any type for <code>first_equals</code> yet Ante infers its type for us as
 <code>fn a b {Iterator a b} {Eq b} -&gt; Bool</code> - that is a function that returns a <code>Bool</code> and takes
 two generic parameters along with an <a href="#implicits">implicit parameter</a> which is an instance
 of the iterator trait for an iterator of type <code>a</code> producing elements of type <code>b</code>.</p>
@@ -3421,14 +3428,14 @@ like <code>Shape.area</code> above can be derived such that users need only to i
 for each individual variant like <code>Shape.Square.area</code>, <code>Shape.Circle.area</code>, etc.</p>
 <h2 id="type-annotations">Type Annotations</h2>
 <p>Even with global type inference, there are still situations where
-types need to be manually specified. For these cases, the <code>x : t</code>
+types need to be manually specified. For these cases, the <code>x: t</code>
 type annotation syntax can be used. This is valid anywhere an expression
 or irrefutable pattern is expected. It is often used in practice
 for annotating parameter types and for deciding an unbounded generic
 type - for example when parsing a value from a string then printing it.
 Both operations are generic so we&rsquo;ll need to specify what type we should
 parse out of the string:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">parse_and_print_int</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">parse_and_print_int</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span>
     <span class="n">x</span> <span class="ow">=</span> <span class="n">parse</span> <span class="n">s</span> <span class="o">:</span> <span class="kt">I32</span>
     <span class="c1">// alternatively we could do</span>
     <span class="c1">// x: I32 = parse s</span>
@@ -3446,14 +3453,14 @@ operations with the type used which can be annoying. Imagine
 </code></pre></div><p>When we use an integer with no specific type, the integer literal
 keeps this generic type. This sometimes pops up in function signatures:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// This works with any integer type</span>
-<span class="nf">add1</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">Int</span> <span class="n">a</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Int</span> <span class="n">a</span> <span class="ow">=</span>
+<span class="nf">add1</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">Int</span> <span class="n">a</span><span class="p">)</span><span class="o">:</span> <span class="kt">Int</span> <span class="n">a</span> <span class="ow">=</span>
     <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span>
 </code></pre></div><p>If we do use it with a specific type however, then just like with
 normal generics, the generic type variable is constrained to be
 that concrete type (and the concrete type must satisfy the <code>Int</code>
 constraint - i.e. it must be a primitive integer or we get a compile-time error).</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Fine, we&#39;re still generic over a</span>
-<span class="nf">foo</span> <span class="p">()</span> <span class="o">:</span> <span class="kt">Int</span> <span class="n">a</span> <span class="ow">=</span>
+<span class="nf">foo</span> <span class="p">()</span><span class="o">:</span> <span class="kt">Int</span> <span class="n">a</span> <span class="ow">=</span>
     <span class="mi">0</span>
 
 <span class="nf">x</span><span class="o">:</span> <span class="kt">I32</span> <span class="ow">=</span> <span class="mi">1</span>  <span class="c1">// also fine, we constrained 1 : I32 now</span>
@@ -3472,8 +3479,9 @@ constraint - i.e. it must be a primitive integer or we get a compile-time error)
 Note that functions in Ante always have at least one argument. Zero-argument functions
 are usually encoded as functions accepting a single unit value as an argument, e.g. <code>fn Unit -&gt; I32</code>,
 which there is also sugar for: <code>fn -&gt; I32</code>.</p>
-<p>Function types can also have an optional effect clause at the end. More on this
-in <a href="#effects-in-function-types">Effects in Function Types</a>.</p>
+<p>Function types can also have an optional effect clause at the end such as
+<code>fn a -&gt; b can Fail</code>, <code>fn a -&gt; b can Fail, Panic</code>, or <code>fn a -&gt; b is pure</code> for a function that uses no effects.
+More on effects in <a href="#effects">Effects</a>.</p>
 <h2 id="anonymous-struct-types">Anonymous Struct Types</h2>
 <p>If we have multiple types with the same field in scope:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">A</span> <span class="ow">=</span> <span class="n">foo</span><span class="o">:</span> <span class="kt">I32</span>
@@ -3492,12 +3500,12 @@ fields. For example, <code>{ x: I32 }</code> would be the type of any struct tha
 has a field <code>x</code> of type <code>I32</code>.</p>
 <p>Using this, we can type <code>get_foo</code> as a function which takes
 any struct that has a field named <code>foo</code> of type <code>b</code>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">get_foo</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="p">{</span> <span class="n">foo</span><span class="o">:</span> <span class="n">b</span> <span class="p">})</span> <span class="o">:</span> <span class="n">b</span> <span class="ow">=</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">get_foo</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="p">{</span> <span class="n">foo</span><span class="o">:</span> <span class="n">b</span> <span class="p">})</span><span class="o">:</span> <span class="n">b</span> <span class="ow">=</span>
     <span class="n">x</span><span class="o">.</span><span class="n">foo</span>
 </code></pre></div><p>As a more complex example, here&rsquo;s a function that can print anything with a <code>debug</code> field
 that itself is printable and a <code>prefix</code> field that must be a string:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Type inferred as:</span>
-<span class="c1">//   fn (prefix: String, debug: a) {Print a} -&gt; Unit</span>
+<span class="c1">//   fn (prefix: String, debug: a) {Display a} -&gt; Unit can Print</span>
 <span class="nf">print_debug</span> <span class="n">x</span> <span class="ow">=</span>
     <span class="n">prefix</span> <span class="ow">=</span> <span class="n">x</span><span class="o">.</span><span class="n">prefix</span> <span class="o">++</span> <span class="s">&#34;: &#34;</span>
     <span class="n">print</span> <span class="n">prefix</span>
@@ -3845,7 +3853,7 @@ still (such as those through an <code>Rc</code>):</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;a</span> <span class="kt">Vec</span> <span class="kt">I32</span><span class="p">)</span> <span class="p">(</span><span class="n">b</span><span class="o">:</span> <span class="k">mut</span> <span class="n">&#39;b</span> <span class="kt">Vec</span> <span class="kt">I32</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Mutate</span> <span class="n">&#39;b</span> <span class="ow">=</span>
     <span class="n">a_elem</span> <span class="ow">=</span> <span class="n">a</span><span class="o">.</span><span class="n">get</span> <span class="mi">0</span>
     <span class="n">b</span><span class="o">.</span><span class="n">clear</span> <span class="p">()</span>
-    <span class="n">println</span> <span class="n">a</span>   <span class="c1">// This would be unsafe if b aliases a</span>
+    <span class="n">println</span> <span class="n">a_elem</span>   <span class="c1">// This would be unsafe if b aliases a</span>
 </code></pre></div><p>If <code>foo</code>&rsquo;s caller is allowed to pass the same vector for <code>a</code> and <code>b</code> then we would print
 a dangling reference to a cleared element. To prevent this, the compiler ensures any place
 used in a <code>Mutate</code> effect must be distinct from other places given to the function:</p>
@@ -4072,7 +4080,7 @@ cannot be explicitly specified by users at call sites:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">double_cast</span> <span class="n">x</span> <span class="ow">=</span> <span class="n">print</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span><span class="p">)</span>
 
 <span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span>
-    <span class="c1">// error! `print_double` was not declared with any implicit arguments</span>
+    <span class="c1">// error! `double_cast` was not declared with any implicit arguments</span>
     <span class="n">_</span> <span class="ow">=</span> <span class="n">double_cast</span> <span class="mi">2</span> <span class="p">{</span><span class="n">add_i32</span><span class="p">}</span>
 </code></pre></div><p>The reason for this is that if all implicits on a function are inferred, it would not
 be clear which order they should be passed in. For this reason, an error is
@@ -4163,14 +4171,10 @@ If we are performing multiple effects, we can separate them with commas.</p>
     <span class="mi">10</span>
 </code></pre></div><p>Alone, <code>yield 5</code> means nothing. To give meaning to an effect, we must handle it with an
 effect handler. Handlers can be defined with the syntax: <code>handle &lt;expr&gt; | &lt;capability-pattern&gt; -&gt; &lt;expr&gt; | ...</code>.
-This syntax defines a handler for the effect in <code>&lt;capability-pattern&gt;</code>. The
-<code>| &lt;capability-expr&gt; -&gt; &lt;expr&gt;</code> portion must list each function of an effect and its implementation, separated by <code>|</code> if needed,
+This syntax defines a handler for the effect in <code>&lt;capability-pattern&gt;</code>. The <code>| &lt;capability-pattern&gt; -&gt; &lt;expr&gt;</code>
+portion must list each function of an effect and its implementation, separated by <code>|</code> if needed,
 similar to match branches. Additionally, the special <code>resume</code> function will be visible within each handle
 branch. This <code>resume</code> function is special - it lets us resume the function that called our effect function.</p>
-<blockquote>
-<p>Named handlers are temporary and may be removed in the future. They are holdovers from Ante&rsquo;s previous
-abilities feature and are meant to disambiguate between multiple handlers for the same effect.</p>
-</blockquote>
 <p>A good mental model of effects is that they&rsquo;re like checked exceptions which we can throw by performing the effect,
 catch by using effect handlers, but can also <code>resume</code> back to the code that performed the effect.
 We&rsquo;ll get into more of the implications of this later but for now let&rsquo;s see a basic handler:</p>
@@ -4182,7 +4186,7 @@ We&rsquo;ll get into more of the implications of this later but for now let&rsqu
 <span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span>
     <span class="n">x</span> <span class="ow">=</span> <span class="n">print_each_yield</span> <span class="n">yield_and_return_10</span>  <span class="c1">// `5` and `7` are printed</span>
     <span class="n">assert_eq</span> <span class="n">x</span> <span class="mi">10</span>
-</code></pre></div><p>Above we define a handler <code>yield_handler</code> and run <code>f</code> with that handler.
+</code></pre></div><p>Above we define a handler inside <code>print_each_yield</code> and run <code>f</code> with that handler.
 Then in <code>main</code>, we call <code>print_each_yield</code> with the <code>yield_and_return_10</code> function from
 before as an argument. This will run that function, and when <code>yield 5</code> is encountered,
 we will print <code>5</code> out before hitting the next yield, printing <code>7</code>, and finally returning <code>10</code>.</p>
@@ -4197,7 +4201,7 @@ we can collect each yielded value into a container:</p>
 <span class="c1">// `f`&#39;s original return value.</span>
 <span class="nf">collect_yields_into_seq</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">=&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Yield</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="n">a</span><span class="p">,</span> <span class="kt">Seq</span> <span class="n">t</span> <span class="ow">=</span>
     <span class="k">var</span> <span class="n">yielded</span> <span class="ow">=</span> <span class="kt">Seq</span><span class="o">.</span><span class="n">empty</span> <span class="p">()</span>
-    <span class="c1">// ret will hold the result of `f collector`</span>
+    <span class="c1">// ret will hold the result of `f ()`</span>
     <span class="n">ret</span> <span class="ow">=</span> <span class="k">handle</span> <span class="n">f</span> <span class="p">()</span>
     <span class="o">|</span> <span class="n">yield</span> <span class="n">elem</span> <span class="ow">-&gt;</span>
         <span class="n">yielded</span> <span class="o">:=</span> <span class="n">yielded</span><span class="o">.</span><span class="n">push</span> <span class="n">elem</span>
@@ -4218,8 +4222,8 @@ This may sound odd or undesired, but it is actually a very common use case: it i
 not resume the call, so <code>5</code> is returned from <code>abort_after_first_yield</code> as well, changing
 the value of <code>x</code> at the end.</p>
 <p>If we resumed in the middle of our <code>yield</code> function (and performed more work afterward), then
-that additional work would not be run until after the entire block expression the <code>handler</code>
-is visible within ends. This control-flow can be difficult to conceptualize. As a mental model,
+that additional work would not be run until after the entire handled expression. This control-flow
+can be difficult to conceptualize. As a mental model,
 you can think of performing an effect as suspending the current call stack, jumping to the handler,
 executing it, and jumping back when resume is called. If the handler didn&rsquo;t finish (i.e. there is more
 work to do after the resume call), it will accumulate extra stack frames to run when the computation
@@ -4286,12 +4290,12 @@ to define their own error unions:</p>
     <span class="n">contents</span> <span class="ow">=</span> <span class="n">parse</span> <span class="p">(</span><span class="n">read</span> <span class="n">f</span><span class="p">)</span>
     <span class="n">bar</span> <span class="n">contents</span>
 </code></pre></div><p>Effect union type aliases may still be declared to cut down on typing if desired:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">effect MyEffects = Throw FileError, Throw ParseError, Throw BarError 
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">MyEffects</span> <span class="ow">=</span> <span class="kt">Throw</span> <span class="kt">FileError</span><span class="p">,</span> <span class="kt">Throw</span> <span class="kt">ParseError</span><span class="p">,</span> <span class="kt">Throw</span> <span class="kt">BarError</span> 
 
-foo (): Unit can MyEffects =
-    f = File.open &#34;foo.txt&#34;
-    contents = parse (read f)
-    bar contents
+<span class="nf">foo</span> <span class="p">()</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">MyEffects</span> <span class="ow">=</span>
+    <span class="n">f</span> <span class="ow">=</span> <span class="kt">File</span><span class="o">.</span><span class="n">open</span> <span class="s">&#34;foo.txt&#34;</span>
+    <span class="n">contents</span> <span class="ow">=</span> <span class="n">parse</span> <span class="p">(</span><span class="n">read</span> <span class="n">f</span><span class="p">)</span>
+    <span class="n">bar</span> <span class="n">contents</span>
 </code></pre></div><h3 id="applying-handlers">Applying Handlers</h3>
 <p>Most handler functions like <code>try</code> or <code>catch</code> above take a function as an argument to supply
 the handler for. Instead of manually wrapping each operation as in <code>try (fn _ -&gt; safe_div 6 2)</code>,
@@ -4357,7 +4361,7 @@ show this unique control-flow:</p>
         <span class="c1">// Print the message</span>
         <span class="n">println</span> <span class="s">&#34;my_effect &#39;${msg}&#39; called!&#34;</span>
         <span class="c1">// Resume the computation &amp; finish it entirely (including other calls to my_effect!)</span>
-        <span class="n">r</span> <span class="ow">=</span> <span class="k">resume</span> <span class="mi">0</span>
+        <span class="n">r</span> <span class="ow">=</span> <span class="k">resume</span> <span class="p">()</span>
         <span class="c1">// And only then print `finished`</span>
         <span class="n">println</span> <span class="s">&#34;resume &#39;${msg}&#39; finished&#34;</span>
         <span class="n">r</span>
@@ -4374,7 +4378,7 @@ show this unique control-flow:</p>
     <span class="n">_</span> <span class="ow">=</span> <span class="n">my_effect</span> <span class="s">&#34;bar b&#34;</span>
     <span class="n">println</span> <span class="s">&#34;bar finished&#34;</span>
 
-<span class="nf">example</span> <span class="k">can</span> <span class="kt">MyEffect</span><span class="p">,</span> <span class="kt">Print</span> <span class="ow">=</span>
+<span class="nf">example</span> <span class="p">()</span> <span class="k">can</span> <span class="kt">MyEffect</span><span class="p">,</span> <span class="kt">Print</span> <span class="ow">=</span>
     <span class="n">foo</span> <span class="p">()</span>
     <span class="n">bar</span> <span class="p">()</span>
 </code></pre></div><p>Now when we run <code>debug_effect_control_flow example</code> we get the following printouts:</p>
@@ -4403,7 +4407,7 @@ can guarantee certain performance characteristics of the effect no matter its im
 <h3 id="step-by-step-evaluation">Step-by-Step Evaluation</h3>
 <p>In case the above example was difficult to understand, we&rsquo;ll walk through an example showing
 step-by-step how the function may be evaluated. This will be our example:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-an" data-lang="an"><span class="k">effect</span> <span class="kt">Foo</span> <span class="ow">=</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Foo</span> <span class="ow">=</span>
     <span class="n">foo</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">String</span> <span class="ow">-&gt;</span> <span class="kt">I32</span>
 
 <span class="nf">do_math</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">I32</span><span class="p">)</span><span class="o">:</span> <span class="kt">I32</span> <span class="k">can</span> <span class="kt">Foo</span> <span class="ow">=</span>
@@ -4542,7 +4546,7 @@ This function is also often named <code>yield</code>.</p>
 <h4 id="loops-and-early-returns">Loops and Early-Returns</h4>
 <p>We can combine generators with a <code>Loop</code> effect that lets us <code>continue</code> and <code>break</code>
 out of loops.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-an" data-lang="an"><span class="k">effect</span> <span class="kt">Loop</span> <span class="ow">=</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Loop</span> <span class="ow">=</span>
     <span class="n">break_</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">Never</span>
     <span class="n">continue_</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">Never</span>
 
@@ -4551,7 +4555,7 @@ out of loops.</p>
 <span class="c1">/// within the overall loop.</span>
 <span class="nf">for_</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span><span class="kt">Stream</span> <span class="n">s</span> <span class="n">a</span><span class="p">}</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="n">a</span> <span class="ow">=&gt;</span> <span class="n">b</span> <span class="k">can</span> <span class="kt">Loop</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span>
     <span class="k">var</span> <span class="n">broke</span> <span class="ow">=</span> <span class="mi">false</span>
-    <span class="k">handle</span> <span class="kt">Stream</span><span class="o">.</span><span class="n">stream</span> <span class="n">s</span> <span class="n">h</span>
+    <span class="k">handle</span> <span class="kt">Stream</span><span class="o">.</span><span class="n">stream</span> <span class="n">s</span>
     <span class="o">|</span> <span class="n">emit</span> <span class="n">a</span> <span class="ow">-&gt;</span>
         <span class="k">handle</span> <span class="n">f</span> <span class="n">a</span><span class="p">;</span> <span class="p">()</span>
         <span class="o">|</span> <span class="n">break_</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="n">broke</span> <span class="o">:=</span> <span class="mi">true</span>
@@ -4561,7 +4565,7 @@ out of loops.</p>
 
 <span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span>
     <span class="c1">// Print `12457`:</span>
-    <span class="k">for</span> <span class="p">(</span><span class="n">iota</span> <span class="mi">20</span><span class="p">)</span> <span class="k">fn</span> <span class="n">i</span> <span class="ow">-&gt;</span>
+    <span class="n">for_</span> <span class="p">(</span><span class="n">iota</span> <span class="mi">20</span><span class="p">)</span> <span class="k">fn</span> <span class="n">i</span> <span class="ow">-&gt;</span>
         <span class="k">if</span> <span class="n">i</span> <span class="o">%%</span> <span class="mi">3</span> <span class="k">then</span> <span class="k">continue</span> <span class="p">()</span>
         <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">7</span> <span class="k">then</span> <span class="n">break</span> <span class="p">()</span>
         <span class="n">print</span> <span class="n">i</span>
@@ -4597,12 +4601,12 @@ an effect, we can use it even to early return out of multiple closures:</p>
 the <code>EarlyReturn</code> effect entirely. This will only happen once the compiler can guarantee
 the efficiency of <code>EarlyReturn</code> is always equivalent to that of a native <code>return</code>.</p>
 </blockquote>
-<h3 id="logging-and-mocking">Logging and Mocking</h3>
+<h4 id="logging-and-mocking">Logging and Mocking</h4>
 <p>Testing logging output can be done in other languages, but this often involves refactoring code to
 be generic over a logging interface which can be mocked. Since effects in Ante must be used
 on any effectful function, and we can already swap out their implementation, we get this
 abstraction for free.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-an" data-lang="an"><span class="k">effect</span> <span class="kt">Print</span> <span class="ow">=</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Print</span> <span class="ow">=</span>
     <span class="n">print</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">String</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
 
 <span class="k">effect</span> <span class="kt">QueryDatabase</span> <span class="ow">=</span>
@@ -4610,15 +4614,14 @@ abstraction for free.</p>
 
 <span class="nf">database</span> <span class="n">f</span> <span class="k">can</span> <span class="kt">IO</span> <span class="ow">=</span>
     <span class="n">db</span> <span class="ow">=</span> <span class="kt">Database</span><span class="o">.</span><span class="n">connect</span> <span class="s">&#34;...&#34;</span>
-    <span class="n">result</span> <span class="ow">=</span> <span class="k">handler</span> <span class="n">_</span> <span class="k">can</span> <span class="n">querydb</span> <span class="n">msg</span> <span class="ow">-&gt;</span>
-        <span class="k">resume</span> <span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">send</span> <span class="n">msg</span><span class="p">)</span>
-    <span class="k">in</span> <span class="n">f</span> <span class="p">()</span>
+    <span class="n">result</span> <span class="ow">=</span> <span class="k">handle</span> <span class="n">f</span> <span class="p">()</span>
+        <span class="o">|</span> <span class="n">querydb</span> <span class="n">msg</span> <span class="ow">-&gt;</span> <span class="k">resume</span> <span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">send</span> <span class="n">msg</span><span class="p">)</span>
     <span class="n">close</span> <span class="n">db</span>
     <span class="n">result</span>
 
 <span class="nf">ignore_db</span> <span class="n">f</span> <span class="ow">=</span>
-    <span class="k">handler</span> <span class="n">_</span> <span class="k">can</span> <span class="n">querydb</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="k">resume</span> <span class="kt">Response</span><span class="o">.</span><span class="kt">Empty</span> <span class="k">in</span>
-    <span class="n">f</span> <span class="p">()</span>
+    <span class="k">handle</span> <span class="n">f</span> <span class="p">()</span>
+    <span class="o">|</span> <span class="n">querydb</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="k">resume</span> <span class="kt">Response</span><span class="o">.</span><span class="kt">Empty</span>
 
 <span class="nf">business_logic</span> <span class="p">(</span><span class="n">should_query</span><span class="o">:</span> <span class="kt">Bool</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Print</span><span class="p">,</span> <span class="kt">QueryDatabase</span> <span class="ow">=</span>
     <span class="k">if</span> <span class="n">should_query</span> <span class="k">then</span>
@@ -4641,7 +4644,7 @@ abstraction for free.</p>
     <span class="o">|</span> <span class="n">print</span> <span class="n">msg</span> <span class="ow">-&gt;</span>
         <span class="n">assert</span> <span class="p">(</span><span class="n">msg</span> <span class="o">==</span> <span class="s">&#34;did not query&#34;</span><span class="p">)</span>
         <span class="k">resume</span> <span class="p">()</span>
-    <span class="o">|</span> <span class="n">query_db</span> <span class="n">_</span> <span class="ow">-&gt;</span>
+    <span class="o">|</span> <span class="n">querydb</span> <span class="n">_</span> <span class="ow">-&gt;</span>
         <span class="n">error</span> <span class="s">&#34;Tried to query when should_query = false!&#34;</span>
         <span class="k">resume</span> <span class="p">()</span>
 

@@ -25,14 +25,14 @@ example, the next snippet is a compile-time error in Rust:
 
 ```rust
 let mut vec = vec![1, 2, 3];
-let first_element = &vec[0];
+let first_elem = &vec[0];
 
-// Uh-oh, this may reallocate the Vec, making `first_element` a dangling reference!
+// Uh-oh, this may reallocate the Vec, making `first_elem` a dangling reference!
 // Luckily, we get a compile-time error:
 // error[E0502]: cannot borrow `vec` as mutable because it is also borrowed as immutable
 vec.push(4);
 
-println!("{first_element}");
+println!("{first_elem}");
 ```
 
 This is great. Those familiar with Rust, however, will note that this error is actually caused
@@ -44,7 +44,7 @@ rule, which I'll call AxM for short. AxM in Rust states that you can have aliasa
 references, or you can have mutability, but not both. So in the example above, since `Vec::push`
 requires a mutable `&mut Vec<i32>` reference, we got a compile-time error trying to call it since
 we also had the immutably borrowed reference `first_elem: &i32` in scope. Had we not printed
-`first_element` out afterward, it could be dropped earlier and the code would work, but as-is
+`first_elem` out afterward, it could be dropped earlier and the code would work, but as-is
 we rightfully get an error.
 
 This is a great thing to prevent, but it is unfortunate that AxM errors like the one above are some of the most common
@@ -165,7 +165,7 @@ These cases are simply marked as requiring single-owner references:
 get (v: imm Vec t) (index: Usz) : imm t can Fail = ...
 ```
 
-(`Fail` is an [Algebraic Effect](/docs/language/#algebraic-effects). In this example, it is used
+(`Fail` is an [Algebraic Effect](/docs/language/#effects). In this example, it is used
 to signal to the caller if the index was out of bounds)
 
 This function signature states that in order to return a reference to a vector's elements,

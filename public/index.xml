@@ -377,7 +377,7 @@ Near Future  Language Server: Better support for struct members and methods Inse
       
       <guid>https://antelang.org/docs/ideas/</guid>
       <description>This page is an incomplete list of features that are currently being considered for Ante but for one reason or another are not included in the language already. These features are listed in no particular order.
- Overloading Some form of overloading could help alleviate user frustration by allowing modules like Vec and HashMap to both be imported despite defining conflicting names like empty, of, insert, get, etc. Overloading would also reduce the need for abilities as users would no longer need to use abilities to be lazy with their function names.</description>
+ Overloading Some form of overloading could help alleviate user frustration by allowing modules like Vec and HashMap to both be imported despite defining conflicting names like empty, of, insert, get, etc. Overloading would also reduce the need for traits as users would no longer need to use traits to be lazy with their function names.</description>
     </item>
     
     <item>

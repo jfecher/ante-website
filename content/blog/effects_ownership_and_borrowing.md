@@ -10,7 +10,7 @@ banner = "img/banners/anteater2_cropped.jpg"
 
 # Introduction
 
-[Algebraic Effects](/docs/language/#algebraic-effects) are a useful abstraction
+[Algebraic Effects](/docs/language/#effects) are a useful abstraction
 for reasoning about effectful programs by letting us leave the interpretation
 of these effects to callers. However, most existing literature discusses these
 in the context of a pure functional language with pervasive sharing of values.

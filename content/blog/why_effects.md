@@ -12,7 +12,7 @@ Algebraic effects[^1] (a.k.a. effect handlers) are a very useful up-and-coming f
 languages of tomorrow. They're one of the core features of Ante, as well as being the focus of many research
 languages including [Koka](https://koka-lang.github.io/koka/doc/index.html), [Effekt](https://effekt-lang.org/), [Eff](https://www.eff-lang.org/),
 and [Flix](https://flix.dev/). However, while many articles or documentation snippets try to explain _what_ effect handlers are (including
-[Ante's own documentation](/docs/language#algebraic-effects)), few really go in-depth on _why_ you would want to use them.
+[Ante's own documentation](/docs/language#effects)), few really go in-depth on _why_ you would want to use them.
 In this post I'll explain exactly that and will include as complete a list as possible on all the use cases of algebraic effects.
 
 ## A Note on Syntax and Semantics
@@ -48,7 +48,7 @@ handle foo ()
     resume ()             // then resume the computation, returning 42
 ```
 
-If you have further questions I again encourage you to read [some documentation](/docs/language#algebraic-effects) on effects, but now
+If you have further questions I again encourage you to read [some documentation](/docs/language#effects) on effects, but now
 that we can recognize effects when they're used I'll get into why exactly the idea of exceptions-you-can-resume is so useful!
 
 ---
@@ -523,12 +523,12 @@ these effects are usually handled in `main` automatically - so what benefit does
 provide by making programmers mark these functions?
 
 For one, a number of functions actually require other non-side-effectful (i.e. pure) functions
-as input. When spawning threads for example, we can't allow the spawning thread to call into
+as input. When spawning threads for example, we can't allow the spawned thread to call into
 handlers owned by our thread:
 
 ```ante
 // Spawn all the given functions as threads and wait until they complete
-spawn_all (functions: Vec (Unit -> a pure)): Vec a can IO = ...
+spawn_all (functions: Vec (Unit -> a is pure)): Vec a can IO = ...
 ```
 
 There is also a technique for concurrency called Software Transactional Memory (STM) which
