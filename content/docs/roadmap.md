@@ -28,7 +28,7 @@ whether Ante should use Rust's model for chars (4 bytes), Swift's model (variabl
 - Pattern guards such as `| pattern if expr -> ...`
 - Performance guarantees on `for_` to be as fast as the native `for` loop
 - A check to ensure only pure implicit functions can be called implicitly
-- Row polymorphic struct types
+- Row-polymorphic struct types
 - Cranelift backend
 - Language Server: Fill in match arms action
 - Proper unwinding when `resume` is dropped

@@ -340,8 +340,8 @@
                 
                 
                 
-                <a href="/blog/why_effects/#user-defineable-control-flow">
-                    <li>User-defineable control-flow</li>
+                <a href="/blog/why_effects/#user-definable-control-flow">
+                    <li>User-definable control-flow</li>
                 </a>
                 
                 
@@ -603,7 +603,7 @@ languages of tomorrow. They&rsquo;re one of the core features of Ante, as well a
 languages including <a href="https://koka-lang.github.io/koka/doc/index.html">Koka</a>, <a href="https://effekt-lang.org/">Effekt</a>, <a href="https://www.eff-lang.org/">Eff</a>,
 and <a href="https://flix.dev/">Flix</a>. However, while many articles or documentation snippets try to explain <em>what</em> effect handlers are (including
 <a href="/docs/language#algebraic-effects">Ante&rsquo;s own documentation</a>), few really go in-depth on <em>why</em> you would want to use them.
-In this post I&rsquo;ll explain exactly that and will include as complete a list as possible on all the use-cases of algebraic effects.</p>
+In this post I&rsquo;ll explain exactly that and will include as complete a list as possible on all the use cases of algebraic effects.</p>
 <h2 id="a-note-on-syntax-and-semantics">A Note on Syntax and Semantics</h2>
 <p>I&rsquo;ll be using Ante pseudocode for much of this article. If you&rsquo;re not familiar with effect handlers or Ante I encourage you to read the documentation link
 above or read from any of the other effectful languages for a good head start! But I recognize it&rsquo;s hard to get buy-in to learn something before showing
@@ -624,11 +624,11 @@ why it is useful first (hence this blog post!). So I&rsquo;ll give a quick eleva
     <span class="n">print</span> <span class="s">&#34;Hello World!&#34;</span>  <span class="c1">// print out Hello World!</span>
     <span class="k">resume</span> <span class="p">()</span>             <span class="c1">// then resume the computation, returning 42</span>
 </code></pre></div><p>If you have further questions I again encourage you to read <a href="/docs/language#algebraic-effects">some documentation</a> on effects, but now
-that we can recognize effects when they&rsquo;re used I&rsquo;ll get into why exactly the idea of exceptions-you-can-resume are so useful!</p>
+that we can recognize effects when they&rsquo;re used I&rsquo;ll get into why exactly the idea of exceptions-you-can-resume is so useful!</p>
 <hr>
-<h2 id="user-defineable-control-flow">User-defineable control-flow</h2>
+<h2 id="user-definable-control-flow">User-definable control-flow</h2>
 <p>The most common reason you&rsquo;ll hear for why to have effect handlers is that they are a single language feature which
-allow for implementing what would normally be multiple separate language features (generators, exceptions, async, coroutines, etc)
+allows for implementing what would normally be multiple separate language features (generators, exceptions, async, coroutines, etc.)
 as libraries. Moreover, they solve the <a href="https://journal.stuffwithstuff.com/2015/02/01/what-color-is-your-function/">what color is your function</a>
 problem by making functions polymorphic over effects. For example, a <code>map</code> function for vectors (growable arrays) can be written once:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">map</span> <span class="p">(</span><span class="n">input</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="n">b</span> <span class="k">can</span> <span class="n">e</span><span class="p">)</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">b</span> <span class="k">can</span> <span class="n">e</span> <span class="ow">=</span>
@@ -703,7 +703,7 @@ is a huge usability win over other effect abstractions.</p>
 <p>Okay, now that the really flashy stuff is out of the way I want to go over some less obvious benefits of algebraic effects.
 Since discussion on effects can often seem like they&rsquo;re <em>only</em> for implementing generators, exceptions, async, etc., I want to
 highlight that even if you don&rsquo;t personally care for these features, there are still good reasons to use algebraic effects
-in your run of the mill business application.</p>
+in your run-of-the-mill business application.</p>
 <p>One reason to use them in such an application is that effects can be used for <em>dependency injection</em>. Let&rsquo;s assume
 we have code that touches a database:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">business_logic</span> <span class="p">(</span><span class="n">db</span><span class="o">:</span> <span class="kt">Database</span><span class="p">)</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
@@ -737,7 +737,7 @@ or even with a mock database for testing:</p>
     <span class="n">assert</span> <span class="p">(</span><span class="n">business_logic</span> <span class="mi">1</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
     <span class="n">assert</span> <span class="p">(</span><span class="n">business_logic</span> <span class="mi">21</span> <span class="o">==</span> <span class="mi">42</span><span class="p">)</span>
     <span class="c1">// etc</span>
-</code></pre></div><p>We can even redirect print outs into a string:</p>
+</code></pre></div><p>We can even redirect printouts into a string:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">output_messages</span> <span class="p">()</span><span class="o">:</span> <span class="kt">U32</span> <span class="k">can</span> <span class="kt">Print</span> <span class="ow">=</span>
     <span class="n">print</span> <span class="s">&#34;Hello!&#34;</span>
     <span class="n">print</span> <span class="s">&#34;Not sure what to write here, honestly&#34;</span>
@@ -885,7 +885,7 @@ of this are generating random numbers or simply allocating memory.</p>
 
 <span class="c1">// Return a random byte</span>
 <span class="kt">Prng</span><span class="o">.</span><span class="n">random</span> <span class="o">!</span><span class="n">self</span><span class="o">:</span> <span class="kt">U8</span> <span class="ow">=</span> <span class="o">...</span>
-</code></pre></div><p>We would have to require users to explicitly thread through the Prng object through their
+</code></pre></div><p>We would have to require users to explicitly thread the Prng object through their
 program just to use random numbers for this API. This is perhaps a mild inconvenience but
 it scales with the size of the program and is notable in that random numbers are usually
 a small implementation detail to the program logic. Why should such a small implementation
@@ -984,10 +984,10 @@ type like <code>MyError</code> above.</p>
 <p>Most languages with effect handlers (barring perhaps only OCaml) also use effects wherever
 side-effects may occur. You may have noticed the <code>can Print</code> or <code>can IO</code> on previous examples,
 and it&rsquo;s true - you can&rsquo;t use side-effects in Ante without marking that the function may perform
-them<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>. Setting aside the cases when <code>IO</code> or print outs are redirected or used for mocking,
+them<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>. Setting aside the cases when <code>IO</code> or printouts are redirected or used for mocking,
 these effects are usually handled in <code>main</code> automatically - so what benefit does it actually
 provide by making programmers mark these functions?</p>
-<p>For one, a number of functions actually require other non-side-effectful (ie. pure) functions
+<p>For one, a number of functions actually require other non-side-effectful (i.e. pure) functions
 as input. When spawning threads for example, we can&rsquo;t allow the spawning thread to call into
 handlers owned by our thread:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Spawn all the given functions as threads and wait until they complete</span>
@@ -1053,7 +1053,7 @@ allows the internal continuations to be implemented more efficiently (e.g. via s
 <p>This definition of <code>state</code> completely ignores ownership rules. We&rsquo;d need a <code>Copy a</code> restriction for a real implementation but I didn&rsquo;t want to get side-tracked explaining ownership and traits in this post since it isn&rsquo;t relevant for effects in general. Most languages with algebraic effects allow pervasive sharing of values. Ante with its ownership semantics derived from Rust&rsquo;s is a bit of a black sheep here.&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:3" role="doc-endnote">
-<p>The compiler can&rsquo;t check <code>extern</code> definitions for you, so the type definitions on those have to be trusted. There is also a (planned) way to perform an <code>IO</code> effect only when compiling in debug mode to allow debug printouts while still maintaining effect safety on release mode.&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p>The compiler can&rsquo;t check <code>extern</code> definitions for you, so the type definitions on those have to be trusted. There is also a (planned) way to perform an <code>IO</code> effect only when compiling in debug mode to allow debug printouts while still maintaining effect safety in release mode.&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:4" role="doc-endnote">
 <p>This is one reason why it&rsquo;s usually preferable to declare the minimum amount of effects. Like saying your function <code>can Print</code> rather than bringing in all of <code>can IO</code>. If you don&rsquo;t know what the minimal set is, type inference can figure it out for you.&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>

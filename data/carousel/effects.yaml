@@ -4,8 +4,8 @@ code: |
     effect Throw err =
         throw: fn err -> Never
 
-    // Functions must declare which effects they use. E.g. The type system
-    // prevents a function without the Net effect from accessing the network
+    // Functions must declare which effects they use. E.g. the type system
+    // prevents a function without the Net effect from accessing the network.
     signup (name: String) (email: Email): User can IO, Throw ValidationErr, Throw IOErr =
         // Unlike monads, effects are trivial to combine.
         // signup throws multiple error kinds but we don't need an error union to combine them.

@@ -17,10 +17,10 @@ Yes.
 - **Safe, shared mutability with unboxed types**. It is common to hear that shared mutability should be avoided, and while
   generally a good rule to design around, shared mutability is extremely important for enabling other aspects of the language:
   - Safe, shared mutability enables Ante to model higher-level code from garbage-collected languages like Java or C#.
-  - Combined with Ante's core of ownership + borrowing, this means Ante code can be both high-level or lower-level closer to Rust.
+  - Combined with Ante's core of ownership + borrowing, this means Ante code can be high-level or low-level.
     This is very important for both efficiency and ergonomics since both high-level and low-level code work better together.
-    Today, when a language has both ordinary business logic and hard performance constraints it must either:
-    - Split their build & complicate hiring by having developers work in multiple languages or split the team by language
+    Today, when a project has both ordinary business logic and hard performance constraints it must either:
+    - Split its build & complicate hiring by having developers work in multiple languages or split the team by language
     - Commit to only a single high-level or low-level language where:
       - Using only a low-level language sacrifices the brevity and development speed of the business logic
       - Using only a high-level language often sacrifices the level of control necessary to write optimizations to meet the performance constraints.
@@ -47,8 +47,8 @@ Yes.
 ## Is Ante production ready?
 
 **No**. The project is still very immature and businesses should avoid it. That said, any hobbyists curious to try out the language
-are encouraged to do so. Feel free to post any libraries or applications you make in [Ante's discord](https://discord.gg/NPJncGBAws)
-and create issues [on github](https://github.com/jfecher/ante) for any bugs, confusing error messages, or other issues encountered.
+are encouraged to do so. Feel free to post any libraries or applications you make in [Ante's Discord](https://discord.gg/NPJncGBAws)
+and create issues [on GitHub](https://github.com/jfecher/ante) for any bugs, confusing error messages, or other issues encountered.
 
 ---
 ## Have you considered an ML-like module system?
@@ -59,21 +59,21 @@ code since Ante does support existential types already, though values being unbo
 a module type more difficult.
 
 ---
-## How can a language be both high and low level, and what is meant by this?
+## How can a language be both high and low-level, and what is meant by this?
 
 The status quo of programming languages is that most tend to be high-level with many abstractions and a focus on ease of
-use or low-level with a focus on systems programming and control of details such as data representation and allocations.
+use, or low-level with a focus on systems programming and control of details such as data representation and allocations.
 Being high-level then also implies accepting some good defaults from the language itself and/or its stdlib since if the code
 cared about every little detail it would actually be low-level code.
 
 This also implies that as long as a low-level language is flexible enough, it can choose these "good defaults" and greatly
 resemble high-level code as well. Most low-level languages today however provide no means of opting out, forcing users
-to specify low-level details nearly all of the time. If a language could allow a user to opt-out they could theoretically
+to specify low-level details nearly all of the time. If a language could allow a user to opt out, they could theoretically
 get through less critical portions of their program more quickly and cleanly, allowing them to focus a greater portion
 of their time on sections of the program in which the low-level details are actually important to specify, such as
 tight loops requiring many specialized optimizations in data layouts, allocations, etc. Moreover, this allows a development
-team to be split more cleanly with a smoother on-boarding process. New developers are not thrown into the low-level pits
-immediately, they can start with high-level code and slowly work their ways down the stairs from there if they wish.
-This is what Ante provides with its `shared` types to opt-out of ownership semantics.
+team to be split more cleanly with a smoother onboarding process. New developers are not thrown into the low-level pits
+immediately. They can start with high-level code and slowly work their way down the stairs from there if they wish.
+This is what Ante provides with its `shared` types to opt out of ownership semantics.
 
 Read more about this in the post [A Vision for Future Low-level Languages](/blog/vision)

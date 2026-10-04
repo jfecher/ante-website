@@ -13,7 +13,7 @@ languages of tomorrow. They're one of the core features of Ante, as well as bein
 languages including [Koka](https://koka-lang.github.io/koka/doc/index.html), [Effekt](https://effekt-lang.org/), [Eff](https://www.eff-lang.org/),
 and [Flix](https://flix.dev/). However, while many articles or documentation snippets try to explain _what_ effect handlers are (including
 [Ante's own documentation](/docs/language#algebraic-effects)), few really go in-depth on _why_ you would want to use them.
-In this post I'll explain exactly that and will include as complete a list as possible on all the use-cases of algebraic effects.
+In this post I'll explain exactly that and will include as complete a list as possible on all the use cases of algebraic effects.
 
 ## A Note on Syntax and Semantics
 
@@ -49,14 +49,14 @@ handle foo ()
 ```
 
 If you have further questions I again encourage you to read [some documentation](/docs/language#algebraic-effects) on effects, but now
-that we can recognize effects when they're used I'll get into why exactly the idea of exceptions-you-can-resume are so useful!
+that we can recognize effects when they're used I'll get into why exactly the idea of exceptions-you-can-resume is so useful!
 
 ---
 
-## User-defineable control-flow
+## User-definable control-flow
 
 The most common reason you'll hear for why to have effect handlers is that they are a single language feature which
-allow for implementing what would normally be multiple separate language features (generators, exceptions, async, coroutines, etc)
+allows for implementing what would normally be multiple separate language features (generators, exceptions, async, coroutines, etc.)
 as libraries. Moreover, they solve the [what color is your function](https://journal.stuffwithstuff.com/2015/02/01/what-color-is-your-function/)
 problem by making functions polymorphic over effects. For example, a `map` function for vectors (growable arrays) can be written once:
 
@@ -152,7 +152,7 @@ is a huge usability win over other effect abstractions.
 Okay, now that the really flashy stuff is out of the way I want to go over some less obvious benefits of algebraic effects.
 Since discussion on effects can often seem like they're _only_ for implementing generators, exceptions, async, etc., I want to
 highlight that even if you don't personally care for these features, there are still good reasons to use algebraic effects
-in your run of the mill business application.
+in your run-of-the-mill business application.
 
 One reason to use them in such an application is that effects can be used for _dependency injection_. Let's assume
 we have code that touches a database:
@@ -199,7 +199,7 @@ test_business_logic () =
     // etc
 ```
 
-We can even redirect print outs into a string:
+We can even redirect printouts into a string:
 
 ```ante
 output_messages (): U32 can Print =
@@ -382,7 +382,7 @@ Prng.new (): Prng = ...
 Prng.random !self: U8 = ...
 ```
 
-We would have to require users to explicitly thread through the Prng object through their
+We would have to require users to explicitly thread the Prng object through their
 program just to use random numbers for this API. This is perhaps a mild inconvenience but
 it scales with the size of the program and is notable in that random numbers are usually
 a small implementation detail to the program logic. Why should such a small implementation
@@ -518,11 +518,11 @@ type like `MyError` above.
 Most languages with effect handlers (barring perhaps only OCaml) also use effects wherever
 side-effects may occur. You may have noticed the `can Print` or `can IO` on previous examples,
 and it's true - you can't use side-effects in Ante without marking that the function may perform
-them[^3]. Setting aside the cases when `IO` or print outs are redirected or used for mocking,
+them[^3]. Setting aside the cases when `IO` or printouts are redirected or used for mocking,
 these effects are usually handled in `main` automatically - so what benefit does it actually
 provide by making programmers mark these functions?
 
-For one, a number of functions actually require other non-side-effectful (ie. pure) functions
+For one, a number of functions actually require other non-side-effectful (i.e. pure) functions
 as input. When spawning threads for example, we can't allow the spawning thread to call into
 handlers owned by our thread:
 
@@ -593,7 +593,7 @@ allows the internal continuations to be implemented more efficiently (e.g. via s
 
 [^1]: The "algebraic" in algebraic effects is mostly a vestigial term. Using "effect handlers" is probably more accurate but I'll be referring to these mostly as algebraic effects since that is the term most users are familiar with. Also I think it is confusing to say "effect handlers" when talking about the effect itself and not just the handler.
 [^2]: This definition of `state` completely ignores ownership rules. We'd need a `Copy a` restriction for a real implementation but I didn't want to get side-tracked explaining ownership and traits in this post since it isn't relevant for effects in general. Most languages with algebraic effects allow pervasive sharing of values. Ante with its ownership semantics derived from Rust's is a bit of a black sheep here.
-[^3]: The compiler can't check `extern` definitions for you, so the type definitions on those have to be trusted. There is also a (planned) way to perform an `IO` effect only when compiling in debug mode to allow debug printouts while still maintaining effect safety on release mode.
+[^3]: The compiler can't check `extern` definitions for you, so the type definitions on those have to be trusted. There is also a (planned) way to perform an `IO` effect only when compiling in debug mode to allow debug printouts while still maintaining effect safety in release mode.
 [^4]: This is one reason why it's usually preferable to declare the minimum amount of effects. Like saying your function `can Print` rather than bringing in all of `can IO`. If you don't know what the minimal set is, type inference can figure it out for you.
 [^5]: The addition of a new effect to `get_pi` would also break semantic versioning so it can't be snuck into a bugfix version.
 [^6]: This comes with the limitation that most functions are second-class but you can still get first-class functions by boxing them and switching to a pay-as-you-go approach. See [the docs](https://effekt-lang.org/tour/captures) as well as [this paper](https://dl.acm.org/doi/10.1145/3527320).

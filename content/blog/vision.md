@@ -53,7 +53,7 @@ needs to be an expert.
 Can a low-level language even achieve the same kind of ease of use as a higher-level one though? Maybe not entirely,
 but I do think we can get much closer than the state of the art today where there are large usability gaps between the two.
 The first observation is that higher-level languages are often easier to use because their types are boxed by default
-(ie. shared by default) and they have tracing garbage collectors. This already isn't impossible to achieve in a lower-level
+(i.e. shared by default) and they have tracing garbage collectors. This already isn't impossible to achieve in a lower-level
 language though - after all those languages can have boxed types as well (`Rc<T>`, `shared_ptr<T>`, etc.), and they can
 even have tracing garbage collectors as libraries. That being said, a tracing GC is probably not strictly necessary as long
 as there is some mechanism to free space.[^rcperf]
@@ -147,7 +147,7 @@ Even if the majority of code is expected to be written in a high-level style, a 
 be able to reason about the same code in a lower-level way so that it can call into code already written
 in a low-level style, or vice-versa. Otherwise, the ecosystem would be split in two. At its core, Ante is a
 language with ownership and borrowing allowing users to control where allocations and deallocations occur, yet
-each of the examples above still translate into code which follows these rules. For example,
+each of the examples above still translates into code which follows these rules. For example,
 the red-black tree balance example uses `shared` types which can be thought of as a wrapper over atomic reference-counting
 (while `shared mut` types can be thought of as a wrapper over non-atomic reference-counting):
 
@@ -174,7 +174,7 @@ balance (tree: Arc (RbTree t)) {Copy t}: Arc (RbTree t) =
 That's a lot of `Arc`-wrapping! It does however help illustrate how close the higher-level shell really is to
 languages like Java where nearly everything is wrapped in a pointer and cleaned up for us automatically. How
 should a low-level language get closer to a higher-level one? Auto-box more things. Sure, this can be inefficient,
-but it also isn't as much of an issue when users must explicitly opt-into doing so.
+but it also isn't as much of an issue when users must explicitly opt into doing so.
 
 Also - what happens if a user actually wants some other pointer type to represent their shared types? Or maybe
 they don't want pointers at all and would prefer indices?
@@ -264,7 +264,7 @@ main () =
 ```
 
 When we do this, we see an `Rc.as_mut` method. Such a method would not be safe in Rust where mutable references must be
-unique, but are safe in Ante which provides not only Rust-style mutable references (spelled `uniq`), but
+unique, but is safe in Ante which provides not only Rust-style mutable references (spelled `uniq`), but
 also mutable references which may not be unique (spelled `mut`), yet are still safe to use:
 
 ```ante
@@ -288,7 +288,7 @@ One of the most important concepts in programming is _abstraction_. Without abst
 time repeating yourself or worrying about often irrelevant details. It is a common and important-enough tool that
 I expect everyone reading this to already be familiar with it. Yet many languages (even high-level ones) fall victim
 to repeating themselves or segmenting their ecosystem implementing features like exceptions, async, or generators
-all separately instead of part of one abstraction.
+all separately instead of as part of one abstraction.
 
 ...Yes, this is the segue into effect handlers.
 
@@ -326,7 +326,7 @@ of course. Just like existing low-level languages _can_ make use of high-level p
 it isn't about whether it's possible, it's about how _easy_ it is to actually do so. It's easy to discount ease
 of implementation as unimportant but it has a real effect on how likely a particular solution is to actually
 be adopted in practice. Even if an alternative will noticeably improve a program in some way, if it is too difficult
-to implement (verbose, obfuscated, conflicts with other goals, etc), it may not be. The right thing to do
+to implement (verbose, obfuscated, conflicts with other goals, etc.), it may not be. The right thing to do
 should be the easy thing to do, but most languages just don't have the necessary tools for this when effects are involved.
 
 Case in point: with traditional mocking, a developer must have mocking in mind and design their functions to use it. With
@@ -387,7 +387,7 @@ hear of languages being very simple and thus easy to use. Indeed, simplicity is 
 features out of languages (such as generics in the original version of Go) in pursuit of an idealistic minimal language.
 Taken to its extreme though, it's trivial to see that prioritization of simplicity of language design over all else does _not_
 simplify things for the programmer. Just look at the [Brainfuck](https://en.wikipedia.org/wiki/Brainfuck) language - it only
-has 8 commands, yet writing programs in it is generally considerably more difficult than an equivalent python program (which
+has 8 commands, yet writing programs in it is generally considerably more difficult than an equivalent Python program (which
 by all accounts is a much more complex language).
 
 So language simplicity is different from how simple it is to actually use that language. We can't just look at every new
@@ -406,7 +406,7 @@ Many of the things I've mentioned in this article are ideals. I don't know how w
 but I aim to steer as close as possible to achieving them. Anyways, my hope is that I've shined some light not necessarily
 on Ante's specific feature set but more importantly on _why_ it has these features and _why_ Ante exists at all.
 
-If you've stuck with me this far, thank you! Please consider joining [Ante's discord](https://discord.gg/NPJncGBAws)
+If you've stuck with me this far, thank you! Please consider joining [Ante's Discord](https://discord.gg/NPJncGBAws)
 to follow the project or ask me questions directly. I'm also looking for contributors - the
 compiler is in the middle of a full rewrite so now is a great time to join in (in particular I'd welcome someone
 willing to update the old language server to the new incremental compiler)! It makes my day whenever

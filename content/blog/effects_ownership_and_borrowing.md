@@ -523,7 +523,7 @@ Here we can see the inner continuation captures the outer continuation `k`.
 
 To give `k` a valid type, we'd need to box it to ensure it always has the
 same size for each recursive call. This is similar to what we'd need to do
-in the Rust example, but there are some unique problems with requiring users manually
+in the Rust example, but there are some unique problems with requiring users to manually
 box these continuations in Ante:
 
 - The continuation is added by the compiler, so it isn't clear to the user where

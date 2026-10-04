@@ -673,8 +673,8 @@ which I&rsquo;m going to call <code>!stable t</code>.</p>
 <p>The idea behind <code>!stable t</code> is having another kind of shared mutable reference which has different tradeoffs to
 <code>!shared t</code>. Notably, <code>!stable t</code> will be able to be projected into <em>any</em> type, but with the restriction that it
 may not mutate those types in a shape-unstable way (a way which would cause any internal reference to be invalidated).</p>
-<p>Before I get into what exactly this restriction means in practice though, lets see some code which would compile
-for stable <code>!stable t</code> which would not compile for <code>!shared t</code>. Our desire for this code is to recur on a tagged-union
+<p>Before I get into what exactly this restriction means in practice though, let&rsquo;s see some code which would compile
+for <code>!stable t</code> which would not compile for <code>!shared t</code>. Our desire for this code is to recur on a tagged-union
 value without cloning it, until we find a Leaf node we can increment the value of:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Tree</span> <span class="ow">=</span>
    <span class="o">|</span> <span class="kt">Branch</span> <span class="p">(</span><span class="kt">Box</span> <span class="kt">Tree</span><span class="p">)</span> <span class="p">(</span><span class="kt">Box</span> <span class="kt">Tree</span><span class="p">)</span>
@@ -687,12 +687,12 @@ value without cloning it, until we find a Leaf node we can increment the value o
         <span class="n">increment</span> <span class="n">r</span>
     <span class="o">|</span> <span class="kt">Leaf</span> <span class="n">x</span> <span class="ow">-&gt;</span>
         <span class="n">x</span> <span class="o">+=</span> <span class="mi">1</span>
-</code></pre></div><p>The reason the code above would error for <code>!shared</code> reference is the <code>match tree</code> line where we&rsquo;d have to be
+</code></pre></div><p>The reason the code above would error for <code>!shared</code> references is the <code>match tree</code> line where we&rsquo;d have to be
 able to project the shared reference into each variant&rsquo;s fields. If that were allowed, we could mutate <code>tree := Leaf 0</code>
 after <code>Branch l r -&gt;</code> matches and cause <code>l</code> and <code>r</code> to be dangling. The fix for this is to clone <code>tree</code> before
 it is matched, but this would be very expensive for our <code>Tree</code> type!</p>
 <p>Instead, the <code>!stable Tree</code> reference says we can&rsquo;t mutate <code>Tree</code> in an unstable way (changing it to a different variant),
-but we can make shape-stable mutations - and what do you know the mutation we want (incrementing an integer), is perfectly stable!</p>
+but we can make shape-stable mutations - and what do you know, the mutation we want (incrementing an integer) is perfectly stable!</p>
 <p>Just to highlight the differences again, if we go back to the <code>dangling_refs</code> example, when we used <code>!shared</code> references, we got an error on the first couple lines:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">dangling_refs</span> <span class="p">(</span><span class="n">opt</span><span class="o">:</span> <span class="o">!</span><span class="k">shared</span> <span class="kt">Maybe</span> <span class="kt">String</span><span class="p">)</span> <span class="p">(</span><span class="n">vec</span><span class="o">:</span> <span class="o">!</span><span class="k">shared</span> <span class="kt">Vec</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
     <span class="c1">// error! `as_ref` requires an `&amp;own` argument, but `opt` is shared!</span>
@@ -718,8 +718,8 @@ but we can make shape-stable mutations - and what do you know the mutation we wa
     <span class="n">print</span> <span class="s">&#34;Two dangling refs: ${inner_string} and ${vec_elem}&#34;</span>
 </code></pre></div><p>So stable references restrict which mutations we can perform but allow us to more efficiently traverse
 values with less cloning.</p>
-<p>Sounds useful right?</p>
-<p>Well.. not really. The devil is in the details so let&rsquo;s go over them.</p>
+<p>Sounds useful, right?</p>
+<p>Well&hellip; not really. The devil is in the details so let&rsquo;s go over them.</p>
 <hr>
 <h1 id="get-to-the-point">Get to the Point</h1>
 <p><code>!stable t</code> (unlike <code>!shared t</code><sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>) lets you project a reference into any member of the type but restricts
@@ -861,7 +861,7 @@ allowing aliasing:</p>
 we allow coercing <code>&amp;t</code> to <code>!stable t</code> - which would defeat the point of immutable references in the first place I think.</p>
 <p>It&rsquo;d also be somewhat unsatisfactory if a trait like <code>Clone</code>, which conceptually is not supposed to mutate its parameters, takes
 a mutable reference to its data because of corner cases like <code>Rc t</code> where mutation is required. Should the general case be less
-clear due to the existence of corner-cases? Taking this to its logical extent, nearly all traits which accept immutable reference
+clear due to the existence of corner cases? Taking this to its logical extent, nearly all traits which accept immutable reference
 parameters should actually accept some kind of shared, mutable parameter instead just for the rare exception where they are required.
 Perhaps something like <code>Rc t</code> is best implemented with an explicitly interior-mutable counter such as <code>Cell U32</code> after all.</p>
 <hr>
@@ -949,7 +949,7 @@ forgotten about, the latter also requires remembering useful conversions such as
 With <code>Cell&lt;T&gt;</code> in Rust this is possible through <a href="https://doc.rust-lang.org/std/cell/struct.Cell.html#method.set"><code>Cell::set</code></a> (among other methods).
 This limits <code>!stable t</code> to only the most trivial of mutations in practice.</li>
 <li>Including both <code>!stable t</code> and <code>Cell t</code> complicates the language for a very small gain.</li>
-<li>It would be unsound to allow obtaining both a <code>!shared t</code> and a <code>!stable t</code> from a <code>Rc t</code>.
+<li>It would be unsound to allow obtaining both a <code>!shared t</code> and a <code>!stable t</code> from an <code>Rc t</code>.
 If it was allowed, we could use <code>!stable t</code> to project a reference deep into the type, then use a <code>!shared t</code> to the
 same value to drop the value that&rsquo;s being held. Since the <code>Rc t</code> to <code>!shared t</code> conversion is useful to keep (see later in the article),
 we&rsquo;d need to remove the <code>Rc t</code> to <code>!stable t</code> conversion, <strong>which means <code>!stable t</code>&rsquo;s advantage of being able to project into any type
@@ -1042,7 +1042,7 @@ over <code>!shared t</code>-style shared mutability I&rsquo;d love to hear how t
 meantime though, I thought I&rsquo;d quickly review some things <code>!shared t</code> can already do, and some design
 patterns I intend it to be used in since the original post was light on <em>how</em> to use these.</p>
 <h2 id="we-have-gc-at-home">We Have GC at Home</h2>
-<p>The usecase I&rsquo;m personally most excited for is using shared references to emulate garbage-collected
+<p>The use case I&rsquo;m personally most excited for is using shared references to emulate garbage-collected
 languages, even in a language with affine types like Ante.</p>
 <p>No, I&rsquo;m serious. Don&rsquo;t give me that look.</p>
 <p>We can combine shared references with <a href="/docs/language/#shared-types">shared types</a>

@@ -7,7 +7,7 @@ categories = ["docs"]
 ---
 
 This page is an incomplete list of features that are currently
-being considered for ante but for one reason or another are not
+being considered for Ante but for one reason or another are not
 included in the language already. These features are listed
 in no particular order.
 
@@ -18,7 +18,7 @@ Some form of overloading could help alleviate user frustration
 by allowing modules like `Vec` and `HashMap` to both be imported despite defining conflicting names like `empty`,
 `of`, `insert`, `get`, etc. Overloading would also reduce the need for abilities as users would no longer need to
 use abilities to be lazy with their function names. It would however complicate documentation somewhat. An identifier
-would no longer be uniquely determined by its full module path, referring to a specific instance of it must now
+would no longer be uniquely determined by its full module path. Referring to a specific instance of it would now need to
 specify the full module path and type of the function.
 
 Basic usage would be relatively simple:
@@ -56,10 +56,10 @@ foo: a -> Unit given
     Print c
 ```
 
-In which case we end up with a kind of compile-time duck typing. Worst case scenario if we made
+In which case we end up with a kind of compile-time duck typing. Worst case scenario, if we made
 a typo (`gett` instead of `get`), this could generalize our `gett` constraint instead of issuing
 a method not found error. This seems like it can be avoided however by only generalizing if there
-is actually at least 2 functions in scope with that name.
+are actually at least 2 functions in scope with that name.
 
 It is an open question whether generalized function requirements should be resolved via the set of
 functions visible to the caller or just those visible to the definer. If it is the former, this functions
@@ -92,7 +92,7 @@ execution or macros can be equally or more frustrating for the use cases that do
 
 A good starting place for compile-time execution and macros would be adding a `comptime` modifier
 to signify something that is run at compile-time. In addition, `quote` can be a new operator which
-quotes the code on its right hand side and returns an object of type `Code` that can be manipulated.
+quotes the code on its right-hand side and returns an object of type `Code` that can be manipulated.
 Other `Code` objects can be interpolated into this via `$`. `comptime` functions which return a
 `Code` object will automatically interpolate this code into their callsite, unless the result is
 captured with a `comptime` variable.
@@ -128,7 +128,7 @@ macro pow base (exponent: U8) =
 This could be expanded to include compile-time introspection functions on `Code` objects to retrieve
 the AST kind, type of the object, etc.
 
-Implementing this scheme would likely require a full meta-cyclical evaluator. Compile-time functions
+Implementing this scheme would likely require a full metacircular evaluator. Compile-time functions
 would be evaluated after type checking, and affected code may need to restart name resolution and
 type checking until there are no more compile-time functions to be evaluated.
 
@@ -237,7 +237,7 @@ type Obj (ability_: fn type type -> type) = exists t env.
 ```
 
 Now we could make a `DisplayObj` via `Obj Display` or use it with other traits like `Obj Hash`.
-However, we can no longer define an implicit like `display_displayobj` before. We'd have
+However, we can no longer define an implicit like `display_displayobj` as before. We'd have
 to return a generic value of `a (Obj a) env` somehow, but we cannot construct such a generic value
 as-is. It may be possible if our `vtable` also held a constructor for the ability in question.
 
@@ -249,10 +249,10 @@ It cuts down on so much boilerplate that I would even argue it to be necessary. 
 relies on implementing derives via procedural macros which are quite difficult for IDEs to handle,
 slow compile times, come with a hefty learning curve, and are required to be put in a separate crate.
 To provide a derive mechanism without these downsides, I propose a system based on GHC's [Datatype
-Generic Programming](https://wiki.haskell.org/GHC.Generics) in which we can define how to derive a
+Generic Programming](https://wiki.haskell.org/GHC.Generics) in which we can define how to derive an
 ability by specifying rules for what to do for product types, sum types, and annotated types.
 
-Here's an example in ante (syntax not final):
+Here's an example in Ante (syntax not final):
 
 ```ante
 ability Hash a =
@@ -272,12 +272,12 @@ hash_foo = impl Hash Foo via derive
 
 These would function somewhat as type-directed rules for the compiler to generate impls
 from a given type. The exact cases we would need may push toward a different list of cases
-(e.g. a simple Product pair type won't enable easy differentiation of the begin and end of a
+(e.g. a simple Product pair type won't enable easy differentiation of the beginning and end of a
 struct's fields) so the final design may be more general with a bit more noise (e.g. we could
 add StartStruct and StructEnd variants which may be useful for Serialization and other abilities).
 
 The above strategy with Hash simply recurses on each field of the type. This is a common enough
-usecase that we can consider even providing this as a builtin strategy to save users some trouble:
+use case that we can consider even providing this as a built-in strategy to save users some trouble:
 
 ```ante
 derive Hash a via recur hash_combine
@@ -291,8 +291,8 @@ to cut into its brevity and ease of use over the more general approach.
 ---
 # Allocator Optimizations
 
-The default allocator malloc in addition to its faster friends jemalloc and mimalloc are
-designed in such a way to make them general purpose: they must be thread-safe and they cannot
+The default allocator malloc and its faster friends jemalloc and mimalloc are
+designed in such a way to make them general-purpose: they must be thread-safe and they cannot
 assume any lifetime constraints of their data. A very common manual optimization in languages
 like C or C++ is then to switch out to a faster allocator for some data. For example, a game
 may elect to use a bump-pointer allocator for any temporary data that is only needed to process
@@ -305,20 +305,20 @@ In Ante, the goal should be to perform these optimizations automatically. The co
 be able to analyze the transfer of data such that if it is only used in a single thread, a faster thread-local
 allocator is used over the global allocator. Otherwise, we'd fall back to a global thread-safe allocator like mimalloc.
 This optimization would be similar to Koka's Perceus system in which atomic reference count instructions
-are optimized into non-atomic reference count instructions if the referenced data is used in a single
-threaded manner.
+are optimized into non-atomic reference count instructions if the referenced data is used in a
+single-threaded manner.
 
-This will likely end up being an important optimization since thread local allocators can be
+This will likely end up being an important optimization since thread-local allocators can be
 substantially faster than global allocators. A key property of this optimization however is that it
 would only change the default allocator. If users wish to manually optimize their program and decide
-which allocators to use where they will still be able to as before.
+which allocators to use where, they will still be able to as before.
 
 ## Allocate all memory up-front on the stack
 
 If the compiler can put a bound on the amount of memory a thread may allocate for either thread-local
 or shared data, we would be able to allocate all of a thread's memory up front. Thread-local data could
 simply be allocated on the thread's stack and shared data on the parent thread's stack or global allocator.
-This optimization is likely less practical for longer running threads where no memory bound
+This optimization is likely less practical for longer-running threads where no memory bound
 is likely to be found.
 
 ## Grouping allocations with lifetime inference
@@ -336,12 +336,12 @@ foo () =
 ```
 
 A naive implementation may allocate all these list nodes separately but since they are created adjacent
-to each other and neither are needed outside the current function we should be able to optimize the 6
+to each other and neither is needed outside the current function we should be able to optimize the 6
 list node allocations into 1 call to the allocator. In this specific example, the allocator may also
 simply be the stack itself since we do not need a dynamic lifetime for these nodes in this function.
 
 Grouping allocations in this way however leads to questions on how aggressively we should group adjacent
-items. What if they are separated by other definitions? Or arbitrary function calls? In general widening
+items. What if they are separated by other definitions? Or arbitrary function calls? In general, widening
 the lifetime of one allocation to match another's so it may be grouped increases the amount of memory
 the resulting program would use by allocating earlier and freeing later. It is unclear what heuristics
 should be used - if any - to make this decision on when to group allocations separated by other statements.
@@ -349,12 +349,12 @@ should be used - if any - to make this decision on when to group allocations sep
 ---
 # Always Incremental Compilation
 
-For languages with long compile times like rust (and presumably ante due to refinement types, lifetime inference,
-and monomorphisation) incremental compilation largely solves the problem of speeding up compile times when developers
+For languages with long compile times like Rust (and presumably Ante due to refinement types, lifetime inference,
+and monomorphization) incremental compilation largely solves the problem of speeding up compile times when developers
 are iterating on a problem. It does not solve the problem for users however when they go to download a
 program or library which now must be recompiled from scratch. Why is this the case? Even if the user is on
 some new architecture that the compiler must optimize for, this does not mean we should have to re-do all of
-lexing, parsing, name resolution, type checking, etc for programs that we already know to compile.
+lexing, parsing, name resolution, type checking, etc. for programs that we already know to compile.
 
 Ante's solution to this will be experimenting with distributing the incremental compilation metadata along with
 the code. When you download a library from a trusted source (centralized package repository or a company-specific
@@ -364,9 +364,9 @@ your program without adding a new library.
 
 ## Formatting
 
-The language Unison represents a codebase as a sqlite database rather than traditional text. It achieves
+The language Unison represents a codebase as a SQLite database rather than traditional text. It achieves
 incremental compilation by only inserting verified code that passed type checking and all
-prior passes into this database. It would be possible for ante to store incremental compilation metadata in
+prior passes into this database. It would be possible for Ante to store incremental compilation metadata in
 such a database as well. Advantages of this scheme would be leveraging a pre-existing tool and packing metadata
 together into a single somewhat standard binary format.
 
@@ -378,13 +378,13 @@ This approach of distributing incremental compilation metadata has a few limitat
 
 Locally, little to no extra space should be required from this feature as the extra incremental information downloaded
 from a library would have been created anyway when users go to compile the library. It is possible to use extra space
-if the compiler ever stores extra information that would be unneeded for some users. For example, caching different llvm
+if the compiler ever stores extra information that would be unneeded for some users. For example, caching different LLVM
 IR representations that are dependent on the host's architecture. Solving this may either mean compressing the data so that
 as little space as possible is duplicated, or it may mean not saving data that is very dependent on the host's system such
-as llvm IR.
+as LLVM IR.
 
 Downloading this data rather than creating it on compilation would mean an increase in download times. Compared to Unison,
-ante users would be downloading both the textual code and the incremental version rather than just the latter. It is unclear
+Ante users would be downloading both the textual code and the incremental version rather than just the latter. It is unclear
 how much of a problem it would be in practice. One potential solution would be to ensure the incremental data of a library
 or program contains all the information needed to compile it. Then downloading the release of a library from a package manager
 would only entail downloading the metadata and not the source code itself. One potential issue with this solution is IDE integration.
@@ -392,7 +392,7 @@ A hypothetical ante-language-server could be able to read type signatures or doc
 to explore the source code of the library they would likely only be able to see a pretty-printed AST recreated from the metadata.
 
 ---
-# Builtin Recursion Schemes
+# Built-in Recursion Schemes
 
 Often in functional programming we encounter familiar looping patterns that can be factored out
 into functions like map, filter, or fold. Functions over arbitrary recursive types (like trees)
@@ -474,7 +474,7 @@ written anywhere after a type is expected, and are mostly restricted
 to numbers or "uninterpreted functions." This limitation is so we can
 infer these refinements like normal types. If we instead allow any value
 to be used in refinements we would get fully-dependent types for which
-inference and basic type checking (without manual proofs) is undecidable.
+inference and basic type checking (without manual proofs) are undecidable.
 
 Refinement types can be used to ensure indexing into a vector is always valid:
 
@@ -517,14 +517,14 @@ sort (vec: Vec t) : SortedVec t = ...
 binary_search (vec: SortedVec t) (elem: t) : Maybe (Index vec) = ...
 ```
 
-Each of these refinements would be in the type system and would be checked during compile-time with the help of a SMT solver.
+Each of these refinements would be in the type system and would be checked during compile-time with the help of an SMT solver.
 
 ---
 # Lifetime Inference
 
 Lifetime inference (originally "region inference") is a technique
 that can be used to conservatively estimate the lifetime of references
-at compile time. If included into Ante, a lifetime-inferred pointer
+at compile time. If included in Ante, a lifetime-inferred pointer
 would need to be an owning pointer type, e.g. `Ref t`. This is because
 it has the ability to automatically extend the lifetime of its contents
 depending on how far down the call stack the compiler infers that it
@@ -560,7 +560,7 @@ int main() {
 }
 ```
 
-The above program showcased we can return a `Ref` value to extend its
+The above program showcased that we can return a `Ref` value to extend its
 lifetime. Unlike borrowing for example, we can never have a lifetime error in this
 system since the lifetime is simply extended instead.
 
@@ -574,17 +574,17 @@ reached. This can be improved with more complex analysis (like the
 [AFL](https://www.microsoft.com/en-us/research/publication/better-static-memory-management-improving-region-based-analysis-of-higher-order-languages/)
 or [imperative region management](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.388.4008&rep=rep1&type=pdf) schemes),
 but there are still some fundamental issues of these schemes with regard
-to collection types. The problem is since this analysis is type based, and
-all elements in a collection have their type unified, then their lifetimes
+to collection types. The problem is that since this analysis is type-based, and
+all elements in a collection have their type unified, their lifetimes
 are unified as well. Ante aims to mitigate this via move semantics and runtime
 checks. These runtime checks would be configurable since lifetime inference
-already assures memory safety, they would only serve to further tighten lifetimes
+already assures memory safety. They would only serve to further tighten lifetimes
 and deallocate earlier. Their exact form is indeterminate however and further
 restricting inferred lifetimes could be an exciting part of research.
 
 ## Details
 
-Internally, lifetime inference of refs would start out by using the original Tofte-Taplin
+Internally, lifetime inference of refs would start out by using the original Tofte-Talpin
 stack-based algorithm. This algorithm can infer references which
 can be optimized to allocate on the stack instead of the heap
 even if it needs to be allocated on a prior stack frame. The
@@ -596,7 +596,7 @@ such as `Box` and `Rc`.
 The place where `Ref`s are typically worst is in implementing container types.
 `Ref`s are implemented using memory pools on the stack under the
 hood so any container that wants to free early or reallocate and
-free/resize memory (ie. the vast majority of containers) should use
+free/resize memory (i.e. the vast majority of containers) should use
 one of the smart pointer types to hold their elements instead.
 
 For these reasons, lifetime inference isn't incredibly useful for Ante
@@ -607,22 +607,22 @@ today so it is not included in the language.
 ## Second-class reference parameters
 
 Ante's previous design for borrowing used second-class references similar to [Hylo](https://www.hylo-lang.org/).
-These are a good fit for parameters which is the majority use case for most references. Since
-they are second class they do not allow being passed around anywhere (they are limited to purely
+These are a good fit for parameters, which are the majority use case for most references. Since
+they are second-class they do not allow being passed around anywhere (they are limited to purely
 being a parameter-passing mode) and thus aren't allowed within structs at all. This removes
 the complicated corner cases for the compiler but the programmer may still want to return
 references or store them in structs for their use case.
 
 For returning or storing references, the standard approach is to extend the second-class universe to
 include second-class subscript functions, second-class structs, second-class closures, etc. Continuing with
-this though means dividing the language into two colors: second-class and non-second class. Second-class references
+this though means dividing the language into two colors: second-class and non-second-class. Second-class references
 not being a type for example means you'd need another separate `map` function which takes its argument by reference
 instead of by value. This is quite the negative for Ante which uses algebraic effects to otherwise avoid the
 function coloring problem which affects many other languages.
 
 ## First-class runtime-checked references
 
-Alternatively, using a reference type that is first-class but has its lifetime checked at runtime instead
+Alternatively, we could use a reference type that is first-class but has its lifetime checked at runtime instead
 of compile-time (e.g. generational references). This avoids the coloring problem but incurs extra runtime
 overhead and opens up the possibility for additional runtime errors.
 
@@ -632,7 +632,7 @@ while the original thread mutates a mutable reference to the same value in a non
 these mutable references need to be removed entirely. Mutation of values however would still be possible through
 the various wrapper types providing interior mutability such as `Cell`, `RefCell`, `Mutex`, etc. This preserves
 thread safety since the compiler can see these types within a value and knows whether the type as a whole will
-be thread safe if it uses no thread unsafe types like `Cell` or `RefCell`.
+be thread safe if it uses no thread-unsafe types like `Cell` or `RefCell`.
 
 A downside to this approach is that it becomes much more awkward to mutate values since you must go through
 one of these wrapper types:
@@ -643,7 +643,7 @@ type Ctx = logs: Cell (Vec String)
 // Mutable references no longer exist so we can no longer tell from the
 // signature of `log` that it mutates `self`
 Ctx.log &self (new_log: String) =
-    // Pushing to a vector is now a 3 step process
+    // Pushing to a vector is now a 3-step process
     mut logs = self.logs.take ()
     logs.push new_log
     self.logs.set logs
@@ -656,7 +656,7 @@ Ctx.log &self (new_log: String) =
     self.logs.borrow_mut () |>.push new_log
 ```
 
-This would be a hit to the ease of use of mutable values in general, but its possible Ante as a more FP-leaning
+This would be a hit to the ease of use of mutable values in general, but it's possible Ante as a more FP-leaning
 language could get away with this by pushing for more immutability. This approach is actually fairly similar
 to ML languages like OCaml which use primarily immutable values but allow mutation only through special types
 like `ref`.
@@ -678,15 +678,15 @@ Ctx.try_push_log &self (log: String): Unit can Throw Error =
         throw (InvalidLog last_log)
 ```
 
-This code may seem odd but fine but becomes increasingly problematic when used in contexts it was not
-originally intended in. For example, we may want to collect all errors that occur _after_ `Ctx` gets
+This code may seem odd but fine, yet it becomes increasingly problematic when used in contexts it was not
+originally intended for. For example, we may want to collect all errors that occur _after_ `Ctx` gets
 dropped. If this happens, any references within the `InvalidLog` variant would be invalidated and we'd
 get a runtime error trying to print the string. With explicit lifetimes, the compiler would have caught
-this and prevented the code to collect errors after context is dropped from being written in the first place.
+this and prevented the code to collect errors after the context is dropped from being written in the first place.
 Patterns like this require additional documentation to document where the lifetime of the log in `InvalidLog`
 is coming from in the first place and the maximum time it can be expected to be valid. In addition,
 additional unit tests may be needed to ensure lifetime errors do not arise in certain situations. At this
-point, explicit lifetimes may be preferable since they enforce this documentation is provided, prevent
+point, explicit lifetimes may be preferable since they enforce that this documentation is provided, prevent
 invalid code from being written, and require fewer unit tests.
 
 ---
@@ -694,7 +694,7 @@ invalid code from being written, and require fewer unit tests.
 
 Platform-specific code in other languages often requires preprocessing features such as `#ifdef`s or
 their equivalent macros to selectively enable code when some functions are available or an architecture
-is known. This has obvious downsides though, namely any code that is not currently enabled does not
+is known. This has obvious downsides though, namely that any code that is not currently enabled does not
 get checked by the compiler for correctness at all. If we think about it, `#ifdef`s enabling certain
 functions is very similar to programming against an interface, and Ante already has abilities for that
 purpose. Can we use abilities to replace preprocessor code?
@@ -712,7 +712,7 @@ main {Posix} =
     // fork, execve, open, etc.
 
 main {Windows} =
-    // CreateThread, CreateProcess, etc
+    // CreateThread, CreateProcess, etc.
 ```
 
 More commonly, `main` will take `IO` as an argument which is an abstracted interface implemented
@@ -723,7 +723,7 @@ main {IO} = ...
 ```
 
 Code written using `IO` is expected to be reasonably cross-platform, although code written with
-more narrower capabilities could be even more so. For example, a function requiring only the `Print`
+narrower capabilities could be even more so. For example, a function requiring only the `Print`
 capability (a part of the overall `IO` capability) will be easier to use on more exotic platforms
 that don't support all of `IO`. For this reason, libraries are encouraged to only require capabilities
 they actually need rather than pulling in all of `IO` because it is convenient.
@@ -747,7 +747,7 @@ type Llvm =
     ...
 ```
 
-And given to `main` as an argument, usually to be passed implicitly
+And given to `main` as an argument, usually to be passed implicitly:
 
 ```ante
 main {IO} {Llvm} = ...
@@ -759,9 +759,9 @@ to provide values for these symbols.
 One advantage of this versus ordinary externs is that platforms on which the underlying library is not
 available may still use the interface by implementing it themselves if possible in terms of functions
 that are available. For example, we could implement the `Llvm` type above with our own implementation
-without requiring the actual llvm library at all. It'd be a large task for a large library like llvm,
+without requiring the actual LLVM library at all. It'd be a large task for a large library like LLVM,
 but it would be possible, and practical on smaller scales or leaving some methods unimplemented.
-By forcing programming against an interface like this, Ante code could be platform and dynlib agnostic.
+By forcing programming against an interface like this, Ante code could be platform- and dynlib-agnostic.
 
 ## Implementing a new platform
 

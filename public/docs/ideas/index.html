@@ -546,8 +546,8 @@
                 
                 
                 
-                <a href="/docs/ideas/#builtin-recursion-schemes">
-                    <li>Builtin Recursion Schemes</li>
+                <a href="/docs/ideas/#built-in-recursion-schemes">
+                    <li>Built-in Recursion Schemes</li>
                 </a>
                 
                 
@@ -819,7 +819,7 @@
                         <div id="post-content">
                           <hr>
 <p>This page is an incomplete list of features that are currently
-being considered for ante but for one reason or another are not
+being considered for Ante but for one reason or another are not
 included in the language already. These features are listed
 in no particular order.</p>
 <hr>
@@ -828,7 +828,7 @@ in no particular order.</p>
 by allowing modules like <code>Vec</code> and <code>HashMap</code> to both be imported despite defining conflicting names like <code>empty</code>,
 <code>of</code>, <code>insert</code>, <code>get</code>, etc. Overloading would also reduce the need for abilities as users would no longer need to
 use abilities to be lazy with their function names. It would however complicate documentation somewhat. An identifier
-would no longer be uniquely determined by its full module path, referring to a specific instance of it must now
+would no longer be uniquely determined by its full module path. Referring to a specific instance of it would now need to
 specify the full module path and type of the function.</p>
 <p>Basic usage would be relatively simple:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Map</span>
@@ -853,10 +853,10 @@ There are two options here:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo</span><span class="o">:</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">given</span>
     <span class="n">get</span><span class="o">:</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Int</span> <span class="n">b</span> <span class="ow">-&gt;</span> <span class="n">c</span><span class="p">,</span>
     <span class="kt">Print</span> <span class="n">c</span>
-</code></pre></div><p>In which case we end up with a kind of compile-time duck typing. Worst case scenario if we made
+</code></pre></div><p>In which case we end up with a kind of compile-time duck typing. Worst case scenario, if we made
 a typo (<code>gett</code> instead of <code>get</code>), this could generalize our <code>gett</code> constraint instead of issuing
 a method not found error. This seems like it can be avoided however by only generalizing if there
-is actually at least 2 functions in scope with that name.</p>
+are actually at least 2 functions in scope with that name.</p>
 <p>It is an open question whether generalized function requirements should be resolved via the set of
 functions visible to the caller or just those visible to the definer. If it is the former, this functions
 as a sort of ad-hoc ability feature and the &ldquo;only generalize if there are at least 2 functions in scope&rdquo; of the
@@ -882,7 +882,7 @@ While it can often cause issues for language servers and error reporting, omissi
 execution or macros can be equally or more frustrating for the use cases that do need it.</p>
 <p>A good starting place for compile-time execution and macros would be adding a <code>comptime</code> modifier
 to signify something that is run at compile-time. In addition, <code>quote</code> can be a new operator which
-quotes the code on its right hand side and returns an object of type <code>Code</code> that can be manipulated.
+quotes the code on its right-hand side and returns an object of type <code>Code</code> that can be manipulated.
 Other <code>Code</code> objects can be interpolated into this via <code>$</code>. <code>comptime</code> functions which return a
 <code>Code</code> object will automatically interpolate this code into their callsite, unless the result is
 captured with a <code>comptime</code> variable.</p>
@@ -913,7 +913,7 @@ captured with a <code>comptime</code> variable.</p>
     <span class="n">result</span>
 </code></pre></div><p>This could be expanded to include compile-time introspection functions on <code>Code</code> objects to retrieve
 the AST kind, type of the object, etc.</p>
-<p>Implementing this scheme would likely require a full meta-cyclical evaluator. Compile-time functions
+<p>Implementing this scheme would likely require a full metacircular evaluator. Compile-time functions
 would be evaluated after type checking, and affected code may need to restart name resolution and
 type checking until there are no more compile-time functions to be evaluated.</p>
 <p>It would also be possible to implement <code>derive</code> using this:</p>
@@ -1001,7 +1001,7 @@ to bundle together an object with some abilities:</p>
     <span class="n">value</span><span class="o">:</span> <span class="n">t</span>
     <span class="n">vtable</span><span class="o">:</span> <span class="n">ability_</span> <span class="n">t</span> <span class="n">env</span>
 </code></pre></div><p>Now we could make a <code>DisplayObj</code> via <code>Obj Display</code> or use it with other traits like <code>Obj Hash</code>.
-However, we can no longer define an implicit like <code>display_displayobj</code> before. We&rsquo;d have
+However, we can no longer define an implicit like <code>display_displayobj</code> as before. We&rsquo;d have
 to return a generic value of <code>a (Obj a) env</code> somehow, but we cannot construct such a generic value
 as-is. It may be possible if our <code>vtable</code> also held a constructor for the ability in question.</p>
 <hr>
@@ -1011,9 +1011,9 @@ It cuts down on so much boilerplate that I would even argue it to be necessary. 
 relies on implementing derives via procedural macros which are quite difficult for IDEs to handle,
 slow compile times, come with a hefty learning curve, and are required to be put in a separate crate.
 To provide a derive mechanism without these downsides, I propose a system based on GHC&rsquo;s <a href="https://wiki.haskell.org/GHC.Generics">Datatype
-Generic Programming</a> in which we can define how to derive a
+Generic Programming</a> in which we can define how to derive an
 ability by specifying rules for what to do for product types, sum types, and annotated types.</p>
-<p>Here&rsquo;s an example in ante (syntax not final):</p>
+<p>Here&rsquo;s an example in Ante (syntax not final):</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">ability</span> <span class="kt">Hash</span> <span class="n">a</span> <span class="ow">=</span>
     <span class="n">hash</span><span class="o">:</span> <span class="k">fn</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">U64</span>
 
@@ -1029,11 +1029,11 @@ ability by specifying rules for what to do for product types, sum types, and ann
 <span class="nf">hash_foo</span> <span class="ow">=</span> <span class="k">impl</span> <span class="kt">Hash</span> <span class="kt">Foo</span> <span class="n">via</span> <span class="k">derive</span>
 </code></pre></div><p>These would function somewhat as type-directed rules for the compiler to generate impls
 from a given type. The exact cases we would need may push toward a different list of cases
-(e.g. a simple Product pair type won&rsquo;t enable easy differentiation of the begin and end of a
+(e.g. a simple Product pair type won&rsquo;t enable easy differentiation of the beginning and end of a
 struct&rsquo;s fields) so the final design may be more general with a bit more noise (e.g. we could
 add StartStruct and StructEnd variants which may be useful for Serialization and other abilities).</p>
 <p>The above strategy with Hash simply recurses on each field of the type. This is a common enough
-usecase that we can consider even providing this as a builtin strategy to save users some trouble:</p>
+use case that we can consider even providing this as a built-in strategy to save users some trouble:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">derive</span> <span class="kt">Hash</span> <span class="n">a</span> <span class="n">via</span> <span class="k">recur</span> <span class="n">hash_combine</span>
 </code></pre></div><p>If the ability functions take more than the single <code>a</code> parameter it is unclear if an error should be
 issued or the strategy can default to passing along these parameters as-is. We could try to generalize
@@ -1041,8 +1041,8 @@ the <code>with</code> clause to accept a function taking all parameters and retu
 to cut into its brevity and ease of use over the more general approach.</p>
 <hr>
 <h1 id="allocator-optimizations">Allocator Optimizations</h1>
-<p>The default allocator malloc in addition to its faster friends jemalloc and mimalloc are
-designed in such a way to make them general purpose: they must be thread-safe and they cannot
+<p>The default allocator malloc and its faster friends jemalloc and mimalloc are
+designed in such a way to make them general-purpose: they must be thread-safe and they cannot
 assume any lifetime constraints of their data. A very common manual optimization in languages
 like C or C++ is then to switch out to a faster allocator for some data. For example, a game
 may elect to use a bump-pointer allocator for any temporary data that is only needed to process
@@ -1053,17 +1053,17 @@ thread-local allocators that require no atomic or locking instructions for synch
 be able to analyze the transfer of data such that if it is only used in a single thread, a faster thread-local
 allocator is used over the global allocator. Otherwise, we&rsquo;d fall back to a global thread-safe allocator like mimalloc.
 This optimization would be similar to Koka&rsquo;s Perceus system in which atomic reference count instructions
-are optimized into non-atomic reference count instructions if the referenced data is used in a single
-threaded manner.</p>
-<p>This will likely end up being an important optimization since thread local allocators can be
+are optimized into non-atomic reference count instructions if the referenced data is used in a
+single-threaded manner.</p>
+<p>This will likely end up being an important optimization since thread-local allocators can be
 substantially faster than global allocators. A key property of this optimization however is that it
 would only change the default allocator. If users wish to manually optimize their program and decide
-which allocators to use where they will still be able to as before.</p>
+which allocators to use where, they will still be able to as before.</p>
 <h2 id="allocate-all-memory-up-front-on-the-stack">Allocate all memory up-front on the stack</h2>
 <p>If the compiler can put a bound on the amount of memory a thread may allocate for either thread-local
 or shared data, we would be able to allocate all of a thread&rsquo;s memory up front. Thread-local data could
 simply be allocated on the thread&rsquo;s stack and shared data on the parent thread&rsquo;s stack or global allocator.
-This optimization is likely less practical for longer running threads where no memory bound
+This optimization is likely less practical for longer-running threads where no memory bound
 is likely to be found.</p>
 <h2 id="grouping-allocations-with-lifetime-inference">Grouping allocations with lifetime inference</h2>
 <p>A good way to optimize allocations is to simply make fewer of them. Ante should be able to leverage
@@ -1075,31 +1075,31 @@ A trivial example would be:</p>
     <span class="o">...</span>
     <span class="p">()</span>
 </code></pre></div><p>A naive implementation may allocate all these list nodes separately but since they are created adjacent
-to each other and neither are needed outside the current function we should be able to optimize the 6
+to each other and neither is needed outside the current function we should be able to optimize the 6
 list node allocations into 1 call to the allocator. In this specific example, the allocator may also
 simply be the stack itself since we do not need a dynamic lifetime for these nodes in this function.</p>
 <p>Grouping allocations in this way however leads to questions on how aggressively we should group adjacent
-items. What if they are separated by other definitions? Or arbitrary function calls? In general widening
+items. What if they are separated by other definitions? Or arbitrary function calls? In general, widening
 the lifetime of one allocation to match another&rsquo;s so it may be grouped increases the amount of memory
 the resulting program would use by allocating earlier and freeing later. It is unclear what heuristics
 should be used - if any - to make this decision on when to group allocations separated by other statements.</p>
 <hr>
 <h1 id="always-incremental-compilation">Always Incremental Compilation</h1>
-<p>For languages with long compile times like rust (and presumably ante due to refinement types, lifetime inference,
-and monomorphisation) incremental compilation largely solves the problem of speeding up compile times when developers
+<p>For languages with long compile times like Rust (and presumably Ante due to refinement types, lifetime inference,
+and monomorphization) incremental compilation largely solves the problem of speeding up compile times when developers
 are iterating on a problem. It does not solve the problem for users however when they go to download a
 program or library which now must be recompiled from scratch. Why is this the case? Even if the user is on
 some new architecture that the compiler must optimize for, this does not mean we should have to re-do all of
-lexing, parsing, name resolution, type checking, etc for programs that we already know to compile.</p>
+lexing, parsing, name resolution, type checking, etc. for programs that we already know to compile.</p>
 <p>Ante&rsquo;s solution to this will be experimenting with distributing the incremental compilation metadata along with
 the code. When you download a library from a trusted source (centralized package repository or a company-specific
 local repository) you can compile the project incrementally rather than compiling from scratch. Downloading a new
 library and adding a line to your program making use of it should take no longer to compile than adding a line to
 your program without adding a new library.</p>
 <h2 id="formatting">Formatting</h2>
-<p>The language Unison represents a codebase as a sqlite database rather than traditional text. It achieves
+<p>The language Unison represents a codebase as a SQLite database rather than traditional text. It achieves
 incremental compilation by only inserting verified code that passed type checking and all
-prior passes into this database. It would be possible for ante to store incremental compilation metadata in
+prior passes into this database. It would be possible for Ante to store incremental compilation metadata in
 such a database as well. Advantages of this scheme would be leveraging a pre-existing tool and packing metadata
 together into a single somewhat standard binary format.</p>
 <h2 id="limitations">Limitations</h2>
@@ -1107,19 +1107,19 @@ together into a single somewhat standard binary format.</p>
 <h3 id="space-and-downloads">Space and Downloads</h3>
 <p>Locally, little to no extra space should be required from this feature as the extra incremental information downloaded
 from a library would have been created anyway when users go to compile the library. It is possible to use extra space
-if the compiler ever stores extra information that would be unneeded for some users. For example, caching different llvm
+if the compiler ever stores extra information that would be unneeded for some users. For example, caching different LLVM
 IR representations that are dependent on the host&rsquo;s architecture. Solving this may either mean compressing the data so that
 as little space as possible is duplicated, or it may mean not saving data that is very dependent on the host&rsquo;s system such
-as llvm IR.</p>
+as LLVM IR.</p>
 <p>Downloading this data rather than creating it on compilation would mean an increase in download times. Compared to Unison,
-ante users would be downloading both the textual code and the incremental version rather than just the latter. It is unclear
+Ante users would be downloading both the textual code and the incremental version rather than just the latter. It is unclear
 how much of a problem it would be in practice. One potential solution would be to ensure the incremental data of a library
 or program contains all the information needed to compile it. Then downloading the release of a library from a package manager
 would only entail downloading the metadata and not the source code itself. One potential issue with this solution is IDE integration.
 A hypothetical ante-language-server could be able to read type signatures or documentation from this, but if the user wished
 to explore the source code of the library they would likely only be able to see a pretty-printed AST recreated from the metadata.</p>
 <hr>
-<h1 id="builtin-recursion-schemes">Builtin Recursion Schemes</h1>
+<h1 id="built-in-recursion-schemes">Built-in Recursion Schemes</h1>
 <p>Often in functional programming we encounter familiar looping patterns that can be factored out
 into functions like map, filter, or fold. Functions over arbitrary recursive types (like trees)
 however, tend to be written by hand with manual recursion.
@@ -1181,7 +1181,7 @@ written anywhere after a type is expected, and are mostly restricted
 to numbers or &ldquo;uninterpreted functions.&rdquo; This limitation is so we can
 infer these refinements like normal types. If we instead allow any value
 to be used in refinements we would get fully-dependent types for which
-inference and basic type checking (without manual proofs) is undecidable.</p>
+inference and basic type checking (without manual proofs) are undecidable.</p>
 <p>Refinement types can be used to ensure indexing into a vector is always valid:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">get</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span> <span class="n">where</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="n">len</span> <span class="n">a</span><span class="p">)</span> <span class="o">:</span> <span class="n">t</span> <span class="ow">=</span> <span class="o">...</span>
 
@@ -1211,12 +1211,12 @@ to only sorted vectors:</p>
 <span class="nf">sort</span> <span class="p">(</span><span class="n">vec</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="o">:</span> <span class="kt">SortedVec</span> <span class="n">t</span> <span class="ow">=</span> <span class="o">...</span>
 
 <span class="nf">binary_search</span> <span class="p">(</span><span class="n">vec</span><span class="o">:</span> <span class="kt">SortedVec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">elem</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span> <span class="o">:</span> <span class="kt">Maybe</span> <span class="p">(</span><span class="kt">Index</span> <span class="n">vec</span><span class="p">)</span> <span class="ow">=</span> <span class="o">...</span>
-</code></pre></div><p>Each of these refinements would be in the type system and would be checked during compile-time with the help of a SMT solver.</p>
+</code></pre></div><p>Each of these refinements would be in the type system and would be checked during compile-time with the help of an SMT solver.</p>
 <hr>
 <h1 id="lifetime-inference">Lifetime Inference</h1>
 <p>Lifetime inference (originally &ldquo;region inference&rdquo;) is a technique
 that can be used to conservatively estimate the lifetime of references
-at compile time. If included into Ante, a lifetime-inferred pointer
+at compile time. If included in Ante, a lifetime-inferred pointer
 would need to be an owning pointer type, e.g. <code>Ref t</code>. This is because
 it has the ability to automatically extend the lifetime of its contents
 depending on how far down the call stack the compiler infers that it
@@ -1243,7 +1243,7 @@ style in C:</p>
     <span class="n">get_value</span><span class="p">(</span><span class="o">&amp;</span><span class="n">value</span><span class="p">);</span>
     <span class="n">print</span><span class="p">(</span><span class="n">value</span><span class="p">);</span> <span class="c1">// print impl is omitted for brevity
 </span><span class="c1"></span><span class="p">}</span>
-</code></pre></div><p>The above program showcased we can return a <code>Ref</code> value to extend its
+</code></pre></div><p>The above program showcased that we can return a <code>Ref</code> value to extend its
 lifetime. Unlike borrowing for example, we can never have a lifetime error in this
 system since the lifetime is simply extended instead.</p>
 <p>There are many tradeoffs here however between lack of runtime
@@ -1256,15 +1256,15 @@ reached. This can be improved with more complex analysis (like the
 <a href="https://www.microsoft.com/en-us/research/publication/better-static-memory-management-improving-region-based-analysis-of-higher-order-languages/">AFL</a>
 or <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.388.4008&amp;rep=rep1&amp;type=pdf">imperative region management</a> schemes),
 but there are still some fundamental issues of these schemes with regard
-to collection types. The problem is since this analysis is type based, and
-all elements in a collection have their type unified, then their lifetimes
+to collection types. The problem is that since this analysis is type-based, and
+all elements in a collection have their type unified, their lifetimes
 are unified as well. Ante aims to mitigate this via move semantics and runtime
 checks. These runtime checks would be configurable since lifetime inference
-already assures memory safety, they would only serve to further tighten lifetimes
+already assures memory safety. They would only serve to further tighten lifetimes
 and deallocate earlier. Their exact form is indeterminate however and further
 restricting inferred lifetimes could be an exciting part of research.</p>
 <h2 id="details">Details</h2>
-<p>Internally, lifetime inference of refs would start out by using the original Tofte-Taplin
+<p>Internally, lifetime inference of refs would start out by using the original Tofte-Talpin
 stack-based algorithm. This algorithm can infer references which
 can be optimized to allocate on the stack instead of the heap
 even if it needs to be allocated on a prior stack frame. The
@@ -1276,26 +1276,26 @@ such as <code>Box</code> and <code>Rc</code>.
 The place where <code>Ref</code>s are typically worst is in implementing container types.
 <code>Ref</code>s are implemented using memory pools on the stack under the
 hood so any container that wants to free early or reallocate and
-free/resize memory (ie. the vast majority of containers) should use
+free/resize memory (i.e. the vast majority of containers) should use
 one of the smart pointer types to hold their elements instead.</p>
 <p>For these reasons, lifetime inference isn&rsquo;t incredibly useful for Ante
 today so it is not included in the language.</p>
 <h1 id="borrowing-alternatives">Borrowing Alternatives</h1>
 <h2 id="second-class-reference-parameters">Second-class reference parameters</h2>
 <p>Ante&rsquo;s previous design for borrowing used second-class references similar to <a href="https://www.hylo-lang.org/">Hylo</a>.
-These are a good fit for parameters which is the majority use case for most references. Since
-they are second class they do not allow being passed around anywhere (they are limited to purely
+These are a good fit for parameters, which are the majority use case for most references. Since
+they are second-class they do not allow being passed around anywhere (they are limited to purely
 being a parameter-passing mode) and thus aren&rsquo;t allowed within structs at all. This removes
 the complicated corner cases for the compiler but the programmer may still want to return
 references or store them in structs for their use case.</p>
 <p>For returning or storing references, the standard approach is to extend the second-class universe to
 include second-class subscript functions, second-class structs, second-class closures, etc. Continuing with
-this though means dividing the language into two colors: second-class and non-second class. Second-class references
+this though means dividing the language into two colors: second-class and non-second-class. Second-class references
 not being a type for example means you&rsquo;d need another separate <code>map</code> function which takes its argument by reference
 instead of by value. This is quite the negative for Ante which uses algebraic effects to otherwise avoid the
 function coloring problem which affects many other languages.</p>
 <h2 id="first-class-runtime-checked-references">First-class runtime-checked references</h2>
-<p>Alternatively, using a reference type that is first-class but has its lifetime checked at runtime instead
+<p>Alternatively, we could use a reference type that is first-class but has its lifetime checked at runtime instead
 of compile-time (e.g. generational references). This avoids the coloring problem but incurs extra runtime
 overhead and opens up the possibility for additional runtime errors.</p>
 <p>Another point to consider is that allowing both mutable and immutable references to be first-class and untracked
@@ -1304,7 +1304,7 @@ while the original thread mutates a mutable reference to the same value in a non
 these mutable references need to be removed entirely. Mutation of values however would still be possible through
 the various wrapper types providing interior mutability such as <code>Cell</code>, <code>RefCell</code>, <code>Mutex</code>, etc. This preserves
 thread safety since the compiler can see these types within a value and knows whether the type as a whole will
-be thread safe if it uses no thread unsafe types like <code>Cell</code> or <code>RefCell</code>.</p>
+be thread safe if it uses no thread-unsafe types like <code>Cell</code> or <code>RefCell</code>.</p>
 <p>A downside to this approach is that it becomes much more awkward to mutate values since you must go through
 one of these wrapper types:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Ctx</span> <span class="ow">=</span> <span class="n">logs</span><span class="o">:</span> <span class="kt">Cell</span> <span class="p">(</span><span class="kt">Vec</span> <span class="kt">String</span><span class="p">)</span>
@@ -1312,7 +1312,7 @@ one of these wrapper types:</p>
 <span class="c1">// Mutable references no longer exist so we can no longer tell from the</span>
 <span class="c1">// signature of `log` that it mutates `self`</span>
 <span class="kt">Ctx</span><span class="o">.</span><span class="n">log</span> <span class="o">&amp;</span><span class="n">self</span> <span class="p">(</span><span class="n">new_log</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span> <span class="ow">=</span>
-    <span class="c1">// Pushing to a vector is now a 3 step process</span>
+    <span class="c1">// Pushing to a vector is now a 3-step process</span>
     <span class="k">mut</span> <span class="n">logs</span> <span class="ow">=</span> <span class="n">self</span><span class="o">.</span><span class="n">logs</span><span class="o">.</span><span class="n">take</span> <span class="p">()</span>
     <span class="n">logs</span><span class="o">.</span><span class="n">push</span> <span class="n">new_log</span>
     <span class="n">self</span><span class="o">.</span><span class="n">logs</span><span class="o">.</span><span class="n">set</span> <span class="n">logs</span>
@@ -1321,7 +1321,7 @@ one of these wrapper types:</p>
 
 <span class="kt">Ctx</span><span class="o">.</span><span class="n">log</span> <span class="o">&amp;</span><span class="n">self</span> <span class="p">(</span><span class="n">new_log</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span> <span class="ow">=</span>
     <span class="n">self</span><span class="o">.</span><span class="n">logs</span><span class="o">.</span><span class="n">borrow_mut</span> <span class="p">()</span> <span class="o">|&gt;.</span><span class="n">push</span> <span class="n">new_log</span>
-</code></pre></div><p>This would be a hit to the ease of use of mutable values in general, but its possible Ante as a more FP-leaning
+</code></pre></div><p>This would be a hit to the ease of use of mutable values in general, but it&rsquo;s possible Ante as a more FP-leaning
 language could get away with this by pushing for more immutability. This approach is actually fairly similar
 to ML languages like OCaml which use primarily immutable values but allow mutation only through special types
 like <code>ref</code>.</p>
@@ -1338,21 +1338,21 @@ errors at runtime - potentially only in rare cases. Consider:</p>
     <span class="k">if</span> <span class="n">too_many_logs</span> <span class="n">self</span> <span class="k">then</span>
         <span class="n">last_log</span><span class="o">:</span> <span class="o">&amp;</span><span class="kt">String</span> <span class="ow">=</span> <span class="n">self</span><span class="o">.</span><span class="n">get_last_log</span> <span class="p">()</span>
         <span class="n">throw</span> <span class="p">(</span><span class="kt">InvalidLog</span> <span class="n">last_log</span><span class="p">)</span>
-</code></pre></div><p>This code may seem odd but fine but becomes increasingly problematic when used in contexts it was not
-originally intended in. For example, we may want to collect all errors that occur <em>after</em> <code>Ctx</code> gets
+</code></pre></div><p>This code may seem odd but fine, yet it becomes increasingly problematic when used in contexts it was not
+originally intended for. For example, we may want to collect all errors that occur <em>after</em> <code>Ctx</code> gets
 dropped. If this happens, any references within the <code>InvalidLog</code> variant would be invalidated and we&rsquo;d
 get a runtime error trying to print the string. With explicit lifetimes, the compiler would have caught
-this and prevented the code to collect errors after context is dropped from being written in the first place.
+this and prevented the code to collect errors after the context is dropped from being written in the first place.
 Patterns like this require additional documentation to document where the lifetime of the log in <code>InvalidLog</code>
 is coming from in the first place and the maximum time it can be expected to be valid. In addition,
 additional unit tests may be needed to ensure lifetime errors do not arise in certain situations. At this
-point, explicit lifetimes may be preferable since they enforce this documentation is provided, prevent
+point, explicit lifetimes may be preferable since they enforce that this documentation is provided, prevent
 invalid code from being written, and require fewer unit tests.</p>
 <hr>
 <h1 id="platform-independence">Platform Independence</h1>
 <p>Platform-specific code in other languages often requires preprocessing features such as <code>#ifdef</code>s or
 their equivalent macros to selectively enable code when some functions are available or an architecture
-is known. This has obvious downsides though, namely any code that is not currently enabled does not
+is known. This has obvious downsides though, namely that any code that is not currently enabled does not
 get checked by the compiler for correctness at all. If we think about it, <code>#ifdef</code>s enabling certain
 functions is very similar to programming against an interface, and Ante already has abilities for that
 purpose. Can we use abilities to replace preprocessor code?</p>
@@ -1367,12 +1367,12 @@ an interface of functions available on that platform:</p>
     <span class="c1">// fork, execve, open, etc.</span>
 
 <span class="nf">main</span> <span class="p">{</span><span class="kt">Windows</span><span class="p">}</span> <span class="ow">=</span>
-    <span class="c1">// CreateThread, CreateProcess, etc</span>
+    <span class="c1">// CreateThread, CreateProcess, etc.</span>
 </code></pre></div><p>More commonly, <code>main</code> will take <code>IO</code> as an argument which is an abstracted interface implemented
 by several common platforms:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">main</span> <span class="p">{</span><span class="kt">IO</span><span class="p">}</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><p>Code written using <code>IO</code> is expected to be reasonably cross-platform, although code written with
-more narrower capabilities could be even more so. For example, a function requiring only the <code>Print</code>
+narrower capabilities could be even more so. For example, a function requiring only the <code>Print</code>
 capability (a part of the overall <code>IO</code> capability) will be easier to use on more exotic platforms
 that don&rsquo;t support all of <code>IO</code>. For this reason, libraries are encouraged to only require capabilities
 they actually need rather than pulling in all of <code>IO</code> because it is convenient.</p>
@@ -1390,16 +1390,16 @@ interfaces can be defined as a type:</p>
     <span class="k">type</span> <span class="kt">ContextRef</span> <span class="ow">=</span> <span class="kt">Ptr</span> <span class="kt">Unit</span>
     <span class="kt">LLVMContextCreate</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">ContextRef</span>
     <span class="o">...</span>
-</code></pre></div><p>And given to <code>main</code> as an argument, usually to be passed implicitly</p>
+</code></pre></div><p>And given to <code>main</code> as an argument, usually to be passed implicitly:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">main</span> <span class="p">{</span><span class="kt">IO</span><span class="p">}</span> <span class="p">{</span><span class="kt">Llvm</span><span class="p">}</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><p>From there, the package manager (with direction from the user) is expected to link the appropriate library
 to provide values for these symbols.</p>
 <p>One advantage of this versus ordinary externs is that platforms on which the underlying library is not
 available may still use the interface by implementing it themselves if possible in terms of functions
 that are available. For example, we could implement the <code>Llvm</code> type above with our own implementation
-without requiring the actual llvm library at all. It&rsquo;d be a large task for a large library like llvm,
+without requiring the actual LLVM library at all. It&rsquo;d be a large task for a large library like LLVM,
 but it would be possible, and practical on smaller scales or leaving some methods unimplemented.
-By forcing programming against an interface like this, Ante code could be platform and dynlib agnostic.</p>
+By forcing programming against an interface like this, Ante code could be platform- and dynlib-agnostic.</p>
 <h2 id="implementing-a-new-platform">Implementing a new platform</h2>
 <p>Getting code working for a new platform would require a few things:</p>
 <ol>

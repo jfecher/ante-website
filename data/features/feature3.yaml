@@ -1,5 +1,5 @@
 weight: 3
 name: "Effects"
 icon: "fa fa-cube"
-description: "An effect system provide's great code reuse and reduces spooky action at a distance. Effects are easier to use when compared to monads and provide clearer type errors when things are not as expected."
+description: "An effect system provides great code reuse and reduces spooky action at a distance. Effects are easier to use when compared to monads and provide clearer type errors when things are not as expected."
 link: "docs/language/#effects"

@@ -55,8 +55,8 @@ The idea behind `!stable t` is having another kind of shared mutable reference w
 `!shared t`. Notably, `!stable t` will be able to be projected into _any_ type, but with the restriction that it
 may not mutate those types in a shape-unstable way (a way which would cause any internal reference to be invalidated).
 
-Before I get into what exactly this restriction means in practice though, lets see some code which would compile
-for stable `!stable t` which would not compile for `!shared t`. Our desire for this code is to recur on a tagged-union
+Before I get into what exactly this restriction means in practice though, let's see some code which would compile
+for `!stable t` which would not compile for `!shared t`. Our desire for this code is to recur on a tagged-union
 value without cloning it, until we find a Leaf node we can increment the value of:
 
 ```ante
@@ -73,13 +73,13 @@ increment (tree: !stable Tree) =
         x += 1
 ```
 
-The reason the code above would error for `!shared` reference is the `match tree` line where we'd have to be
+The reason the code above would error for `!shared` references is the `match tree` line where we'd have to be
 able to project the shared reference into each variant's fields. If that were allowed, we could mutate `tree := Leaf 0`
 after `Branch l r ->` matches and cause `l` and `r` to be dangling. The fix for this is to clone `tree` before
 it is matched, but this would be very expensive for our `Tree` type!
 
 Instead, the `!stable Tree` reference says we can't mutate `Tree` in an unstable way (changing it to a different variant),
-but we can make shape-stable mutations - and what do you know the mutation we want (incrementing an integer), is perfectly stable!
+but we can make shape-stable mutations - and what do you know, the mutation we want (incrementing an integer) is perfectly stable!
 
 Just to highlight the differences again, if we go back to the `dangling_refs` example, when we used `!shared` references, we got an error on the first couple lines:
 
@@ -115,9 +115,9 @@ dangling_refs (opt: !stable Maybe String) (vec: !stable Vec I32) =
 So stable references restrict which mutations we can perform but allow us to more efficiently traverse
 values with less cloning.
 
-Sounds useful right?
+Sounds useful, right?
 
-Well.. not really. The devil is in the details so let's go over them. 
+Well... not really. The devil is in the details so let's go over them. 
 
 ---
 # Get to the Point
@@ -223,7 +223,7 @@ we allow coercing `&t` to `!stable t` - which would defeat the point of immutabl
 
 It'd also be somewhat unsatisfactory if a trait like `Clone`, which conceptually is not supposed to mutate its parameters, takes
 a mutable reference to its data because of corner cases like `Rc t` where mutation is required. Should the general case be less
-clear due to the existence of corner-cases? Taking this to its logical extent, nearly all traits which accept immutable reference
+clear due to the existence of corner cases? Taking this to its logical extent, nearly all traits which accept immutable reference
 parameters should actually accept some kind of shared, mutable parameter instead just for the rare exception where they are required.
 Perhaps something like `Rc t` is best implemented with an explicitly interior-mutable counter such as `Cell U32` after all.
 
@@ -338,7 +338,7 @@ That being said, there are some major disadvantages to `!stable t` as well:
 With `Cell<T>` in Rust this is possible through [`Cell::set`](https://doc.rust-lang.org/std/cell/struct.Cell.html#method.set) (among other methods).
 This limits `!stable t` to only the most trivial of mutations in practice.
 - Including both `!stable t` and `Cell t` complicates the language for a very small gain.
-- It would be unsound to allow obtaining both a `!shared t` and a `!stable t` from a `Rc t`.
+- It would be unsound to allow obtaining both a `!shared t` and a `!stable t` from an `Rc t`.
 If it was allowed, we could use `!stable t` to project a reference deep into the type, then use a `!shared t` to the
 same value to drop the value that's being held. Since the `Rc t` to `!shared t` conversion is useful to keep (see later in the article),
 we'd need to remove the `Rc t` to `!stable t` conversion, **which means `!stable t`'s advantage of being able to project into any type
@@ -439,7 +439,7 @@ patterns I intend it to be used in since the original post was light on _how_ to
 
 ## We Have GC at Home
 
-The usecase I'm personally most excited for is using shared references to emulate garbage-collected
+The use case I'm personally most excited for is using shared references to emulate garbage-collected
 languages, even in a language with affine types like Ante.
 
 No, I'm serious. Don't give me that look.

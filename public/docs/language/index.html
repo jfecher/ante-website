@@ -1389,7 +1389,7 @@
                 
                 
                 <a href="/docs/language/#the-mutate-effect">
-                    <li>The Mutate effect</li>
+                    <li>The Mutate Effect</li>
                 </a>
                 
                 
@@ -2501,12 +2501,12 @@
 <p>Ante is a low-level impure functional programming language. It is low-level
 in the sense that types are not boxed by default and programmers can still
 delve down to optimize allocation/representation of memory if desired. A
-central goal of ante however, is to not force this upon users and provide
-sane defaults where possible. This can be seen in the ability to opt-out
+central goal of Ante however, is to not force this upon users and provide
+sane defaults where possible. This can be seen in the ability to opt out
 of move semantics and even temporary references much of the time by using
 shared types which resemble programming in a garbage-collected language
 with boxed values.</p>
-<p>Compared to other low-level languages, ante is memory safe like Rust but tries
+<p>Compared to other low-level languages, Ante is memory safe like Rust but tries
 to be easier in general, for example by allowing shared mutability by
 default. Generally, application-level Ante code is meant to be written with
 shared types to enable high-level code, while libraries are meant to use
@@ -2534,7 +2534,7 @@ integer types respectively of the same size as a pointer.</p>
 <span class="mi">1_000_000</span>
 <span class="mi">54_000_000_u64</span>
 </code></pre></div><h2 id="floats">Floats</h2>
-<p>Floats in ante conform to the IEEE 754 standard for floating-point arithmetic
+<p>Floats in Ante conform to the IEEE 754 standard for floating-point arithmetic
 and come in two varieties: <code>F32</code> and <code>F64</code> for 32-bit floats and 64-bit
 floats respectively. Floats have a similar syntax to integers, but with
 a <code>.</code> separating the decimal digits.</p>
@@ -2549,7 +2549,7 @@ If no type is specified they will default to <code>F64</code>.</p>
 <p>Ante also has boolean literals which are of the <code>Bool</code> type and can be either
 <code>true</code> or <code>false</code>.</p>
 <h2 id="characters">Characters</h2>
-<p>Characters in ante are a single, 32-bit <a href="http://www.unicode.org/glossary/#unicode_scalar_value">Unicode scalar value</a>.
+<p>Characters in Ante are a single, 32-bit <a href="http://www.unicode.org/glossary/#unicode_scalar_value">Unicode scalar value</a>.
 Note that since <code>String</code>s are UTF-8, multiple characters are packed into strings and if
 the string contains only ASCII characters, its size in memory is 1 byte per character in the string.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">print</span> <span class="sc">&#39;H&#39;</span>
@@ -2595,9 +2595,9 @@ at that position in the string as a whole.</p>
 </code></pre></div><hr>
 <h1 id="variables">Variables</h1>
 <p>Variables are immutable by default and can be created via <code>=</code>.
-Also note that ante is strongly, statically typed yet we do not
+Also note that Ante is strongly, statically typed yet we do not
 need to specify the types of variables.
-This is because ante has global <a href="#type-inference">type inference</a>.</p>
+This is because Ante has global <a href="#type-inference">type inference</a>.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">n</span> <span class="ow">=</span> <span class="mi">3</span> <span class="o">*</span> <span class="mi">4</span>
 <span class="nf">name</span> <span class="ow">=</span> <span class="s">&#34;Alice&#34;</span>
 
@@ -2695,13 +2695,13 @@ methods on it like so:</p>
 <p>Ante uses significant whitespace to help declutter source code and prevent bugs
 (such as Apple&rsquo;s infamous
 <a href="https://nakedsecurity.sophos.com/2014/02/24/anatomy-of-a-goto-fail-apples-ssl-bug-explained-plus-an-unofficial-patch/">goto fail</a>
-bug). In general, ante tries to be simple with its whitespace semantics:
-if the next line is indented 2+ or more spaces from the previous non-commented line
+bug). In general, Ante tries to be simple with its whitespace semantics:
+if the next line is indented 2 or more spaces from the previous non-commented line
 then an indent token is issued. If the lines differ by only 1 space then it is
 considered to be a mistake and an error is issued. There is no notion of indenting
 to or past an exact column like in Haskell&rsquo;s <a href="https://www.haskell.org/onlinereport/haskell2010/haskellch10.html#x17-17800010.3">offside rule</a>.</p>
 <p>Secondly, anytime an unindent to a previous column occurs, an unindent token is issued.
-Indents and unindents follow a stack discipline, each unindent is a return to a previous
+Indents and unindents follow a stack discipline: each unindent is a return to a previous
 indentation level rather than to a new one. So the following program is invalid since the
 <code>else</code> was not unindented to the previous indent level.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">if</span> <span class="mi">true</span> <span class="k">then</span>
@@ -2714,11 +2714,11 @@ a newline token is issued to separate the two expressions.</p>
 parser can parse just as if they were <code>{</code>, <code>}</code>, and <code>;</code> tokens in the source program.</p>
 <h2 id="line-continuations">Line Continuations</h2>
 <p>With the above 3 rules the syntax is transformed into one with the equivalent of
-explicit <code>{</code>, <code>}</code>, and <code>;</code> tokens. ~95% of programs just work now and ante could stop
+explicit <code>{</code>, <code>}</code>, and <code>;</code> tokens. ~95% of programs just work now and Ante could stop
 there if it wanted to, and for a long time it did. A problem arises however with the
 third rule of using newlines as <code>;</code> tokens. Sometimes, users may wish to continue an
 expression onto multiple lines. This is a problem with parallels of automatic semicolon
-insertion in other languages. The main difference being ante also has significant whitespace
+insertion in other languages. The main difference being Ante also has significant whitespace
 to help it clue into this problem.</p>
 <p>Ante&rsquo;s original solution was more of a band-aid. It followed the python example of continuing
 lines with <code>\</code> at the end of a line which would tell the lexer not to issue a newline token.
@@ -2743,9 +2743,9 @@ chain of lines ending with <code>\</code>:</p>
 splitting long lines onto multiple lines. Ante thus needed a better solution. The goals
 of the new solution were to be unambiguous, ergonomic, match a developer&rsquo;s mental model
 of their program, and to issue error messages if needed instead of silently inferring the wrong thing.</p>
-<p>This was initially difficult to solve but eventually ante landed on a solution based upon the
+<p>This was initially difficult to solve but eventually Ante landed on a solution based upon the
 observance that when programmers want to continue lines, they almost always use indentation
-to do so. Thus, to continue an expression in ante, the continuation must just be indented and
+to do so. Thus, to continue an expression in Ante, the continuation must just be indented and
 you can continue to use that same indentation level if you need multiple lines.</p>
 <p>This is done by tracking when an indent is expected in the lexer and
 only issuing the indent (and following unindent) if so. Ante&rsquo;s grammar is designed in
@@ -2862,7 +2862,7 @@ with a reference kind:</p>
 
 <span class="nf">mutate</span> <span class="p">(</span><span class="k">mut</span> <span class="n">my_array</span><span class="o">.</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 </code></pre></div><h2 id="dereference-operator-copy-and-clone">Dereference Operator, Copy, and Clone</h2>
-<p>Dereferencing reference in Ante requires the element type of the reference to implement
+<p>Dereferencing a reference in Ante requires the element type of the reference to implement
 either <code>Copy</code> or <code>Clone</code>. Both traits have the same semantics in that they both perform
 copies (although certain values like <code>Rc t</code> may be shared), but types implementing <code>Copy</code>
 are generally expected to be cheaper to copy than types only implementing <code>Clone</code>.</p>
@@ -2907,7 +2907,7 @@ iterator functions:</p>
 </code></pre></div><p>In contrast to <code>|&gt;</code>, <code>&lt;|</code> is right associative and applies a function on its
 left to an argument on its right. Where <code>|&gt;</code>
 is used mostly to spread operations across multiple lines, <code>&lt;|</code> is often
-used for getting rid of parenthesis on one line.</p>
+used for getting rid of parentheses on one line.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">print</span> <span class="p">(</span><span class="n">sqrt</span> <span class="p">(</span><span class="mi">3</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
 
 <span class="c1">// Could also be written as:</span>
@@ -2936,7 +2936,7 @@ all the capabilities of normal types for free. For example, we know all pairs
 will have exactly two fields. This makes creating <code>impl</code>s for them much easier.
 Let&rsquo;s compare the task of converting a tuple to a string with doing the same for pairs.
 With tuples we must <a href="https://hackage.haskell.org/package/base-4.14.1.0/docs/src/GHC.Show.html#line-268">create a different impl for every possible tuple size</a>.
-with pairs on the other hand the simple implementation works for all sizes:</li>
+With pairs on the other hand the simple implementation works for all sizes:</li>
 </ol>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">cast_pair_string</span><span class="o">:</span> <span class="kt">Cast</span> <span class="p">(</span><span class="kt">Pair</span> <span class="n">a</span> <span class="n">b</span><span class="p">)</span> <span class="kt">String</span> <span class="k">with</span>
     <span class="n">cast</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="ow">=</span> <span class="s">&#34;$a, $b&#34;</span>
@@ -2987,12 +2987,12 @@ enables the nice syntax in the next section).</p>
 </li>
 </ul>
 <p>One last minor advantage of pairs is that we can use the fact that <code>,</code> is
-right-associative to avoid some extra parenthesis compared to if we had tuples.
+right-associative to avoid some extra parentheses compared to if we had tuples.
 A common example is when enumerating a tuple, most languages would need two sets
-of parenthesis but in ante since tuples are just nested pairs you can just add another <code>,</code>:</p>
+of parentheses but in Ante since tuples are just nested pairs you can just add another <code>,</code>:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">pairs</span> <span class="ow">=</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)]</span>
 
-<span class="c1">// Other languages require deconstructing with nested parenthesis:</span>
+<span class="c1">// Other languages require deconstructing with nested parentheses:</span>
 <span class="k">for</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">pairs</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">one</span><span class="p">,</span> <span class="n">two</span><span class="p">))</span> <span class="ow">-&gt;</span>
     <span class="n">print</span> <span class="s">&#34;Iteration $i: sum = ${one + two}&#34;</span>
 
@@ -3001,8 +3001,8 @@ of parenthesis but in ante since tuples are just nested pairs you can just add a
 <span class="k">for</span> <span class="p">(</span><span class="n">enumerate</span> <span class="n">pairs</span><span class="p">)</span> <span class="k">fn</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">one</span><span class="p">,</span> <span class="n">two</span><span class="p">)</span> <span class="ow">-&gt;</span>
     <span class="n">print</span> <span class="s">&#34;Iteration $i: sum = ${one + two}&#34;</span>
 </code></pre></div><p>Finally, it&rsquo;s necessary to mention that the earlier <code>Cast</code> example printed nested
-pairs as <code>1, 2, 3</code> where as the <code>Show</code> instances in haskell printed tuples as <code>(1, 2, 3)</code>.
-If we wanted to surround our nested pairs with parenthesis we have to work a bit
+pairs as <code>1, 2, 3</code> whereas the <code>Show</code> instances in Haskell printed tuples as <code>(1, 2, 3)</code>.
+If we wanted to surround our nested pairs with parentheses we have to work a bit
 harder by specializing the impl for pairs:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">cast_pair_string</span><span class="o">:</span> <span class="kt">Cast</span> <span class="p">(</span><span class="kt">Pair</span> <span class="n">a</span> <span class="n">b</span><span class="p">)</span> <span class="kt">String</span> <span class="k">with</span>
     <span class="n">cast</span> <span class="n">pair</span> <span class="ow">=</span> <span class="s">&#34;(${to_string_no_parens pair})&#34;</span>
@@ -3015,14 +3015,14 @@ harder by specializing the impl for pairs:</p>
 </code></pre></div><p>And these two functions will cover all possible lengths of nested pairs.</p>
 <hr>
 <h1 id="lambdas">Lambdas</h1>
-<p>Lambdas in ante have the following syntax: <code>fn arg1 arg2 ... argN -&gt; body</code>.
+<p>Lambdas in Ante have the following syntax: <code>fn arg1 arg2 ... argN -&gt; body</code>.
 All functions in Ante must have at least one parameter. When the first argument is excluded (as in <code>fn -&gt; body</code>),
 this is taken as sugar for a function taking a <code>Unit</code> parameter: <code>fn () -&gt; body</code>.</p>
 <p>Additionally a function definition
 <code>foo a b c = body</code> is sugar for a variable assigned to
 a lambda: <code>foo = fn a b c -&gt; body</code>.</p>
 <p>Lambdas can also capture part of
-the variables in the scope they were declared. When they do this,
+the variables in the scope they were declared in. When they do this,
 they are called closures:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">augend</span> <span class="ow">=</span> <span class="mi">2</span>
 <span class="nf">data</span> <span class="ow">=</span> <span class="mi">1</span><span class="o">..</span><span class="mi">100</span>
@@ -3030,7 +3030,7 @@ they are called closures:</p>
 <span class="nf">map</span> <span class="n">data</span> <span class="k">fn</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">x</span> <span class="o">+</span> <span class="n">augend</span>
 <span class="c1">//=&gt; 3, 4, 5, ..., 100, 101</span>
 </code></pre></div><h2 id="explicit-currying">Explicit Currying</h2>
-<p>While ante opts out of including implicit currying in favor of better
+<p>While Ante opts out of including implicit currying in favor of better
 error messages, it does include an explicit version where arguments
 of a function can be explicitly curried by placing <code>_</code> where that argument
 would normally go. For example, in the following example, <code>f1</code> and <code>f2</code> are
@@ -3115,7 +3115,7 @@ function. Otherwise, if the variable/pattern isn’t already in scope then it mu
 an initial value via =, as is the case with total in the above example. The body of the loop
 becomes the body of the recursive function, with recur standing in for the name of the function.</p>
 <p>Since loop/recur uses recursion internally it is even more general than loops, and can be
-used to translate otherwise complex while loops into ante. Take for example this while loop
+used to translate otherwise complex while loops into Ante. Take for example this while loop
 which builds up a list of the number’s digits, mutating the number as it goes:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="n">list</span><span class="o">&lt;</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="o">&gt;</span> <span class="n">get_digits</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
     <span class="n">list</span><span class="o">&lt;</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="o">&gt;</span> <span class="n">ret</span><span class="p">;</span>
@@ -3126,7 +3126,7 @@ which builds up a list of the number’s digits, mutating the number as it goes:
     <span class="p">}</span>
     <span class="k">return</span> <span class="n">ret</span><span class="p">;</span>
 <span class="p">}</span>
-</code></pre></div><p>This can be translated into ante as the following loop:</p>
+</code></pre></div><p>This can be translated into Ante as the following loop:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">get_digits</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">U32</span><span class="p">)</span> <span class="o">:</span> <span class="kt">List</span> <span class="kt">U32</span> <span class="ow">=</span>
     <span class="k">loop</span> <span class="n">x</span> <span class="p">(</span><span class="n">digits</span> <span class="ow">=</span> <span class="kt">Nil</span><span class="p">)</span> <span class="ow">-&gt;</span>
         <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">then</span> <span class="k">return</span> <span class="n">digits</span>
@@ -3198,7 +3198,7 @@ we expect:</p>
 </code></pre></div><p>Note that there are a few subtle design decisions:</p>
 <ol>
 <li>
-<p>All type constructors must be capitalized in ante, so when
+<p>All type constructors must be capitalized in Ante, so when
 we see a lower-case variable in a pattern match we know we
 will always create a new variable rather than match on some
 nullary constructor (like <code>None</code>).</p>
@@ -3213,7 +3213,7 @@ of twice which saves us valuable horizontal space.</p>
 <h2 id="is-operator"><code>is</code> Operator</h2>
 <p>The <code>is</code> operator can be used to pattern match within arbitrary expressions.
 The syntax for an <code>is</code> expression is <code>&lt;expr&gt; is &lt;pattern&gt;</code>. These expressions
-can be used to test an expression matches a particular case, for example:</p>
+can be used to test whether an expression matches a particular case, for example:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">shared</span> <span class="k">type</span> <span class="kt">Expr</span> <span class="ow">=</span>
    <span class="o">|</span> <span class="kt">Int</span> <span class="kt">I32</span>
    <span class="o">|</span> <span class="kt">Var</span> <span class="kt">String</span>
@@ -3271,7 +3271,7 @@ even infer which traits and effects are needed in generic function signatures.</
     <span class="k">match</span> <span class="n">next</span> <span class="n">it</span>
     <span class="o">|</span> <span class="kt">Some</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="n">x</span> <span class="o">==</span> <span class="n">target</span>
     <span class="o">|</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="mi">false</span>
-</code></pre></div><p>We never gave any type for <code>first_equals_two</code> yet ante infers its type for us as
+</code></pre></div><p>We never gave any type for <code>first_equals_two</code> yet Ante infers its type for us as
 <code>fn a b {Iterator a b} {Eq b} -&gt; Bool</code> - that is a function that returns a <code>Bool</code> and takes
 two generic parameters along with an <a href="#implicits">implicit parameter</a> which is an instance
 of the iterator trait for an iterator of type <code>a</code> producing elements of type <code>b</code>.</p>
@@ -3284,7 +3284,7 @@ signatures for functions, one may wonder why offer type inference on them at all
 are a few reasons for this.</p>
 <ol>
 <li>
-<p>When contributing to a new or existing code base a developer often adds a couple functions at a time.
+<p>When contributing to a new or existing code base a developer often adds a couple of functions at a time.
 The intended work-flow of Ante is to omit the types of these functions,
 and when the programmer is satisfied, they can have the compiler write in the
 inferred function types itself after a successful compilation. This way the programmer does less
@@ -3309,13 +3309,13 @@ They should likely still be taught early but any bit of lowering the initial sho
 <h1 id="types">Types</h1>
 <p>Ante is a strongly, statically typed language with global type inference.
 Types are used to restrict the set of values as best as possible such that
-only valid values are representable. For example, since references in ante
+only valid values are representable. For example, since references in Ante
 cannot be null we can instead represent possibly null references with
 <code>Maybe (ref t)</code> which makes it explicit whether a function can accept or
 return possibly null values.</p>
 <h2 id="type-definitions">Type Definitions</h2>
 <p>Both struct and tagged union types can be defined with the
-<code>type Name args = ...</code>construct where <code>args</code> is the space-separated
+<code>type Name args = ...</code> construct where <code>args</code> is the space-separated
 list of type variables the type is generic over.</p>
 <p>You can define struct types with commas separating each field or
 newlines if the type spans multiple lines:</p>
@@ -3373,7 +3373,7 @@ These extra fields are placed at the end of each variant&rsquo;s list of fields.
     <span class="o">|</span> <span class="kt">Add</span> <span class="p">(</span><span class="kt">Int</span> <span class="mi">0</span> <span class="n">_lhs_loc</span><span class="p">)</span> <span class="n">rhs</span> <span class="n">_loc</span> <span class="ow">-&gt;</span> <span class="n">rhs</span>
     <span class="o">|</span> <span class="kt">Add</span> <span class="n">lhs</span> <span class="p">(</span><span class="kt">Int</span> <span class="mi">0</span> <span class="n">_rhs_loc</span><span class="p">)</span> <span class="n">_loc</span> <span class="ow">-&gt;</span> <span class="n">lhs</span>
     <span class="o">|</span> <span class="kt">Add</span> <span class="n">lhs</span> <span class="n">rhs</span> <span class="n">loc</span> <span class="ow">-&gt;</span> <span class="kt">Add</span> <span class="p">(</span><span class="n">simplify</span> <span class="n">lhs</span><span class="p">)</span> <span class="p">(</span><span class="n">simplify</span> <span class="n">rhs</span><span class="p">)</span> <span class="n">loc</span>
-</code></pre></div><p>Each of the locations in the first two <code>Add</code> cases were written explicitly here to show where they would go, but if
+</code></pre></div><p>Each of the locations in the first two <code>Add</code> cases was written explicitly here to show where they would go, but if
 these fields are unneeded in a pattern match they can also be excluded with <code>..</code> which will
 automatically fill in any remaining fields in a pattern:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">simplify</span> <span class="p">(</span><span class="n">expr</span><span class="o">:</span> <span class="kt">Expr</span><span class="p">)</span><span class="o">:</span> <span class="kt">Expr</span> <span class="ow">=</span>
@@ -3451,7 +3451,7 @@ keeps this generic type. This sometimes pops up in function signatures:</p>
 </code></pre></div><p>If we do use it with a specific type however, then just like with
 normal generics, the generic type variable is constrained to be
 that concrete type (and the concrete type must satisfy the <code>Int</code>
-constraint - ie it must be a primitive integer or we get a compile-time error).</p>
+constraint - i.e. it must be a primitive integer or we get a compile-time error).</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Fine, we&#39;re still generic over a</span>
 <span class="nf">foo</span> <span class="p">()</span> <span class="o">:</span> <span class="kt">Int</span> <span class="n">a</span> <span class="ow">=</span>
     <span class="mi">0</span>
@@ -3494,7 +3494,7 @@ has a field <code>x</code> of type <code>I32</code>.</p>
 any struct that has a field named <code>foo</code> of type <code>b</code>:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">get_foo</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="p">{</span> <span class="n">foo</span><span class="o">:</span> <span class="n">b</span> <span class="p">})</span> <span class="o">:</span> <span class="n">b</span> <span class="ow">=</span>
     <span class="n">x</span><span class="o">.</span><span class="n">foo</span>
-</code></pre></div><p>As a more complex example, here&rsquo;s a function that can print anything with <code>debug</code> field
+</code></pre></div><p>As a more complex example, here&rsquo;s a function that can print anything with a <code>debug</code> field
 that itself is printable and a <code>prefix</code> field that must be a string:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Type inferred as:</span>
 <span class="c1">//   fn (prefix: String, debug: a) {Print a} -&gt; Unit</span>
@@ -3508,7 +3508,7 @@ that itself is printable and a <code>prefix</code> field that must be a string:<
 before they are dropped and deallocated). These values are called
 &ldquo;owned&rdquo; values. If we ever want to use such values more than once, we would
 need to borrow them by creating temporary references to them which can be used
-any amount of times, but prevent the underlying value from being moved until
+any number of times, but prevent the underlying value from being moved until
 any references to it are no longer used.</p>
 <p>The only values which may be used more than once without borrowing them are those
 implementing the <code>Copy</code> trait. This trait signals a type may be trivially copied
@@ -3555,7 +3555,7 @@ a fresh place will be used.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo</span> <span class="ow">=</span> <span class="mi">32</span>
 <span class="nf">bar</span> <span class="ow">=</span> <span class="k">ref</span> <span class="n">foo</span>
 </code></pre></div><p><code>bar</code> will have the type <code>ref 'foo I32</code> because it is a reference to the variable <code>foo</code> which holds an <code>I32</code>.</p>
-<p>It is also possible for a reference to borrow from possibly multiple places:</p>
+<p>It is also possible for a reference to borrow from multiple places:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo</span> <span class="ow">=</span> <span class="s">&#34;foo&#34;</span>
 <span class="nf">bar</span> <span class="ow">=</span> <span class="s">&#34;bar&#34;</span>
 <span class="nf">baz</span> <span class="ow">=</span> <span class="k">if</span> <span class="n">rand</span> <span class="p">()</span> <span class="k">then</span> <span class="k">ref</span> <span class="n">foo</span> <span class="k">else</span> <span class="k">ref</span> <span class="n">bar</span>
@@ -3603,7 +3603,7 @@ parameters are distinguished from regular type parameters by the <code>'</code> 
     <span class="n">global_context</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;l</span> <span class="kt">GlobalContext</span>
 </code></pre></div><hr>
 <h3 id="shared-mutability-and-stability">Shared Mutability and Stability</h3>
-<p>Although largely built-upon Rust, Ante&rsquo;s borrowing semantics differ in that it
+<p>Although largely built upon Rust, Ante&rsquo;s borrowing semantics differ in that it
 allows shared (aliasable) mutability. This is done by tracking the &ldquo;shape-stability&rdquo;
 of a type.</p>
 <p>While shared mutability may not be safe in general to allow since it can cause
@@ -3686,14 +3686,14 @@ to unstable places:</p>
     <span class="n">println</span> <span class="n">b</span>  <span class="c1">// error: &#39;v was mutated on the line above, which may invalidate b.</span>
 </code></pre></div><p>Generally, most collection types (with the exception of arrays) will be shape-unstable in their element types,
 and pointer types that allow shared mutability like <code>Rc</code> will be shape-unstable as well.</p>
-<p><code>Rc</code> specifically, because each clone of it shares the same underlying value has a place attached to it: <code>Rc 'p t</code>
+<p><code>Rc</code> specifically, because each clone of it shares the same underlying value, has a place attached to it: <code>Rc 'p t</code>
 is a reference-counted pointer to some data <code>p</code> of type <code>t</code>. This is sufficient to support type-safe shared
 mutability on reference-counted pointers, including supporting cyclic data types:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">List</span> <span class="n">&#39;p</span> <span class="n">t</span> <span class="ow">=</span>
    <span class="o">|</span> <span class="kt">Nil</span>
    <span class="o">|</span> <span class="kt">Cons</span> <span class="n">t</span> <span class="p">(</span><span class="kt">Rc</span> <span class="n">&#39;p</span> <span class="p">(</span><span class="kt">List</span> <span class="n">&#39;p</span> <span class="n">t</span><span class="p">))</span>
 
-<span class="c1">// Note that projecting through a Rc gives unstable refs:</span>
+<span class="c1">// Note that projecting through an Rc gives unstable refs:</span>
 <span class="kt">Rc</span><span class="o">.</span><span class="n">get</span> <span class="p">(</span><span class="n">rc</span><span class="o">:</span> <span class="k">mut</span> <span class="n">&#39;outer</span> <span class="kt">Rc</span> <span class="n">&#39;inner</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">&#39;(outer!, inner)</span> <span class="n">t</span> <span class="ow">=</span> <span class="o">...</span>
 
 <span class="nf">main</span> <span class="p">()</span> <span class="ow">=</span>
@@ -3728,7 +3728,7 @@ Places can be inferred as well, so it is always valid to omit them and have the 
 in the correct types to the source file if desired. You can also use <a href="#shared-types">shared types</a>
 which provide a cleaner interface over types like <code>Rc</code>.</p>
 </blockquote>
-<h4 id="the-mutate-effect">The <code>Mutate</code> effect</h4>
+<h4 id="the-mutate-effect">The <code>Mutate</code> Effect</h4>
 <p>When a reference <code>mut 'e t</code> is mutated, the compiler issues a <code>Mutate 'e</code> effect. This effect
 is what is used to invalidate any value of a type referencing <code>'e!</code> afterward. For convenience,
 this effect is currently automatically added to a function&rsquo;s
@@ -3852,7 +3852,7 @@ used in a <code>Mutate</code> effect must be distinct from other places given to
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">caller1</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="kt">I32</span><span class="p">)</span> <span class="ow">=</span>
     <span class="n">foo</span> <span class="n">v</span> <span class="n">v</span>  <span class="c1">// error! &#39;a cannot alias &#39;b in call to foo, but &#39;v was used for both</span>
 </code></pre></div><h4 id="thread-safety-of-references">Thread Safety of References</h4>
-<p>Since <code>ref</code> and <code>mut</code> both allow mutable aliasing, neither implement <code>Send</code> nor <code>Sync</code>.
+<p>Since <code>ref</code> and <code>mut</code> both allow mutable aliasing, neither implements <code>Send</code> nor <code>Sync</code>.
 Instead, Ante provides additional reference types <code>imm</code> and <code>uniq</code>. These additional reference
 types are rarely used, typically only in multithreaded code, and come with stricter invariants:</p>
 <ul>
@@ -3864,8 +3864,8 @@ between threads, and can still <code>Send (uniq t)</code> as well. Once in anoth
 <code>imm t</code> can be used where a <code>ref t</code> is expected and <code>uniq t</code> can be used where any other reference
 type is expected.</p>
 <h3 id="shared-types">Shared Types</h3>
-<p>Shared types are a way to opt-out of ownership rules for a type by automatically wrapping
-it in a copy-able wrapper. These types can be declared via <code>shared type</code> and also do not
+<p>Shared types are a way to opt out of ownership rules for a type by automatically wrapping
+it in a copyable wrapper. These types can be declared via <code>shared type</code> and also do not
 require explicit boxing (they are always boxed):</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Immutable shared type</span>
 <span class="k">shared</span> <span class="k">type</span> <span class="kt">Expr</span> <span class="ow">=</span>
@@ -3880,7 +3880,7 @@ require explicit boxing (they are always boxed):</p>
     <span class="n">alias1</span> <span class="ow">=</span> <span class="n">my_expr</span>
     <span class="n">alias2</span> <span class="ow">=</span> <span class="n">my_expr</span>
 </code></pre></div><p>You can think of these types as always being wrapped in a reference-counted pointer. They are
-meant to be used when efficiency is less of a concern over code clarity. For example when
+meant to be used when efficiency is less of a concern than code clarity. For example, when
 gradually transitioning new users to use ownership rules it can be helpful if they have to worry
 about it for fewer types - even if they still need to handle it for built-in types like <code>Vec a</code>.
 These are also useful in cases when types need to be boxed anyway, such as <code>Expr</code> above or
@@ -3913,7 +3913,7 @@ mutable type via <code>shared mut type</code>:</p>
     <span class="n">assert_eq</span> <span class="n">alias2</span> <span class="p">(</span><span class="kt">Add</span> <span class="p">(</span><span class="kt">Int</span> <span class="mi">0</span><span class="p">)</span> <span class="p">(</span><span class="kt">Var</span> <span class="s">&#34;foo&#34;</span><span class="p">))</span>
 </code></pre></div><blockquote>
 <p>Using shared mutable types is meant to feel like using types in a high-level, garbage-collected
-language like Java</p>
+language like Java.</p>
 </blockquote>
 <p>Unlike normal shared types, shared mutable types allow mutation into their shared contents and are
 thus not thread-safe. Similar to <code>Rc 'p t</code>, we must also track the places these types may refer to,
@@ -3930,7 +3930,7 @@ refer to will be the same as the implicit place variable on the type:</p>
 <span class="nf">foo</span> <span class="p">(</span><span class="n">expr</span><span class="o">:</span> <span class="kt">MutExpr</span> <span class="n">&#39;e</span><span class="p">)</span> <span class="ow">=</span>
     <span class="n">name</span> <span class="ow">=</span> <span class="n">var_name2</span> <span class="n">expr</span>
     <span class="o">...</span>
-</code></pre></div><p>Shared types are meant to be an easy to use alternative to explicit boxing. As an example, here&rsquo;s the cyclic
+</code></pre></div><p>Shared types are meant to be an easy-to-use alternative to explicit boxing. As an example, here&rsquo;s the cyclic
 <code>List</code> example from earlier, rewritten to use a <code>shared mut type List</code> instead:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">shared</span> <span class="k">mut</span> <span class="k">type</span> <span class="kt">List</span> <span class="n">t</span> <span class="ow">=</span>
     <span class="o">|</span> <span class="kt">Nil</span>
@@ -3965,7 +3965,7 @@ not innovate here but continues with the safe, tried and true model.</p>
 <h1 id="implicits">Implicits</h1>
 <p>In addition to normal, explicit parameters, functions can have <em>implicitly passed parameters</em>.
 Implicit parameters are written with curly braces <code>{}</code> surrounding them to distinguish them
-from normal parameters, and may have their names omitted if it is not otherwise used.</p>
+from normal parameters, and may have their names omitted if they are not otherwise used.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">I32</span><span class="p">)</span> <span class="p">{</span><span class="n">y</span><span class="o">:</span> <span class="kt">I32</span><span class="p">}</span><span class="o">:</span> <span class="kt">I32</span> <span class="ow">=</span>
     <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
 
@@ -3989,7 +3989,7 @@ issue an error:</p>
     <span class="c1">// note: try explicitly specifying which implicit to use</span>
     <span class="n">bar</span> <span class="mi">0</span>
 </code></pre></div><p>As the note tells us, when this happens we can disambiguate by explicitly passing the desired
-value to <code>bar</code>. This can be done using curly brances:</p>
+value to <code>bar</code>. This can be done using curly braces:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">implicit</span> <span class="n">pi</span><span class="o">:</span> <span class="kt">I32</span> <span class="ow">=</span> <span class="mi">3</span>
 <span class="k">implicit</span> <span class="n">zero</span><span class="o">:</span> <span class="kt">I32</span> <span class="ow">=</span> <span class="mi">0</span>
 
@@ -4000,7 +4000,7 @@ value to <code>bar</code>. This can be done using curly brances:</p>
 <h1 id="traits">Traits</h1>
 <p>While unrestricted generic functions are useful, often we don&rsquo;t want
 to abstract over &ldquo;forall t.&rdquo; but rather abstract over all types that
-have certain operations available on them - like adding. In ante, this
+have certain operations available on them - like adding. In Ante, this
 is done via traits. You can define a trait as follows:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">trait</span> <span class="kt">Stringify</span> <span class="n">t</span> <span class="ow">=</span>
     <span class="n">stringify</span><span class="o">:</span> <span class="k">fn</span> <span class="n">t</span> <span class="ow">-&gt;</span> <span class="kt">String</span>
@@ -4048,7 +4048,7 @@ or already in scope via an implicit parameter.</p>
 <p>Like any other type, traits can also have multiple type parameters.
 We can use this to define relations over multiple types. For example,
 we may want to be more general than the <code>stringify</code> function above and
-have a trait to cast to any result type. To do this we can have an
+have a trait to cast to any result type. To do this we can have a
 trait that defines a cast function from one type to another:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">trait</span> <span class="kt">Cast</span> <span class="n">a</span> <span class="n">b</span> <span class="ow">=</span>
     <span class="n">cast</span><span class="o">:</span> <span class="k">fn</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="n">b</span>
@@ -4105,7 +4105,7 @@ for otherwise unnecessary wrapper types and boilerplate. Ante does not enforce g
 <a href="#coherence">coherence</a>, instead opting for this name-based approach to disambiguate where necessary.</p>
 <h2 id="coherence">Coherence</h2>
 <p>Ante has no concept of global coherence for traits, so it is perfectly valid to define overlapping
-implementations or define implementations for types outside of the modules the type or trait were declared in.
+implementations or define implementations for types outside of the modules the type or trait was declared in.
 If there are ever conflicts with multiple valid implementations being found, an error is given at the callsite
 and the user will have to manually specify which to use either by only importing one of these values
 or by explicitly specifying which <a href="#implicits">implicit parameter</a> to use:</p>
@@ -4126,7 +4126,7 @@ traits or interfaces are not, such as interning.</p>
 <h3 id="example-interning">Example: Interning</h3>
 <p>Interning values is a common optimization but unfortunately often makes these interned values
 more cumbersome to work with. For example, often when implementing traits they require wrapper
-objects to be created first to bundle them with the appropriate context first. Since we can
+objects to be created first to bundle them with the appropriate context. Since we can
 define arbitrary functions to return trait values in Ante, we can define a closure which
 captures this context to implement any trait we need:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Data</span> <span class="ow">=</span> <span class="n">bytes</span><span class="o">:</span> <span class="kt">Vec</span> <span class="kt">U8</span>
@@ -4144,7 +4144,7 @@ captures this context to implement any trait we need:</p>
 <h1 id="effects">Effects</h1>
 <p>Effects are a control-flow abstraction similar to a resumable exception. They are a
 useful tool since they can be used to abstract over several kinds of non-local control-flow
-(exceptions, generators, async, early-returns, etc).</p>
+(exceptions, generators, async, early-returns, etc.).</p>
 <blockquote>
 <p>If you are familiar with monads, effects serve a similar purpose, but unlike monads,
 they compose together more naturally without the need to decide the handler ordering
@@ -4156,7 +4156,7 @@ function values, similar to a trait:</p>
     <span class="n">yield</span><span class="o">:</span> <span class="k">fn</span> <span class="n">t</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
 </code></pre></div><p>Calling an effectful function like <code>yield</code> will perform the effect in the calling function.
 To perform the effect we must specify the calling function <code>can Yield</code> (or let it be inferred).
-If we were performing multiple effects, we can separate them with commas.</p>
+If we are performing multiple effects, we can separate them with commas.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">yield_and_return_10</span> <span class="p">()</span><span class="o">:</span> <span class="kt">I32</span> <span class="k">can</span> <span class="kt">Yield</span> <span class="kt">I32</span> <span class="ow">=</span>
     <span class="n">yield</span> <span class="mi">5</span>
     <span class="n">yield</span> <span class="mi">7</span>
@@ -4188,10 +4188,10 @@ before as an argument. This will run that function, and when <code>yield 5</code
 we will print <code>5</code> out before hitting the next yield, printing <code>7</code>, and finally returning <code>10</code>.</p>
 <p>Aside from the new syntax, this should not be too surprising. The control-flow here is as
 we&rsquo;d expect from any other function - that is because when implementing <code>yield</code> we gave
-it a function which calls resume in a tail position (ie. as the last thing it does).
+it a function which calls resume in a tail position (i.e. as the last thing it does).
 When called in a tail-position, the code is performing the entire function then finishing
 and resuming back to where <code>yield</code> was called.</p>
-<p>While we can do some interesting things still with only <code>resume</code> in a tail position, e.g:
+<p>We can still do some interesting things with only <code>resume</code> in a tail position. For example,
 we can collect each yielded value into a container:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Collect each `yield elem` in `f` into a `Seq`, returning it alongside</span>
 <span class="c1">// `f`&#39;s original return value.</span>
@@ -4221,7 +4221,7 @@ the value of <code>x</code> at the end.</p>
 that additional work would not be run until after the entire block expression the <code>handler</code>
 is visible within ends. This control-flow can be difficult to conceptualize. As a mental model,
 you can think of performing an effect as suspending the current call stack, jumping to the handler,
-executing it, and jumping back when resume is called. If the handler didn&rsquo;t finish (ie. there is more
+executing it, and jumping back when resume is called. If the handler didn&rsquo;t finish (i.e. there is more
 work to do after the resume call), it will accumulate extra stack frames to run when the computation
 is finished.</p>
 <p>This can be a lot to wrap one&rsquo;s head around at first - a good way of learning may be by looking through
@@ -4263,7 +4263,7 @@ a variety of helper functions in the <code>Std.Fail</code> and <code>Std.Throw</
 Implementing these functions is generally simple. Effects are often described
 as resumable exceptions, so if we want normal exceptions all we must do
 is not call <code>resume</code> in the handler. A function like <code>try</code> will instead
-return <code>None</code> while <code>on_fail</code> provides a default value on error instead.</p>
+return <code>None</code> while <code>on_fail</code> provides a default value on error.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">try</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">=&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Fail</span><span class="p">)</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="n">a</span> <span class="ow">=</span>
     <span class="k">handle</span> <span class="kt">Some</span> <span class="p">(</span><span class="n">f</span> <span class="p">())</span>
     <span class="o">|</span> <span class="n">fail</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="kt">None</span>
@@ -4377,7 +4377,7 @@ show this unique control-flow:</p>
 <span class="nf">example</span> <span class="k">can</span> <span class="kt">MyEffect</span><span class="p">,</span> <span class="kt">Print</span> <span class="ow">=</span>
     <span class="n">foo</span> <span class="p">()</span>
     <span class="n">bar</span> <span class="p">()</span>
-</code></pre></div><p>Now when we run <code>debug_effect_control_flow example</code> we get the following print outs:</p>
+</code></pre></div><p>Now when we run <code>debug_effect_control_flow example</code> we get the following printouts:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">foo called!
 my_effect &#39;foo a&#39; called!
 my_effect &#39;foo b&#39; called!
@@ -4390,12 +4390,12 @@ resume &#39;bar b&#39; finished
 resume &#39;bar a&#39; finished
 resume &#39;foo b&#39; finished
 resume &#39;foo a&#39; finished
-</code></pre></div><p>Note that we do not get any of the &ldquo;resume &hellip; finished&rdquo; print outs until the entire
+</code></pre></div><p>Note that we do not get any of the &ldquo;resume &hellip; finished&rdquo; printouts until the entire
 computation <code>f ()</code> finishes. We are continually pushing stack frames to the handler to
 finish later until all resumes finish from the last to the first as the stack frames
 are popped.</p>
 <p>The novel control-flow of this is all from code after the <code>resume</code> call in the handler. If the
-handler does not have any code after <code>resume</code> (ie. it is tail-resumptive) it can actually
+handler does not have any code after <code>resume</code> (i.e. it is tail-resumptive) it can actually
 be optimized into a normal function call. When performance is vital and an effect may be
 handled in a tail-resumptive way, it is possible to specify when declaring the effect that
 all handlers for it must be tail-resumptive. That way a library or application developer
@@ -4481,7 +4481,7 @@ being called once. The plus side of this is that it opens up more opportunities
 for implementing effects in an efficient way and limits unexpected interactions.</p>
 <h3 id="useful-effects">Useful Effects</h3>
 <p>Effects are a very broadly useful feature, yet the previous examples
-have been rather abstract. Here are some practical usecases for effects.</p>
+have been rather abstract. Here are some practical use cases for effects.</p>
 <h4 id="exceptions">Exceptions</h4>
 <p>See <a href="#error-handling">Error Handling</a></p>
 <h4 id="generators">Generators</h4>
@@ -4584,7 +4584,7 @@ an effect, we can use it even to early return out of multiple closures:</p>
 
     <span class="n">fail</span> <span class="p">()</span>
 
-<span class="c1">/// If we wanted, we can even refactor `find_in_seq` into multiple functions</span>
+<span class="c1">/// If we wanted, we could even refactor `find_in_seq` into multiple functions</span>
 <span class="nf">find_in_seq2</span> <span class="p">(</span><span class="n">seq</span><span class="o">:</span> <span class="kt">Seq</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">target</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="kt">Eq</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="kt">Usz</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span>
     <span class="n">with_early_return</span> <span class="k">do</span>
     <span class="n">enumerate</span> <span class="n">seq</span> <span class="o">|&gt;</span> <span class="n">iter</span> <span class="p">(</span><span class="n">early_return_if_items_match</span> <span class="n">_</span> <span class="n">target</span><span class="p">)</span>
@@ -4629,7 +4629,7 @@ abstraction for free.</p>
     <span class="k">else</span>
         <span class="n">print</span> <span class="s">&#34;did not query&#34;</span>
 
-<span class="c1">// Print handling is builtin, let ante handle it</span>
+<span class="c1">// Print handling is built in, let Ante handle it</span>
 <span class="nf">main</span> <span class="p">()</span> <span class="k">can</span> <span class="kt">Print</span><span class="p">,</span> <span class="kt">IO</span> <span class="ow">=</span>
     <span class="n">business_logic</span> <span class="mi">true</span> <span class="o">~&gt;</span> <span class="n">database</span>
 
@@ -4655,9 +4655,9 @@ random state, or parsers, among others.</p>
 <hr>
 <h2 id="capability-based-security">Capability-based Security</h2>
 <p>By requiring each effect used by a function to be documented in its type, Ante has
-capability-based security. Libraries functions without a <code>can Net</code> effect for example may
-not access the network. A pure function in a library one day may not be updated to secretly
-log user data in the future without adding a <code>Net</code> effect - a breaking change.</p>
+capability-based security. Library functions without a <code>can Net</code> effect for example may
+not access the network. A pure function in a library may not later be updated to secretly
+log user data without adding a <code>Net</code> effect - a breaking change.</p>
 <p>There is a caveat here: if a function already has a <code>can Net</code> clause, a once-innocent function like <code>innocent</code>:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo</span> <span class="p">(</span><span class="n">bar</span><span class="o">:</span> <span class="kt">Bar</span><span class="p">)</span> <span class="k">can</span> <span class="kt">Net</span> <span class="ow">=</span>
     <span class="n">innocent</span> <span class="n">bar</span>
@@ -4666,7 +4666,7 @@ log user data in the future without adding a <code>Net</code> effect - a breakin
 <span class="c1">// In another library:</span>
 <span class="nf">innocent</span> <span class="p">(</span><span class="n">bar</span><span class="o">:</span> <span class="kt">Bar</span><span class="p">)</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><p>May be updated to maliciously use a <code>Net</code> effect and <code>foo</code> wouldn&rsquo;t require a source update
-since it already is declared as <code>can Net</code>:</p>
+since it is already declared as <code>can Net</code>:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo</span> <span class="p">(</span><span class="n">bar</span><span class="o">:</span> <span class="kt">Bar</span><span class="p">)</span> <span class="k">can</span> <span class="kt">Net</span> <span class="ow">=</span>
     <span class="n">innocent</span> <span class="n">bar</span>
     <span class="n">my_network_fn</span> <span class="p">()</span>
@@ -4747,7 +4747,7 @@ in the current project &amp; dependencies first.</p>
 <span class="c1">// No error here</span>
 <span class="nf">get_baz</span> <span class="p">()</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><h2 id="implicit-imports">Implicit Imports</h2>
-<p>To import a value into scope and enable any definitions searching for a <code>implicit</code> of the
+<p>To import a value into scope and enable any definitions searching for an <code>implicit</code> of the
 same type to use it, the value must be imported via <code>import implicit</code>. This is most often
 used to bring capabilities into scope:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Lib</span><span class="o">.</span><span class="kt">MyType</span>
@@ -4819,9 +4819,9 @@ same, the package is the same and its types are thus interchangeable. This can b
 automatically - for example by a package manager recognizing both <code>B</code> and <code>C</code> require <code>D</code>
 and providing the same <code>D</code> to both by configuring the compiler&rsquo;s relative roots or using symlinks.</p>
 <p>Similarly, if <code>B</code> and <code>C</code> require different versions of <code>D</code>, these will naturally be
-located at separate filepaths and treated as different packages. So <code>B</code> would require <code>D1</code>
+located at separate file paths and treated as different packages. So <code>B</code> would require <code>D1</code>
 and <code>C</code> would require <code>D2</code>. The result would be the following valid package graph, and
-types from <code>D1</code> would be incompatible with types from <code>D2</code> (and vice-versa).</p>
+types from <code>D1</code> would be incompatible with types from <code>D2</code> (and vice versa).</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">  A
  / \
 B   C

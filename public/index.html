@@ -329,8 +329,8 @@
                                         <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Throw</span> <span class="n">err</span> <span class="ow">=</span>
     <span class="n">throw</span><span class="o">:</span> <span class="k">fn</span> <span class="n">err</span> <span class="ow">-&gt;</span> <span class="kt">Never</span>
 
-<span class="c1">// Functions must declare which effects they use. E.g. The type system</span>
-<span class="c1">// prevents a function without the Net effect from accessing the network</span>
+<span class="c1">// Functions must declare which effects they use. E.g. the type system</span>
+<span class="c1">// prevents a function without the Net effect from accessing the network.</span>
 <span class="nf">signup</span> <span class="p">(</span><span class="n">name</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">(</span><span class="n">email</span><span class="o">:</span> <span class="kt">Email</span><span class="p">)</span><span class="o">:</span> <span class="kt">User</span> <span class="k">can</span> <span class="kt">IO</span><span class="p">,</span> <span class="kt">Throw</span> <span class="kt">ValidationErr</span><span class="p">,</span> <span class="kt">Throw</span> <span class="kt">IOErr</span> <span class="ow">=</span>
     <span class="c1">// Unlike monads, effects are trivial to combine.</span>
     <span class="c1">// signup throws multiple error kinds but we don&#39;t need an error union to combine them.</span>
@@ -431,8 +431,8 @@
                 <h2>Goals</h2>
 
                 <div class="lead" text-align="center">
-                    Ante aims to help bridge the gap between low-level languages like C++/Rust and higher
-                    level garbage-collected languages like Java, OCaml, or Haskell. Ante aims to make
+                    Ante aims to help bridge the gap between low-level languages like C++/Rust and higher-level
+                    garbage-collected languages like Java, OCaml, or Haskell. Ante aims to make
                     developing programs easier by allowing patterns like shared mutability which allow
                     for more design flexibility while still remaining thread safe and memory safe.
                 </div>
@@ -485,7 +485,7 @@
                             </div>
                         </a>
                         <h3>Effects</h3>
-                        <p>An effect system provide&rsquo;s great code reuse and reduces spooky action at a distance. Effects are easier to use when compared to monads and provide clearer type errors when things are not as expected.</p>
+                        <p>An effect system provides great code reuse and reduces spooky action at a distance. Effects are easier to use when compared to monads and provide clearer type errors when things are not as expected.</p>
                     </div>
                 </div>
 		
@@ -518,8 +518,8 @@
                                 <i class="fa fa-code"></i>
                             </div>
                         </a>
-                        <h3>High &amp; Low Level language</h3>
-                        <p>To try to bridge the gap between high and low level languages, ante has high-level abstractions implemented in userland by a low-level core.</p>
+                        <h3>High &amp; Low Level Language</h3>
+                        <p>To try to bridge the gap between high and low level languages, Ante has high-level abstractions implemented in userland by a low-level core.</p>
                     </div>
                 </div>
 		
@@ -533,7 +533,7 @@
                             </div>
                         </a>
                         <h3>Easier Lifetime Variables</h3>
-                        <p>Instead of abstract or numbered names, Ante&rsquo;s lifetime variables are based on places which are named after the variable(s) they borrow, making error messages more clear</p>
+                        <p>Instead of abstract or numbered names, Ante&rsquo;s lifetime variables are based on places which are named after the variable(s) they borrow, making error messages more clear.</p>
                     </div>
                 </div>
 		

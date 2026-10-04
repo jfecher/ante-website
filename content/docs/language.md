@@ -9,13 +9,13 @@ categories = ["docs"]
 Ante is a low-level impure functional programming language. It is low-level
 in the sense that types are not boxed by default and programmers can still
 delve down to optimize allocation/representation of memory if desired. A
-central goal of ante however, is to not force this upon users and provide
-sane defaults where possible. This can be seen in the ability to opt-out
+central goal of Ante however, is to not force this upon users and provide
+sane defaults where possible. This can be seen in the ability to opt out
 of move semantics and even temporary references much of the time by using
 shared types which resemble programming in a garbage-collected language
 with boxed values.
 
-Compared to other low-level languages, ante is memory safe like Rust but tries
+Compared to other low-level languages, Ante is memory safe like Rust but tries
 to be easier in general, for example by allowing shared mutability by
 default. Generally, application-level Ante code is meant to be written with
 shared types to enable high-level code, while libraries are meant to use
@@ -51,7 +51,7 @@ integer types respectively of the same size as a pointer.
 
 ## Floats
 
-Floats in ante conform to the IEEE 754 standard for floating-point arithmetic
+Floats in Ante conform to the IEEE 754 standard for floating-point arithmetic
 and come in two varieties: `F32` and `F64` for 32-bit floats and 64-bit
 floats respectively. Floats have a similar syntax to integers, but with
 a `.` separating the decimal digits.
@@ -74,7 +74,7 @@ Ante also has boolean literals which are of the `Bool` type and can be either
 
 ## Characters
 
-Characters in ante are a single, 32-bit [Unicode scalar value](http://www.unicode.org/glossary/#unicode_scalar_value).
+Characters in Ante are a single, 32-bit [Unicode scalar value](http://www.unicode.org/glossary/#unicode_scalar_value).
 Note that since `String`s are UTF-8, multiple characters are packed into strings and if
 the string contains only ASCII characters, its size in memory is 1 byte per character in the string.
 
@@ -140,9 +140,9 @@ print "The ${offset}th number after 3 is ${3 + offset}"
 # Variables
 
 Variables are immutable by default and can be created via `=`.
-Also note that ante is strongly, statically typed yet we do not
+Also note that Ante is strongly, statically typed yet we do not
 need to specify the types of variables.
-This is because ante has global [type inference](#type-inference).
+This is because Ante has global [type inference](#type-inference).
 
 ```ante
 n = 3 * 4
@@ -280,14 +280,14 @@ vec.push "method!"
 Ante uses significant whitespace to help declutter source code and prevent bugs
 (such as Apple's infamous
 [goto fail](https://nakedsecurity.sophos.com/2014/02/24/anatomy-of-a-goto-fail-apples-ssl-bug-explained-plus-an-unofficial-patch/)
-bug). In general, ante tries to be simple with its whitespace semantics:
-if the next line is indented 2+ or more spaces from the previous non-commented line
+bug). In general, Ante tries to be simple with its whitespace semantics:
+if the next line is indented 2 or more spaces from the previous non-commented line
 then an indent token is issued. If the lines differ by only 1 space then it is
 considered to be a mistake and an error is issued. There is no notion of indenting
 to or past an exact column like in Haskell's [offside rule](https://www.haskell.org/onlinereport/haskell2010/haskellch10.html#x17-17800010.3).
 
 Secondly, anytime an unindent to a previous column occurs, an unindent token is issued.
-Indents and unindents follow a stack discipline, each unindent is a return to a previous
+Indents and unindents follow a stack discipline: each unindent is a return to a previous
 indentation level rather than to a new one. So the following program is invalid since the
 `else` was not unindented to the previous indent level.
 
@@ -307,11 +307,11 @@ parser can parse just as if they were `{`, `}`, and `;` tokens in the source pro
 ## Line Continuations
 
 With the above 3 rules the syntax is transformed into one with the equivalent of
-explicit `{`, `}`, and `;` tokens. ~95% of programs just work now and ante could stop
+explicit `{`, `}`, and `;` tokens. ~95% of programs just work now and Ante could stop
 there if it wanted to, and for a long time it did. A problem arises however with the
 third rule of using newlines as `;` tokens. Sometimes, users may wish to continue an
 expression onto multiple lines. This is a problem with parallels of automatic semicolon
-insertion in other languages. The main difference being ante also has significant whitespace
+insertion in other languages. The main difference being Ante also has significant whitespace
 to help it clue into this problem.
 
 Ante's original solution was more of a band-aid. It followed the python example of continuing
@@ -342,9 +342,9 @@ splitting long lines onto multiple lines. Ante thus needed a better solution. Th
 of the new solution were to be unambiguous, ergonomic, match a developer's mental model
 of their program, and to issue error messages if needed instead of silently inferring the wrong thing.
 
-This was initially difficult to solve but eventually ante landed on a solution based upon the
+This was initially difficult to solve but eventually Ante landed on a solution based upon the
 observance that when programmers want to continue lines, they almost always use indentation
-to do so. Thus, to continue an expression in ante, the continuation must just be indented and
+to do so. Thus, to continue an expression in Ante, the continuation must just be indented and
 you can continue to use that same indentation level if you need multiple lines.
 
 This is done by tracking when an indent is expected in the lexer and
@@ -496,7 +496,7 @@ mutate (mut my_array.[1])
 
 ## Dereference Operator, Copy, and Clone
 
-Dereferencing reference in Ante requires the element type of the reference to implement
+Dereferencing a reference in Ante requires the element type of the reference to implement
 either `Copy` or `Clone`. Both traits have the same semantics in that they both perform
 copies (although certain values like `Rc t` may be shared), but types implementing `Copy`
 are generally expected to be cheaper to copy than types only implementing `Clone`.
@@ -556,7 +556,7 @@ parse_csv (text: String) : Vec (Vec I32) =
 In contrast to `|>`, `<|` is right associative and applies a function on its
 left to an argument on its right. Where `|>`
 is used mostly to spread operations across multiple lines, `<|` is often
-used for getting rid of parenthesis on one line.
+used for getting rid of parentheses on one line.
 
 ```ante
 print (sqrt (3 + 1))
@@ -598,7 +598,7 @@ all the capabilities of normal types for free. For example, we know all pairs
 will have exactly two fields. This makes creating `impl`s for them much easier.
 Let's compare the task of converting a tuple to a string with doing the same for pairs.
 With tuples we must [create a different impl for every possible tuple size](https://hackage.haskell.org/package/base-4.14.1.0/docs/src/GHC.Show.html#line-268).
-with pairs on the other hand the simple implementation works for all sizes:
+With pairs on the other hand the simple implementation works for all sizes:
 
 ```ante
 impl cast_pair_string: Cast (Pair a b) String with
@@ -652,14 +652,14 @@ element of any tuple of length >= 3. We can define the functions:
     enables the nice syntax in the next section).
 
 One last minor advantage of pairs is that we can use the fact that `,` is
-right-associative to avoid some extra parenthesis compared to if we had tuples.
+right-associative to avoid some extra parentheses compared to if we had tuples.
 A common example is when enumerating a tuple, most languages would need two sets
-of parenthesis but in ante since tuples are just nested pairs you can just add another `,`:
+of parentheses but in Ante since tuples are just nested pairs you can just add another `,`:
 
 ```ante
 pairs = [(1, 2), (3, 4)]
 
-// Other languages require deconstructing with nested parenthesis:
+// Other languages require deconstructing with nested parentheses:
 for (enumerate pairs) fn (i, (one, two)) ->
     print "Iteration $i: sum = ${one + two}"
 
@@ -670,8 +670,8 @@ for (enumerate pairs) fn (i, one, two) ->
 ```
 
 Finally, it's necessary to mention that the earlier `Cast` example printed nested
-pairs as `1, 2, 3` where as the `Show` instances in haskell printed tuples as `(1, 2, 3)`.
-If we wanted to surround our nested pairs with parenthesis we have to work a bit
+pairs as `1, 2, 3` whereas the `Show` instances in Haskell printed tuples as `(1, 2, 3)`.
+If we wanted to surround our nested pairs with parentheses we have to work a bit
 harder by specializing the impl for pairs:
 
 ```ante
@@ -690,7 +690,7 @@ And these two functions will cover all possible lengths of nested pairs.
 ---
 # Lambdas
 
-Lambdas in ante have the following syntax: `fn arg1 arg2 ... argN -> body`.
+Lambdas in Ante have the following syntax: `fn arg1 arg2 ... argN -> body`.
 All functions in Ante must have at least one parameter. When the first argument is excluded (as in `fn -> body`), 
 this is taken as sugar for a function taking a `Unit` parameter: `fn () -> body`.
 
@@ -699,7 +699,7 @@ Additionally a function definition
 a lambda: `foo = fn a b c -> body`.
 
 Lambdas can also capture part of
-the variables in the scope they were declared. When they do this,
+the variables in the scope they were declared in. When they do this,
 they are called closures:
 
 ```ante
@@ -712,7 +712,7 @@ map data fn x -> x + augend
 
 ## Explicit Currying
 
-While ante opts out of including implicit currying in favor of better
+While Ante opts out of including implicit currying in favor of better
 error messages, it does include an explicit version where arguments
 of a function can be explicitly curried by placing `_` where that argument
 would normally go. For example, in the following example, `f1` and `f2` are
@@ -836,7 +836,7 @@ an initial value via =, as is the case with total in the above example. The body
 becomes the body of the recursive function, with recur standing in for the name of the function.
 
 Since loop/recur uses recursion internally it is even more general than loops, and can be
-used to translate otherwise complex while loops into ante. Take for example this while loop
+used to translate otherwise complex while loops into Ante. Take for example this while loop
 which builds up a list of the number’s digits, mutating the number as it goes:
 
 ```c++
@@ -851,7 +851,7 @@ list<unsigned int> get_digits(unsigned int x) {
 }
 ```
 
-This can be translated into ante as the following loop:
+This can be translated into Ante as the following loop:
 
 ```ante
 get_digits (x: U32) : List U32 =
@@ -952,7 +952,7 @@ match Int 7
 
 Note that there are a few subtle design decisions:
 
-1. All type constructors must be capitalized in ante, so when
+1. All type constructors must be capitalized in Ante, so when
    we see a lower-case variable in a pattern match we know we
    will always create a new variable rather than match on some
    nullary constructor (like `None`).
@@ -966,7 +966,7 @@ Note that there are a few subtle design decisions:
 
 The `is` operator can be used to pattern match within arbitrary expressions.
 The syntax for an `is` expression is `<expr> is <pattern>`. These expressions
-can be used to test an expression matches a particular case, for example:
+can be used to test whether an expression matches a particular case, for example:
 
 ```ante
 shared type Expr =
@@ -1049,7 +1049,7 @@ first_equals it target =
     | Some (x, _) -> x == target
     | _ -> false
 ```
-We never gave any type for `first_equals_two` yet ante infers its type for us as
+We never gave any type for `first_equals_two` yet Ante infers its type for us as
 `fn a b {Iterator a b} {Eq b} -> Bool` - that is a function that returns a `Bool` and takes
 two generic parameters along with an [implicit parameter](#implicits) which is an instance
 of the iterator trait for an iterator of type `a` producing elements of type `b`.
@@ -1063,7 +1063,7 @@ improve type errors in the case types change. Given it is preferred to have expl
 signatures for functions, one may wonder why offer type inference on them at all? There
 are a few reasons for this.
 
-1. When contributing to a new or existing code base a developer often adds a couple functions at a time.
+1. When contributing to a new or existing code base a developer often adds a couple of functions at a time.
 The intended work-flow of Ante is to omit the types of these functions,
 and when the programmer is satisfied, they can have the compiler write in the
 inferred function types itself after a successful compilation. This way the programmer does less
@@ -1085,7 +1085,7 @@ They should likely still be taught early but any bit of lowering the initial sho
 
 Ante is a strongly, statically typed language with global type inference.
 Types are used to restrict the set of values as best as possible such that
-only valid values are representable. For example, since references in ante
+only valid values are representable. For example, since references in Ante
 cannot be null we can instead represent possibly null references with
 `Maybe (ref t)` which makes it explicit whether a function can accept or
 return possibly null values.
@@ -1093,7 +1093,7 @@ return possibly null values.
 ## Type Definitions
 
 Both struct and tagged union types can be defined with the
-`type Name args = ...`construct where `args` is the space-separated
+`type Name args = ...` construct where `args` is the space-separated
 list of type variables the type is generic over.
 
 You can define struct types with commas separating each field or
@@ -1170,7 +1170,7 @@ simplify (expr: Expr): Expr =
     | Add lhs rhs loc -> Add (simplify lhs) (simplify rhs) loc
 ```
 
-Each of the locations in the first two `Add` cases were written explicitly here to show where they would go, but if
+Each of the locations in the first two `Add` cases was written explicitly here to show where they would go, but if
 these fields are unneeded in a pattern match they can also be excluded with `..` which will
 automatically fill in any remaining fields in a pattern:
 
@@ -1285,7 +1285,7 @@ add1 (x: Int a) : Int a =
 If we do use it with a specific type however, then just like with
 normal generics, the generic type variable is constrained to be
 that concrete type (and the concrete type must satisfy the `Int`
-constraint - ie it must be a primitive integer or we get a compile-time error).
+constraint - i.e. it must be a primitive integer or we get a compile-time error).
 
 ```ante
 // Fine, we're still generic over a
@@ -1358,7 +1358,7 @@ get_foo (x: { foo: b }) : b =
     x.foo
 ```
 
-As a more complex example, here's a function that can print anything with `debug` field
+As a more complex example, here's a function that can print anything with a `debug` field
 that itself is printable and a `prefix` field that must be a string:
 
 ```ante
@@ -1376,7 +1376,7 @@ Values in Ante are affine by default (may be used 0 or 1 time
 before they are dropped and deallocated). These values are called
 "owned" values. If we ever want to use such values more than once, we would
 need to borrow them by creating temporary references to them which can be used
-any amount of times, but prevent the underlying value from being moved until
+any number of times, but prevent the underlying value from being moved until
 any references to it are no longer used.
 
 The only values which may be used more than once without borrowing them are those
@@ -1449,7 +1449,7 @@ bar = ref foo
 
 `bar` will have the type `ref 'foo I32` because it is a reference to the variable `foo` which holds an `I32`.
 
-It is also possible for a reference to borrow from possibly multiple places:
+It is also possible for a reference to borrow from multiple places:
 
 ```ante
 foo = "foo"
@@ -1523,7 +1523,7 @@ type Context 'l =
 
 ### Shared Mutability and Stability
 
-Although largely built-upon Rust, Ante's borrowing semantics differ in that it
+Although largely built upon Rust, Ante's borrowing semantics differ in that it
 allows shared (aliasable) mutability. This is done by tracking the "shape-stability"
 of a type.
 
@@ -1630,7 +1630,7 @@ example2 (v: mut Vec String) =
 Generally, most collection types (with the exception of arrays) will be shape-unstable in their element types,
 and pointer types that allow shared mutability like `Rc` will be shape-unstable as well.
 
-`Rc` specifically, because each clone of it shares the same underlying value has a place attached to it: `Rc 'p t`
+`Rc` specifically, because each clone of it shares the same underlying value, has a place attached to it: `Rc 'p t`
 is a reference-counted pointer to some data `p` of type `t`. This is sufficient to support type-safe shared
 mutability on reference-counted pointers, including supporting cyclic data types:
 
@@ -1639,7 +1639,7 @@ type List 'p t =
    | Nil
    | Cons t (Rc 'p (List 'p t))
 
-// Note that projecting through a Rc gives unstable refs:
+// Note that projecting through an Rc gives unstable refs:
 Rc.get (rc: mut 'outer Rc 'inner t): mut '(outer!, inner) t = ...
 
 main () =
@@ -1677,7 +1677,7 @@ Although due to Rc semantics, `t`'s memory is still leaked at end of scope!
 > in the correct types to the source file if desired. You can also use [shared types](#shared-types)
 > which provide a cleaner interface over types like `Rc`.
 
-#### The `Mutate` effect
+#### The `Mutate` Effect
 
 When a reference `mut 'e t` is mutated, the compiler issues a `Mutate 'e` effect. This effect
 is what is used to invalidate any value of a type referencing `'e!` afterward. For convenience,
@@ -1847,7 +1847,7 @@ caller1 (v: mut Vec I32) =
 
 #### Thread Safety of References
 
-Since `ref` and `mut` both allow mutable aliasing, neither implement `Send` nor `Sync`.
+Since `ref` and `mut` both allow mutable aliasing, neither implements `Send` nor `Sync`.
 Instead, Ante provides additional reference types `imm` and `uniq`. These additional reference
 types are rarely used, typically only in multithreaded code, and come with stricter invariants:
 
@@ -1861,8 +1861,8 @@ type is expected.
 
 ### Shared Types
 
-Shared types are a way to opt-out of ownership rules for a type by automatically wrapping
-it in a copy-able wrapper. These types can be declared via `shared type` and also do not
+Shared types are a way to opt out of ownership rules for a type by automatically wrapping
+it in a copyable wrapper. These types can be declared via `shared type` and also do not
 require explicit boxing (they are always boxed):
 
 ```ante
@@ -1881,7 +1881,7 @@ main () =
 ```
 
 You can think of these types as always being wrapped in a reference-counted pointer. They are
-meant to be used when efficiency is less of a concern over code clarity. For example when
+meant to be used when efficiency is less of a concern than code clarity. For example, when
 gradually transitioning new users to use ownership rules it can be helpful if they have to worry
 about it for fewer types - even if they still need to handle it for built-in types like `Vec a`.
 These are also useful in cases when types need to be boxed anyway, such as `Expr` above or
@@ -1923,7 +1923,7 @@ main () =
 ```
 
 > Using shared mutable types is meant to feel like using types in a high-level, garbage-collected
-> language like Java
+> language like Java.
 
 Unlike normal shared types, shared mutable types allow mutation into their shared contents and are
 thus not thread-safe. Similar to `Rc 'p t`, we must also track the places these types may refer to,
@@ -1945,7 +1945,7 @@ foo (expr: MutExpr 'e) =
     ...
 ```
 
-Shared types are meant to be an easy to use alternative to explicit boxing. As an example, here's the cyclic
+Shared types are meant to be an easy-to-use alternative to explicit boxing. As an example, here's the cyclic
 `List` example from earlier, rewritten to use a `shared mut type List` instead:
 
 ```ante
@@ -1989,7 +1989,7 @@ not innovate here but continues with the safe, tried and true model.
 
 In addition to normal, explicit parameters, functions can have _implicitly passed parameters_.
 Implicit parameters are written with curly braces `{}` surrounding them to distinguish them
-from normal parameters, and may have their names omitted if it is not otherwise used.
+from normal parameters, and may have their names omitted if they are not otherwise used.
 
 ```ante
 foo (x: I32) {y: I32}: I32 =
@@ -2025,7 +2025,7 @@ main () =
 ```
 
 As the note tells us, when this happens we can disambiguate by explicitly passing the desired
-value to `bar`. This can be done using curly brances:
+value to `bar`. This can be done using curly braces:
 
 ```ante
 implicit pi: I32 = 3
@@ -2042,7 +2042,7 @@ Implicits are most commonly used for passing around [trait values](#traits).
 
 While unrestricted generic functions are useful, often we don't want
 to abstract over "forall t." but rather abstract over all types that
-have certain operations available on them - like adding. In ante, this
+have certain operations available on them - like adding. In Ante, this
 is done via traits. You can define a trait as follows:
 
 ```ante
@@ -2111,7 +2111,7 @@ import implicit Example.stringify_bool
 Like any other type, traits can also have multiple type parameters.
 We can use this to define relations over multiple types. For example,
 we may want to be more general than the `stringify` function above and
-have a trait to cast to any result type. To do this we can have an
+have a trait to cast to any result type. To do this we can have a
 trait that defines a cast function from one type to another:
 
 ```ante
@@ -2194,7 +2194,7 @@ for otherwise unnecessary wrapper types and boilerplate. Ante does not enforce g
 ## Coherence
 
 Ante has no concept of global coherence for traits, so it is perfectly valid to define overlapping
-implementations or define implementations for types outside of the modules the type or trait were declared in.
+implementations or define implementations for types outside of the modules the type or trait was declared in.
 If there are ever conflicts with multiple valid implementations being found, an error is given at the callsite
 and the user will have to manually specify which to use either by only importing one of these values
 or by explicitly specifying which [implicit parameter](#implicits) to use:
@@ -2221,7 +2221,7 @@ traits or interfaces are not, such as interning.
 
 Interning values is a common optimization but unfortunately often makes these interned values
 more cumbersome to work with. For example, often when implementing traits they require wrapper
-objects to be created first to bundle them with the appropriate context first. Since we can
+objects to be created first to bundle them with the appropriate context. Since we can
 define arbitrary functions to return trait values in Ante, we can define a closure which
 captures this context to implement any trait we need:
 
@@ -2244,7 +2244,7 @@ implicit display_data_id {ctx: ref Context} = Display DataId with
 
 Effects are a control-flow abstraction similar to a resumable exception. They are a
 useful tool since they can be used to abstract over several kinds of non-local control-flow
-(exceptions, generators, async, early-returns, etc).
+(exceptions, generators, async, early-returns, etc.).
 
 > If you are familiar with monads, effects serve a similar purpose, but unlike monads,
 > they compose together more naturally without the need to decide the handler ordering
@@ -2260,7 +2260,7 @@ effect Yield t =
 
 Calling an effectful function like `yield` will perform the effect in the calling function.
 To perform the effect we must specify the calling function `can Yield` (or let it be inferred).
-If we were performing multiple effects, we can separate them with commas.
+If we are performing multiple effects, we can separate them with commas.
 
 ```ante
 yield_and_return_10 (): I32 can Yield I32 =
@@ -2301,11 +2301,11 @@ we will print `5` out before hitting the next yield, printing `7`, and finally r
 
 Aside from the new syntax, this should not be too surprising. The control-flow here is as
 we'd expect from any other function - that is because when implementing `yield` we gave
-it a function which calls resume in a tail position (ie. as the last thing it does).
+it a function which calls resume in a tail position (i.e. as the last thing it does).
 When called in a tail-position, the code is performing the entire function then finishing
 and resuming back to where `yield` was called.
 
-While we can do some interesting things still with only `resume` in a tail position, e.g:
+We can still do some interesting things with only `resume` in a tail position. For example,
 we can collect each yielded value into a container:
 
 ```ante
@@ -2345,7 +2345,7 @@ If we resumed in the middle of our `yield` function (and performed more work aft
 that additional work would not be run until after the entire block expression the `handler`
 is visible within ends. This control-flow can be difficult to conceptualize. As a mental model,
 you can think of performing an effect as suspending the current call stack, jumping to the handler,
-executing it, and jumping back when resume is called. If the handler didn't finish (ie. there is more
+executing it, and jumping back when resume is called. If the handler didn't finish (i.e. there is more
 work to do after the resume call), it will accumulate extra stack frames to run when the computation
 is finished.
 
@@ -2394,7 +2394,7 @@ a variety of helper functions in the `Std.Fail` and `Std.Throw` modules.
 Implementing these functions is generally simple. Effects are often described
 as resumable exceptions, so if we want normal exceptions all we must do
 is not call `resume` in the handler. A function like `try` will instead
-return `None` while `on_fail` provides a default value on error instead.
+return `None` while `on_fail` provides a default value on error.
 
 ```ante
 try (f: fn Unit => a can Fail): Maybe a =
@@ -2544,7 +2544,7 @@ example can MyEffect, Print =
     bar ()
 ```
 
-Now when we run `debug_effect_control_flow example` we get the following print outs:
+Now when we run `debug_effect_control_flow example` we get the following printouts:
 
 ```
 foo called!
@@ -2561,13 +2561,13 @@ resume 'foo b' finished
 resume 'foo a' finished
 ```
 
-Note that we do not get any of the "resume ... finished" print outs until the entire
+Note that we do not get any of the "resume ... finished" printouts until the entire
 computation `f ()` finishes. We are continually pushing stack frames to the handler to
 finish later until all resumes finish from the last to the first as the stack frames
 are popped.
 
 The novel control-flow of this is all from code after the `resume` call in the handler. If the
-handler does not have any code after `resume` (ie. it is tail-resumptive) it can actually
+handler does not have any code after `resume` (i.e. it is tail-resumptive) it can actually
 be optimized into a normal function call. When performance is vital and an effect may be
 handled in a tail-resumptive way, it is possible to specify when declaring the effect that
 all handlers for it must be tail-resumptive. That way a library or application developer
@@ -2667,7 +2667,7 @@ for implementing effects in an efficient way and limits unexpected interactions.
 ### Useful Effects
 
 Effects are a very broadly useful feature, yet the previous examples
-have been rather abstract. Here are some practical usecases for effects.
+have been rather abstract. Here are some practical use cases for effects.
 
 #### Exceptions
 
@@ -2786,7 +2786,7 @@ find_in_seq (seq: Seq t) (target: ref t) {Eq t}: Usz can Fail =
 
     fail ()
 
-/// If we wanted, we can even refactor `find_in_seq` into multiple functions
+/// If we wanted, we could even refactor `find_in_seq` into multiple functions
 find_in_seq2 (seq: Seq t) (target: ref t) {Eq t}: Usz can Fail =
     with_early_return do
     enumerate seq |> iter (early_return_if_items_match _ target)
@@ -2835,7 +2835,7 @@ business_logic (should_query: Bool): Unit can Print, QueryDatabase =
     else
         print "did not query"
 
-// Print handling is builtin, let ante handle it
+// Print handling is built in, let Ante handle it
 main () can Print, IO =
     business_logic true ~> database
 
@@ -2867,9 +2867,9 @@ random state, or parsers, among others.
 ## Capability-based Security
 
 By requiring each effect used by a function to be documented in its type, Ante has
-capability-based security. Libraries functions without a `can Net` effect for example may
-not access the network. A pure function in a library one day may not be updated to secretly
-log user data in the future without adding a `Net` effect - a breaking change.
+capability-based security. Library functions without a `can Net` effect for example may
+not access the network. A pure function in a library may not later be updated to secretly
+log user data without adding a `Net` effect - a breaking change.
 
 There is a caveat here: if a function already has a `can Net` clause, a once-innocent function like `innocent`:
 
@@ -2883,7 +2883,7 @@ innocent (bar: Bar) = ...
 ```
 
 May be updated to maliciously use a `Net` effect and `foo` wouldn't require a source update
-since it already is declared as `can Net`:
+since it is already declared as `can Net`:
 
 ```ante
 foo (bar: Bar) can Net =
@@ -3000,7 +3000,7 @@ get_baz () = ...
 
 ## Implicit Imports
 
-To import a value into scope and enable any definitions searching for a `implicit` of the
+To import a value into scope and enable any definitions searching for an `implicit` of the
 same type to use it, the value must be imported via `import implicit`. This is most often
 used to bring capabilities into scope:
 
@@ -3090,9 +3090,9 @@ automatically - for example by a package manager recognizing both `B` and `C` re
 and providing the same `D` to both by configuring the compiler's relative roots or using symlinks.
 
 Similarly, if `B` and `C` require different versions of `D`, these will naturally be
-located at separate filepaths and treated as different packages. So `B` would require `D1`
+located at separate file paths and treated as different packages. So `B` would require `D1`
 and `C` would require `D2`. The result would be the following valid package graph, and
-types from `D1` would be incompatible with types from `D2` (and vice-versa).
+types from `D1` would be incompatible with types from `D2` (and vice versa).
 
 ```
   A

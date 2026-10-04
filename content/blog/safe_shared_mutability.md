@@ -35,7 +35,7 @@ vec.push(4);
 println!("{first_element}");
 ```
 
-This is great. Those familiar with Rust however, will note that this error is actually caused
+This is great. Those familiar with Rust, however, will note that this error is actually caused
 by a related feature to ownership: Rust's borrowing rules. It turns out that moving every object
 into and out of each function is not very convenient, so Rust also lets us create borrowed
 references to values. These references can be mutable or immutable, and their lifetimes are tied
@@ -80,7 +80,7 @@ somewhat inherently require sharing. We can try to work around this by implement
 vector of nodes and handing out indices from this vector instead of pointers. There are reasons why we may want
 to do this as well (often better cache locality), but there are also reasons why we may want to have a traditional
 graph of pointers (lending out mutable references to nodes, no longer need to go through a context to operate
-on a node, etc).
+on a node, etc.).
 
 All this seems like a big risk for a language when plenty of other languages get by with aliasable mutability
 just fine. For example, [Pony](https://www.ponylang.io/) is an example of a thread-safe and memory-safe
@@ -89,7 +89,7 @@ force all values to be boxed and often have a garbage collector. This means a fu
 returns an offset inside of the vector's storage simply isn't possible to write in those languages. It is as
 if each vector were a `Vec<Rc<T>>` and instead of `&Rc<T>`, their get function returns a cloned `Rc<T>`. In
 reality, Pony uses a tracing garbage collector so there is no cloning going on, but I think this helps to
-illustrate the point that each element inside a Vector would itself be an owned pointer. This is why these
+illustrate the point that each element inside a vector would itself be an owned pointer. This is why these
 languages don't encounter the same issue Rust has with returning a reference to an element in an aliasable
 mutable context.
 
@@ -153,7 +153,7 @@ main () =
 It is also important to note that any shared references do not implement `Send` to be able to be sent
 across other threads. Since they inherently allow for shared mutability, this would not be safe to allow.
 
-How then, does Ante prevent holding onto references of things that may change out from under themselves,
+How, then, does Ante prevent holding onto references of things that may change out from under themselves,
 such as vector elements or union fields?
 
 ---
@@ -251,7 +251,7 @@ Vec.pop (v: mut Vec t): t can Fail = ...
 ```
 
 Alright, alright but that still never solved the issue of actually accessing the elements without
-removing them from the `Vec`. It turns out however, we can do that too:
+removing them from the `Vec`. It turns out, however, we can do that too:
 
 ```ante
 Vec.get_cloned (v: ref Vec t) (index: Usz) {Clone t}: t can Fail = ...
@@ -269,7 +269,7 @@ Eagle-eyed Rust users will note that `mut t` is fairly similar to `Cell<T>`
 in Rust. After all, both types allow safe, shared mutability by preventing projection
 into shape-unstable types.
 Most of the key differences come in ergonomics and usability. `ref t` and `mut t`
-are built-into the language and thus are able to be projected to struct
+are built into the language and thus are able to be projected to struct
 fields and provide better interop with other reference types. This reduces the required
 number of conversions, enables tailored compiler errors, and importantly allows arbitrary
 owned values to use shared mutation without requiring converting back and forth between
@@ -292,12 +292,12 @@ project inside the `Rc`. In practice this means to use this to mutate inside an 
 often need to clone it first. Otherwise another shared reference to the `Rc` could swap
 out the `Rc` for another, potentially dropping the original while we held a reference to it.
 
-Compared to `Rc<RefCell<T>>` in Rust, a `Rc t` in Ante can lend out shared references directly
+Compared to `Rc<RefCell<T>>` in Rust, an `Rc t` in Ante can lend out shared references directly
 without a wrapper type. The runtime cost is also different: `Rc<RefCell<T>>` performs reference
 counting for the outer `Rc` and the inner `Ref`s handed out by the `RefCell`. An `Rc t` in Ante
 only needs to perform the outer `Rc`. Any `mut t` that are handed out can
 be copied/aliased freely. Moreover, `RefCell<T>` introduces a possible panic to the code if
-a `RefMut` is ever aliased at runtime, this is not possible with `mut t` in Ante.
+a `RefMut` is ever aliased at runtime. This is not possible with `mut t` in Ante.
 
 If we ever do need interior mutability to lend out owned references without cloning, then we'd
 still need to resort to a `RefCell t` or similar interior mutability type inherited from Rust.

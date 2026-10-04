@@ -545,7 +545,7 @@ example, the next snippet is a compile-time error in Rust:</p>
 </span><span class="c1"></span><span class="n">vec</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span><span class="w">
 </span><span class="w">
 </span><span class="w"></span><span class="fm">println!</span><span class="p">(</span><span class="s">&#34;{first_element}&#34;</span><span class="p">);</span><span class="w">
-</span></code></pre></div><p>This is great. Those familiar with Rust however, will note that this error is actually caused
+</span></code></pre></div><p>This is great. Those familiar with Rust, however, will note that this error is actually caused
 by a related feature to ownership: Rust&rsquo;s borrowing rules. It turns out that moving every object
 into and out of each function is not very convenient, so Rust also lets us create borrowed
 references to values. These references can be mutable or immutable, and their lifetimes are tied
@@ -583,7 +583,7 @@ somewhat inherently require sharing. We can try to work around this by implement
 vector of nodes and handing out indices from this vector instead of pointers. There are reasons why we may want
 to do this as well (often better cache locality), but there are also reasons why we may want to have a traditional
 graph of pointers (lending out mutable references to nodes, no longer need to go through a context to operate
-on a node, etc).</p>
+on a node, etc.).</p>
 <p>All this seems like a big risk for a language when plenty of other languages get by with aliasable mutability
 just fine. For example, <a href="https://www.ponylang.io/">Pony</a> is an example of a thread-safe and memory-safe
 language with aliasable mutability. The key difference with these languages is that - unlike Rust - they
@@ -591,7 +591,7 @@ force all values to be boxed and often have a garbage collector. This means a fu
 returns an offset inside of the vector&rsquo;s storage simply isn&rsquo;t possible to write in those languages. It is as
 if each vector were a <code>Vec&lt;Rc&lt;T&gt;&gt;</code> and instead of <code>&amp;Rc&lt;T&gt;</code>, their get function returns a cloned <code>Rc&lt;T&gt;</code>. In
 reality, Pony uses a tracing garbage collector so there is no cloning going on, but I think this helps to
-illustrate the point that each element inside a Vector would itself be an owned pointer. This is why these
+illustrate the point that each element inside a vector would itself be an owned pointer. This is why these
 languages don&rsquo;t encounter the same issue Rust has with returning a reference to an element in an aliasable
 mutable context.</p>
 <p>So other languages like Pony allow aliasable mutability but require us to box all values. Rust
@@ -639,7 +639,7 @@ matches:</p>
     <span class="n">log_foo</span> <span class="n">foo</span> <span class="n">context</span>  <span class="c1">// ok!</span>
 </code></pre></div><p>It is also important to note that any shared references do not implement <code>Send</code> to be able to be sent
 across other threads. Since they inherently allow for shared mutability, this would not be safe to allow.</p>
-<p>How then, does Ante prevent holding onto references of things that may change out from under themselves,
+<p>How, then, does Ante prevent holding onto references of things that may change out from under themselves,
 such as vector elements or union fields?</p>
 <hr>
 <h2 id="preventing-borrows-when-a-types-shape-is-not-stable">Preventing Borrows When a Type&rsquo;s Shape Is Not Stable</h2>
@@ -709,7 +709,7 @@ we are fine:</p>
 <span class="c1">// Fantastic!</span>
 <span class="kt">Vec</span><span class="o">.</span><span class="n">pop</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><p>Alright, alright but that still never solved the issue of actually accessing the elements without
-removing them from the <code>Vec</code>. It turns out however, we can do that too:</p>
+removing them from the <code>Vec</code>. It turns out, however, we can do that too:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Vec</span><span class="o">.</span><span class="n">get_cloned</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="p">{</span><span class="kt">Clone</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><p>(<code>{Clone t}</code> is Ante&rsquo;s way of writing trait constraints)</p>
 <p>As long as we don&rsquo;t return a reference to an element, the API itself is safe.
@@ -721,7 +721,7 @@ cost of cloning: <code>Vec (Rc MyStruct)</code>.</p>
 in Rust. After all, both types allow safe, shared mutability by preventing projection
 into shape-unstable types.
 Most of the key differences come in ergonomics and usability. <code>ref t</code> and <code>mut t</code>
-are built-into the language and thus are able to be projected to struct
+are built into the language and thus are able to be projected to struct
 fields and provide better interop with other reference types. This reduces the required
 number of conversions, enables tailored compiler errors, and importantly allows arbitrary
 owned values to use shared mutation without requiring converting back and forth between
@@ -736,12 +736,12 @@ immutable references in Rust can be accessed mutably in Ante. For example, <code
 project inside the <code>Rc</code>. In practice this means to use this to mutate inside an <code>Rc</code> you&rsquo;ll
 often need to clone it first. Otherwise another shared reference to the <code>Rc</code> could swap
 out the <code>Rc</code> for another, potentially dropping the original while we held a reference to it.</p>
-<p>Compared to <code>Rc&lt;RefCell&lt;T&gt;&gt;</code> in Rust, a <code>Rc t</code> in Ante can lend out shared references directly
+<p>Compared to <code>Rc&lt;RefCell&lt;T&gt;&gt;</code> in Rust, an <code>Rc t</code> in Ante can lend out shared references directly
 without a wrapper type. The runtime cost is also different: <code>Rc&lt;RefCell&lt;T&gt;&gt;</code> performs reference
 counting for the outer <code>Rc</code> and the inner <code>Ref</code>s handed out by the <code>RefCell</code>. An <code>Rc t</code> in Ante
 only needs to perform the outer <code>Rc</code>. Any <code>mut t</code> that are handed out can
 be copied/aliased freely. Moreover, <code>RefCell&lt;T&gt;</code> introduces a possible panic to the code if
-a <code>RefMut</code> is ever aliased at runtime, this is not possible with <code>mut t</code> in Ante.</p>
+a <code>RefMut</code> is ever aliased at runtime. This is not possible with <code>mut t</code> in Ante.</p>
 <p>If we ever do need interior mutability to lend out owned references without cloning, then we&rsquo;d
 still need to resort to a <code>RefCell t</code> or similar interior mutability type inherited from Rust.</p>
 <hr>

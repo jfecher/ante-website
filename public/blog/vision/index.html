@@ -594,7 +594,7 @@ needs to be an expert.</p>
 <p>Can a low-level language even achieve the same kind of ease of use as a higher-level one though? Maybe not entirely,
 but I do think we can get much closer than the state of the art today where there are large usability gaps between the two.
 The first observation is that higher-level languages are often easier to use because their types are boxed by default
-(ie. shared by default) and they have tracing garbage collectors. This already isn&rsquo;t impossible to achieve in a lower-level
+(i.e. shared by default) and they have tracing garbage collectors. This already isn&rsquo;t impossible to achieve in a lower-level
 language though - after all those languages can have boxed types as well (<code>Rc&lt;T&gt;</code>, <code>shared_ptr&lt;T&gt;</code>, etc.), and they can
 even have tracing garbage collectors as libraries. That being said, a tracing GC is probably not strictly necessary as long
 as there is some mechanism to free space.<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup></p>
@@ -674,7 +674,7 @@ to the things developers using these languages put up with that they shouldn&rsq
 be able to reason about the same code in a lower-level way so that it can call into code already written
 in a low-level style, or vice-versa. Otherwise, the ecosystem would be split in two. At its core, Ante is a
 language with ownership and borrowing allowing users to control where allocations and deallocations occur, yet
-each of the examples above still translate into code which follows these rules. For example,
+each of the examples above still translates into code which follows these rules. For example,
 the red-black tree balance example uses <code>shared</code> types which can be thought of as a wrapper over atomic reference-counting
 (while <code>shared mut</code> types can be thought of as a wrapper over non-atomic reference-counting):</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">derive</span> <span class="kt">Copy</span>
@@ -697,7 +697,7 @@ the red-black tree balance example uses <code>shared</code> types which can be t
 </code></pre></div><p>That&rsquo;s a lot of <code>Arc</code>-wrapping! It does however help illustrate how close the higher-level shell really is to
 languages like Java where nearly everything is wrapped in a pointer and cleaned up for us automatically. How
 should a low-level language get closer to a higher-level one? Auto-box more things. Sure, this can be inefficient,
-but it also isn&rsquo;t as much of an issue when users must explicitly opt-into doing so.</p>
+but it also isn&rsquo;t as much of an issue when users must explicitly opt into doing so.</p>
 <p>Also - what happens if a user actually wants some other pointer type to represent their shared types? Or maybe
 they don&rsquo;t want pointers at all and would prefer indices?</p>
 <p>While the representation of shared types can be customized, if a user needs to guarantee a specific representation,
@@ -765,7 +765,7 @@ or in <a href="/blog/safe-shared-mutability">the blog post where they were first
 
     <span class="n">print</span> <span class="n">head</span>  <span class="c1">// prints: NonEmptyList 0 (Some (NonEmptyList 1 (Some (NonEmptyList 0 (Some ...)))))</span>
 </code></pre></div><p>When we do this, we see an <code>Rc.as_mut</code> method. Such a method would not be safe in Rust where mutable references must be
-unique, but are safe in Ante which provides not only Rust-style mutable references (spelled <code>uniq</code>), but
+unique, but is safe in Ante which provides not only Rust-style mutable references (spelled <code>uniq</code>), but
 also mutable references which may not be unique (spelled <code>mut</code>), yet are still safe to use:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// This reference-counted pointer may be aliased elsewhere so even if we have a unique reference to it,</span>
 <span class="c1">// we can only give out shared references to the contents. Also note that requiring a unique reference</span>
@@ -782,7 +782,7 @@ as an exercise for the reader.</p>
 time repeating yourself or worrying about often irrelevant details. It is a common and important-enough tool that
 I expect everyone reading this to already be familiar with it. Yet many languages (even high-level ones) fall victim
 to repeating themselves or segmenting their ecosystem implementing features like exceptions, async, or generators
-all separately instead of part of one abstraction.</p>
+all separately instead of as part of one abstraction.</p>
 <p>&hellip;Yes, this is the segue into effect handlers.</p>
 <p>This won&rsquo;t be an explainer for effect handlers (for that, see <a href="/docs/language/#algebraic-effects">Ante&rsquo;s own documentation on them</a>),
 just an argument why they&rsquo;re useful.</p>
@@ -812,7 +812,7 @@ of course. Just like existing low-level languages <em>can</em> make use of high-
 it isn&rsquo;t about whether it&rsquo;s possible, it&rsquo;s about how <em>easy</em> it is to actually do so. It&rsquo;s easy to discount ease
 of implementation as unimportant but it has a real effect on how likely a particular solution is to actually
 be adopted in practice. Even if an alternative will noticeably improve a program in some way, if it is too difficult
-to implement (verbose, obfuscated, conflicts with other goals, etc), it may not be. The right thing to do
+to implement (verbose, obfuscated, conflicts with other goals, etc.), it may not be. The right thing to do
 should be the easy thing to do, but most languages just don&rsquo;t have the necessary tools for this when effects are involved.</p>
 <p>Case in point: with traditional mocking, a developer must have mocking in mind and design their functions to use it. With
 effect handlers, the code is just mockable by default.</p>
@@ -865,7 +865,7 @@ hear of languages being very simple and thus easy to use. Indeed, simplicity is 
 features out of languages (such as generics in the original version of Go) in pursuit of an idealistic minimal language.
 Taken to its extreme though, it&rsquo;s trivial to see that prioritization of simplicity of language design over all else does <em>not</em>
 simplify things for the programmer. Just look at the <a href="https://en.wikipedia.org/wiki/Brainfuck">Brainfuck</a> language - it only
-has 8 commands, yet writing programs in it is generally considerably more difficult than an equivalent python program (which
+has 8 commands, yet writing programs in it is generally considerably more difficult than an equivalent Python program (which
 by all accounts is a much more complex language).</p>
 <p>So language simplicity is different from how simple it is to actually use that language. We can&rsquo;t just look at every new
 feature in a language as something more to learn, and therefore negative.</p>
@@ -878,7 +878,7 @@ only graduating them to the full language with ownership &amp; borrowing in late
 <p>Many of the things I&rsquo;ve mentioned in this article are ideals. I don&rsquo;t know how well some of them will turn out in practice,
 but I aim to steer as close as possible to achieving them. Anyways, my hope is that I&rsquo;ve shined some light not necessarily
 on Ante&rsquo;s specific feature set but more importantly on <em>why</em> it has these features and <em>why</em> Ante exists at all.</p>
-<p>If you&rsquo;ve stuck with me this far, thank you! Please consider joining <a href="https://discord.gg/NPJncGBAws">Ante&rsquo;s discord</a>
+<p>If you&rsquo;ve stuck with me this far, thank you! Please consider joining <a href="https://discord.gg/NPJncGBAws">Ante&rsquo;s Discord</a>
 to follow the project or ask me questions directly. I&rsquo;m also looking for contributors - the
 compiler is in the middle of a full rewrite so now is a great time to join in (in particular I&rsquo;d welcome someone
 willing to update the old language server to the new incremental compiler)! It makes my day whenever

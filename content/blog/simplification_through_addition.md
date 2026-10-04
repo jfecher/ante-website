@@ -51,7 +51,7 @@ foo (): Unit can Print =
     print "Hello, World!"
 ```
 
-What effects should a higher-order function like `vecmap` take however? Theoretically, it can
+What effects should a higher-order function like `vecmap` take, however? Theoretically, it can
 perform any effect that the function that was passed to it can, in addition to whatever effects
 `vecmap` performs in its own body. The solution is to introduce effect variables. We're going to
 name the effects performed by `f` something like `e`, and the outer `map` function will also perform
@@ -67,7 +67,7 @@ vecmap (stream: Stream a) (f: FnMut a => b can e): Vec b can e =
 The inclusion of these effect variables adds noise whenever we use higher order functions.
 If we want to get technical, all functions should be effect polymorphic over
 the environment they're called in - otherwise they'd only be callable in (for example) an
-environment with a single `can Print` effect and nothing else. In practice however,
+environment with a single `can Print` effect and nothing else. In practice, however,
 nearly all effectful languages lift this restriction and make the desired approach the more natural
 one.
 
@@ -107,7 +107,7 @@ the first argument of a trait with its own hidden generic named `Self`. A trait 
 `Clone` generally corresponds to a trait with one more generic in Ante: `Clone t`. This actually
 helps simplify complex trait bounds but in the context
 of trait objects, it makes choosing which generic should be the actual object more difficult.
-There's been some [ideas](/docs/ideas/#trait-objects) floating around for quite a while on how
+There have been some [ideas](/docs/ideas/#trait-objects) floating around for quite a while on how
 to remedy this flexibly by allowing any parameter to be the object, but I'm just going to give
 in to practicality and arbitrarily choose the first parameter.
 
@@ -225,7 +225,7 @@ avoid `clone`. Internally these values are effectively reference-counted by defa
 
 The most important point when designing these modes for me was that they must, above
 all else, be able to cleanly interact with each other. Failure to do so would essentially split
-the language into two parts with libraries written for one mode being incompatible for an application
+the language into two parts with libraries written for one mode being incompatible with an application
 using the other. This proposal avoids this very simply:
 
 - In the `owned` mode, a shared type `t` corresponds to just `Shared t`. This is effectively a type
@@ -258,7 +258,7 @@ shared module
 ```
 
 With the new shared mode being the default, Ante is essentially now an impure functional language
-built on top of a somewhat lower-level rust-like procedural core. Users of high-level languages
+built on top of a somewhat lower-level Rust-like procedural core. Users of high-level languages
 like Python today often rely on libraries written in C for speed. It will be quite nice for users
 to use Ante as a high level language and directly be able to leverage libraries written in owned mode
 for a bit of extra performance.
