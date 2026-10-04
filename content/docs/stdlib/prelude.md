@@ -116,7 +116,7 @@ type Type t =
     | MkType
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L705)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L709)
 
 ---
 
@@ -128,7 +128,7 @@ type Range t =
     end: t
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1011)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1014)
 
 ---
 
@@ -253,13 +253,13 @@ trait Cmp a =
 ## Num
 
 ```ante
-trait Num a =
-    add: Add a
-    sub: Sub a
-    mul: Mul a
-    div: Div a
-    eq: Eq a pure
-    cmp: Cmp a
+trait Num a [add] [sub] [mul] [div] [eq] [cmp] =
+    add: Add a add
+    sub: Sub a sub
+    mul: Mul a mul
+    div: Div a div
+    eq: Eq a pure eq
+    cmp: Cmp a cmp
     zero: a
     one: a
 ```
@@ -286,7 +286,7 @@ trait Extract collection index elem (e: effect) =
     .[]: fn collection index -> elem can e
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L637)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L638)
 
 ---
 
@@ -299,7 +299,7 @@ trait Bitwise t =
     bxor: fn t t -> t
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L689)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L693)
 
 ---
 
@@ -310,7 +310,7 @@ trait Copy t =
     .*: fn (ref t) -> t
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L740)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L744)
 
 ---
 
@@ -321,7 +321,7 @@ trait Clone t =
     clone: fn (ref t) -> t
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L743)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L747)
 
 ---
 
@@ -332,7 +332,7 @@ trait Drop t (e: effect) =
     drop: fn (mut t) -> Unit can e
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L746)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L750)
 
 ---
 
@@ -346,7 +346,7 @@ trait Insert collection index elem (e: effect) =
 Insert an element into a collection.
 `col.[i] := elem` resolves to `Insert` while `col.[i]` alone resolves to `Extract`
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L842)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L846)
 
 ---
 
@@ -357,7 +357,7 @@ trait Display t (e: effect) =
     print: fn (ref t) -> Unit can Print, e
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L891)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L894)
 
 ---
 
@@ -368,7 +368,7 @@ trait Iterator it elem (effects: effect) =
     next: fn it -> Maybe (it, elem) can effects
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1001)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1004)
 
 ---
 
@@ -407,7 +407,7 @@ effect Print =
     write_f64: fn F64 -> Unit
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L851)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L855)
 
 ---
 
@@ -418,7 +418,7 @@ effect Panic =
     panic: fn String -> Never
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1030)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1033)
 
 ---
 
@@ -559,13 +559,23 @@ min (l: ref 'a t) (r: ref 'a t) {_: Cmp t}: ref 'a t
 
 ---
 
+## ;
+
+```ante
+(;: fn _ _ -> _ is pure) (_: _) (b: _)
+```
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L634)
+
+---
+
 ## |>
 
 ```ante
 (|>: fn _ (fn _ [_] -> _ can _) -> _ can _) (x: _) (f: fn _ [_] -> _ can _)
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L634)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L635)
 
 ---
 
@@ -575,7 +585,7 @@ min (l: ref 'a t) (r: ref 'a t) {_: Cmp t}: ref 'a t
 (<|: fn (fn _ [_] -> _ can _) _ -> _ can _) (f: fn _ [_] -> _ can _) (x: _)
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L635)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L636)
 
 ---
 
@@ -585,7 +595,7 @@ min (l: ref 'a t) (r: ref 'a t) {_: Cmp t}: ref 'a t
 array_len (_array: ref Array n t): Usz
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L647)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L651)
 
 ---
 
@@ -597,7 +607,7 @@ array_get_unchecked (array: ref Array n t) (i: Usz): ref t
 
 Unsafe get without bounds-checking
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L653)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L657)
 
 ---
 
@@ -609,7 +619,7 @@ array_set_unchecked (array: mut Array n t) (i: Usz) (v: t): Unit
 
 Unsafe set without bounds-checking
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L658)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L662)
 
 ---
 
@@ -619,7 +629,7 @@ Unsafe set without bounds-checking
 array_get (array: ref Array n t) (index: Usz): ref t can Panic
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L662)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L666)
 
 ---
 
@@ -629,7 +639,7 @@ array_get (array: ref Array n t) (index: Usz): ref t can Panic
 array_get_mut (array: mut Array n t) (index: Usz): mut t can Panic
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L667)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L671)
 
 ---
 
@@ -639,7 +649,7 @@ array_get_mut (array: mut Array n t) (index: Usz): mut t can Panic
 (array_set: fn (mut (Array n t)) Usz t -> Unit can Panic) (array: mut (Array n t)) (index: Usz) (elem: t)
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L670)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L674)
 
 ---
 
@@ -649,7 +659,7 @@ array_get_mut (array: mut Array n t) (index: Usz): mut t can Panic
 size_of (v: Type t): Usz
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L707)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L711)
 
 ---
 
@@ -659,7 +669,7 @@ size_of (v: Type t): Usz
 offset (ptr: Ptr t) (index: Usz): Ptr t
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L709)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L713)
 
 ---
 
@@ -669,7 +679,7 @@ offset (ptr: Ptr t) (index: Usz): Ptr t
 offset_bytes (ptr: Ptr t) (index: Usz): Ptr t
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L714)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L718)
 
 ---
 
@@ -681,7 +691,7 @@ deref (x: ref t): t
 
 Dereference without a Copy constraint. This is unsafe to use directly
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L723)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L727)
 
 ---
 
@@ -691,7 +701,7 @@ Dereference without a Copy constraint. This is unsafe to use directly
 deref_ptr (p: Ptr t): t
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L726)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L730)
 
 ---
 
@@ -701,7 +711,7 @@ deref_ptr (p: Ptr t): t
 ptr_store (p: Ptr a) (value: a): Unit
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L729)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L733)
 
 ---
 
@@ -711,7 +721,7 @@ ptr_store (p: Ptr a) (value: a): Unit
 array_insert (p: Ptr a) (index: Usz) (value: a): Unit
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L733)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L737)
 
 ---
 
@@ -721,7 +731,7 @@ array_insert (p: Ptr a) (index: Usz) (value: a): Unit
 ptr_to_mut: fn (Ptr a) -> mut a
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L736)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L740)
 
 ---
 
@@ -731,7 +741,7 @@ ptr_to_mut: fn (Ptr a) -> mut a
 ptr_to_uniq: fn (Ptr a) -> uniq a
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L737)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L741)
 
 ---
 
@@ -741,7 +751,7 @@ ptr_to_uniq: fn (Ptr a) -> uniq a
 null (): Ptr a
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L835)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L839)
 
 ---
 
@@ -751,7 +761,7 @@ null (): Ptr a
 transmute (x: a): b
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L837)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L841)
 
 ---
 
@@ -764,7 +774,7 @@ print_to_sink (sink: fn (Ptr Char) Usz [_] -> Unit can Fs) (f: a can Print, e): 
 Forwards each printed string to the given function expecting a string pointer
 and the length in bytes of that string pointer.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L863)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L867)
 
 ---
 
@@ -776,7 +786,7 @@ print_to_stdout (f: a can Print, e): a can Fs, e
 
 Handles `Print` by piping to stdout
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L874)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L877)
 
 ---
 
@@ -788,7 +798,7 @@ print_to_stderr (f: a can Print, e): a can Fs, e
 
 Handles `Print` by piping to stderr
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L878)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L881)
 
 ---
 
@@ -804,7 +814,7 @@ This function is intended for debugging purposes. Because it
 appears pure to the compiler, there is no guarantee it won't be
 optimized out of the program.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L886)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L889)
 
 ---
 
@@ -814,7 +824,7 @@ optimized out of the program.
 (println: fn (ref t) {Display t e} -> Unit can Print, e) (x: ref t) {(_: Display t e)}
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L894)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L897)
 
 ---
 
@@ -824,7 +834,7 @@ optimized out of the program.
 print_float (f: F64): Unit can Fs
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L934)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L937)
 
 ---
 
@@ -834,7 +844,7 @@ print_float (f: F64): Unit can Fs
 (iterate: fn it (fn elem [_] -> _ can effects, _) {Iterator it elem effects} -> Unit can effects, _) (iterable: it) (f: fn elem [_] -> _ can effects, _) {(i: Iterator it elem effects)}
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1004)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1007)
 
 ---
 
@@ -844,7 +854,7 @@ print_float (f: F64): Unit can Fs
 iterate_range (from: Usz) (to: Usz) (f: fn Usz [_] -> Unit): Unit
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1021)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1024)
 
 ---
 
@@ -854,7 +864,7 @@ iterate_range (from: Usz) (to: Usz) (f: fn Usz [_] -> Unit): Unit
 repeat (count: Usz) (f: fn Usz [_] -> Unit): Unit
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1024)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1027)
 
 ---
 
@@ -864,7 +874,7 @@ repeat (count: Usz) (f: fn Usz [_] -> Unit): Unit
 abort_on_panic (f: a can Panic, e): a can e
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1033)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1036)
 
 ---
 
@@ -874,7 +884,7 @@ abort_on_panic (f: a can Panic, e): a can e
 (ignore: fn _ -> Unit is pure) (_x: _)
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1041)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1044)
 
 ---
 
@@ -2982,7 +2992,7 @@ impl cmp_char: Cmp Char
 ## num_i8
 
 ```ante
-impl num_i8: Num I8
+impl num_i8: Num I8 add_i8 sub_i8 mul_i8 div_i8 eq_i8 cmp_i8
 ```
 
 [source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L484)
@@ -2992,7 +3002,7 @@ impl num_i8: Num I8
 ## num_i16
 
 ```ante
-impl num_i16: Num I16
+impl num_i16: Num I16 add_i16 sub_i16 mul_i16 div_i16 eq_i16 cmp_i16
 ```
 
 [source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L494)
@@ -3002,7 +3012,7 @@ impl num_i16: Num I16
 ## num_i32
 
 ```ante
-impl num_i32: Num I32
+impl num_i32: Num I32 add_i32 sub_i32 mul_i32 div_i32 eq_i32 cmp_i32
 ```
 
 [source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L504)
@@ -3012,7 +3022,7 @@ impl num_i32: Num I32
 ## num_i64
 
 ```ante
-impl num_i64: Num I64
+impl num_i64: Num I64 add_i64 sub_i64 mul_i64 div_i64 eq_i64 cmp_i64
 ```
 
 [source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L514)
@@ -3022,7 +3032,7 @@ impl num_i64: Num I64
 ## num_isz
 
 ```ante
-impl num_isz: Num Isz
+impl num_isz: Num Isz add_isz sub_isz mul_isz div_isz eq_isz cmp_isz
 ```
 
 [source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L524)
@@ -3032,7 +3042,7 @@ impl num_isz: Num Isz
 ## num_u8
 
 ```ante
-impl num_u8: Num U8
+impl num_u8: Num U8 add_u8 sub_u8 mul_u8 div_u8 eq_u8 cmp_u8
 ```
 
 [source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L534)
@@ -3042,7 +3052,7 @@ impl num_u8: Num U8
 ## num_u16
 
 ```ante
-impl num_u16: Num U16
+impl num_u16: Num U16 add_u16 sub_u16 mul_u16 div_u16 eq_u16 cmp_u16
 ```
 
 [source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L544)
@@ -3052,7 +3062,7 @@ impl num_u16: Num U16
 ## num_u32
 
 ```ante
-impl num_u32: Num U32
+impl num_u32: Num U32 add_u32 sub_u32 mul_u32 div_u32 eq_u32 cmp_u32
 ```
 
 [source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L554)
@@ -3062,7 +3072,7 @@ impl num_u32: Num U32
 ## num_u64
 
 ```ante
-impl num_u64: Num U64
+impl num_u64: Num U64 add_u64 sub_u64 mul_u64 div_u64 eq_u64 cmp_u64
 ```
 
 [source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L564)
@@ -3072,7 +3082,7 @@ impl num_u64: Num U64
 ## num_usz
 
 ```ante
-impl num_usz: Num Usz
+impl num_usz: Num Usz add_usz sub_usz mul_usz div_usz eq_usz cmp_usz
 ```
 
 [source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L574)
@@ -3082,7 +3092,7 @@ impl num_usz: Num Usz
 ## num_f32
 
 ```ante
-impl num_f32: Num F32
+impl num_f32: Num F32 add_f32 sub_f32 mul_f32 div_f32 eq_f32 cmp_f32
 ```
 
 [source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L584)
@@ -3092,7 +3102,7 @@ impl num_f32: Num F32
 ## num_f64
 
 ```ante
-impl num_f64: Num F64
+impl num_f64: Num F64 add_f64 sub_f64 mul_f64 div_f64 eq_f64 cmp_f64
 ```
 
 [source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L594)
@@ -3135,17 +3145,17 @@ impl append_string: Append String
 impl extract_ptr_usz: Extract (Ptr t) Usz t pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L641)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L642)
 
 ---
 
 ## extract_string
 
 ```ante
-impl extract_string: Extract (ref String) Usz Char pure
+impl extract_string: Extract (ref String) Usz Char Panic
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L644)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L645)
 
 ---
 
@@ -3155,7 +3165,7 @@ impl extract_string: Extract (ref String) Usz Char pure
 impl extract_array: Extract (ref Array n t) Usz (ref t) Panic
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L675)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L679)
 
 ---
 
@@ -3165,7 +3175,7 @@ impl extract_array: Extract (ref Array n t) Usz (ref t) Panic
 impl extract_array_move: Extract (Array n t) Usz t Panic
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L678)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L682)
 
 ---
 
@@ -3175,27 +3185,27 @@ impl extract_array_move: Extract (Array n t) Usz t Panic
 impl extract_array_mut: Extract (mut Array n t) Usz (mut t) Panic
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L681)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L685)
 
 ---
 
 ## bitwise_i32
 
 ```ante
-implicit bitwise_i32: Bitwise I32
+impl bitwise_i32: Bitwise I32
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L694)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L698)
 
 ---
 
 ## bitwise_u64
 
 ```ante
-implicit bitwise_u64: Bitwise U64
+impl bitwise_u64: Bitwise U64
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L699)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L703)
 
 ---
 
@@ -3205,7 +3215,7 @@ implicit bitwise_u64: Bitwise U64
 impl copy_i8: Copy I8
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L749)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L753)
 
 ---
 
@@ -3215,7 +3225,7 @@ impl copy_i8: Copy I8
 impl copy_i16: Copy I16
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L751)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L755)
 
 ---
 
@@ -3225,7 +3235,7 @@ impl copy_i16: Copy I16
 impl copy_i32: Copy I32
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L753)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L757)
 
 ---
 
@@ -3235,7 +3245,7 @@ impl copy_i32: Copy I32
 impl copy_i64: Copy I64
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L755)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L759)
 
 ---
 
@@ -3245,7 +3255,7 @@ impl copy_i64: Copy I64
 impl copy_isz: Copy Isz
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L757)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L761)
 
 ---
 
@@ -3255,7 +3265,7 @@ impl copy_isz: Copy Isz
 impl copy_u8: Copy U8
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L759)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L763)
 
 ---
 
@@ -3265,7 +3275,7 @@ impl copy_u8: Copy U8
 impl copy_u16: Copy U16
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L761)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L765)
 
 ---
 
@@ -3275,7 +3285,7 @@ impl copy_u16: Copy U16
 impl copy_u32: Copy U32
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L763)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L767)
 
 ---
 
@@ -3285,7 +3295,7 @@ impl copy_u32: Copy U32
 impl copy_u64: Copy U64
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L765)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L769)
 
 ---
 
@@ -3295,7 +3305,7 @@ impl copy_u64: Copy U64
 impl copy_usz: Copy Usz
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L767)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L771)
 
 ---
 
@@ -3305,7 +3315,7 @@ impl copy_usz: Copy Usz
 impl copy_f32: Copy F32
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L770)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L774)
 
 ---
 
@@ -3315,7 +3325,7 @@ impl copy_f32: Copy F32
 impl copy_f64: Copy F64
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L772)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L776)
 
 ---
 
@@ -3325,7 +3335,7 @@ impl copy_f64: Copy F64
 impl copy_unit: Copy Unit
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L775)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L779)
 
 ---
 
@@ -3335,7 +3345,7 @@ impl copy_unit: Copy Unit
 impl copy_bool: Copy Bool
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L777)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L781)
 
 ---
 
@@ -3345,7 +3355,7 @@ impl copy_bool: Copy Bool
 impl copy_char: Copy Char
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L779)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L783)
 
 ---
 
@@ -3355,7 +3365,7 @@ impl copy_char: Copy Char
 impl copy_ptr: Copy (Ptr t)
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L782)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L786)
 
 ---
 
@@ -3365,7 +3375,7 @@ impl copy_ptr: Copy (Ptr t)
 impl copy_ref: Copy (ref t)
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L784)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L788)
 
 ---
 
@@ -3375,7 +3385,7 @@ impl copy_ref: Copy (ref t)
 impl copy_mut: Copy (mut t)
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L786)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L790)
 
 ---
 
@@ -3385,7 +3395,7 @@ impl copy_mut: Copy (mut t)
 impl copy_imm: Copy (imm t)
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L788)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L792)
 
 ---
 
@@ -3395,7 +3405,7 @@ impl copy_imm: Copy (imm t)
 impl copy_uniq: Copy (uniq t)
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L791)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L795)
 
 ---
 
@@ -3405,7 +3415,7 @@ impl copy_uniq: Copy (uniq t)
 impl copy_pair {_: Copy a} {_: Copy b}: Copy (a, b)
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L794)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L798)
 
 ---
 
@@ -3415,7 +3425,7 @@ impl copy_pair {_: Copy a} {_: Copy b}: Copy (a, b)
 impl copy_maybe {_: Copy a}: Copy (Maybe a)
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L797)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L801)
 
 ---
 
@@ -3425,7 +3435,7 @@ impl copy_maybe {_: Copy a}: Copy (Maybe a)
 impl clone_string: Clone String
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L802)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L806)
 
 ---
 
@@ -3435,7 +3445,7 @@ impl clone_string: Clone String
 impl drop_i8: Drop I8 pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L808)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L812)
 
 ---
 
@@ -3445,7 +3455,7 @@ impl drop_i8: Drop I8 pure
 impl drop_i16: Drop I16 pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L809)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L813)
 
 ---
 
@@ -3455,7 +3465,7 @@ impl drop_i16: Drop I16 pure
 impl drop_i32: Drop I32 pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L810)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L814)
 
 ---
 
@@ -3465,7 +3475,7 @@ impl drop_i32: Drop I32 pure
 impl drop_i64: Drop I64 pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L811)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L815)
 
 ---
 
@@ -3475,7 +3485,7 @@ impl drop_i64: Drop I64 pure
 impl drop_isz: Drop Isz pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L812)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L816)
 
 ---
 
@@ -3485,7 +3495,7 @@ impl drop_isz: Drop Isz pure
 impl drop_u8: Drop U8 pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L813)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L817)
 
 ---
 
@@ -3495,7 +3505,7 @@ impl drop_u8: Drop U8 pure
 impl drop_u16: Drop U16 pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L814)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L818)
 
 ---
 
@@ -3505,7 +3515,7 @@ impl drop_u16: Drop U16 pure
 impl drop_u32: Drop U32 pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L815)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L819)
 
 ---
 
@@ -3515,7 +3525,7 @@ impl drop_u32: Drop U32 pure
 impl drop_u64: Drop U64 pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L816)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L820)
 
 ---
 
@@ -3525,7 +3535,7 @@ impl drop_u64: Drop U64 pure
 impl drop_usz: Drop Usz pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L817)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L821)
 
 ---
 
@@ -3535,7 +3545,7 @@ impl drop_usz: Drop Usz pure
 impl drop_f32: Drop F32 pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L818)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L822)
 
 ---
 
@@ -3545,7 +3555,7 @@ impl drop_f32: Drop F32 pure
 impl drop_f64: Drop F64 pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L819)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L823)
 
 ---
 
@@ -3555,7 +3565,7 @@ impl drop_f64: Drop F64 pure
 impl drop_unit: Drop Unit pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L820)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L824)
 
 ---
 
@@ -3565,7 +3575,7 @@ impl drop_unit: Drop Unit pure
 impl drop_bool: Drop Bool pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L821)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L825)
 
 ---
 
@@ -3575,7 +3585,7 @@ impl drop_bool: Drop Bool pure
 impl drop_char: Drop Char pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L822)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L826)
 
 ---
 
@@ -3585,7 +3595,7 @@ impl drop_char: Drop Char pure
 impl drop_ptr: Drop (Ptr t) pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L823)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L827)
 
 ---
 
@@ -3595,7 +3605,7 @@ impl drop_ptr: Drop (Ptr t) pure
 impl drop_string: Drop String pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L825)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L829)
 
 ---
 
@@ -3605,7 +3615,7 @@ impl drop_string: Drop String pure
 impl insert_ptr_usz: Insert (mut Ptr t) Usz t pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L845)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L849)
 
 ---
 
@@ -3615,7 +3625,7 @@ impl insert_ptr_usz: Insert (mut Ptr t) Usz t pure
 impl insert_array: Insert (mut Array n t) Usz t Panic
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L848)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L852)
 
 ---
 
@@ -3625,7 +3635,7 @@ impl insert_array: Insert (mut Array n t) Usz t Panic
 impl print_u8: Display U8 pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L898)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L901)
 
 ---
 
@@ -3635,7 +3645,7 @@ impl print_u8: Display U8 pure
 impl print_u16: Display U16 pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L900)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L903)
 
 ---
 
@@ -3645,7 +3655,7 @@ impl print_u16: Display U16 pure
 impl print_u32: Display U32 pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L902)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L905)
 
 ---
 
@@ -3655,7 +3665,7 @@ impl print_u32: Display U32 pure
 impl print_u64: Display U64 pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L904)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L907)
 
 ---
 
@@ -3665,7 +3675,7 @@ impl print_u64: Display U64 pure
 impl print_usz: Display Usz pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L906)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L909)
 
 ---
 
@@ -3675,7 +3685,7 @@ impl print_usz: Display Usz pure
 impl print_i8: Display I8 pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L909)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L912)
 
 ---
 
@@ -3685,7 +3695,7 @@ impl print_i8: Display I8 pure
 impl print_i16: Display I16 pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L912)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L915)
 
 ---
 
@@ -3695,7 +3705,7 @@ impl print_i16: Display I16 pure
 impl print_i32: Display I32 pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L915)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L918)
 
 ---
 
@@ -3705,7 +3715,7 @@ impl print_i32: Display I32 pure
 impl print_i64: Display I64 pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L918)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L921)
 
 ---
 
@@ -3715,7 +3725,7 @@ impl print_i64: Display I64 pure
 impl print_isz: Display Isz pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L922)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L925)
 
 ---
 
@@ -3725,7 +3735,7 @@ impl print_isz: Display Isz pure
 impl print_char: Display Char pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L925)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L928)
 
 ---
 
@@ -3735,7 +3745,7 @@ impl print_char: Display Char pure
 impl print_f64: Display F64 pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L928)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L931)
 
 ---
 
@@ -3745,7 +3755,7 @@ impl print_f64: Display F64 pure
 impl print_f32: Display F32 pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L930)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L933)
 
 ---
 
@@ -3755,7 +3765,7 @@ impl print_f32: Display F32 pure
 impl print_pair {_: Display a e} {_: Display b e}: Display (a, b) e
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L946)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L949)
 
 ---
 
@@ -3765,7 +3775,7 @@ impl print_pair {_: Display a e} {_: Display b e}: Display (a, b) e
 impl print_string: Display String pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L953)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L956)
 
 ---
 
@@ -3775,7 +3785,7 @@ impl print_string: Display String pure
 impl print_maybe {_: Display a e}: Display (Maybe a) e
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L956)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L959)
 
 ---
 
@@ -3785,7 +3795,7 @@ impl print_maybe {_: Display a e}: Display (Maybe a) e
 impl print_bool: Display Bool pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L983)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L986)
 
 ---
 
@@ -3795,7 +3805,7 @@ impl print_bool: Display Bool pure
 impl print_array {_: Display t e}: Display (Array n t) Panic & e
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L988)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L991)
 
 ---
 
@@ -3805,7 +3815,7 @@ impl print_array {_: Display t e}: Display (Array n t) Panic & e
 impl print_ref {_: Display a e}: Display (ref a) e
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L998)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1001)
 
 ---
 
@@ -3815,7 +3825,7 @@ impl print_ref {_: Display a e}: Display (ref a) e
 impl iterator_range: Iterator (Range Usz) Usz pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1013)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1016)
 
 </details>
 

@@ -722,17 +722,17 @@
 <h2 id="map_err">map_err</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">map_err</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Throw</span> <span class="n">e1</span><span class="p">)</span> <span class="p">(</span><span class="n">f2</span><span class="o">:</span> <span class="k">fn</span> <span class="n">e1</span> <span class="p">[</span><span class="n">_</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="n">e2</span><span class="p">)</span><span class="o">:</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Throw</span> <span class="n">e2</span>
 </code></pre></div><p>Apply the given function to the thrown value and re-throw it</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Throw.an#L28">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Throw.an#L29">source</a></p>
 <hr>
 <h2 id="unwrap_err">unwrap_err</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">unwrap_err</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Throw</span> <span class="n">e</span><span class="p">)</span><span class="o">:</span> <span class="n">e</span> <span class="k">can</span> <span class="kt">Fail</span>
 </code></pre></div><p>Returns the error when thrown or fails if the operation finishes without throwing.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Throw.an#L34">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Throw.an#L35">source</a></p>
 <hr>
 <h2 id="exit_on_throw">exit_on_throw</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">exit_on_throw</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Throw</span> <span class="n">t</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Display</span> <span class="n">t</span> <span class="n">e2</span><span class="p">}</span><span class="o">:</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Fs</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">e2</span>
 </code></pre></div><p>If an error is thrown when running <code>f</code>, print it to stderr and exit 1</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Throw.an#L40">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Throw.an#L42">source</a></p>
 
                         </div>
                         

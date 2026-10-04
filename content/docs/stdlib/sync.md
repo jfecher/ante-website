@@ -127,7 +127,7 @@ Atomic.fetch_xor (a: ref Atomic t) (mask: t): t
 
 ```ante
 type Mutex t =
-    handle: VoidPtr
+    raw: VoidPtr
     value: t
 ```
 
@@ -204,7 +204,7 @@ Unblock all threads waiting on this condvar
 
 ```ante
 type Thread a =
-    handle: VoidPtr
+    raw: VoidPtr
 ```
 
 [source](https://github.com/jfecher/ante/blob/master/stdlib/src/Sync.an#L142)
@@ -231,7 +231,7 @@ Thread.join (t: Thread a): a
 
 Block until the thread finishes and return its result.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Sync.an#L164)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Sync.an#L167)
 
 ---
 
@@ -244,7 +244,7 @@ Thread.detach (t: Thread a): Unit
 Detach the thread so its resources are reclaimed automatically on exit.
 The result value is leaked; use `join` if you need it.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Sync.an#L177)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Sync.an#L180)
 
 ---
 
@@ -255,7 +255,7 @@ type Arc t =
     ptr: Ptr (ArcInner t)
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Sync.an#L189)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Sync.an#L192)
 
 ---
 
@@ -265,7 +265,7 @@ type Arc t =
 Arc.as_ref (a: imm Arc t): imm t
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Sync.an#L197)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Sync.an#L200)
 
 ---
 
@@ -292,7 +292,7 @@ impl drop_mutex {_: Drop t e}: Drop (Mutex t) e
 impl clone_arc: Clone (Arc t)
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Sync.an#L202)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Sync.an#L205)
 
 ---
 
@@ -302,7 +302,7 @@ impl clone_arc: Clone (Arc t)
 impl drop_arc {_: Drop t e}: Drop (Arc t) e
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Sync.an#L208)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Sync.an#L211)
 
 </details>
 

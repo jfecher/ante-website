@@ -143,6 +143,19 @@ Fails if the index is out of bounds
 
 ---
 
+### Vec.get_mut
+
+```ante
+Vec.get_mut (v: uniq Vec t) (i: Usz): uniq t can Fail
+```
+
+Retrieves a mutable reference to the element at the given 0-based index.
+Fails if the index is out of bounds
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L70)
+
+---
+
 ### Vec.get_unchecked
 
 ```ante
@@ -153,6 +166,19 @@ An unsafe function to retrieve an element at the given index
 without checking if the index is inbounds
 
 [source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L77)
+
+---
+
+### Vec.get_mut_unchecked
+
+```ante
+Vec.get_mut_unchecked (v: uniq Vec t) (i: Usz): uniq t
+```
+
+An unsafe function to retrieve a mutable element at the given index
+without checking if the index is inbounds
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L83)
 
 ---
 
@@ -341,33 +367,58 @@ impl print_vec {p: Display t e}: Display (Vec t) e
 
 ---
 
+## extract_vec_move
+
+```ante
+impl extract_vec_move: Extract (Vec t) Usz t Panic
+```
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L243)
+
+---
+
 ## extract_vec
 
 ```ante
-impl extract_vec: Extract (ref Vec t) Usz (ref t) pure
+impl extract_vec: Extract (ref Vec t) Usz (ref t) Panic
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L246)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L249)
+
+---
+
+## insert_vec
+
+```ante
+impl insert_vec: Insert (mut Vec t) Usz t Panic
+```
+
+Note that this impl is different from `Vec.insert`.
+Vec.insert will insert into a slot, moving the previous element and each
+element after to the right. This `Insert` implementation will instead
+directly mutate the element at the given index to the new element.
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L259)
 
 ---
 
 ## stream_vec
 
 ```ante
-implicit stream_vec: Stream (Vec a) a pure
+impl stream_vec: Stream (Vec a) a pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L259)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L265)
 
 ---
 
 ## stream_imm_vec
 
 ```ante
-implicit stream_imm_vec: Stream (imm Vec a) (imm a) pure
+impl stream_imm_vec: Stream (imm Vec a) (imm a) pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L264)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L270)
 
 ---
 
@@ -377,7 +428,7 @@ implicit stream_imm_vec: Stream (imm Vec a) (imm a) pure
 impl drop_vec {_: Drop t e}: Drop (Vec t) e
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L269)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L275)
 
 ---
 
@@ -387,7 +438,7 @@ impl drop_vec {_: Drop t e}: Drop (Vec t) e
 impl eq_vec {_: Eq t e}: Eq (Vec t) e
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L277)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L283)
 
 </details>
 

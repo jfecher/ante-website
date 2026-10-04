@@ -96,7 +96,7 @@ map_err (f: t can Throw e1) (f2: fn e1 [_] -> e2): t can Throw e2
 
 Apply the given function to the thrown value and re-throw it
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Throw.an#L28)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Throw.an#L29)
 
 ---
 
@@ -108,7 +108,7 @@ unwrap_err (f: t can Throw e): e can Fail
 
 Returns the error when thrown or fails if the operation finishes without throwing.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Throw.an#L34)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Throw.an#L35)
 
 ---
 
@@ -120,5 +120,5 @@ exit_on_throw (f: a can Throw t, e) {_: Display t e2}: a can Fs, e, e2
 
 If an error is thrown when running `f`, print it to stderr and exit 1
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Throw.an#L40)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Throw.an#L42)
 

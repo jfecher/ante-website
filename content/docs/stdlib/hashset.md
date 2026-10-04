@@ -166,7 +166,7 @@ HashSet.merge (dst: mut HashSet k) (src: HashSet k) {_: Hash k} {_: Eq k e}: Uni
 ## stream_set
 
 ```ante
-implicit stream_set: Stream (HashSet k) k pure
+impl stream_set: Stream (HashSet k) k pure
 ```
 
 [source](https://github.com/jfecher/ante/blob/master/stdlib/src/HashSet.an#L63)
@@ -176,7 +176,7 @@ implicit stream_set: Stream (HashSet k) k pure
 ## stream_ref_hashset
 
 ```ante
-implicit stream_ref_hashset: Stream (ref HashSet k) k pure
+impl stream_ref_hashset: Stream (ref HashSet k) k pure
 ```
 
 [source](https://github.com/jfecher/ante/blob/master/stdlib/src/HashSet.an#L70)

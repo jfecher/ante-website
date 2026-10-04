@@ -282,7 +282,7 @@ impl print_hashmap {_: Display k e} {_: Display v e}: Display (HashMap k v) e
 ## stream_map
 
 ```ante
-implicit stream_map: Stream (HashMap k v) (k, v) pure
+impl stream_map: Stream (HashMap k v) (k, v) pure
 ```
 
 [source](https://github.com/jfecher/ante/blob/master/stdlib/src/HashMap.an#L193)

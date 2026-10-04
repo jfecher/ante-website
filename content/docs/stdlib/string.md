@@ -317,7 +317,7 @@ from_c_string (cstr: C.String): String
 
 Copy a null-terminated C string into a new string.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L273)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L272)
 
 ---
 
@@ -330,7 +330,7 @@ to_ascii_lowercase (s: ref String): String
 Returns the given string with each ASCII letter converted to lowercase.
 The original string is never mutated.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L282)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L281)
 
 ---
 
@@ -343,7 +343,7 @@ to_ascii_uppercase (s: ref String): String
 Returns the given string with each ASCII letter converted to uppercase.
 The original string is never mutated.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L292)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L291)
 
 ---
 
@@ -370,7 +370,7 @@ impl eq_string: Eq String pure
 impl try_cast_string_i8: TryCast String I8 Fs
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L242)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L241)
 
 ---
 
@@ -380,7 +380,7 @@ impl try_cast_string_i8: TryCast String I8 Fs
 impl try_cast_string_i16: TryCast String I16 Fs
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L245)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L244)
 
 ---
 
@@ -390,7 +390,7 @@ impl try_cast_string_i16: TryCast String I16 Fs
 impl try_cast_string_i32: TryCast String I32 Fs
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L248)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L247)
 
 ---
 
@@ -400,7 +400,7 @@ impl try_cast_string_i32: TryCast String I32 Fs
 impl try_cast_string_i64: TryCast String I64 Fs
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L251)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L250)
 
 ---
 
@@ -410,7 +410,7 @@ impl try_cast_string_i64: TryCast String I64 Fs
 impl try_cast_string_isz: TryCast String Isz Fs
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L254)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L253)
 
 ---
 
@@ -420,7 +420,7 @@ impl try_cast_string_isz: TryCast String Isz Fs
 impl try_cast_string_u8: TryCast String U8 Fs
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L257)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L256)
 
 ---
 
@@ -430,7 +430,7 @@ impl try_cast_string_u8: TryCast String U8 Fs
 impl try_cast_string_u16: TryCast String U16 Fs
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L260)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L259)
 
 ---
 
@@ -440,7 +440,7 @@ impl try_cast_string_u16: TryCast String U16 Fs
 impl try_cast_string_u32: TryCast String U32 Fs
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L263)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L262)
 
 ---
 
@@ -450,7 +450,7 @@ impl try_cast_string_u32: TryCast String U32 Fs
 impl try_cast_string_u64: TryCast String U64 Fs
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L266)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L265)
 
 ---
 
@@ -460,7 +460,7 @@ impl try_cast_string_u64: TryCast String U64 Fs
 impl try_cast_string_usz: TryCast String Usz Fs
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L269)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L268)
 
 </details>
 

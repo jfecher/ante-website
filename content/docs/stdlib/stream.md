@@ -112,7 +112,7 @@ Applies `f` to each element from the stream, re-emitting each result.
 
 Given `a1, a2, .., aN`, emit `f a1, f a2, .., f aN`
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L66)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L62)
 
 ---
 
@@ -126,7 +126,7 @@ Re-emits only the elements from the original stream for which `f elem` is true
 
 E.g. `filter (iota 5) (_ > 2)` will emit `3` and `4`.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L75)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L71)
 
 ---
 
@@ -140,7 +140,7 @@ Performs a combined map and filter opereration, applying `f` to each element in
 the stream, filtering out any elements for which `None` is returned, leaving only
 the `Some` elements.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L84)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L80)
 
 ---
 
@@ -152,7 +152,7 @@ the `Some` elements.
 
 Given `a1, a2, .., aN`, emit `(0, a1), (1, a2), .., (N-1, aN)`
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L93)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L89)
 
 ---
 
@@ -167,7 +167,7 @@ Given `a1, a2, .., aN` and an initial value `initial`, return `(f (.. (f (f init
 Unlike `foldr`, `foldl` is tail-resumptive and thus more efficient. If `f` is commutative, prefer
 `foldl` over `foldr`.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L105)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L101)
 
 ---
 
@@ -183,7 +183,7 @@ Unlike `foldl`, `foldr` is not tail-resumptive (the initial `f a1 _` call does n
 until the rest of the stream has been consumed) which limits performance. Prefer `foldl`
 when `f` is commutative.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L120)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L116)
 
 ---
 
@@ -199,7 +199,7 @@ Given `a1, a2, a3, .., aN`, return `f (.. (f (f a1 a2) a3) ..) aN`
 
 This function is tail-resumptive. Fails if the stream is empty.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L133)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L127)
 
 ---
 
@@ -213,7 +213,7 @@ Given `a1, a2, .., aN` and `b1, b2, .., bN`, emit `f a1 b1, f a2 b2, .., f aN bN
 If the two input streams are not the same length, the length of the resulting stream
 will be the shorter of the two.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L154)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L145)
 
 ---
 
@@ -225,7 +225,7 @@ will be the shorter of the two.
 
 Emit numbers from 0 to `n`, end-exclusive
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L165)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L156)
 
 ---
 
@@ -240,7 +240,7 @@ Zip the two streams together, emitting `x, y` for each
 The length of the resulting stream will be the length of the shorter
 of the two streams given.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L172)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L163)
 
 ---
 
@@ -257,7 +257,7 @@ stream is empty, this will be vacuously true.
 If `false` is returned for any element, the stream will not
 be pulled any further and `false` will be returned early.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L181)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L172)
 
 ---
 
@@ -274,7 +274,7 @@ stream is empty, this will be vacuously false.
 If `true` is returned for any element, the stream will not
 be pulled any further and `true` will be returned early.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L195)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L184)
 
 ---
 
@@ -286,7 +286,7 @@ first (s: s) {_: Stream s a e}: Maybe a can e
 
 Returns the first element of the stream or `None` if it is empty
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L204)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L191)
 
 ---
 
@@ -298,7 +298,7 @@ last (s: s) {_: Stream s a e}: Maybe a can e
 
 Returns the final element of the stream or `None` if it is empty
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L210)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L200)
 
 ---
 
@@ -312,7 +312,7 @@ Intersperse an item in between each element of the stream.
 
 Given `a1, a2, .., aN` and `item`, emit `a1, item, a2, item, .., item, aN`
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L221)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L211)
 
 ---
 
@@ -326,7 +326,7 @@ Intersperse an item from the given function in between each element of the strea
 
 Given `a1, a2, .., aN` and `item`, emit `a1, item, a2, item, .., item, aN`
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L234)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L223)
 
 ---
 
@@ -338,7 +338,7 @@ Given `a1, a2, .., aN` and `item`, emit `a1, item, a2, item, .., item, aN`
 
 Emits all elements from the first stream followed by all elements from the second stream
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L245)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L233)
 
 ---
 
@@ -350,7 +350,7 @@ count (s: s) {_: Stream s a e}: U32 can e
 
 Consume the stream, returning the total number of elements in it
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L250)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L238)
 
 ---
 
@@ -363,7 +363,7 @@ find (s: s) {_: Stream s a e} (predicate: fn (ref a) [_] -> Bool): a can Fail, e
 Find an element in the stream for which `predicate` returns true.
 Fails if there is no such element
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L255)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L243)
 
 ---
 
@@ -376,7 +376,7 @@ find_map (s: s) {_: Stream s a e} (predicate: fn a [_] -> Maybe b): b can Fail, 
 Find an element in the stream for which `predicate` returns `Some b`, and return that `b`.
 Fails if there is no such element
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L265)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L253)
 
 ---
 
@@ -388,7 +388,7 @@ Fails if there is no such element
 
 Re-emit only the first `n` items from the stream
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L276)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L264)
 
 ---
 
@@ -401,7 +401,7 @@ Re-emit only the first `n` items from the stream
 Re-emit items from the stream only while `predicate` keeps returning true.
 When the predicate first returns false, the stream will stop.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L288)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L275)
 
 ---
 
@@ -413,7 +413,7 @@ When the predicate first returns false, the stream will stop.
 
 Skips the first `n` items from the stream, emitting the rest as normal.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L297)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L283)
 
 ---
 
@@ -426,7 +426,7 @@ Skips the first `n` items from the stream, emitting the rest as normal.
 Skips elements while `predicate elem` is true. After the first `false`,
 no more elements will be skipped (including the element itself).
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L310)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L295)
 
 ---
 
@@ -438,7 +438,7 @@ sum (s: s) {_: Stream s a e} (initial: a) {_: Add a}: a can e
 
 Return the sum of all elements in the stream from the given initial value.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L324)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L308)
 
 ---
 
@@ -450,7 +450,7 @@ product (s: s) {_: Stream s a e} (initial: a) {_: Mul a}: a can e
 
 Return the product of all elements in the stream from the given initial value.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L333)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L317)
 
 ---
 
@@ -464,7 +464,7 @@ Return the product of all elements in the stream from the given initial value.
 ## stream_fn
 
 ```ante
-implicit stream_fn: Stream (fn Unit [env] -> Unit can Emit a, e) a e
+impl stream_fn: Stream (fn Unit [env] -> Unit can Emit a, e) a e
 ```
 
 This is the most common stream impl. Most streams will just be thunks

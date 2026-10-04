@@ -1605,7 +1605,7 @@
                 
                 
                 <a href="/docs/stdlib/prelude/#heading-6">
-                    <li>|&amp;amp;gt;</li>
+                    <li>;</li>
                 </a>
                 
                 
@@ -1630,6 +1630,31 @@
                 
                 
                 <a href="/docs/stdlib/prelude/#heading-7">
+                    <li>|&amp;amp;gt;</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/prelude/#heading-8">
                     <li>&amp;amp;lt;|</li>
                 </a>
                 
@@ -9815,13 +9840,13 @@ This may expand over time.</p>
 <h2 id="type">Type</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Type</span> <span class="n">t</span> <span class="ow">=</span>
     <span class="o">|</span> <span class="kt">MkType</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L705">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L709">source</a></p>
 <hr>
 <h2 id="range">Range</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Range</span> <span class="n">t</span> <span class="ow">=</span>
     <span class="n">start</span><span class="o">:</span> <span class="n">t</span>
     <span class="n">end</span><span class="o">:</span> <span class="n">t</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1011">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1014">source</a></p>
 <hr>
 <h1 id="traits">Traits</h1>
 <hr>
@@ -9878,13 +9903,13 @@ This may expand over time.</p>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L445">source</a></p>
 <hr>
 <h2 id="num">Num</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">trait</span> <span class="kt">Num</span> <span class="n">a</span> <span class="ow">=</span>
-    <span class="n">add</span><span class="o">:</span> <span class="kt">Add</span> <span class="n">a</span>
-    <span class="n">sub</span><span class="o">:</span> <span class="kt">Sub</span> <span class="n">a</span>
-    <span class="n">mul</span><span class="o">:</span> <span class="kt">Mul</span> <span class="n">a</span>
-    <span class="n">div</span><span class="o">:</span> <span class="kt">Div</span> <span class="n">a</span>
-    <span class="n">eq</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">a</span> <span class="n">pure</span>
-    <span class="n">cmp</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="n">a</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">trait</span> <span class="kt">Num</span> <span class="n">a</span> <span class="p">[</span><span class="n">add</span><span class="p">]</span> <span class="p">[</span><span class="n">sub</span><span class="p">]</span> <span class="p">[</span><span class="n">mul</span><span class="p">]</span> <span class="p">[</span><span class="n">div</span><span class="p">]</span> <span class="p">[</span><span class="n">eq</span><span class="p">]</span> <span class="p">[</span><span class="n">cmp</span><span class="p">]</span> <span class="ow">=</span>
+    <span class="n">add</span><span class="o">:</span> <span class="kt">Add</span> <span class="n">a</span> <span class="n">add</span>
+    <span class="n">sub</span><span class="o">:</span> <span class="kt">Sub</span> <span class="n">a</span> <span class="n">sub</span>
+    <span class="n">mul</span><span class="o">:</span> <span class="kt">Mul</span> <span class="n">a</span> <span class="n">mul</span>
+    <span class="n">div</span><span class="o">:</span> <span class="kt">Div</span> <span class="n">a</span> <span class="n">div</span>
+    <span class="n">eq</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">a</span> <span class="n">pure</span> <span class="n">eq</span>
+    <span class="n">cmp</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="n">a</span> <span class="n">cmp</span>
     <span class="n">zero</span><span class="o">:</span> <span class="n">a</span>
     <span class="n">one</span><span class="o">:</span> <span class="n">a</span>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L474">source</a></p>
@@ -9897,46 +9922,46 @@ This may expand over time.</p>
 <h2 id="extract">Extract</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">trait</span> <span class="kt">Extract</span> <span class="n">collection</span> <span class="n">index</span> <span class="n">elem</span> <span class="p">(</span><span class="n">e</span><span class="o">:</span> <span class="k">effect</span><span class="p">)</span> <span class="ow">=</span>
     <span class="o">.</span><span class="kt">[]</span><span class="o">:</span> <span class="k">fn</span> <span class="n">collection</span> <span class="n">index</span> <span class="ow">-&gt;</span> <span class="n">elem</span> <span class="k">can</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L637">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L638">source</a></p>
 <hr>
 <h2 id="bitwise">Bitwise</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">trait</span> <span class="kt">Bitwise</span> <span class="n">t</span> <span class="ow">=</span>
     <span class="n">band</span><span class="o">:</span> <span class="k">fn</span> <span class="n">t</span> <span class="n">t</span> <span class="ow">-&gt;</span> <span class="n">t</span>
     <span class="n">bor</span><span class="o">:</span> <span class="k">fn</span> <span class="n">t</span> <span class="n">t</span> <span class="ow">-&gt;</span> <span class="n">t</span>
     <span class="n">bxor</span><span class="o">:</span> <span class="k">fn</span> <span class="n">t</span> <span class="n">t</span> <span class="ow">-&gt;</span> <span class="n">t</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L689">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L693">source</a></p>
 <hr>
 <h2 id="copy">Copy</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">trait</span> <span class="kt">Copy</span> <span class="n">t</span> <span class="ow">=</span>
     <span class="o">.*:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="n">t</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L740">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L744">source</a></p>
 <hr>
 <h2 id="clone">Clone</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">trait</span> <span class="kt">Clone</span> <span class="n">t</span> <span class="ow">=</span>
     <span class="n">clone</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="n">t</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L743">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L747">source</a></p>
 <hr>
 <h2 id="drop">Drop</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">trait</span> <span class="kt">Drop</span> <span class="n">t</span> <span class="p">(</span><span class="n">e</span><span class="o">:</span> <span class="k">effect</span><span class="p">)</span> <span class="ow">=</span>
     <span class="n">drop</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">mut</span> <span class="n">t</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L746">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L750">source</a></p>
 <hr>
 <h2 id="insert">Insert</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">trait</span> <span class="kt">Insert</span> <span class="n">collection</span> <span class="n">index</span> <span class="n">elem</span> <span class="p">(</span><span class="n">e</span><span class="o">:</span> <span class="k">effect</span><span class="p">)</span> <span class="ow">=</span>
     <span class="o">.</span><span class="kt">[]</span><span class="o">:=:</span> <span class="k">fn</span> <span class="n">collection</span> <span class="n">index</span> <span class="n">elem</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="n">e</span>
 </code></pre></div><p>Insert an element into a collection.
 <code>col.[i] := elem</code> resolves to <code>Insert</code> while <code>col.[i]</code> alone resolves to <code>Extract</code></p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L842">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L846">source</a></p>
 <hr>
 <h2 id="display">Display</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">trait</span> <span class="kt">Display</span> <span class="n">t</span> <span class="p">(</span><span class="n">e</span><span class="o">:</span> <span class="k">effect</span><span class="p">)</span> <span class="ow">=</span>
     <span class="n">print</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Print</span><span class="p">,</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L891">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L894">source</a></p>
 <hr>
 <h2 id="iterator">Iterator</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">trait</span> <span class="kt">Iterator</span> <span class="n">it</span> <span class="n">elem</span> <span class="p">(</span><span class="n">effects</span><span class="o">:</span> <span class="k">effect</span><span class="p">)</span> <span class="ow">=</span>
     <span class="n">next</span><span class="o">:</span> <span class="k">fn</span> <span class="n">it</span> <span class="ow">-&gt;</span> <span class="kt">Maybe</span> <span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="n">elem</span><span class="p">)</span> <span class="k">can</span> <span class="n">effects</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1001">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1004">source</a></p>
 <hr>
 <h1 id="effects">Effects</h1>
 <hr>
@@ -9955,12 +9980,12 @@ This may expand over time.</p>
     <span class="n">write_u64</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">U64</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
     <span class="n">write_i64</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">I64</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
     <span class="n">write_f64</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">F64</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L851">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L855">source</a></p>
 <hr>
 <h2 id="panic">Panic</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Panic</span> <span class="ow">=</span>
     <span class="n">panic</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">String</span> <span class="ow">-&gt;</span> <span class="kt">Never</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1030">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1033">source</a></p>
 <hr>
 <h1 id="functions">Functions</h1>
 <hr>
@@ -10018,100 +10043,104 @@ otherwise returns <code>None</code>.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">min</span> <span class="p">(</span><span class="n">l</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;a</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">r</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;a</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;a</span> <span class="n">t</span>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L471">source</a></p>
 <hr>
-<h2 id="heading-6">|&gt;</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="o">|&gt;:</span> <span class="k">fn</span> <span class="n">_</span> <span class="p">(</span><span class="k">fn</span> <span class="n">_</span> <span class="p">[</span><span class="n">_</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="n">_</span> <span class="k">can</span> <span class="n">_</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="n">_</span> <span class="k">can</span> <span class="n">_</span><span class="p">)</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="n">_</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="n">_</span> <span class="p">[</span><span class="n">_</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="n">_</span> <span class="k">can</span> <span class="n">_</span><span class="p">)</span>
+<h2 id="heading-6">;</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(;</span><span class="o">:</span> <span class="k">fn</span> <span class="n">_</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="n">_</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">_</span><span class="o">:</span> <span class="n">_</span><span class="p">)</span> <span class="p">(</span><span class="n">b</span><span class="o">:</span> <span class="n">_</span><span class="p">)</span>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L634">source</a></p>
 <hr>
-<h2 id="heading-7">&lt;|</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="o">&lt;|:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">fn</span> <span class="n">_</span> <span class="p">[</span><span class="n">_</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="n">_</span> <span class="k">can</span> <span class="n">_</span><span class="p">)</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="n">_</span> <span class="k">can</span> <span class="n">_</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="n">_</span> <span class="p">[</span><span class="n">_</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="n">_</span> <span class="k">can</span> <span class="n">_</span><span class="p">)</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="n">_</span><span class="p">)</span>
+<h2 id="heading-7">|&gt;</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="o">|&gt;:</span> <span class="k">fn</span> <span class="n">_</span> <span class="p">(</span><span class="k">fn</span> <span class="n">_</span> <span class="p">[</span><span class="n">_</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="n">_</span> <span class="k">can</span> <span class="n">_</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="n">_</span> <span class="k">can</span> <span class="n">_</span><span class="p">)</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="n">_</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="n">_</span> <span class="p">[</span><span class="n">_</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="n">_</span> <span class="k">can</span> <span class="n">_</span><span class="p">)</span>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L635">source</a></p>
+<hr>
+<h2 id="heading-8">&lt;|</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="o">&lt;|:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">fn</span> <span class="n">_</span> <span class="p">[</span><span class="n">_</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="n">_</span> <span class="k">can</span> <span class="n">_</span><span class="p">)</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="n">_</span> <span class="k">can</span> <span class="n">_</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="n">_</span> <span class="p">[</span><span class="n">_</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="n">_</span> <span class="k">can</span> <span class="n">_</span><span class="p">)</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="n">_</span><span class="p">)</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L636">source</a></p>
 <hr>
 <h2 id="array_len">array_len</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">array_len</span> <span class="p">(</span><span class="n">_array</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Array</span> <span class="n">n</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">Usz</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L647">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L651">source</a></p>
 <hr>
 <h2 id="array_get_unchecked">array_get_unchecked</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">array_get_unchecked</span> <span class="p">(</span><span class="n">array</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Array</span> <span class="n">n</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">i</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span>
 </code></pre></div><p>Unsafe get without bounds-checking</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L653">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L657">source</a></p>
 <hr>
 <h2 id="array_set_unchecked">array_set_unchecked</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">array_set_unchecked</span> <span class="p">(</span><span class="n">array</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Array</span> <span class="n">n</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">i</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span>
 </code></pre></div><p>Unsafe set without bounds-checking</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L658">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L662">source</a></p>
 <hr>
 <h2 id="array_get">array_get</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">array_get</span> <span class="p">(</span><span class="n">array</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Array</span> <span class="n">n</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Panic</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L662">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L666">source</a></p>
 <hr>
 <h2 id="array_get_mut">array_get_mut</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">array_get_mut</span> <span class="p">(</span><span class="n">array</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Array</span> <span class="n">n</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="k">mut</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Panic</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L667">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L671">source</a></p>
 <hr>
 <h2 id="array_set">array_set</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">array_set</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">mut</span> <span class="p">(</span><span class="kt">Array</span> <span class="n">n</span> <span class="n">t</span><span class="p">))</span> <span class="kt">Usz</span> <span class="n">t</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">)</span> <span class="p">(</span><span class="n">array</span><span class="o">:</span> <span class="k">mut</span> <span class="p">(</span><span class="kt">Array</span> <span class="n">n</span> <span class="n">t</span><span class="p">))</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="p">(</span><span class="n">elem</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L670">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L674">source</a></p>
 <hr>
 <h2 id="size_of">size_of</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">size_of</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="kt">Type</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">Usz</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L707">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L711">source</a></p>
 <hr>
 <h2 id="offset">offset</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">offset</span> <span class="p">(</span><span class="n">ptr</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="n">t</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L709">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L713">source</a></p>
 <hr>
 <h2 id="offset_bytes">offset_bytes</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">offset_bytes</span> <span class="p">(</span><span class="n">ptr</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="n">t</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L714">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L718">source</a></p>
 <hr>
 <h2 id="deref">deref</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">deref</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="n">t</span>
 </code></pre></div><p>Dereference without a Copy constraint. This is unsafe to use directly</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L723">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L727">source</a></p>
 <hr>
 <h2 id="deref_ptr">deref_ptr</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">deref_ptr</span> <span class="p">(</span><span class="n">p</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="n">t</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L726">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L730">source</a></p>
 <hr>
 <h2 id="ptr_store">ptr_store</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">ptr_store</span> <span class="p">(</span><span class="n">p</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">value</span><span class="o">:</span> <span class="n">a</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L729">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L733">source</a></p>
 <hr>
 <h2 id="array_insert">array_insert</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">array_insert</span> <span class="p">(</span><span class="n">p</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="p">(</span><span class="n">value</span><span class="o">:</span> <span class="n">a</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L733">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L737">source</a></p>
 <hr>
 <h2 id="ptr_to_mut">ptr_to_mut</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">ptr_to_mut</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="kt">Ptr</span> <span class="n">a</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="k">mut</span> <span class="n">a</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L736">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L740">source</a></p>
 <hr>
 <h2 id="ptr_to_uniq">ptr_to_uniq</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">ptr_to_uniq</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="kt">Ptr</span> <span class="n">a</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="k">uniq</span> <span class="n">a</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L737">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L741">source</a></p>
 <hr>
 <h2 id="null">null</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">null</span> <span class="p">()</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="n">a</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L835">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L839">source</a></p>
 <hr>
 <h2 id="transmute">transmute</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">transmute</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="n">a</span><span class="p">)</span><span class="o">:</span> <span class="n">b</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L837">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L841">source</a></p>
 <hr>
 <h2 id="print_to_sink">print_to_sink</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">print_to_sink</span> <span class="p">(</span><span class="n">sink</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="kt">Ptr</span> <span class="kt">Char</span><span class="p">)</span> <span class="kt">Usz</span> <span class="p">[</span><span class="n">_</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Fs</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Print</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span><span class="o">:</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Fs</span><span class="p">,</span> <span class="n">e</span>
 </code></pre></div><p>Forwards each printed string to the given function expecting a string pointer
 and the length in bytes of that string pointer.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L863">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L867">source</a></p>
 <hr>
 <h2 id="print_to_stdout">print_to_stdout</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">print_to_stdout</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Print</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span><span class="o">:</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Fs</span><span class="p">,</span> <span class="n">e</span>
 </code></pre></div><p>Handles <code>Print</code> by piping to stdout</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L874">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L877">source</a></p>
 <hr>
 <h2 id="print_to_stderr">print_to_stderr</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">print_to_stderr</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Print</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span><span class="o">:</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Fs</span><span class="p">,</span> <span class="n">e</span>
 </code></pre></div><p>Handles <code>Print</code> by piping to stderr</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L878">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L881">source</a></p>
 <hr>
 <h2 id="dbg">dbg</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">dbg</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span>
@@ -10119,35 +10148,35 @@ and the length in bytes of that string pointer.</p>
 <p>This function is intended for debugging purposes. Because it
 appears pure to the compiler, there is no guarantee it won&rsquo;t be
 optimized out of the program.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L886">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L889">source</a></p>
 <hr>
 <h2 id="println">println</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">println</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="kt">Display</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Print</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">{(</span><span class="n">_</span><span class="o">:</span> <span class="kt">Display</span> <span class="n">t</span> <span class="n">e</span><span class="p">)}</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L894">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L897">source</a></p>
 <hr>
 <h2 id="print_float">print_float</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">print_float</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="kt">F64</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Fs</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L934">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L937">source</a></p>
 <hr>
 <h2 id="iterate">iterate</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">iterate</span><span class="o">:</span> <span class="k">fn</span> <span class="n">it</span> <span class="p">(</span><span class="k">fn</span> <span class="n">elem</span> <span class="p">[</span><span class="n">_</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="n">_</span> <span class="k">can</span> <span class="n">effects</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="p">{</span><span class="kt">Iterator</span> <span class="n">it</span> <span class="n">elem</span> <span class="n">effects</span><span class="p">}</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="n">effects</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="p">(</span><span class="n">iterable</span><span class="o">:</span> <span class="n">it</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="n">elem</span> <span class="p">[</span><span class="n">_</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="n">_</span> <span class="k">can</span> <span class="n">effects</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="p">{(</span><span class="n">i</span><span class="o">:</span> <span class="kt">Iterator</span> <span class="n">it</span> <span class="n">elem</span> <span class="n">effects</span><span class="p">)}</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1004">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1007">source</a></p>
 <hr>
 <h2 id="iterate_range">iterate_range</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">iterate_range</span> <span class="p">(</span><span class="n">from</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="p">(</span><span class="n">to</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Usz</span> <span class="p">[</span><span class="n">_</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1021">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1024">source</a></p>
 <hr>
 <h2 id="repeat">repeat</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">repeat</span> <span class="p">(</span><span class="n">count</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Usz</span> <span class="p">[</span><span class="n">_</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1024">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1027">source</a></p>
 <hr>
 <h2 id="abort_on_panic">abort_on_panic</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">abort_on_panic</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span><span class="o">:</span> <span class="n">a</span> <span class="k">can</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1033">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1036">source</a></p>
 <hr>
 <h2 id="ignore">ignore</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">ignore</span><span class="o">:</span> <span class="k">fn</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">_x</span><span class="o">:</span> <span class="n">_</span><span class="p">)</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1041">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1044">source</a></p>
 <hr>
 <h1 id="implicits">Implicits</h1>
 <hr>
@@ -10992,51 +11021,51 @@ optimized out of the program.</p>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L468">source</a></p>
 <hr>
 <h2 id="num_i8">num_i8</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">num_i8</span><span class="o">:</span> <span class="kt">Num</span> <span class="kt">I8</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">num_i8</span><span class="o">:</span> <span class="kt">Num</span> <span class="kt">I8</span> <span class="n">add_i8</span> <span class="n">sub_i8</span> <span class="n">mul_i8</span> <span class="n">div_i8</span> <span class="n">eq_i8</span> <span class="n">cmp_i8</span>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L484">source</a></p>
 <hr>
 <h2 id="num_i16">num_i16</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">num_i16</span><span class="o">:</span> <span class="kt">Num</span> <span class="kt">I16</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">num_i16</span><span class="o">:</span> <span class="kt">Num</span> <span class="kt">I16</span> <span class="n">add_i16</span> <span class="n">sub_i16</span> <span class="n">mul_i16</span> <span class="n">div_i16</span> <span class="n">eq_i16</span> <span class="n">cmp_i16</span>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L494">source</a></p>
 <hr>
 <h2 id="num_i32">num_i32</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">num_i32</span><span class="o">:</span> <span class="kt">Num</span> <span class="kt">I32</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">num_i32</span><span class="o">:</span> <span class="kt">Num</span> <span class="kt">I32</span> <span class="n">add_i32</span> <span class="n">sub_i32</span> <span class="n">mul_i32</span> <span class="n">div_i32</span> <span class="n">eq_i32</span> <span class="n">cmp_i32</span>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L504">source</a></p>
 <hr>
 <h2 id="num_i64">num_i64</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">num_i64</span><span class="o">:</span> <span class="kt">Num</span> <span class="kt">I64</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">num_i64</span><span class="o">:</span> <span class="kt">Num</span> <span class="kt">I64</span> <span class="n">add_i64</span> <span class="n">sub_i64</span> <span class="n">mul_i64</span> <span class="n">div_i64</span> <span class="n">eq_i64</span> <span class="n">cmp_i64</span>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L514">source</a></p>
 <hr>
 <h2 id="num_isz">num_isz</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">num_isz</span><span class="o">:</span> <span class="kt">Num</span> <span class="kt">Isz</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">num_isz</span><span class="o">:</span> <span class="kt">Num</span> <span class="kt">Isz</span> <span class="n">add_isz</span> <span class="n">sub_isz</span> <span class="n">mul_isz</span> <span class="n">div_isz</span> <span class="n">eq_isz</span> <span class="n">cmp_isz</span>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L524">source</a></p>
 <hr>
 <h2 id="num_u8">num_u8</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">num_u8</span><span class="o">:</span> <span class="kt">Num</span> <span class="kt">U8</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">num_u8</span><span class="o">:</span> <span class="kt">Num</span> <span class="kt">U8</span> <span class="n">add_u8</span> <span class="n">sub_u8</span> <span class="n">mul_u8</span> <span class="n">div_u8</span> <span class="n">eq_u8</span> <span class="n">cmp_u8</span>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L534">source</a></p>
 <hr>
 <h2 id="num_u16">num_u16</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">num_u16</span><span class="o">:</span> <span class="kt">Num</span> <span class="kt">U16</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">num_u16</span><span class="o">:</span> <span class="kt">Num</span> <span class="kt">U16</span> <span class="n">add_u16</span> <span class="n">sub_u16</span> <span class="n">mul_u16</span> <span class="n">div_u16</span> <span class="n">eq_u16</span> <span class="n">cmp_u16</span>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L544">source</a></p>
 <hr>
 <h2 id="num_u32">num_u32</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">num_u32</span><span class="o">:</span> <span class="kt">Num</span> <span class="kt">U32</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">num_u32</span><span class="o">:</span> <span class="kt">Num</span> <span class="kt">U32</span> <span class="n">add_u32</span> <span class="n">sub_u32</span> <span class="n">mul_u32</span> <span class="n">div_u32</span> <span class="n">eq_u32</span> <span class="n">cmp_u32</span>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L554">source</a></p>
 <hr>
 <h2 id="num_u64">num_u64</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">num_u64</span><span class="o">:</span> <span class="kt">Num</span> <span class="kt">U64</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">num_u64</span><span class="o">:</span> <span class="kt">Num</span> <span class="kt">U64</span> <span class="n">add_u64</span> <span class="n">sub_u64</span> <span class="n">mul_u64</span> <span class="n">div_u64</span> <span class="n">eq_u64</span> <span class="n">cmp_u64</span>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L564">source</a></p>
 <hr>
 <h2 id="num_usz">num_usz</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">num_usz</span><span class="o">:</span> <span class="kt">Num</span> <span class="kt">Usz</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">num_usz</span><span class="o">:</span> <span class="kt">Num</span> <span class="kt">Usz</span> <span class="n">add_usz</span> <span class="n">sub_usz</span> <span class="n">mul_usz</span> <span class="n">div_usz</span> <span class="n">eq_usz</span> <span class="n">cmp_usz</span>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L574">source</a></p>
 <hr>
 <h2 id="num_f32">num_f32</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">num_f32</span><span class="o">:</span> <span class="kt">Num</span> <span class="kt">F32</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">num_f32</span><span class="o">:</span> <span class="kt">Num</span> <span class="kt">F32</span> <span class="n">add_f32</span> <span class="n">sub_f32</span> <span class="n">mul_f32</span> <span class="n">div_f32</span> <span class="n">eq_f32</span> <span class="n">cmp_f32</span>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L584">source</a></p>
 <hr>
 <h2 id="num_f64">num_f64</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">num_f64</span><span class="o">:</span> <span class="kt">Num</span> <span class="kt">F64</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">num_f64</span><span class="o">:</span> <span class="kt">Num</span> <span class="kt">F64</span> <span class="n">add_f64</span> <span class="n">sub_f64</span> <span class="n">mul_f64</span> <span class="n">div_f64</span> <span class="n">eq_f64</span> <span class="n">cmp_f64</span>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L594">source</a></p>
 <hr>
 <h2 id="try_cast_i64_u64">try_cast_i64_u64</h2>
@@ -11053,279 +11082,279 @@ optimized out of the program.</p>
 <hr>
 <h2 id="extract_ptr_usz">extract_ptr_usz</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">extract_ptr_usz</span><span class="o">:</span> <span class="kt">Extract</span> <span class="p">(</span><span class="kt">Ptr</span> <span class="n">t</span><span class="p">)</span> <span class="kt">Usz</span> <span class="n">t</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L641">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L642">source</a></p>
 <hr>
 <h2 id="extract_string">extract_string</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">extract_string</span><span class="o">:</span> <span class="kt">Extract</span> <span class="p">(</span><span class="k">ref</span> <span class="kt">String</span><span class="p">)</span> <span class="kt">Usz</span> <span class="kt">Char</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L644">source</a></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">extract_string</span><span class="o">:</span> <span class="kt">Extract</span> <span class="p">(</span><span class="k">ref</span> <span class="kt">String</span><span class="p">)</span> <span class="kt">Usz</span> <span class="kt">Char</span> <span class="kt">Panic</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L645">source</a></p>
 <hr>
 <h2 id="extract_array">extract_array</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">extract_array</span><span class="o">:</span> <span class="kt">Extract</span> <span class="p">(</span><span class="k">ref</span> <span class="kt">Array</span> <span class="n">n</span> <span class="n">t</span><span class="p">)</span> <span class="kt">Usz</span> <span class="p">(</span><span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="kt">Panic</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L675">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L679">source</a></p>
 <hr>
 <h2 id="extract_array_move">extract_array_move</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">extract_array_move</span><span class="o">:</span> <span class="kt">Extract</span> <span class="p">(</span><span class="kt">Array</span> <span class="n">n</span> <span class="n">t</span><span class="p">)</span> <span class="kt">Usz</span> <span class="n">t</span> <span class="kt">Panic</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L678">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L682">source</a></p>
 <hr>
 <h2 id="extract_array_mut">extract_array_mut</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">extract_array_mut</span><span class="o">:</span> <span class="kt">Extract</span> <span class="p">(</span><span class="k">mut</span> <span class="kt">Array</span> <span class="n">n</span> <span class="n">t</span><span class="p">)</span> <span class="kt">Usz</span> <span class="p">(</span><span class="k">mut</span> <span class="n">t</span><span class="p">)</span> <span class="kt">Panic</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L681">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L685">source</a></p>
 <hr>
 <h2 id="bitwise_i32">bitwise_i32</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">implicit</span> <span class="n">bitwise_i32</span><span class="o">:</span> <span class="kt">Bitwise</span> <span class="kt">I32</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L694">source</a></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">bitwise_i32</span><span class="o">:</span> <span class="kt">Bitwise</span> <span class="kt">I32</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L698">source</a></p>
 <hr>
 <h2 id="bitwise_u64">bitwise_u64</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">implicit</span> <span class="n">bitwise_u64</span><span class="o">:</span> <span class="kt">Bitwise</span> <span class="kt">U64</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L699">source</a></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">bitwise_u64</span><span class="o">:</span> <span class="kt">Bitwise</span> <span class="kt">U64</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L703">source</a></p>
 <hr>
 <h2 id="copy_i8">copy_i8</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">copy_i8</span><span class="o">:</span> <span class="kt">Copy</span> <span class="kt">I8</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L749">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L753">source</a></p>
 <hr>
 <h2 id="copy_i16">copy_i16</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">copy_i16</span><span class="o">:</span> <span class="kt">Copy</span> <span class="kt">I16</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L751">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L755">source</a></p>
 <hr>
 <h2 id="copy_i32">copy_i32</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">copy_i32</span><span class="o">:</span> <span class="kt">Copy</span> <span class="kt">I32</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L753">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L757">source</a></p>
 <hr>
 <h2 id="copy_i64">copy_i64</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">copy_i64</span><span class="o">:</span> <span class="kt">Copy</span> <span class="kt">I64</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L755">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L759">source</a></p>
 <hr>
 <h2 id="copy_isz">copy_isz</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">copy_isz</span><span class="o">:</span> <span class="kt">Copy</span> <span class="kt">Isz</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L757">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L761">source</a></p>
 <hr>
 <h2 id="copy_u8">copy_u8</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">copy_u8</span><span class="o">:</span> <span class="kt">Copy</span> <span class="kt">U8</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L759">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L763">source</a></p>
 <hr>
 <h2 id="copy_u16">copy_u16</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">copy_u16</span><span class="o">:</span> <span class="kt">Copy</span> <span class="kt">U16</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L761">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L765">source</a></p>
 <hr>
 <h2 id="copy_u32">copy_u32</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">copy_u32</span><span class="o">:</span> <span class="kt">Copy</span> <span class="kt">U32</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L763">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L767">source</a></p>
 <hr>
 <h2 id="copy_u64">copy_u64</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">copy_u64</span><span class="o">:</span> <span class="kt">Copy</span> <span class="kt">U64</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L765">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L769">source</a></p>
 <hr>
 <h2 id="copy_usz">copy_usz</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">copy_usz</span><span class="o">:</span> <span class="kt">Copy</span> <span class="kt">Usz</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L767">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L771">source</a></p>
 <hr>
 <h2 id="copy_f32">copy_f32</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">copy_f32</span><span class="o">:</span> <span class="kt">Copy</span> <span class="kt">F32</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L770">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L774">source</a></p>
 <hr>
 <h2 id="copy_f64">copy_f64</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">copy_f64</span><span class="o">:</span> <span class="kt">Copy</span> <span class="kt">F64</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L772">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L776">source</a></p>
 <hr>
 <h2 id="copy_unit">copy_unit</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">copy_unit</span><span class="o">:</span> <span class="kt">Copy</span> <span class="kt">Unit</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L775">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L779">source</a></p>
 <hr>
 <h2 id="copy_bool">copy_bool</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">copy_bool</span><span class="o">:</span> <span class="kt">Copy</span> <span class="kt">Bool</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L777">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L781">source</a></p>
 <hr>
 <h2 id="copy_char">copy_char</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">copy_char</span><span class="o">:</span> <span class="kt">Copy</span> <span class="kt">Char</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L779">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L783">source</a></p>
 <hr>
 <h2 id="copy_ptr">copy_ptr</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">copy_ptr</span><span class="o">:</span> <span class="kt">Copy</span> <span class="p">(</span><span class="kt">Ptr</span> <span class="n">t</span><span class="p">)</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L782">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L786">source</a></p>
 <hr>
 <h2 id="copy_ref">copy_ref</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">copy_ref</span><span class="o">:</span> <span class="kt">Copy</span> <span class="p">(</span><span class="k">ref</span> <span class="n">t</span><span class="p">)</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L784">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L788">source</a></p>
 <hr>
 <h2 id="copy_mut">copy_mut</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">copy_mut</span><span class="o">:</span> <span class="kt">Copy</span> <span class="p">(</span><span class="k">mut</span> <span class="n">t</span><span class="p">)</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L786">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L790">source</a></p>
 <hr>
 <h2 id="copy_imm">copy_imm</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">copy_imm</span><span class="o">:</span> <span class="kt">Copy</span> <span class="p">(</span><span class="k">imm</span> <span class="n">t</span><span class="p">)</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L788">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L792">source</a></p>
 <hr>
 <h2 id="copy_uniq">copy_uniq</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">copy_uniq</span><span class="o">:</span> <span class="kt">Copy</span> <span class="p">(</span><span class="k">uniq</span> <span class="n">t</span><span class="p">)</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L791">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L795">source</a></p>
 <hr>
 <h2 id="copy_pair">copy_pair</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">copy_pair</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Copy</span> <span class="n">a</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Copy</span> <span class="n">b</span><span class="p">}</span><span class="o">:</span> <span class="kt">Copy</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L794">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L798">source</a></p>
 <hr>
 <h2 id="copy_maybe">copy_maybe</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">copy_maybe</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Copy</span> <span class="n">a</span><span class="p">}</span><span class="o">:</span> <span class="kt">Copy</span> <span class="p">(</span><span class="kt">Maybe</span> <span class="n">a</span><span class="p">)</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L797">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L801">source</a></p>
 <hr>
 <h2 id="clone_string">clone_string</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">clone_string</span><span class="o">:</span> <span class="kt">Clone</span> <span class="kt">String</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L802">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L806">source</a></p>
 <hr>
 <h2 id="drop_i8">drop_i8</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">drop_i8</span><span class="o">:</span> <span class="kt">Drop</span> <span class="kt">I8</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L808">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L812">source</a></p>
 <hr>
 <h2 id="drop_i16">drop_i16</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">drop_i16</span><span class="o">:</span> <span class="kt">Drop</span> <span class="kt">I16</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L809">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L813">source</a></p>
 <hr>
 <h2 id="drop_i32">drop_i32</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">drop_i32</span><span class="o">:</span> <span class="kt">Drop</span> <span class="kt">I32</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L810">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L814">source</a></p>
 <hr>
 <h2 id="drop_i64">drop_i64</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">drop_i64</span><span class="o">:</span> <span class="kt">Drop</span> <span class="kt">I64</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L811">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L815">source</a></p>
 <hr>
 <h2 id="drop_isz">drop_isz</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">drop_isz</span><span class="o">:</span> <span class="kt">Drop</span> <span class="kt">Isz</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L812">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L816">source</a></p>
 <hr>
 <h2 id="drop_u8">drop_u8</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">drop_u8</span><span class="o">:</span> <span class="kt">Drop</span> <span class="kt">U8</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L813">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L817">source</a></p>
 <hr>
 <h2 id="drop_u16">drop_u16</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">drop_u16</span><span class="o">:</span> <span class="kt">Drop</span> <span class="kt">U16</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L814">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L818">source</a></p>
 <hr>
 <h2 id="drop_u32">drop_u32</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">drop_u32</span><span class="o">:</span> <span class="kt">Drop</span> <span class="kt">U32</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L815">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L819">source</a></p>
 <hr>
 <h2 id="drop_u64">drop_u64</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">drop_u64</span><span class="o">:</span> <span class="kt">Drop</span> <span class="kt">U64</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L816">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L820">source</a></p>
 <hr>
 <h2 id="drop_usz">drop_usz</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">drop_usz</span><span class="o">:</span> <span class="kt">Drop</span> <span class="kt">Usz</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L817">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L821">source</a></p>
 <hr>
 <h2 id="drop_f32">drop_f32</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">drop_f32</span><span class="o">:</span> <span class="kt">Drop</span> <span class="kt">F32</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L818">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L822">source</a></p>
 <hr>
 <h2 id="drop_f64">drop_f64</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">drop_f64</span><span class="o">:</span> <span class="kt">Drop</span> <span class="kt">F64</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L819">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L823">source</a></p>
 <hr>
 <h2 id="drop_unit">drop_unit</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">drop_unit</span><span class="o">:</span> <span class="kt">Drop</span> <span class="kt">Unit</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L820">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L824">source</a></p>
 <hr>
 <h2 id="drop_bool">drop_bool</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">drop_bool</span><span class="o">:</span> <span class="kt">Drop</span> <span class="kt">Bool</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L821">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L825">source</a></p>
 <hr>
 <h2 id="drop_char">drop_char</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">drop_char</span><span class="o">:</span> <span class="kt">Drop</span> <span class="kt">Char</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L822">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L826">source</a></p>
 <hr>
 <h2 id="drop_ptr">drop_ptr</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">drop_ptr</span><span class="o">:</span> <span class="kt">Drop</span> <span class="p">(</span><span class="kt">Ptr</span> <span class="n">t</span><span class="p">)</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L823">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L827">source</a></p>
 <hr>
 <h2 id="drop_string">drop_string</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">drop_string</span><span class="o">:</span> <span class="kt">Drop</span> <span class="kt">String</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L825">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L829">source</a></p>
 <hr>
 <h2 id="insert_ptr_usz">insert_ptr_usz</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">insert_ptr_usz</span><span class="o">:</span> <span class="kt">Insert</span> <span class="p">(</span><span class="k">mut</span> <span class="kt">Ptr</span> <span class="n">t</span><span class="p">)</span> <span class="kt">Usz</span> <span class="n">t</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L845">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L849">source</a></p>
 <hr>
 <h2 id="insert_array">insert_array</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">insert_array</span><span class="o">:</span> <span class="kt">Insert</span> <span class="p">(</span><span class="k">mut</span> <span class="kt">Array</span> <span class="n">n</span> <span class="n">t</span><span class="p">)</span> <span class="kt">Usz</span> <span class="n">t</span> <span class="kt">Panic</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L848">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L852">source</a></p>
 <hr>
 <h2 id="print_u8">print_u8</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">print_u8</span><span class="o">:</span> <span class="kt">Display</span> <span class="kt">U8</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L898">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L901">source</a></p>
 <hr>
 <h2 id="print_u16">print_u16</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">print_u16</span><span class="o">:</span> <span class="kt">Display</span> <span class="kt">U16</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L900">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L903">source</a></p>
 <hr>
 <h2 id="print_u32">print_u32</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">print_u32</span><span class="o">:</span> <span class="kt">Display</span> <span class="kt">U32</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L902">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L905">source</a></p>
 <hr>
 <h2 id="print_u64">print_u64</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">print_u64</span><span class="o">:</span> <span class="kt">Display</span> <span class="kt">U64</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L904">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L907">source</a></p>
 <hr>
 <h2 id="print_usz">print_usz</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">print_usz</span><span class="o">:</span> <span class="kt">Display</span> <span class="kt">Usz</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L906">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L909">source</a></p>
 <hr>
 <h2 id="print_i8">print_i8</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">print_i8</span><span class="o">:</span> <span class="kt">Display</span> <span class="kt">I8</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L909">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L912">source</a></p>
 <hr>
 <h2 id="print_i16">print_i16</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">print_i16</span><span class="o">:</span> <span class="kt">Display</span> <span class="kt">I16</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L912">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L915">source</a></p>
 <hr>
 <h2 id="print_i32">print_i32</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">print_i32</span><span class="o">:</span> <span class="kt">Display</span> <span class="kt">I32</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L915">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L918">source</a></p>
 <hr>
 <h2 id="print_i64">print_i64</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">print_i64</span><span class="o">:</span> <span class="kt">Display</span> <span class="kt">I64</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L918">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L921">source</a></p>
 <hr>
 <h2 id="print_isz">print_isz</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">print_isz</span><span class="o">:</span> <span class="kt">Display</span> <span class="kt">Isz</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L922">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L925">source</a></p>
 <hr>
 <h2 id="print_char">print_char</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">print_char</span><span class="o">:</span> <span class="kt">Display</span> <span class="kt">Char</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L925">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L928">source</a></p>
 <hr>
 <h2 id="print_f64">print_f64</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">print_f64</span><span class="o">:</span> <span class="kt">Display</span> <span class="kt">F64</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L928">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L931">source</a></p>
 <hr>
 <h2 id="print_f32">print_f32</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">print_f32</span><span class="o">:</span> <span class="kt">Display</span> <span class="kt">F32</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L930">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L933">source</a></p>
 <hr>
 <h2 id="print_pair">print_pair</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">print_pair</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Display</span> <span class="n">a</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Display</span> <span class="n">b</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Display</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L946">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L949">source</a></p>
 <hr>
 <h2 id="print_string">print_string</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">print_string</span><span class="o">:</span> <span class="kt">Display</span> <span class="kt">String</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L953">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L956">source</a></p>
 <hr>
 <h2 id="print_maybe">print_maybe</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">print_maybe</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Display</span> <span class="n">a</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Display</span> <span class="p">(</span><span class="kt">Maybe</span> <span class="n">a</span><span class="p">)</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L956">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L959">source</a></p>
 <hr>
 <h2 id="print_bool">print_bool</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">print_bool</span><span class="o">:</span> <span class="kt">Display</span> <span class="kt">Bool</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L983">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L986">source</a></p>
 <hr>
 <h2 id="print_array">print_array</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">print_array</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Display</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Display</span> <span class="p">(</span><span class="kt">Array</span> <span class="n">n</span> <span class="n">t</span><span class="p">)</span> <span class="kt">Panic</span> <span class="o">&amp;</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L988">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L991">source</a></p>
 <hr>
 <h2 id="print_ref">print_ref</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">print_ref</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Display</span> <span class="n">a</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Display</span> <span class="p">(</span><span class="k">ref</span> <span class="n">a</span><span class="p">)</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L998">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1001">source</a></p>
 <hr>
 <h2 id="iterator_range">iterator_range</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">iterator_range</span><span class="o">:</span> <span class="kt">Iterator</span> <span class="p">(</span><span class="kt">Range</span> <span class="kt">Usz</span><span class="p">)</span> <span class="kt">Usz</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1013">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Prelude.an#L1016">source</a></p>
 </details>
 
                         </div>

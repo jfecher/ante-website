@@ -937,7 +937,7 @@ does not require a <code>Copy</code> constraint</p>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Seq.an#L206">source</a></p>
 <hr>
 <h2 id="clone_seq">clone_seq</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">implicit</span> <span class="n">clone_seq</span><span class="o">:</span> <span class="kt">Clone</span> <span class="p">(</span><span class="kt">Seq</span> <span class="n">t</span><span class="p">)</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">clone_seq</span><span class="o">:</span> <span class="kt">Clone</span> <span class="p">(</span><span class="kt">Seq</span> <span class="n">t</span><span class="p">)</span>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Seq.an#L216">source</a></p>
 <hr>
 <h2 id="drop_seq">drop_seq</h2>
@@ -945,7 +945,7 @@ does not require a <code>Copy</code> constraint</p>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Seq.an#L224">source</a></p>
 <hr>
 <h2 id="stream_seq">stream_seq</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">implicit</span> <span class="n">stream_seq</span><span class="o">:</span> <span class="kt">Stream</span> <span class="p">(</span><span class="kt">Seq</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="k">ref</span> <span class="n">a</span><span class="p">)</span> <span class="n">pure</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">stream_seq</span><span class="o">:</span> <span class="kt">Stream</span> <span class="p">(</span><span class="kt">Seq</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="k">ref</span> <span class="n">a</span><span class="p">)</span> <span class="n">pure</span>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Seq.an#L275">source</a></p>
 </details>
 

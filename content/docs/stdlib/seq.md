@@ -209,7 +209,7 @@ impl print_seq {p: Display t e} {_: Copy t}: Display (Seq t) e
 ## clone_seq
 
 ```ante
-implicit clone_seq: Clone (Seq t)
+impl clone_seq: Clone (Seq t)
 ```
 
 [source](https://github.com/jfecher/ante/blob/master/stdlib/src/Seq.an#L216)
@@ -229,7 +229,7 @@ impl drop_seq {_: Drop t e}: Drop (Seq t) e
 ## stream_seq
 
 ```ante
-implicit stream_seq: Stream (Seq a) (ref a) pure
+impl stream_seq: Stream (Seq a) (ref a) pure
 ```
 
 [source](https://github.com/jfecher/ante/blob/master/stdlib/src/Seq.an#L275)

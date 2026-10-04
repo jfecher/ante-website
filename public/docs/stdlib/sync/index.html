@@ -1181,7 +1181,7 @@ Returns the previous value.</p>
 <hr>
 <h2 id="mutex">Mutex</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Mutex</span> <span class="n">t</span> <span class="ow">=</span>
-    <span class="k">handle</span><span class="o">:</span> <span class="kt">VoidPtr</span>
+    <span class="n">raw</span><span class="o">:</span> <span class="kt">VoidPtr</span>
     <span class="n">value</span><span class="o">:</span> <span class="n">t</span>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Sync.an#L76">source</a></p>
 <hr>
@@ -1217,7 +1217,7 @@ TODO: Add MutexGuard and require that instead of a Mutex</p>
 <hr>
 <h2 id="thread">Thread</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Thread</span> <span class="n">a</span> <span class="ow">=</span>
-    <span class="k">handle</span><span class="o">:</span> <span class="kt">VoidPtr</span>
+    <span class="n">raw</span><span class="o">:</span> <span class="kt">VoidPtr</span>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Sync.an#L142">source</a></p>
 <hr>
 <h3 id="threadspawn">Thread.spawn</h3>
@@ -1228,22 +1228,22 @@ TODO: Add MutexGuard and require that instead of a Mutex</p>
 <h3 id="threadjoin">Thread.join</h3>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Thread</span><span class="o">.</span><span class="n">join</span> <span class="p">(</span><span class="n">t</span><span class="o">:</span> <span class="kt">Thread</span> <span class="n">a</span><span class="p">)</span><span class="o">:</span> <span class="n">a</span>
 </code></pre></div><p>Block until the thread finishes and return its result.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Sync.an#L164">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Sync.an#L167">source</a></p>
 <hr>
 <h3 id="threaddetach">Thread.detach</h3>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Thread</span><span class="o">.</span><span class="n">detach</span> <span class="p">(</span><span class="n">t</span><span class="o">:</span> <span class="kt">Thread</span> <span class="n">a</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span>
 </code></pre></div><p>Detach the thread so its resources are reclaimed automatically on exit.
 The result value is leaked; use <code>join</code> if you need it.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Sync.an#L177">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Sync.an#L180">source</a></p>
 <hr>
 <h2 id="arc">Arc</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Arc</span> <span class="n">t</span> <span class="ow">=</span>
     <span class="n">ptr</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="p">(</span><span class="kt">ArcInner</span> <span class="n">t</span><span class="p">)</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Sync.an#L189">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Sync.an#L192">source</a></p>
 <hr>
 <h3 id="arcas_ref">Arc.as_ref</h3>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Arc</span><span class="o">.</span><span class="n">as_ref</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="k">imm</span> <span class="kt">Arc</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">imm</span> <span class="n">t</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Sync.an#L197">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Sync.an#L200">source</a></p>
 <hr>
 <h1 id="implicits">Implicits</h1>
 <hr>
@@ -1255,11 +1255,11 @@ The result value is leaked; use <code>join</code> if you need it.</p>
 <hr>
 <h2 id="clone_arc">clone_arc</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">clone_arc</span><span class="o">:</span> <span class="kt">Clone</span> <span class="p">(</span><span class="kt">Arc</span> <span class="n">t</span><span class="p">)</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Sync.an#L202">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Sync.an#L205">source</a></p>
 <hr>
 <h2 id="drop_arc">drop_arc</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">drop_arc</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Drop</span> <span class="p">(</span><span class="kt">Arc</span> <span class="n">t</span><span class="p">)</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Sync.an#L208">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Sync.an#L211">source</a></p>
 </details>
 
                         </div>

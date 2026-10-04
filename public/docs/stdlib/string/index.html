@@ -1544,19 +1544,19 @@ in combination with <code>intersperse</code>, e.g. <code>join &lt;| intersperse 
 <h2 id="from_c_string">from_c_string</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">from_c_string</span> <span class="p">(</span><span class="n">cstr</span><span class="o">:</span> <span class="kt">C</span><span class="o">.</span><span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">String</span>
 </code></pre></div><p>Copy a null-terminated C string into a new string.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L273">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L272">source</a></p>
 <hr>
 <h2 id="to_ascii_lowercase">to_ascii_lowercase</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">to_ascii_lowercase</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">String</span>
 </code></pre></div><p>Returns the given string with each ASCII letter converted to lowercase.
 The original string is never mutated.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L282">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L281">source</a></p>
 <hr>
 <h2 id="to_ascii_uppercase">to_ascii_uppercase</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">to_ascii_uppercase</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">String</span>
 </code></pre></div><p>Returns the given string with each ASCII letter converted to uppercase.
 The original string is never mutated.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L292">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L291">source</a></p>
 <hr>
 <h1 id="implicits">Implicits</h1>
 <hr>
@@ -1568,43 +1568,43 @@ The original string is never mutated.</p>
 <hr>
 <h2 id="try_cast_string_i8">try_cast_string_i8</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">try_cast_string_i8</span><span class="o">:</span> <span class="kt">TryCast</span> <span class="kt">String</span> <span class="kt">I8</span> <span class="kt">Fs</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L242">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L241">source</a></p>
 <hr>
 <h2 id="try_cast_string_i16">try_cast_string_i16</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">try_cast_string_i16</span><span class="o">:</span> <span class="kt">TryCast</span> <span class="kt">String</span> <span class="kt">I16</span> <span class="kt">Fs</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L245">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L244">source</a></p>
 <hr>
 <h2 id="try_cast_string_i32">try_cast_string_i32</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">try_cast_string_i32</span><span class="o">:</span> <span class="kt">TryCast</span> <span class="kt">String</span> <span class="kt">I32</span> <span class="kt">Fs</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L248">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L247">source</a></p>
 <hr>
 <h2 id="try_cast_string_i64">try_cast_string_i64</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">try_cast_string_i64</span><span class="o">:</span> <span class="kt">TryCast</span> <span class="kt">String</span> <span class="kt">I64</span> <span class="kt">Fs</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L251">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L250">source</a></p>
 <hr>
 <h2 id="try_cast_string_isz">try_cast_string_isz</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">try_cast_string_isz</span><span class="o">:</span> <span class="kt">TryCast</span> <span class="kt">String</span> <span class="kt">Isz</span> <span class="kt">Fs</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L254">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L253">source</a></p>
 <hr>
 <h2 id="try_cast_string_u8">try_cast_string_u8</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">try_cast_string_u8</span><span class="o">:</span> <span class="kt">TryCast</span> <span class="kt">String</span> <span class="kt">U8</span> <span class="kt">Fs</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L257">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L256">source</a></p>
 <hr>
 <h2 id="try_cast_string_u16">try_cast_string_u16</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">try_cast_string_u16</span><span class="o">:</span> <span class="kt">TryCast</span> <span class="kt">String</span> <span class="kt">U16</span> <span class="kt">Fs</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L260">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L259">source</a></p>
 <hr>
 <h2 id="try_cast_string_u32">try_cast_string_u32</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">try_cast_string_u32</span><span class="o">:</span> <span class="kt">TryCast</span> <span class="kt">String</span> <span class="kt">U32</span> <span class="kt">Fs</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L263">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L262">source</a></p>
 <hr>
 <h2 id="try_cast_string_u64">try_cast_string_u64</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">try_cast_string_u64</span><span class="o">:</span> <span class="kt">TryCast</span> <span class="kt">String</span> <span class="kt">U64</span> <span class="kt">Fs</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L266">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L265">source</a></p>
 <hr>
 <h2 id="try_cast_string_usz">try_cast_string_usz</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">try_cast_string_usz</span><span class="o">:</span> <span class="kt">TryCast</span> <span class="kt">String</span> <span class="kt">Usz</span> <span class="kt">Fs</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L269">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L268">source</a></p>
 </details>
 
                         </div>
