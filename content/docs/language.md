@@ -1105,10 +1105,35 @@ newlines if the type spans multiple lines:
 ```ante
 type Person = name: String, age: U8
 
+// `a` is a generic type parameter which can stand in for any type later. For example,
+// `Vec I32` would be a vector of integers while `Vec String` would be a vector of strings.
 type Vec a =
-    data: Ptr [a]
+    data: Ptr a
     len: Usz
     capacity: Usz
+```
+
+### Optional Type Parameters
+
+Type parameters can be made optional via a trailing `?`. Optional type parameters must be at
+the end of a type's parameter list and are defaulted to a fresh type variable when unspecified.
+These are commonly used in [trait types](#traits).
+
+```ante
+/// We want to write a `Thunk` type alias for closure types but don't want
+/// users to have to specify the closure environment type. Like normal closure
+/// types, the optional `env?` here allows users to leave it implicit most of the
+/// time but still specify it when needed.
+type Thunk t env? =
+    fn Unit [env] -> t
+
+run_thunk (thunk: Thunk I32): I32 =
+    thunk ()
+
+/// All optional parameters must be explicit in type definitions
+type TwoThunks env1? env2? =
+    thunk1: Thunk String env1
+    thunk2: Thunk U32 env2
 ```
 
 ### Tagged Unions
@@ -2068,17 +2093,17 @@ Each trait is just a type definition internally with:
 - Each function in the trait translating to a field of type function.
 - An accessor function defined for retrieving the field from an implicit value of that trait.
 - Any captured data in closures is stored after each function in the trait struct, effectively
-  making it a vtable. This makes trait objects dynamically sized. Captured data often occurs
-  when building trait implementations from other implementations, e.g. `eq_vec {eq_t: Eq t}: Eq (Vec t) = ...`
-  will need to reference `eq_t` when building the resulting impl for Vecs.
-- Overhead from passing around trait values may be optimized out by the compiler but is not currently guaranteed.
+  making it a vtable. This captured data is shown in the trait type as an optional parameter which
+  can be used to match each trait to a particular impl. `HashMap k v h` uses this for example to
+  match multiple maps to the same `Hash k h` impl.
 
 If we were to desugar the `Stringify` trait above, we'd get the following:
 
 ```ante
-type Stringify t env =
-    stringify: fn t -> String
-    // ... additional dynamic data depending on the impl ...
+type Stringify t env? =
+    // The closure environment for stringify is the trait value itself
+    stringify: fn t [ref Stringify t env] -> String
+    impl_data: env
 
 // This lets us call `stringify my_obj` and the constructor will look for 
 // an implicit `Stringify t` in scope to find how to stringify `t`.
@@ -2088,12 +2113,42 @@ stringify {s: Stringify t} x = s.stringify x
 Since traits are just structs internally, we can construct them like any other struct:
 
 ```ante
-stringify_bool =
-    Stringify fn b -> if b then "true" else "false"
+implicit stringify_bool: Stringify Bool = Stringify with
+    stringify b _ = if b then "true" else "false"
+    impl_data = ()
 
-// or
-stringify_bool = Stringify with
+implicit stringify_maybe {elem: Stringify t}: Stringify (Maybe t) = Stringify with
+    stringify m env = if m is Some x then env.impl_data.stringify x env.impl_data else "None"
+    impl_data = elem
+```
+
+But manually managing the `impl_data` environment field is laborious so Ante provides `impl` sugar
+for defining an implicit trait value where each function's captures are automatically collected
+into the `impl_data` field:
+
+```ante
+impl stringify_bool: Stringify Bool with
     stringify b = if b then "true" else "false"
+
+impl stringify_maybe {Stringify t}: Stringify (Maybe t) with
+    stringify m = if m is Some x then stringify x else "None"
+```
+
+Additionally, each `impl` defines its own unique struct type for these closure captures. This
+struct type has the same name as the impl value and can be used to ensure a selected impl remains
+consistent within some context. Since Ante's traits have no global [coherence](#coherence), this
+is useful for some data structures like `HashMap` which need to ensure the trait implementation
+they use is consistent:
+
+
+```ante
+type HashMap k v h = ...
+
+/// Find a particular hash impl `h` on construction
+HashMap.empty {Hash k h}: HashMap k v h = ...
+
+/// ... and ensure it is consistent through each subsequent get/insert/eq with other maps, etc.
+HashMap.get (map: mut HashMap k v h) (key: ref k) {Hash k h}: ref v can Fail = ...
 ```
 
 Traits are often passed as implicit parameters into function calls
@@ -2103,7 +2158,7 @@ or already in scope via an implicit parameter.
 
 ```ante
 // Allow `stringify_bool` to be used implicitly in this module
-implicit stringify_bool = Stringify with
+impl stringify_bool: Stringify Bool with
     stringify b = if b then "true" else "false"
 
 // Or, in another module:
@@ -2184,7 +2239,7 @@ When an [implicit parameter](#implicits) is ambiguous, you can just specify it e
 ```ante
 import implicit Foo.Bar.stringify_bool
 
-implicit conflicting_impl =
+implicit conflicting_impl: Stringify t =
     Stringify fn _ -> ""
 
 print_to_string true {stringify_bool}

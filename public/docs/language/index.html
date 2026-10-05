@@ -996,6 +996,35 @@
                 
                 
                 
+                <a href="/docs/language/#optional-type-parameters">
+                    <li>Optional Type Parameters</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                    <ul class="toc-h3">
+                
+                
+                
+                
                 <a href="/docs/language/#tagged-unions">
                     <li>Tagged Unions</li>
                 </a>
@@ -3328,10 +3357,30 @@ list of type variables the type is generic over.</p>
 newlines if the type spans multiple lines:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Person</span> <span class="ow">=</span> <span class="n">name</span><span class="o">:</span> <span class="kt">String</span><span class="p">,</span> <span class="n">age</span><span class="o">:</span> <span class="kt">U8</span>
 
+<span class="c1">// `a` is a generic type parameter which can stand in for any type later. For example,</span>
+<span class="c1">// `Vec I32` would be a vector of integers while `Vec String` would be a vector of strings.</span>
 <span class="k">type</span> <span class="kt">Vec</span> <span class="n">a</span> <span class="ow">=</span>
-    <span class="n">data</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span>
+    <span class="n">data</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="n">a</span>
     <span class="n">len</span><span class="o">:</span> <span class="kt">Usz</span>
     <span class="n">capacity</span><span class="o">:</span> <span class="kt">Usz</span>
+</code></pre></div><h3 id="optional-type-parameters">Optional Type Parameters</h3>
+<p>Type parameters can be made optional via a trailing <code>?</code>. Optional type parameters must be at
+the end of a type&rsquo;s parameter list and are defaulted to a fresh type variable when unspecified.
+These are commonly used in <a href="#traits">trait types</a>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">/// We want to write a `Thunk` type alias for closure types but don&#39;t want</span>
+<span class="c1">/// users to have to specify the closure environment type. Like normal closure</span>
+<span class="c1">/// types, the optional `env?` here allows users to leave it implicit most of the</span>
+<span class="c1">/// time but still specify it when needed.</span>
+<span class="k">type</span> <span class="kt">Thunk</span> <span class="n">t</span> <span class="n">env</span><span class="o">?</span> <span class="ow">=</span>
+    <span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[</span><span class="n">env</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="n">t</span>
+
+<span class="nf">run_thunk</span> <span class="p">(</span><span class="n">thunk</span><span class="o">:</span> <span class="kt">Thunk</span> <span class="kt">I32</span><span class="p">)</span><span class="o">:</span> <span class="kt">I32</span> <span class="ow">=</span>
+    <span class="n">thunk</span> <span class="p">()</span>
+
+<span class="c1">/// All optional parameters must be explicit in type definitions</span>
+<span class="k">type</span> <span class="kt">TwoThunks</span> <span class="n">env1</span><span class="o">?</span> <span class="n">env2</span><span class="o">?</span> <span class="ow">=</span>
+    <span class="n">thunk1</span><span class="o">:</span> <span class="kt">Thunk</span> <span class="kt">String</span> <span class="n">env1</span>
+    <span class="n">thunk2</span><span class="o">:</span> <span class="kt">Thunk</span> <span class="kt">U32</span> <span class="n">env2</span>
 </code></pre></div><h3 id="tagged-unions">Tagged Unions</h3>
 <p>Tagged unions can be defined with <code>|</code>s separating each variant.
 The <code>|</code> before the first variant is mandatory. Ante currently has
@@ -4022,32 +4071,53 @@ can be converted to strings:</p>
 <li>Each function in the trait translating to a field of type function.</li>
 <li>An accessor function defined for retrieving the field from an implicit value of that trait.</li>
 <li>Any captured data in closures is stored after each function in the trait struct, effectively
-making it a vtable. This makes trait objects dynamically sized. Captured data often occurs
-when building trait implementations from other implementations, e.g. <code>eq_vec {eq_t: Eq t}: Eq (Vec t) = ...</code>
-will need to reference <code>eq_t</code> when building the resulting impl for Vecs.</li>
-<li>Overhead from passing around trait values may be optimized out by the compiler but is not currently guaranteed.</li>
+making it a vtable. This captured data is shown in the trait type as an optional parameter which
+can be used to match each trait to a particular impl. <code>HashMap k v h</code> uses this for example to
+match multiple maps to the same <code>Hash k h</code> impl.</li>
 </ul>
 <p>If we were to desugar the <code>Stringify</code> trait above, we&rsquo;d get the following:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Stringify</span> <span class="n">t</span> <span class="n">env</span> <span class="ow">=</span>
-    <span class="n">stringify</span><span class="o">:</span> <span class="k">fn</span> <span class="n">t</span> <span class="ow">-&gt;</span> <span class="kt">String</span>
-    <span class="c1">// ... additional dynamic data depending on the impl ...</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Stringify</span> <span class="n">t</span> <span class="n">env</span><span class="o">?</span> <span class="ow">=</span>
+    <span class="c1">// The closure environment for stringify is the trait value itself</span>
+    <span class="n">stringify</span><span class="o">:</span> <span class="k">fn</span> <span class="n">t</span> <span class="p">[</span><span class="k">ref</span> <span class="kt">Stringify</span> <span class="n">t</span> <span class="n">env</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="kt">String</span>
+    <span class="n">impl_data</span><span class="o">:</span> <span class="n">env</span>
 
 <span class="c1">// This lets us call `stringify my_obj` and the constructor will look for </span>
 <span class="c1">// an implicit `Stringify t` in scope to find how to stringify `t`.</span>
 <span class="nf">stringify</span> <span class="p">{</span><span class="n">s</span><span class="o">:</span> <span class="kt">Stringify</span> <span class="n">t</span><span class="p">}</span> <span class="n">x</span> <span class="ow">=</span> <span class="n">s</span><span class="o">.</span><span class="n">stringify</span> <span class="n">x</span>
 </code></pre></div><p>Since traits are just structs internally, we can construct them like any other struct:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">stringify_bool</span> <span class="ow">=</span>
-    <span class="kt">Stringify</span> <span class="k">fn</span> <span class="n">b</span> <span class="ow">-&gt;</span> <span class="k">if</span> <span class="n">b</span> <span class="k">then</span> <span class="s">&#34;true&#34;</span> <span class="k">else</span> <span class="s">&#34;false&#34;</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">implicit</span> <span class="n">stringify_bool</span><span class="o">:</span> <span class="kt">Stringify</span> <span class="kt">Bool</span> <span class="ow">=</span> <span class="kt">Stringify</span> <span class="k">with</span>
+    <span class="n">stringify</span> <span class="n">b</span> <span class="n">_</span> <span class="ow">=</span> <span class="k">if</span> <span class="n">b</span> <span class="k">then</span> <span class="s">&#34;true&#34;</span> <span class="k">else</span> <span class="s">&#34;false&#34;</span>
+    <span class="n">impl_data</span> <span class="ow">=</span> <span class="p">()</span>
 
-<span class="c1">// or</span>
-<span class="nf">stringify_bool</span> <span class="ow">=</span> <span class="kt">Stringify</span> <span class="k">with</span>
+<span class="k">implicit</span> <span class="n">stringify_maybe</span> <span class="p">{</span><span class="n">elem</span><span class="o">:</span> <span class="kt">Stringify</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="kt">Stringify</span> <span class="p">(</span><span class="kt">Maybe</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span> <span class="kt">Stringify</span> <span class="k">with</span>
+    <span class="n">stringify</span> <span class="n">m</span> <span class="n">env</span> <span class="ow">=</span> <span class="k">if</span> <span class="n">m</span> <span class="k">is</span> <span class="kt">Some</span> <span class="n">x</span> <span class="k">then</span> <span class="n">env</span><span class="o">.</span><span class="n">impl_data</span><span class="o">.</span><span class="n">stringify</span> <span class="n">x</span> <span class="n">env</span><span class="o">.</span><span class="n">impl_data</span> <span class="k">else</span> <span class="s">&#34;None&#34;</span>
+    <span class="n">impl_data</span> <span class="ow">=</span> <span class="n">elem</span>
+</code></pre></div><p>But manually managing the <code>impl_data</code> environment field is laborious so Ante provides <code>impl</code> sugar
+for defining an implicit trait value where each function&rsquo;s captures are automatically collected
+into the <code>impl_data</code> field:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">stringify_bool</span><span class="o">:</span> <span class="kt">Stringify</span> <span class="kt">Bool</span> <span class="k">with</span>
     <span class="n">stringify</span> <span class="n">b</span> <span class="ow">=</span> <span class="k">if</span> <span class="n">b</span> <span class="k">then</span> <span class="s">&#34;true&#34;</span> <span class="k">else</span> <span class="s">&#34;false&#34;</span>
+
+<span class="k">impl</span> <span class="n">stringify_maybe</span> <span class="p">{</span><span class="kt">Stringify</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="kt">Stringify</span> <span class="p">(</span><span class="kt">Maybe</span> <span class="n">t</span><span class="p">)</span> <span class="k">with</span>
+    <span class="n">stringify</span> <span class="n">m</span> <span class="ow">=</span> <span class="k">if</span> <span class="n">m</span> <span class="k">is</span> <span class="kt">Some</span> <span class="n">x</span> <span class="k">then</span> <span class="n">stringify</span> <span class="n">x</span> <span class="k">else</span> <span class="s">&#34;None&#34;</span>
+</code></pre></div><p>Additionally, each <code>impl</code> defines its own unique struct type for these closure captures. This
+struct type has the same name as the impl value and can be used to ensure a selected impl remains
+consistent within some context. Since Ante&rsquo;s traits have no global <a href="#coherence">coherence</a>, this
+is useful for some data structures like <code>HashMap</code> which need to ensure the trait implementation
+they use is consistent:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span> <span class="n">h</span> <span class="ow">=</span> <span class="o">...</span>
+
+<span class="c1">/// Find a particular hash impl `h` on construction</span>
+<span class="kt">HashMap</span><span class="o">.</span><span class="n">empty</span> <span class="p">{</span><span class="kt">Hash</span> <span class="n">k</span> <span class="n">h</span><span class="p">}</span><span class="o">:</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span> <span class="n">h</span> <span class="ow">=</span> <span class="o">...</span>
+
+<span class="c1">/// ... and ensure it is consistent through each subsequent get/insert/eq with other maps, etc.</span>
+<span class="kt">HashMap</span><span class="o">.</span><span class="n">get</span> <span class="p">(</span><span class="n">map</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span> <span class="n">h</span><span class="p">)</span> <span class="p">(</span><span class="n">key</span><span class="o">:</span> <span class="k">ref</span> <span class="n">k</span><span class="p">)</span> <span class="p">{</span><span class="kt">Hash</span> <span class="n">k</span> <span class="n">h</span><span class="p">}</span><span class="o">:</span> <span class="k">ref</span> <span class="n">v</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><p>Traits are often passed as implicit parameters into function calls
 (see <code>stringify_print</code> above). Since implicit resolution only looks for implicit values in scope,
 we need to ensure any trait values we use are either marked <code>implicit</code>, imported via <code>import implicit</code>,
 or already in scope via an implicit parameter.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Allow `stringify_bool` to be used implicitly in this module</span>
-<span class="k">implicit</span> <span class="n">stringify_bool</span> <span class="ow">=</span> <span class="kt">Stringify</span> <span class="k">with</span>
+<span class="k">impl</span> <span class="n">stringify_bool</span><span class="o">:</span> <span class="kt">Stringify</span> <span class="kt">Bool</span> <span class="k">with</span>
     <span class="n">stringify</span> <span class="n">b</span> <span class="ow">=</span> <span class="k">if</span> <span class="n">b</span> <span class="k">then</span> <span class="s">&#34;true&#34;</span> <span class="k">else</span> <span class="s">&#34;false&#34;</span>
 
 <span class="c1">// Or, in another module:</span>
@@ -4103,7 +4173,7 @@ by name.</p>
 </code></pre></div><p>When an <a href="#implicits">implicit parameter</a> is ambiguous, you can just specify it explicitly:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="k">implicit</span> <span class="kt">Foo</span><span class="o">.</span><span class="kt">Bar</span><span class="o">.</span><span class="n">stringify_bool</span>
 
-<span class="k">implicit</span> <span class="n">conflicting_impl</span> <span class="ow">=</span>
+<span class="k">implicit</span> <span class="n">conflicting_impl</span><span class="o">:</span> <span class="kt">Stringify</span> <span class="n">t</span> <span class="ow">=</span>
     <span class="kt">Stringify</span> <span class="k">fn</span> <span class="n">_</span> <span class="ow">-&gt;</span> <span class="s">&#34;&#34;</span>
 
 <span class="nf">print_to_string</span> <span class="mi">true</span> <span class="p">{</span><span class="n">stringify_bool</span><span class="p">}</span>
