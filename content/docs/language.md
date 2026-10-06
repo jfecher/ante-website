@@ -1115,23 +1115,24 @@ type Vec a =
 
 ### Optional Type Parameters
 
-Type parameters can be made optional via a trailing `?`. Optional type parameters must be at
-the end of a type's parameter list and are defaulted to a fresh type variable when unspecified.
-These are commonly used in [trait types](#traits).
+Type parameters can be made optional by specifying a default value with `=`. Optional type parameters must be at
+the end of a type's parameter list and the default type given can reference any prior type parameter as well.
+If a value of `_` is given as the default, e.g. in `type Foo (t = _)`, then the type parameter will be defaulted
+to a fresh type parameter when otherwise unspecified. Optional type parameters are commonly used in [trait types](#traits).
 
 ```ante
 /// We want to write a `Thunk` type alias for closure types but don't want
 /// users to have to specify the closure environment type. Like normal closure
-/// types, the optional `env?` here allows users to leave it implicit most of the
+/// types, the optional `env` here allows users to leave it implicit most of the
 /// time but still specify it when needed.
-type Thunk t env? =
+type Thunk t (env = _) =
     fn Unit [env] -> t
 
 run_thunk (thunk: Thunk I32): I32 =
     thunk ()
 
 /// All optional parameters must be explicit in type definitions
-type TwoThunks env1? env2? =
+type TwoThunks (env1 = I32) (env2 = Vec env1) =
     thunk1: Thunk String env1
     thunk2: Thunk U32 env2
 ```
@@ -2100,7 +2101,7 @@ Each trait is just a type definition internally with:
 If we were to desugar the `Stringify` trait above, we'd get the following:
 
 ```ante
-type Stringify t env? =
+type Stringify t (env = _) =
     // The closure environment for stringify is the trait value itself
     stringify: fn t [ref Stringify t env] -> String
     impl_data: env

@@ -3364,21 +3364,22 @@ newlines if the type spans multiple lines:</p>
     <span class="n">len</span><span class="o">:</span> <span class="kt">Usz</span>
     <span class="n">capacity</span><span class="o">:</span> <span class="kt">Usz</span>
 </code></pre></div><h3 id="optional-type-parameters">Optional Type Parameters</h3>
-<p>Type parameters can be made optional via a trailing <code>?</code>. Optional type parameters must be at
-the end of a type&rsquo;s parameter list and are defaulted to a fresh type variable when unspecified.
-These are commonly used in <a href="#traits">trait types</a>.</p>
+<p>Type parameters can be made optional by specifying a default value with <code>=</code>. Optional type parameters must be at
+the end of a type&rsquo;s parameter list and the default type given can reference any prior type parameter as well.
+If a value of <code>_</code> is given as the default, e.g. in <code>type Foo (t = _)</code>, then the type parameter will be defaulted
+to a fresh type parameter when otherwise unspecified. Optional type parameters are commonly used in <a href="#traits">trait types</a>.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">/// We want to write a `Thunk` type alias for closure types but don&#39;t want</span>
 <span class="c1">/// users to have to specify the closure environment type. Like normal closure</span>
-<span class="c1">/// types, the optional `env?` here allows users to leave it implicit most of the</span>
+<span class="c1">/// types, the optional `env` here allows users to leave it implicit most of the</span>
 <span class="c1">/// time but still specify it when needed.</span>
-<span class="k">type</span> <span class="kt">Thunk</span> <span class="n">t</span> <span class="n">env</span><span class="o">?</span> <span class="ow">=</span>
+<span class="k">type</span> <span class="kt">Thunk</span> <span class="n">t</span> <span class="p">(</span><span class="n">env</span> <span class="ow">=</span> <span class="n">_</span><span class="p">)</span> <span class="ow">=</span>
     <span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[</span><span class="n">env</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="n">t</span>
 
 <span class="nf">run_thunk</span> <span class="p">(</span><span class="n">thunk</span><span class="o">:</span> <span class="kt">Thunk</span> <span class="kt">I32</span><span class="p">)</span><span class="o">:</span> <span class="kt">I32</span> <span class="ow">=</span>
     <span class="n">thunk</span> <span class="p">()</span>
 
 <span class="c1">/// All optional parameters must be explicit in type definitions</span>
-<span class="k">type</span> <span class="kt">TwoThunks</span> <span class="n">env1</span><span class="o">?</span> <span class="n">env2</span><span class="o">?</span> <span class="ow">=</span>
+<span class="k">type</span> <span class="kt">TwoThunks</span> <span class="p">(</span><span class="n">env1</span> <span class="ow">=</span> <span class="kt">I32</span><span class="p">)</span> <span class="p">(</span><span class="n">env2</span> <span class="ow">=</span> <span class="kt">Vec</span> <span class="n">env1</span><span class="p">)</span> <span class="ow">=</span>
     <span class="n">thunk1</span><span class="o">:</span> <span class="kt">Thunk</span> <span class="kt">String</span> <span class="n">env1</span>
     <span class="n">thunk2</span><span class="o">:</span> <span class="kt">Thunk</span> <span class="kt">U32</span> <span class="n">env2</span>
 </code></pre></div><h3 id="tagged-unions">Tagged Unions</h3>
@@ -4076,7 +4077,7 @@ can be used to match each trait to a particular impl. <code>HashMap k v h</code>
 match multiple maps to the same <code>Hash k h</code> impl.</li>
 </ul>
 <p>If we were to desugar the <code>Stringify</code> trait above, we&rsquo;d get the following:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Stringify</span> <span class="n">t</span> <span class="n">env</span><span class="o">?</span> <span class="ow">=</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Stringify</span> <span class="n">t</span> <span class="p">(</span><span class="n">env</span> <span class="ow">=</span> <span class="n">_</span><span class="p">)</span> <span class="ow">=</span>
     <span class="c1">// The closure environment for stringify is the trait value itself</span>
     <span class="n">stringify</span><span class="o">:</span> <span class="k">fn</span> <span class="n">t</span> <span class="p">[</span><span class="k">ref</span> <span class="kt">Stringify</span> <span class="n">t</span> <span class="n">env</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="kt">String</span>
     <span class="n">impl_data</span><span class="o">:</span> <span class="n">env</span>
