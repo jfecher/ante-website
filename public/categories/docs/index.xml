@@ -335,8 +335,7 @@ Near Future  Language Server: Better support for struct members and methods Inse
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://antelang.org/docs/stdlib/</guid>
-      <description>Reference documentation for the Std crate.
- Std.C- Std.Char- Std.EarlyReturn- Std.Env- Std.Fail- Std.Hash- Std.HashMap- Std.HashSet- Std.IO- Std.Math- Std.Prelude- Std.Rc- Std.Seq- Std.Slice- Std.Stream- Std.String- Std.Sync- Std.Throw- Std.Time- Std.Vec  </description>
+      <description>Reference documentation for the Std crate.</description>
     </item>
     
   </channel>

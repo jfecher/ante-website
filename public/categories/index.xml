@@ -6,7 +6,34 @@
     <description>Recent content in Categories on Ante</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 25 May 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://antelang.org/categories/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 08 Oct 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://antelang.org/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>memory management</title>
+      <link>https://antelang.org/categories/memory-management/</link>
+      <pubDate>Thu, 08 Oct 2026 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/categories/memory-management/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>mutability</title>
+      <link>https://antelang.org/categories/mutability/</link>
+      <pubDate>Thu, 08 Oct 2026 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/categories/mutability/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>thread safety</title>
+      <link>https://antelang.org/categories/thread-safety/</link>
+      <pubDate>Thu, 08 Oct 2026 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/categories/thread-safety/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>docs</title>
       <link>https://antelang.org/categories/docs/</link>
@@ -22,33 +49,6 @@
       <pubDate>Fri, 24 Oct 2025 00:00:00 +0000</pubDate>
       
       <guid>https://antelang.org/categories/ideals/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>memory management</title>
-      <link>https://antelang.org/categories/memory-management/</link>
-      <pubDate>Thu, 21 Aug 2025 00:00:00 +0000</pubDate>
-      
-      <guid>https://antelang.org/categories/memory-management/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>mutability</title>
-      <link>https://antelang.org/categories/mutability/</link>
-      <pubDate>Thu, 21 Aug 2025 00:00:00 +0000</pubDate>
-      
-      <guid>https://antelang.org/categories/mutability/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>thread safety</title>
-      <link>https://antelang.org/categories/thread-safety/</link>
-      <pubDate>Thu, 21 Aug 2025 00:00:00 +0000</pubDate>
-      
-      <guid>https://antelang.org/categories/thread-safety/</guid>
       <description></description>
     </item>
     
