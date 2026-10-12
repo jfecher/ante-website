@@ -1,6 +1,6 @@
 +++
 authors = ["Jake Fecher"]
-title = "Achieving Zero-cost Safe Cyclic Mutability"
+title = "Borrow Checking Zero-Cost Cyclic Mutability"
 date = "2026-10-08"
 categories = ["mutability", "thread safety", "memory management"]
 banner = "img/banners/antelope_canyon2.jpg"
@@ -72,10 +72,13 @@ that some `Rc` values had to be cloned (have their reference count incremented) 
 
 For the reasons above though, it was clear the design had to change. The rest of the article is about the
 new design I eventually landed on which fixes all of these issues, but still keeps the good parts
-like safe, cyclic mutability[^cyclic-perf].
+like safe, cyclic mutability[^cyclic-perf] and thread-safety[^threads].
 
 [^cyclic-perf]: The new design is actually more efficient for cyclic mutability! It doesn't require the clones
 the previous design did.
+
+[^threads]: This article won't go over thread-safety! Although thread-safe, the current rules are a bit in flux
+as I am still in search of a simpler design.
 
 ---
 # Why Shared Mutability?

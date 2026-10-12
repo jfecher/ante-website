@@ -290,7 +290,7 @@ source
     </item>
     
     <item>
-      <title>Achieving Zero-cost Safe Cyclic Mutability</title>
+      <title>Borrow Checking Zero-Cost Cyclic Mutability</title>
       <link>https://antelang.org/blog/safe_cyclic_mutability/</link>
       <pubDate>Thu, 08 Oct 2026 00:00:00 +0000</pubDate>
       

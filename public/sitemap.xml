@@ -42,9 +42,6 @@
   </url><url>
     <loc>https://antelang.org/docs/stdlib/vec/</loc>
   </url><url>
-    <loc>https://antelang.org/blog/safe_cyclic_mutability/</loc>
-    <lastmod>2026-10-08T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://antelang.org/</loc>
     <lastmod>2026-10-08T00:00:00+00:00</lastmod>
   </url><url>
@@ -52,6 +49,9 @@
     <lastmod>2026-10-08T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://antelang.org/blog/</loc>
+    <lastmod>2026-10-08T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://antelang.org/blog/safe_cyclic_mutability/</loc>
     <lastmod>2026-10-08T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://antelang.org/categories/</loc>

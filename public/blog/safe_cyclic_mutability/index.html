@@ -6,7 +6,7 @@
 <meta name="googlebot" content="index,follow,snippet,archive">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Achieving Zero-cost Safe Cyclic Mutability</title>
+<title>Borrow Checking Zero-Cost Cyclic Mutability</title>
 <meta name="author" content="Jake Fecher" />
 
 
@@ -65,7 +65,7 @@
 
 <meta property="og:locale" content="en_us">
 <meta property="og:site_name" content="Ante">
-<meta property="og:title" content="Achieving Zero-cost Safe Cyclic Mutability">
+<meta property="og:title" content="Borrow Checking Zero-Cost Cyclic Mutability">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://antelang.org/blog/safe_cyclic_mutability/" />
 <meta property="og:description" content="">
@@ -92,7 +92,7 @@
 
 <meta name="twitter:card" content="summary_large_image">
 
-<meta name="twitter:title" content="Achieving Zero-cost Safe Cyclic Mutability">
+<meta name="twitter:title" content="Borrow Checking Zero-Cost Cyclic Mutability">
 
 <meta name="twitter:image" content="https://antelang.org/img/banners/antelope_canyon2.jpg">
 
@@ -103,7 +103,7 @@
   <meta name="robots" content="all,follow">
   <meta name="googlebot" content="index,follow,snippet,archive">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Achieving Zero-cost Safe Cyclic Mutability</title>
+  <title>Borrow Checking Zero-Cost Cyclic Mutability</title>
   <meta name="author" content="" />
 
   <meta name="keywords" content="ante, programming, language, antelang, lang">	
@@ -151,7 +151,7 @@
   <link rel="alternate" href="https://antelang.org/index.xml" type="application/rss+xml" title="Ante">
 
   
-  <meta property="og:title" content="Achieving Zero-cost Safe Cyclic Mutability" />
+  <meta property="og:title" content="Borrow Checking Zero-Cost Cyclic Mutability" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://antelang.org/blog/safe_cyclic_mutability//" />
   <meta property="og:image" content="" />
@@ -169,9 +169,9 @@
         <div class="container">
             <div class="navbar-header">
                 <a class="navbar-brand home" href="https://antelang.org/">
-                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="Achieving Zero-cost Safe Cyclic Mutability" class="hidden-xs hidden-sm">
-                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="Achieving Zero-cost Safe Cyclic Mutability" class="visible-xs visible-sm">
-                    <span class="sr-only">Achieving Zero-cost Safe Cyclic Mutability - go to homepage</span>
+                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="Borrow Checking Zero-Cost Cyclic Mutability" class="hidden-xs hidden-sm">
+                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="Borrow Checking Zero-Cost Cyclic Mutability" class="visible-xs visible-sm">
+                    <span class="sr-only">Borrow Checking Zero-Cost Cyclic Mutability - go to homepage</span>
                 </a>
                 
 <div class="navbar-buttons">
@@ -252,7 +252,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h1>Achieving Zero-cost Safe Cyclic Mutability</h1>
+                <h1>Borrow Checking Zero-Cost Cyclic Mutability</h1>
             </div>
         </div>
     </div>
@@ -598,7 +598,7 @@ did it automatically.</li>
 that some <code>Rc</code> values had to be cloned (have their reference count incremented) during traversal.</p>
 <p>For the reasons above though, it was clear the design had to change. The rest of the article is about the
 new design I eventually landed on which fixes all of these issues, but still keeps the good parts
-like safe, cyclic mutability<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>.</p>
+like safe, cyclic mutability<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> and thread-safety<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>.</p>
 <hr>
 <h1 id="why-shared-mutability">Why Shared Mutability?</h1>
 <p>Since many Rustaceans are skeptical on the value of shared mutability at all, it&rsquo;s worth reiterating
@@ -747,7 +747,7 @@ a unique value for it:</p>
     <span class="n">a_and_b_cant_alias</span> <span class="n">c</span> <span class="n">c</span>
 </code></pre></div><p>To check for this, whenever a mutation occurs the compiler issues a <code>Mutate 'p</code> effect
 which tags a function with the places that may be mutated. At callsites, each place that
-may be mutated must be unique from other places instantiated<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>.</p>
+may be mutated must be unique from other places instantiated<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>.</p>
 <hr>
 <h1 id="shared-mutability">Shared Mutability</h1>
 <p>We can use unstable places to safely allow mutating shared pointers like a <code>Rc&lt;T&gt;</code> in Rust.</p>
@@ -778,7 +778,7 @@ to represent even cyclic references though? Spoiler: yes.</p>
 <hr>
 <h1 id="cyclic-mutability">Cyclic Mutability</h1>
 <p>For cyclic mutability we need&hellip; well nothing else! We can just
-start using <code>Rc</code> to form cycles<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>.</p>
+start using <code>Rc</code> to form cycles<sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup>.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">List</span> <span class="n">&#39;p</span> <span class="n">t</span> <span class="ow">=</span>
    <span class="o">|</span> <span class="kt">Nil</span>
    <span class="o">|</span> <span class="kt">Cons</span> <span class="n">t</span> <span class="p">(</span><span class="kt">Rc</span> <span class="n">&#39;p</span> <span class="p">(</span><span class="kt">List</span> <span class="n">&#39;p</span> <span class="n">t</span><span class="p">))</span>
@@ -801,7 +801,7 @@ start using <code>Rc</code> to form cycles<sup id="fnref:4"><a href="#fn:4" clas
         <span class="n">emit</span> <span class="n">elem</span>
         <span class="n">emit_list</span> <span class="n">tail</span>
 </code></pre></div><p>To my knowledge, no other borrow-checked language can safely represent cyclic mutation
-without runtime checks like this!<sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup></p>
+without runtime checks like this!<sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup></p>
 <p>If we wanted, we could even use <code>shared mut type</code> sugar to simplify things a bit, see
 <a href="/docs/language#shared-mutable-types">the relevant section in the docs</a> for that.</p>
 <hr>
@@ -826,18 +826,22 @@ types by default and no pervasive GC. If you have a preferred definition, let me
 the previous design did.&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:3" role="doc-endnote">
-<p>Any places that were already <code>'p</code> are actually okay. The body of the function
-would already be aware of and check those cases. This enables patterns like passing
-in an immutable container and a mutable reference inside the same container.&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p>This article won&rsquo;t go over thread-safety! Although thread-safe, the current rules are a bit in flux
+as I am still in search of a simpler design.&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:4" role="doc-endnote">
-<p>Using <code>Rc</code> to form cycles still leads to leaks! Some other collection
-mechanism is needed to prevent leaks, but that is a separate issue from the
-mutability of a cycle.&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p>Any places that were already <code>'p</code> are actually okay. The body of the function
+would already be aware of and check those cases. This enables patterns like passing
+in an immutable container and a mutable reference inside the same container.&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:5" role="doc-endnote">
+<p>Using <code>Rc</code> to form cycles still leads to leaks! Some other collection
+mechanism is needed to prevent leaks, but that is a separate issue from the
+mutability of a cycle.&#160;<a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:6" role="doc-endnote">
 <p>Ante could actually represent it in its previous system as well, but these new rules
-tracking unstable places allow us to do it even more efficiently without incrementing reference counts.&#160;<a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+tracking unstable places allow us to do it even more efficiently without incrementing reference counts.&#160;<a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
 </section>
@@ -880,12 +884,12 @@ tracking unstable places allow us to do it even more efficiently without increme
                     <div class="image same-height-always">
                         <a href="https://antelang.org/blog/safe_cyclic_mutability/">
                           
-                            <img src="/img/banners/antelope_canyon2.jpg" class="img-responsive" alt="Achieving Zero-cost Safe Cyclic Mutability">
+                            <img src="/img/banners/antelope_canyon2.jpg" class="img-responsive" alt="Borrow Checking Zero-Cost Cyclic Mutability">
                           
                         </a>
                     </div>
                     <div class="name same-height-always">
-                        <h5><a href="https://antelang.org/blog/safe_cyclic_mutability/">Achieving Zero-cost Safe Cyclic Mutability</a></h5>
+                        <h5><a href="https://antelang.org/blog/safe_cyclic_mutability/">Borrow Checking Zero-Cost Cyclic Mutability</a></h5>
                     </div>
                 </div>
                 
