@@ -4,6 +4,7 @@ title = "Borrow Checking Zero-Cost Cyclic Mutability"
 date = "2026-10-08"
 categories = ["mutability", "thread safety", "memory management"]
 banner = "img/banners/antelope_canyon2.jpg"
+draft = true
 +++
 
 --- 
@@ -24,8 +25,8 @@ my_tuple = (3, 4);
 println!("{first_elem}");
 ```
 
-I wanted to allow for code like the above while still disallowing code that would lead to dangling
-pointers, and I wanted to do this entirely statically in the type system.
+**I wanted to allow for code like the above while still disallowing code that would lead to dangling
+pointers, and I wanted to do this entirely statically in the type system.**
 
 Alas! That's old news - the [very first
 blog post](/blog/safe_shared_mutability/) on this site covered it. That post is frankly quite outdated
@@ -104,7 +105,7 @@ goal but allowing shared mutability greatly helps here.
 Why are some cases of shared mutability safe, like:
 
 ```ante
-safe (var pair: String, String) =
+my_safe_fn (var pair: String, String) =
     name = ref pair.first
     pair.first := "Foo"
     println name  // Ok!
@@ -113,7 +114,7 @@ safe (var pair: String, String) =
 While others are not?:
 
 ```ante
-unsafe (vec: mut Vec t) =
+my_unsafe_fn (vec: mut Vec t) =
     elem = vec.get 1
     vec.clear ()
     println elem  // Dangling ref!
@@ -173,8 +174,8 @@ vec: (data_ptr, length, capacity)
 it to potentially point elsewhere when it is reallocated. Its shape has changed,
 leaving `elem` stranded.
 
-It'd be nice if we could encode this stability relationship in reference types in a succinct
-way - then we could do away with uniqueness in favor of a much more accurate restriction that
+It'd be nice if a reference type could remember whether it's pointing at something stable or
+unstable - then we could do away with uniqueness in favor of a much more accurate restriction that
 rejects less valid code.
 
 ---
@@ -236,6 +237,8 @@ the last, this code should still be valid.
 We can model this in Ante by flagging any references to returned elements of a vector as _unstable_:
 
 ```ante
+// Declare a `first_mut` method taking a mutable vector and returning
+// an unstable reference inside 'v to the first element
 Vec.first_mut (v: mut Vec t): mut 'v! t can Fail = ...
 Vec.last_mut  (v: mut Vec t): mut 'v! t can Fail = ...
 ```
@@ -250,12 +253,18 @@ not_rejected (v: mut Vec String) =
 ```
 
 Above, `first` and `last` both have the type `mut 'v! String` so when we mutate `first`
-it would prevent us from using anything with a place of `v!!`, but nothing does. So we're
+it would prevent us from using anything with a place of `v!!`[^nesting], but nothing does. So we're
 free to use both `first` and `last` even if they alias.
 
-> Whether a reference is unstable or not is inferred in practice and doesn't need to
+> Whether a reference is unstable or not is inferred in practice and doesn't always need to
 > be a manual choice by users. Any reference through a tagged union or element of a collection
 > type will be unstable for example.
+
+[^nesting]: `!` on places can nest! `'foo!` is an unstable place within `'foo` while `'foo!!`
+would be an unstable place within that previous unstable place. This could be for example, a
+String element of a `Vec (Vec String)`. If a type has multiple sources of instability (e.g. a
+struct holding multiple vectors), an API designer may choose to expose the separate fields, e.g.
+`'foo.bar!` vs `'foo.baz!`, or may choose to hide this by coercing to the parent place `'foo!`.
 
 ---
 # Exclusivity
@@ -266,7 +275,7 @@ It's possible to write functions that are only valid if certain parameters don't
 a_and_b_cant_alias (a: mut Vec String) (b: mut Vec String) =
     elem = a.first_mut ()
     b.clear ()
-    println elem
+    println elem  // ok! But how?
 ```
 
 In cases like these the compiler still needs some kind of exclusivity rule. In this case,
@@ -281,11 +290,64 @@ bad_caller (c: mut Vec String) =
 
 To check for this, whenever a mutation occurs the compiler issues a `Mutate 'p` effect
 which tags a function with the places that may be mutated. At callsites, each place that
-may be mutated must be unique from other places instantiated[^note].
+may be mutated must be unique from other places instantiated[^note]. Note that `mut` itself
+still allows arbitrary aliasing, it is only when an actual mutation occurs and `Mutate 'p` is
+issued does the compiler check call sites that any generic used doesn't become `'p` while it
+is still in scope.
+
+## Use vs Mention
+
+`Mutate 'p` is an example of a _use_ vs _mention_ distinction. Code which merely mentions
+mutability doesn't need to pay any uniqueness constraints. This is most notable since places
+can be paths so we may pass an entire `mut Context` to a function but it may only `Mutate 'ctx.field`.
+This scenario often occurs when iterating mutably over a field of some context value:
+
+```ante
+type Entity = name: String, health: I32
+type Context = entities: Vec Entity, events: Vec String, score: U32
+
+Context.on_death (ctx: mut Context) (entity: ref Entity): Unit
+    can Mutate 'ctx.events
+=
+    ctx.score += 10
+    ctx.events.push "${entity.name} died"
+
+iterate_example (ctx: mut Context) =
+    each ctx.entities fn entity ->
+        entity.health -= 1
+        if entity.health <= 0 then
+            ctx.on_death entity  // ok!
+```
+
+In Rust the above code would be rejected, but there are actually several options in Ante.
+You can expose `Mutate 'ctx.events` on `Context.on_death` above, guaranteeing only that
+field may be mutated (`ctx.score` doesn't need a similar annotation because mutating integers
+can never invalidate references), or you can tell `on_death` that `entity` may be stored
+within `ctx` to begin with:
+
+```ante
+Context.on_death (ctx: mut 'c Context) (entity: ref 'c.entities! Entity): Unit
+    can Mutate 'ctx
+=
+    ctx.score += 10
+    ctx.events.push "${entity.name} died"
+```
+
+Above we're saying all of `'ctx` may be mutated. For this specific example, this is less
+desirable since it'd mean `entity`, as an unstable reference wouldn't be valid after the
+call to `on_death` ends. For other patterns of code though, we may truly need to mutate
+all of `'ctx` or keep it opaque[^opaque] and this would be exactly what we'd want.
 
 [^note]: Any places that were already `'p` are actually okay. The body of the function
 would already be aware of and check those cases. This enables patterns like passing
 in an immutable container and a mutable reference inside the same container.
+
+[^opaque]: Future versions of Ante will allow for 'abstract places' where structs could
+declare a set of places inside of them to expose, separate from their actual fields.
+Library authors wanting to hide specific struct fields while keeping multiple places
+within the same struct distinct from each other in usual code could make use of this.
+The downside is that since these aren't connected to specific struct fields, it'd be
+up to the library author to keep the translation to abstract places sound.
 
 ---
 # Shared Mutability
@@ -357,14 +419,12 @@ emit_list (l: ref List t) = do
         emit_list tail
 ```
 
-To my knowledge, no other borrow-checked language can safely represent cyclic mutation
-without runtime checks like this![^actually]
+This pattern is very similar to using [GhostCell](https://plv.mpi-sws.org/rustbelt/ghostcell/) in Rust,
+but in a more ergonomic (no more `GhostToken`), built-in way. I'll also emphasize that these checks are
+_entirely static_ with _no runtime checks_.
 
 If we wanted, we could even use `shared mut type` sugar to simplify things a bit, see
 [the relevant section in the docs](/docs/language#shared-mutable-types) for that.
-
-[^eh]: The actual representation is configurable between `Rc` and other shared
-pointer types, including opting in to a tracing GC (unimplemented!).
 
 [^leak]: Using `Rc` to form cycles still leads to leaks! Some other collection
 mechanism is needed to prevent leaks, but that is a separate issue from the
@@ -386,3 +446,7 @@ to speak on some motivations behind the change.
 
 If any of this interests you, join [Ante's Discord](https://discord.gg/NPJncGBAws) to keep up with the language and ask me questions!
 You can also clone the compiler at [github page](https://github.com/jfecher/ante) to try out the language yourself.
+
+
+# Safe multi-threading
+# loops

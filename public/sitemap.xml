@@ -43,31 +43,10 @@
     <loc>https://antelang.org/docs/stdlib/vec/</loc>
   </url><url>
     <loc>https://antelang.org/</loc>
-    <lastmod>2026-10-08T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://antelang.org/authors/</loc>
-    <lastmod>2026-10-08T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://antelang.org/blog/</loc>
-    <lastmod>2026-10-08T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://antelang.org/blog/safe_cyclic_mutability/</loc>
-    <lastmod>2026-10-08T00:00:00+00:00</lastmod>
+    <lastmod>2026-05-25T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://antelang.org/categories/</loc>
-    <lastmod>2026-10-08T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://antelang.org/authors/jake-fecher/</loc>
-    <lastmod>2026-10-08T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://antelang.org/categories/memory-management/</loc>
-    <lastmod>2026-10-08T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://antelang.org/categories/mutability/</loc>
-    <lastmod>2026-10-08T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://antelang.org/categories/thread-safety/</loc>
-    <lastmod>2026-10-08T00:00:00+00:00</lastmod>
+    <lastmod>2026-05-25T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://antelang.org/docs/</loc>
     <lastmod>2026-05-25T00:00:00+00:00</lastmod>
@@ -81,10 +60,28 @@
     <loc>https://antelang.org/blog/vision/</loc>
     <lastmod>2025-10-24T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>https://antelang.org/authors/</loc>
+    <lastmod>2025-10-24T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://antelang.org/blog/</loc>
+    <lastmod>2025-10-24T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>https://antelang.org/categories/ideals/</loc>
     <lastmod>2025-10-24T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>https://antelang.org/authors/jake-fecher/</loc>
+    <lastmod>2025-10-24T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://antelang.org/categories/memory-management/</loc>
+    <lastmod>2025-08-21T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://antelang.org/categories/mutability/</loc>
+    <lastmod>2025-08-21T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>https://antelang.org/blog/stable_mutable_refs/</loc>
+    <lastmod>2025-08-21T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://antelang.org/categories/thread-safety/</loc>
     <lastmod>2025-08-21T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://antelang.org/categories/effects/</loc>

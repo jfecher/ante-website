@@ -63,7 +63,7 @@
 
 
 
-<meta property="og:updated_time" content="2026-10-08T00:00:00Z">
+<meta property="og:updated_time" content="2026-05-25T00:00:00Z">
 
 
 
@@ -607,71 +607,6 @@
                         <div class="top">
                             <div class="image" style="overflow:hidden">
                                 
-                                <img src="/img/banners/antelope_canyon2.jpg" class="img-responsive" alt="" >
-                                
-                            </div>
-                            <div class="bg"></div>
-                            <div class="text">
-                                <p class="buttons">
-                                    <a href="https://antelang.org/blog/safe_cyclic_mutability/" class="btn btn-template-transparent-primary"><i class="fas fa-link"></i> Read more</a>
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="content">
-                            <h4><a href="https://antelang.org/blog/safe_cyclic_mutability/">Borrow Checking Zero-Cost Cyclic Mutability</a></h4>
-                            <p class="author-category">
-			    
-			      By <a href="/authors/jake-fecher">Jake Fecher</a>
-                            
-                            
-                                
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                    
-                                
-                                on 2026-10-08
-                            
-                            </p>
-                            
-                            <p class="intro">Background  Ante is a low-level1 functional language built on ownership semantics and borrowing, similar to Rust. Unlike Rust, however, a core goal of Ante is to be more lenient in its borrow checker, notably by relaxing Rust&rsquo;s rule that you can either alias a reference or mutate it, but never both at the same time.
-letmutmy_tuple=(1,2);letfirst_elem=&amp;my_tuple.0;// error[E0506]: cannot assign to `my_tuple` because it is borrowed my_tuple=(3,4);println!(&#34;{first_elem}&#34;);I wanted to allow for code like the above while still disallowing code that would lead to dangling pointers, and I wanted to do this entirely statically in the type system.</p>
-                            <p class="read-more">
-                              <a href="https://antelang.org/blog/safe_cyclic_mutability/" class="btn btn-template-main">Continue reading</a>
-                            </p>
-                            
-                        </div>
-                    </div>
-                    
-
-                </div>
-                
-                <div class="col-md-3 col-sm-6">
-                    <div class="box-image-text blog">
-                        <div class="top">
-                            <div class="image" style="overflow:hidden">
-                                
                                 <img src="/img/banners/anteater3.jpg" class="img-responsive" alt="" >
                                 
                             </div>
@@ -861,6 +796,70 @@ What is a shape-unstable type?</p>
 
                 </div>
                 
+                <div class="col-md-3 col-sm-6">
+                    <div class="box-image-text blog">
+                        <div class="top">
+                            <div class="image" style="overflow:hidden">
+                                
+                                <img src="/img/banners/antelope_canyon_cropped.jpg" class="img-responsive" alt="" >
+                                
+                            </div>
+                            <div class="bg"></div>
+                            <div class="text">
+                                <p class="buttons">
+                                    <a href="https://antelang.org/blog/simplification_through_addition/" class="btn btn-template-transparent-primary"><i class="fas fa-link"></i> Read more</a>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="content">
+                            <h4><a href="https://antelang.org/blog/simplification_through_addition/">Simplification Through Addition</a></h4>
+                            <p class="author-category">
+			    
+			      By <a href="/authors/jake-fecher">Jake Fecher</a>
+                            
+                            
+                                
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                    
+                                
+                                on 2024-03-17
+                            
+                            </p>
+                            
+                            <p class="intro">Ante&rsquo;s goal was always to be a slightly higher level language than Rust. I always imagined Ante to fill this gap in language design between higher-level garbage collected languages like Java, Python, and Haskell, and lower level non-garbage collected languages like C, C++, and Rust. I still think there&rsquo;s room there for a language which tries to manage things by default but also allows users to manually do so if needed as an optimization.</p>
+                            <p class="read-more">
+                              <a href="https://antelang.org/blog/simplification_through_addition/" class="btn btn-template-main">Continue reading</a>
+                            </p>
+                            
+                        </div>
+                    </div>
+                    
+
+                </div>
+                
 
             </div>
             
@@ -895,19 +894,6 @@ What is a shape-unstable type?</p>
                 
                 <div class="item same-height-row clearfix">
                     <div class="image same-height-always">
-                        <a href="https://antelang.org/blog/safe_cyclic_mutability/">
-                          
-                            <img src="/img/banners/antelope_canyon2.jpg" class="img-responsive" alt="Borrow Checking Zero-Cost Cyclic Mutability">
-                          
-                        </a>
-                    </div>
-                    <div class="name same-height-always">
-                        <h5><a href="https://antelang.org/blog/safe_cyclic_mutability/">Borrow Checking Zero-Cost Cyclic Mutability</a></h5>
-                    </div>
-                </div>
-                
-                <div class="item same-height-row clearfix">
-                    <div class="image same-height-always">
                         <a href="https://antelang.org/blog/vision/">
                           
                             <img src="/img/banners/anteater3.jpg" class="img-responsive" alt="A Vision for Future Low-Level Languages">
@@ -929,6 +915,19 @@ What is a shape-unstable type?</p>
                     </div>
                     <div class="name same-height-always">
                         <h5><a href="https://antelang.org/blog/stable_mutable_refs/">Stable, Mutable References</a></h5>
+                    </div>
+                </div>
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="https://antelang.org/blog/why_effects/">
+                          
+                            <img src="/img/banners/lanterns.jpg" class="img-responsive" alt="Why Algebraic Effects?">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/blog/why_effects/">Why Algebraic Effects?</a></h5>
                     </div>
                 </div>
                 
