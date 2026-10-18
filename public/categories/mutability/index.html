@@ -63,7 +63,7 @@
 
 
 
-<meta property="og:updated_time" content="2025-08-21T00:00:00Z">
+<meta property="og:updated_time" content="2026-10-17T00:00:00Z">
 
 
 
@@ -246,6 +246,79 @@
                     <div class="col-md-9" id="blog-listing-medium">
 
                         
+                        
+                        <section class="post">
+                            <div class="row">
+                                <div class="col-md-4">
+                                  <div class="image">
+                                      <a href="https://antelang.org/blog/safe_cyclic_mutability/">
+                                          
+                                          <img src="/img/banners/antelope_canyon2.jpg" class="img-responsive" alt="">
+                                          
+                                      </a>
+                                  </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <h2><a href="https://antelang.org/blog/safe_cyclic_mutability/">Borrow Checking Zero-Cost Cyclic Mutability</a></h2>
+                                    <div class="clearfix">
+                                        <p class="author-category">
+                                          
+					  By <a href="/authors/jake-fecher">Jake Fecher</a>
+                                          
+                                          
+                                          
+                                          in 
+                                          
+                                              <a href="/categories/mutability">mutability</a>, 
+                                              <a href="/categories/thread-safety">thread safety</a>, 
+                                              <a href="/categories/memory-management">memory management</a>
+                                          
+                                          
+
+                                        </p>
+                                        
+
+                                        
+                                        
+                                            
+                                        
+                                            
+                                        
+                                            
+                                        
+                                            
+                                        
+                                            
+                                        
+                                            
+                                        
+                                            
+                                        
+                                            
+                                        
+                                            
+                                        
+                                            
+                                        
+                                            
+                                        
+                                            
+                                        
+
+                                        <p class="date-comments">
+                                            <a href="https://antelang.org/blog/safe_cyclic_mutability/"><i class="far fa-calendar"></i> 2026-10-17</a>
+                                        </p>
+                                        
+                                    </div>
+                                    
+                                    <p class="intro">Ante is a low-level1 functional language built on ownership semantics and borrowing, similar to Rust. Unlike Rust, however, a core goal of Ante is to be more lenient in its borrow checker, notably by relaxing Rust&rsquo;s rule that you can either alias a reference or mutate it, but never both at the same time.
+// In Rust: letmutmy_tuple=(1,2);letfirst_elem=&amp;my_tuple.0;// error[E0506]: cannot assign to `my_tuple` because it is borrowed my_tuple=(3,4);println!(&#34;{first_elem}&#34;);I wanted to allow for code like the above while still disallowing code that would lead to dangling pointers, and I wanted to do this entirely statically in the type system.</p>
+                                    <p class="read-more"><a href="https://antelang.org/blog/safe_cyclic_mutability/" class="btn btn-template-main">Continue reading</a>
+                                    </p>
+                                    
+                                </div>
+                            </div>
+                        </section>
                         
                         <section class="post">
                             <div class="row">
@@ -464,6 +537,19 @@ What is a shape-unstable type?</p>
                 
                 <div class="item same-height-row clearfix">
                     <div class="image same-height-always">
+                        <a href="https://antelang.org/blog/safe_cyclic_mutability/">
+                          
+                            <img src="/img/banners/antelope_canyon2.jpg" class="img-responsive" alt="Borrow Checking Zero-Cost Cyclic Mutability">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/blog/safe_cyclic_mutability/">Borrow Checking Zero-Cost Cyclic Mutability</a></h5>
+                    </div>
+                </div>
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
                         <a href="https://antelang.org/blog/vision/">
                           
                             <img src="/img/banners/anteater3.jpg" class="img-responsive" alt="A Vision for Future Low-Level Languages">
@@ -485,19 +571,6 @@ What is a shape-unstable type?</p>
                     </div>
                     <div class="name same-height-always">
                         <h5><a href="https://antelang.org/blog/stable_mutable_refs/">Stable, Mutable References</a></h5>
-                    </div>
-                </div>
-                
-                <div class="item same-height-row clearfix">
-                    <div class="image same-height-always">
-                        <a href="https://antelang.org/blog/why_effects/">
-                          
-                            <img src="/img/banners/lanterns.jpg" class="img-responsive" alt="Why Algebraic Effects?">
-                          
-                        </a>
-                    </div>
-                    <div class="name same-height-always">
-                        <h5><a href="https://antelang.org/blog/why_effects/">Why Algebraic Effects?</a></h5>
                     </div>
                 </div>
                 

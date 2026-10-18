@@ -78,15 +78,15 @@
   <meta property="og:image:height" content="640">
 
 
-<meta property="og:updated_time" content="2026-10-08T00:00:00Z">
+<meta property="og:updated_time" content="2026-10-17T00:00:00Z">
 
   
   
   <meta property="article:section" content="mutability">
   
   
-  <meta property="article:published_time" content="2026-10-08T00:00:00Z">
-  <meta property="article:modified_time" content="2026-10-08T00:00:00Z">
+  <meta property="article:published_time" content="2026-10-17T00:00:00Z">
+  <meta property="article:modified_time" content="2026-10-17T00:00:00Z">
 
 
 
@@ -292,8 +292,8 @@
                 
                 
                 
-                <a href="/blog/safe_cyclic_mutability/#background">
-                    <li>Background</li>
+                <a href="/blog/safe_cyclic_mutability/#why-shared-mutability">
+                    <li>Why Shared Mutability?</li>
                 </a>
                 
                 
@@ -315,27 +315,6 @@
                 
                 <a href="/blog/safe_cyclic_mutability/#aside-what-was-wrong-with-antes-previous-rules">
                     <li>Aside: What was wrong with Ante’s previous rules?</li>
-                </a>
-                
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                
-                
-                
-                <a href="/blog/safe_cyclic_mutability/#why-shared-mutability">
-                    <li>Why Shared Mutability?</li>
                 </a>
                 
                 
@@ -436,6 +415,31 @@
                 
                     <ul class="toc-h1">
                 
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/blog/safe_cyclic_mutability/#use-vs-mention">
+                    <li>Use vs Mention</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
                 
                 
                 
@@ -464,6 +468,77 @@
                     <li>Cyclic Mutability</li>
                 </a>
                 
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                
+                
+                
+                <a href="/blog/safe_cyclic_mutability/#extras">
+                    <li>Extras</li>
+                </a>
+                
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/blog/safe_cyclic_mutability/#loops">
+                    <li>Loops</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/blog/safe_cyclic_mutability/#multi-threading">
+                    <li>Multi-threading</li>
+                </a>
+                
+                
+                    </ul>
                 
                     </ul>
                 
@@ -539,24 +614,21 @@
                               
                                   
                               
-                              2026-10-08
+                              2026-10-17
                             
                           </p>
                         
 
                         <div id="post-content">
-                          <hr>
-<h1 id="background">Background</h1>
-<hr>
-<p>Ante is a low-level<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> functional language built on ownership semantics and borrowing, similar to Rust.
+                          <p>Ante is a low-level<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> functional language built on ownership semantics and borrowing, similar to Rust.
 Unlike Rust, however, a core goal of Ante is to be more lenient in its borrow checker, notably by relaxing Rust&rsquo;s
 rule that you can either alias a reference or mutate it, but never both at the same time.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rs" data-lang="rs"><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">my_tuple</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span><span class="w">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rs" data-lang="rs"><span class="c1">// In Rust:
+</span><span class="c1"></span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">my_tuple</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span><span class="w">
 </span><span class="w"></span><span class="kd">let</span><span class="w"> </span><span class="n">first_elem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">my_tuple</span><span class="p">.</span><span class="mi">0</span><span class="p">;</span><span class="w">
 </span><span class="w">
 </span><span class="w"></span><span class="c1">// error[E0506]: cannot assign to `my_tuple` because it is borrowed
 </span><span class="c1"></span><span class="n">my_tuple</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">);</span><span class="w">
-</span><span class="w">
 </span><span class="w"></span><span class="fm">println!</span><span class="p">(</span><span class="s">&#34;{first_elem}&#34;</span><span class="p">);</span><span class="w">
 </span></code></pre></div><p>I wanted to allow for code like the above while still disallowing code that would lead to dangling
 pointers, and I wanted to do this entirely statically in the type system.</p>
@@ -570,16 +642,34 @@ radically safe whole.
 In this post, I want to go over the new design and show how it leads to a more flexible kind of safe, shared
 mutability that is expressive enough to even support <em>cyclic mutability</em> safely.</p>
 <hr>
+<h1 id="why-shared-mutability">Why Shared Mutability?</h1>
+<p>Since many Rustaceans are skeptical of the value of shared mutability at all, it&rsquo;s worth reiterating
+why being more lenient here is useful. More lenience means:</p>
+<ul>
+<li>Fewer borrow checker errors. Fewer errors both eases the learning curve for
+new users and speeds up iteration times for experienced ones.</li>
+<li>More design patterns are allowed. The observer pattern is difficult to get working without shared
+mutability. Cyclic types can also be more directly represented.</li>
+<li>Existing design patterns can have fewer workarounds. Fewer forced indices into vectors in particular.
+While this can be a useful pattern, I don&rsquo;t believe the language should force users into this approach.</li>
+<li>More straightforward interop with other languages that also support shared mutability.</li>
+</ul>
+<p>The last point in particular is more important than it seems. Ante is meant to be opt-in to ownership
+to some extent so that by default using it feels more like C# than it does Rust. This is an aspirational
+goal but allowing shared mutability greatly helps here.</p>
+<hr>
 <h1 id="aside-what-was-wrong-with-antes-previous-rules">Aside: What was wrong with Ante&rsquo;s previous rules?</h1>
 <p>I imagine most will not be familiar with Ante&rsquo;s old borrow checking rules, but for those curious I&rsquo;ll
 lay out some more motivations for the change. If this isn&rsquo;t you, feel free to skip this section.</p>
+<details>
+<summary>I am not most readers</summary>
 <p>The <a href="/blog/safe_shared_mutability/">original article</a> mentions Ante&rsquo;s <code>ref</code> and <code>mut</code> references as being
 <code>&amp;Cell&lt;T&gt;</code> analogues in a way, and this has largely remained true at its core. Most of the extensions
 made since then were to extend this in some way, notably by introducing &ldquo;local uniqueness&rdquo; where a shared
 mutable reference only needed to be <em>locally unique</em> to be used where a <code>uniq</code> reference (think <code>&amp;mut T</code> in Rust)
 was expected. This meant the compiler only needed to show that any variable used at the same time as a <code>mut String</code>
 did not mutably alias it. This ended up taking the form of a <code>Distinct a b</code> trait which was implemented if
-<code>a</code> did not occur anywhere within <code>b</code>. For example, if you use a <code>Vec Foo</code> at the same time a <code>mut String</code> is
+<code>a</code> did not occur anywhere within <code>b</code>. For example, if you use a <code>Vec I32</code> at the same time a <code>mut String</code> is
 treated as a <code>uniq String</code>, the compiler would check a <code>Distinct String (Vec I32)</code> constraint in the background.
 Since a <code>String</code> can&rsquo;t occur within a <code>Vec I32</code>, the code is allowed and the <code>String</code> is locally unique. This
 would be repeated for each variable used while the converted <code>uniq String</code> reference was still alive.</p>
@@ -598,32 +688,17 @@ did it automatically.</li>
 that some <code>Rc</code> values had to be cloned (have their reference count incremented) during traversal.</p>
 <p>For the reasons above though, it was clear the design had to change. The rest of the article is about the
 new design I eventually landed on which fixes all of these issues, but still keeps the good parts
-like safe, cyclic mutability<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> and thread-safety<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>.</p>
-<hr>
-<h1 id="why-shared-mutability">Why Shared Mutability?</h1>
-<p>Since many Rustaceans are skeptical on the value of shared mutability at all, it&rsquo;s worth reiterating
-why being more lenient here is useful. More lenience means:</p>
-<ul>
-<li>Fewer borrow checker errors. Fewer errors both eases the learning curve for
-new users and speeds up iteration times for experienced ones.</li>
-<li>More design patterns are allowed. The observer pattern is difficult to get working without shared
-mutability. Cyclic types can also be more directly represented.</li>
-<li>Existing design patterns can have fewer workarounds. Fewer forced indices into vectors in particular.
-While this can be a useful pattern, I don&rsquo;t believe the language should force users into this approach.</li>
-<li>More straightforward interop with other languages that also support shared mutability.</li>
-</ul>
-<p>The last point in particular is more important than it seems. Ante is meant to be opt-in to ownership
-to some extent so that by default using it feels more like C# than it does Rust. This is an aspirational
-goal but allowing shared mutability greatly helps here.</p>
+like safe, cyclic mutability<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> and thread-safety.</p>
+</details>
 <hr>
 <h1 id="the-core-problem">The Core Problem</h1>
 <p>Why are some cases of shared mutability safe, like:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">safe</span> <span class="p">(</span><span class="k">var</span> <span class="n">pair</span><span class="o">:</span> <span class="kt">String</span><span class="p">,</span> <span class="kt">String</span><span class="p">)</span> <span class="ow">=</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">my_safe_fn</span> <span class="p">(</span><span class="k">var</span> <span class="n">pair</span><span class="o">:</span> <span class="kt">String</span><span class="p">,</span> <span class="kt">String</span><span class="p">)</span> <span class="ow">=</span>
     <span class="n">name</span> <span class="ow">=</span> <span class="k">ref</span> <span class="n">pair</span><span class="o">.</span><span class="n">first</span>
     <span class="n">pair</span><span class="o">.</span><span class="n">first</span> <span class="o">:=</span> <span class="s">&#34;Foo&#34;</span>
     <span class="n">println</span> <span class="n">name</span>  <span class="c1">// Ok!</span>
-</code></pre></div><p>While others are not?:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">unsafe</span> <span class="p">(</span><span class="n">vec</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span>
+</code></pre></div><p>While others are not:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">my_unsafe_fn</span> <span class="p">(</span><span class="n">vec</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span>
     <span class="n">elem</span> <span class="ow">=</span> <span class="n">vec</span><span class="o">.</span><span class="n">get</span> <span class="mi">1</span>
     <span class="n">vec</span><span class="o">.</span><span class="n">clear</span> <span class="p">()</span>
     <span class="n">println</span> <span class="n">elem</span>  <span class="c1">// Dangling ref!</span>
@@ -668,17 +743,17 @@ vec: (data_ptr, length, capacity)
               ^
               |
              elem
-</code></pre></div><p><code>elem</code> is clearly dangling! The problem here is mutating <code>vec</code> can mutate <code>data_ptr</code>, causing
+</code></pre></div><p><code>elem</code> is clearly dangling! The problem here is that mutating <code>vec</code> can mutate <code>data_ptr</code>, causing
 it to potentially point elsewhere when it is reallocated. Its shape has changed,
 leaving <code>elem</code> stranded.</p>
-<p>It&rsquo;d be nice if we could encode this stability relationship in reference types in a succinct
-way - then we could do away with uniqueness in favor of a much more accurate restriction that
-rejects less valid code.</p>
+<p>It&rsquo;d be nice if a reference type could remember whether it&rsquo;s pointing at something stable or
+unstable - then we could do away with uniqueness in favor of a much more accurate restriction that
+rejects fewer valid programs.</p>
 <hr>
 <h1 id="places-over-lifetimes">Places Over Lifetimes</h1>
 <p>The first core part of the puzzle is the use of <em>places</em> instead of lifetimes.</p>
 <p>Unlike a lifetime which is some arbitrary symbol representing an abstract region of code a
-variable or reference is valid for, a place is the exact set of places a reference may borrow
+variable or reference is valid for, a place is the exact set of things a reference may borrow
 from:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">foo</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">I32</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">I32</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span>
     <span class="n">r1</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;x</span> <span class="kt">I32</span> <span class="ow">=</span> <span class="k">ref</span> <span class="n">x</span>
@@ -690,7 +765,7 @@ from:</p>
 so it has the place <code>'y</code>. <code>r3</code> may borrow from <code>x</code> or <code>y</code> so its place is the union of both: <code>'(x, y)</code>.
 Places can also be paths such as <code>'z.bar</code> to represent a reference borrowing from the struct field
 <code>bar</code> on a variable <code>z</code>.</p>
-<p>Places don&rsquo;t always name variables, there are anonymous places as well such as those for a reference
+<p>Places don&rsquo;t always name variables. There are anonymous places as well such as those for a reference
 to a temporary like <code>ref 2</code>, but that&rsquo;s not important for this article.</p>
 <blockquote>
 <p>Places make borrow checking easier in general too!
@@ -713,22 +788,23 @@ Rust code which should be safe but gets rejected by the compiler:</p>
 </span><span class="w">    </span><span class="o">*</span><span class="n">first</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;Mutate first&#34;</span><span class="p">.</span><span class="n">to_string</span><span class="p">();</span><span class="w">
 </span><span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&#34;{last}&#34;</span><span class="p">);</span><span class="w">
 </span><span class="w"></span><span class="p">}</span><span class="w">
-</span></code></pre></div><p>Rust&rsquo;s compiler rejects this even though it would be safe to mutate an element, then print
-another separately after retrieving it again. Theoretically, even if the first element is also
-the last, this code should still be valid.</p>
+</span></code></pre></div><p>Rust&rsquo;s compiler rejects this even though there is no way we can mutate <code>first</code> which would invalidate <code>last</code>.
+Theoretically, even if the first element is also the last, this code should still be valid<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>.</p>
 <p>We can model this in Ante by flagging any references to returned elements of a vector as <em>unstable</em>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Vec</span><span class="o">.</span><span class="n">first_mut</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">mut</span> <span class="n">&#39;v</span><span class="o">!</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="c1">// Declare a `first_mut` method taking a mutable vector and returning</span>
+<span class="c1">// an unstable reference inside &#39;v to the first element</span>
+<span class="kt">Vec</span><span class="o">.</span><span class="n">first_mut</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">mut</span> <span class="n">&#39;v</span><span class="o">!</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
 <span class="kt">Vec</span><span class="o">.</span><span class="n">last_mut</span>  <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">mut</span> <span class="n">&#39;v</span><span class="o">!</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
 </code></pre></div><p>Now, we can write the equivalent of <code>rejected</code> just fine:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rs" data-lang="rs"><span class="n">not_rejected</span><span class="w"> </span><span class="p">(</span><span class="n">v</span>: <span class="nc">mut</span><span class="w"> </span><span class="nb">Vec</span><span class="w"> </span><span class="nb">String</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w">
-</span><span class="w">    </span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="n">last</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v</span><span class="p">.</span><span class="n">first_mut</span><span class="w"> </span><span class="p">(),</span><span class="w"> </span><span class="n">v</span><span class="p">.</span><span class="n">last_mut</span><span class="w"> </span><span class="p">()</span><span class="w">
-</span><span class="w">    </span><span class="n">first</span><span class="p">.</span><span class="o">*</span><span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="s">&#34;Mutate first&#34;</span><span class="w">
-</span><span class="w">    </span><span class="n">println</span><span class="w"> </span><span class="n">last</span><span class="w">  </span><span class="c1">// ok!
-</span></code></pre></div><p>Above, <code>first</code> and <code>last</code> both have the type <code>mut 'v! String</code> so when we mutate <code>first</code>
-it would prevent us from using anything with a place of <code>v!!</code>, but nothing does. So we&rsquo;re
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">not_rejected</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="kt">String</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="n">first</span><span class="p">,</span> <span class="n">last</span> <span class="ow">=</span> <span class="n">v</span><span class="o">.</span><span class="n">first_mut</span> <span class="p">(),</span> <span class="n">v</span><span class="o">.</span><span class="n">last_mut</span> <span class="p">()</span>
+    <span class="n">first</span><span class="o">.*</span> <span class="o">:=</span> <span class="s">&#34;Mutate first&#34;</span>
+    <span class="n">println</span> <span class="n">last</span>  <span class="c1">// ok!</span>
+</code></pre></div><p>Above, <code>first</code> and <code>last</code> both have the type <code>mut 'v! String</code> so when we mutate <code>first</code>
+it would prevent us from using anything with a place of <code>v!!</code><sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>, but nothing does. So we&rsquo;re
 free to use both <code>first</code> and <code>last</code> even if they alias.</p>
 <blockquote>
-<p>Whether a reference is unstable or not is inferred in practice and doesn&rsquo;t need to
+<p>Whether a reference is unstable or not is inferred in practice and doesn&rsquo;t always need to
 be a manual choice by users. Any reference through a tagged union or element of a collection
 type will be unstable for example.</p>
 </blockquote>
@@ -738,7 +814,7 @@ type will be unstable for example.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">a_and_b_cant_alias</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="kt">String</span><span class="p">)</span> <span class="p">(</span><span class="n">b</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="kt">String</span><span class="p">)</span> <span class="ow">=</span>
     <span class="n">elem</span> <span class="ow">=</span> <span class="n">a</span><span class="o">.</span><span class="n">first_mut</span> <span class="p">()</span>
     <span class="n">b</span><span class="o">.</span><span class="n">clear</span> <span class="p">()</span>
-    <span class="n">println</span> <span class="n">elem</span>
+    <span class="n">println</span> <span class="n">elem</span>  <span class="c1">// ok! But how?</span>
 </code></pre></div><p>In cases like these the compiler still needs some kind of exclusivity rule. In this case,
 when a parameter is mutated the compiler needs to ensure the caller of the function gives
 a unique value for it:</p>
@@ -746,11 +822,48 @@ a unique value for it:</p>
     <span class="c1">// error: &#39;a cannot alias &#39;b in this use of a_and_b_cant_alias, but &#39;c was used for both</span>
     <span class="n">a_and_b_cant_alias</span> <span class="n">c</span> <span class="n">c</span>
 </code></pre></div><p>To check for this, whenever a mutation occurs the compiler issues a <code>Mutate 'p</code> effect
-which tags a function with the places that may be mutated. At callsites, each place that
-may be mutated must be unique from other places instantiated<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>.</p>
+which tags a function with the places that may be mutated. At call sites, each place that
+may be mutated must be distinct from other places instantiated<sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup>. Note that <code>mut</code> itself
+still allows arbitrary aliasing. It is only when an actual mutation occurs and <code>Mutate 'p</code> is
+issued does the compiler check call sites that any generic used doesn&rsquo;t become <code>'p</code> while it
+is still in scope.</p>
+<h2 id="use-vs-mention">Use vs Mention</h2>
+<p><code>Mutate 'p</code> is an example of a <em>use</em> vs <em>mention</em> distinction. Code which merely mentions
+mutability isn&rsquo;t subject to any uniqueness constraints. This is most notable since places
+can be paths so we may pass an entire <code>mut Context</code> to a function but it may only <code>Mutate 'ctx.field</code>.
+This scenario often occurs when iterating mutably over a field of some context value:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Entity</span> <span class="ow">=</span> <span class="n">name</span><span class="o">:</span> <span class="kt">String</span><span class="p">,</span> <span class="n">health</span><span class="o">:</span> <span class="kt">I32</span>
+<span class="k">type</span> <span class="kt">Context</span> <span class="ow">=</span> <span class="n">entities</span><span class="o">:</span> <span class="kt">Vec</span> <span class="kt">Entity</span><span class="p">,</span> <span class="n">events</span><span class="o">:</span> <span class="kt">Vec</span> <span class="kt">String</span><span class="p">,</span> <span class="n">score</span><span class="o">:</span> <span class="kt">U32</span>
+
+<span class="kt">Context</span><span class="o">.</span><span class="n">on_death</span> <span class="p">(</span><span class="n">ctx</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Context</span><span class="p">)</span> <span class="p">(</span><span class="n">entity</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Entity</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span>
+    <span class="k">can</span> <span class="kt">Mutate</span> <span class="n">&#39;ctx</span><span class="o">.</span><span class="n">events</span>
+<span class="ow">=</span>
+    <span class="n">ctx</span><span class="o">.</span><span class="n">score</span> <span class="o">+=</span> <span class="mi">10</span>
+    <span class="n">ctx</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">push</span> <span class="s">&#34;${entity.name} died&#34;</span>
+
+<span class="nf">iterate_example</span> <span class="p">(</span><span class="n">ctx</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Context</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="k">for</span> <span class="n">entity</span> <span class="k">in</span> <span class="n">ctx</span><span class="o">.</span><span class="n">entities</span> <span class="k">do</span>
+        <span class="n">entity</span><span class="o">.</span><span class="n">health</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">entity</span><span class="o">.</span><span class="n">health</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="k">then</span>
+            <span class="n">ctx</span><span class="o">.</span><span class="n">on_death</span> <span class="n">entity</span>  <span class="c1">// ok!</span>
+</code></pre></div><p>In Rust the above code would be rejected, but there are actually several options in Ante.
+You can expose <code>Mutate 'ctx.events</code> on <code>Context.on_death</code> above, guaranteeing only that
+field may be mutated (<code>ctx.score</code> doesn&rsquo;t need a similar annotation because mutating integers
+can never invalidate references), or you can tell <code>on_death</code> that <code>entity</code> may be stored
+within <code>ctx</code> to begin with:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Context</span><span class="o">.</span><span class="n">on_death</span> <span class="p">(</span><span class="n">ctx</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Context</span><span class="p">)</span> <span class="p">(</span><span class="n">entity</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;ctx</span><span class="o">.</span><span class="n">entities</span><span class="o">!</span> <span class="kt">Entity</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span>
+    <span class="k">can</span> <span class="kt">Mutate</span> <span class="n">&#39;ctx</span>
+<span class="ow">=</span>
+    <span class="n">ctx</span><span class="o">.</span><span class="n">score</span> <span class="o">+=</span> <span class="mi">10</span>
+    <span class="n">ctx</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">push</span> <span class="s">&#34;${entity.name} died&#34;</span>
+</code></pre></div><p>Above, we&rsquo;re saying all of <code>'ctx</code> may be mutated. For this specific example, this is less
+desirable since it&rsquo;d mean <code>entity</code> as an unstable reference wouldn&rsquo;t be valid after the
+call to <code>on_death</code> ends. For other patterns of code though, we may truly need to mutate
+all of <code>'ctx</code> or keep it opaque<sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup> and this would be exactly what we&rsquo;d want.</p>
 <hr>
 <h1 id="shared-mutability">Shared Mutability</h1>
-<p>We can use unstable places to safely allow mutating shared pointers like a <code>Rc&lt;T&gt;</code> in Rust.</p>
+<p>We can use unstable places to safely allow mutating shared pointers like an <code>Rc&lt;T&gt;</code>
+(reference-counted pointer) in Rust.</p>
 <p>The first realization is that since our analysis is based on places, <code>Rc</code> needs a place
 to represent the shared element: <code>Rc 'p t</code>. This isn&rsquo;t needed on other
 pointer types like <code>Box</code>, but for <code>Rc</code>, this extra parameter <code>'p</code> is necessary to link
@@ -765,20 +878,22 @@ itself may be swapped out), and <code>inner</code> - the
 shared value pointed to by every clone of this <code>Rc</code>.</p>
 <p>Let&rsquo;s try an example:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">mutate_rc_bad</span> <span class="p">(</span><span class="n">rc1</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Rc</span> <span class="n">&#39;p</span> <span class="p">(</span><span class="kt">Vec</span> <span class="kt">String</span><span class="p">))</span> <span class="p">(</span><span class="n">rc2</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Rc</span> <span class="n">&#39;p</span> <span class="p">(</span><span class="kt">Vec</span> <span class="kt">String</span><span class="p">))</span> <span class="ow">=</span>
-    <span class="c1">// string_ref: mut &#39;(rc!!, p!) String</span>
+    <span class="c1">// string_ref: mut &#39;(rc1!!, p!) String</span>
     <span class="n">string_ref</span> <span class="ow">=</span> <span class="n">rc1</span><span class="o">.</span><span class="n">get</span> <span class="p">()</span> <span class="o">|&gt;</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">first_mut</span>
 
     <span class="c1">// Mutates &#39;p, so string_ref with unstable &#39;p! is invalidated</span>
+    <span class="c1">// note: string_ref may be invalidated by this mutation</span>
     <span class="n">rc2</span><span class="o">.</span><span class="n">get</span> <span class="p">()</span> <span class="o">|&gt;</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">clear</span>
 
-    <span class="n">println</span> <span class="n">string_ref</span>  <span class="c1">// error! string_ref </span>
+    <span class="c1">// error: string_ref may have been invalidated by an earlier mutation</span>
+    <span class="n">println</span> <span class="n">string_ref</span>       
 </code></pre></div><p>Great! We can safely mutate through an <code>Rc</code> value with no runtime checks, and the
 compiler still has our back if we try to do something unsafe. Is this enough
-to represent even cyclic references though? Spoiler: yes.</p>
+to represent even cyclic references though?</p>
 <hr>
 <h1 id="cyclic-mutability">Cyclic Mutability</h1>
-<p>For cyclic mutability we need&hellip; well nothing else! We can just
-start using <code>Rc</code> to form cycles<sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup>.</p>
+<p>For cyclic mutability we need&hellip; well, nothing else! We can just
+start using <code>Rc</code> to form cycles<sup id="fnref:7"><a href="#fn:7" class="footnote-ref" role="doc-noteref">7</a></sup>.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">List</span> <span class="n">&#39;p</span> <span class="n">t</span> <span class="ow">=</span>
    <span class="o">|</span> <span class="kt">Nil</span>
    <span class="o">|</span> <span class="kt">Cons</span> <span class="n">t</span> <span class="p">(</span><span class="kt">Rc</span> <span class="n">&#39;p</span> <span class="p">(</span><span class="kt">List</span> <span class="n">&#39;p</span> <span class="n">t</span><span class="p">))</span>
@@ -788,7 +903,7 @@ start using <code>Rc</code> to form cycles<sup id="fnref:5"><a href="#fn:5" clas
     <span class="k">var</span> <span class="n">t</span> <span class="ow">=</span> <span class="kt">Rc</span><span class="o">.</span><span class="n">of</span> <span class="p">(</span><span class="kt">Cons</span> <span class="mi">true</span> <span class="n">f</span><span class="p">)</span>             <span class="c1">// true -&gt; false -&gt; []</span>
     <span class="k">if</span> <span class="n">f</span> <span class="k">is</span> <span class="kt">Cons</span> <span class="n">_</span> <span class="n">tail</span> <span class="k">then</span>
         <span class="c1">// tail&#39;s places are &#39;(f!!, a!), so it&#39;d be invalidated by any mutation to f or the shared place &#39;a.</span>
-        <span class="c1">// The later &#39;a invalidation is important to prevent us from using it if we mutate any other shared node.</span>
+        <span class="c1">// The latter &#39;a invalidation is important to prevent us from using it if we mutate any other shared node.</span>
         <span class="n">tail</span> <span class="o">:=</span> <span class="n">t</span>
 
     <span class="n">emit_list</span> <span class="n">t</span>
@@ -800,20 +915,55 @@ start using <code>Rc</code> to form cycles<sup id="fnref:5"><a href="#fn:5" clas
     <span class="k">if</span> <span class="n">l</span> <span class="k">is</span> <span class="kt">Cons</span> <span class="n">elem</span> <span class="n">tail</span> <span class="k">then</span>
         <span class="n">emit</span> <span class="n">elem</span>
         <span class="n">emit_list</span> <span class="n">tail</span>
-</code></pre></div><p>To my knowledge, no other borrow-checked language can safely represent cyclic mutation
-without runtime checks like this!<sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup></p>
-<p>If we wanted, we could even use <code>shared mut type</code> sugar to simplify things a bit, see
+</code></pre></div><p>This pattern is very similar to using <a href="https://plv.mpi-sws.org/rustbelt/ghostcell/">GhostCell</a> in Rust,
+but in a more ergonomic (no more <code>GhostToken</code>), built-in way. I&rsquo;ll also emphasize that these checks are
+<em>entirely static</em> with <em>no runtime checks</em>.</p>
+<p>If we wanted, we could even use <code>shared mut type</code> sugar to simplify things a bit. See
 <a href="/docs/language#shared-mutable-types">the relevant section in the docs</a> for that.</p>
 <hr>
+<h1 id="extras">Extras</h1>
+<p>Here are some details I couldn&rsquo;t find a good place for elsewhere in the article:</p>
+<h2 id="loops">Loops</h2>
+<p>Loops and branching in general are fairly straightforward. They largely follow the same rules
+ownership has where an error is issued if a variable declared outside of the loop is
+invalidated within it:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">var</span> <span class="n">v</span> <span class="ow">=</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="nf">one</span> <span class="ow">=</span> <span class="n">v</span><span class="o">.</span><span class="n">get</span> <span class="mi">0</span>
+
+<span class="k">for</span> <span class="n">_</span> <span class="k">in</span> <span class="mi">0</span> <span class="o">..</span> <span class="mi">3</span> <span class="k">do</span>
+    <span class="n">println</span> <span class="n">one</span>  <span class="c1">// error: one may be invalidated by a later mutation in the for loop</span>
+    <span class="n">v</span><span class="o">.</span><span class="n">clear</span> <span class="p">()</span>   <span class="c1">// note: one invalidated here</span>
+</code></pre></div><p>Similarly, any closure which invalidates any part of its captured environment is treated
+as a <code>FnOnce</code> in Rust terms, preventing it from being called more than a single time.</p>
+<blockquote>
+<p>Ante has effect handlers too! Control-flow for them is more complex and the rules
+for how they interact with invalidations of unstable places are <a href="/docs/language/#in-traits-and-effect-handlers">documented here</a>,
+but are subject to change (I think they&rsquo;re a bit hacky). Note that <code>handle</code> interactions
+with unstable places are (at the time of writing) still unimplemented.</p>
+</blockquote>
+<h2 id="multi-threading">Multi-threading</h2>
+<p>With more permissive shared mutability, how does Ante maintain thread-safety?</p>
+<p>There&rsquo;s not a very interesting answer here. Ante simply copies Rust&rsquo;s <code>Send</code>/<code>Sync</code> traits.
+<code>ref</code>/<code>mut</code> references both allow for shared mutability and thus implement neither trait.</p>
+<p>Instead, Ante has additional reference kinds <code>imm</code> and <code>uniq</code> which correspond to Rust&rsquo;s
+<code>&amp;</code> and <code>&amp;mut</code>. These references are <em>very rarely used</em> - they&rsquo;re more or less only used
+in multi-threaded code where after passing a thread boundary they can degrade back to <code>ref</code>/<code>mut</code>
+to call functions.</p>
+<blockquote>
+<p>In the future, the kind of a reference will be attached to the place variable to more easily
+write code which is polymorphic over any reference kind.</p>
+</blockquote>
+<hr>
 <h1 id="summary">Summary</h1>
-<p>This was a lot! Thanks for anyone sticking around to the end! It&rsquo;s a lot to grok at once but despite the length
-this article ended up being I do think the core concepts aren&rsquo;t that complex. The main mental model is in keeping
-track of the <em>places</em> a reference may borrow from, and whether any are unstable.</p>
-<p>This article is mostly a restating of ante&rsquo;s <a href="/docs/language#Shared-Mutability-and-Stability">shared mutability rules</a>
-in its documentation, but I wanted to write an article version of it to follow up the original shared mutability article and
+<p>This was a lot! Thanks to anyone sticking around to the end! It&rsquo;s a lot to grok at once but despite the length
+this article ended up being, I do think the core concepts aren&rsquo;t <em>that</em> complex. There are certainly rules to be
+had but most are in service of making the language more flexible and making more code &ldquo;just work.&rdquo; The main
+mental model is keeping track of the <em>places</em> a reference may borrow from, and whether any are unstable.</p>
+<p>This article is mostly a restating of Ante&rsquo;s <a href="/docs/language#shared-mutability-and-stability">shared mutability rules</a>
+documentation, but I wanted to write an article version of it to follow up the original shared mutability article and
 to speak on some motivations behind the change.</p>
 <p>If any of this interests you, join <a href="https://discord.gg/NPJncGBAws">Ante&rsquo;s Discord</a> to keep up with the language and ask me questions!
-You can also clone the compiler at <a href="https://github.com/jfecher/ante">github page</a> to try out the language yourself.</p>
+You can also clone the compiler at <a href="https://github.com/jfecher/ante">GitHub page</a> to try out the language yourself.</p>
 <section class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
@@ -826,22 +976,33 @@ types by default and no pervasive GC. If you have a preferred definition, let me
 the previous design did.&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:3" role="doc-endnote">
-<p>This article won&rsquo;t go over thread-safety! Although thread-safe, the current rules are a bit in flux
-as I am still in search of a simpler design.&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p>It wouldn&rsquo;t be sound in Rust since multiple <code>&amp;mut</code> references to the same
+data would violate aliasing assumptions, but it should be in our target semantics!&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:4" role="doc-endnote">
-<p>Any places that were already <code>'p</code> are actually okay. The body of the function
-would already be aware of and check those cases. This enables patterns like passing
-in an immutable container and a mutable reference inside the same container.&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p><code>!</code> on places can nest! <code>'foo!</code> is an unstable place within <code>'foo</code> while <code>'foo!!</code>
+would be an unstable place within that previous unstable place. This could be, for example, a
+String element of a <code>Vec (Vec String)</code>. If a type has multiple sources of instability (e.g. a
+struct holding multiple vectors), an API designer may choose to expose the separate fields, e.g.
+<code>'foo.bar!</code> vs <code>'foo.baz!</code>, or may choose to hide this by coercing to the parent place <code>'foo!</code>.&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:5" role="doc-endnote">
-<p>Using <code>Rc</code> to form cycles still leads to leaks! Some other collection
-mechanism is needed to prevent leaks, but that is a separate issue from the
-mutability of a cycle.&#160;<a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p>Any places that were already <code>'p</code> are actually okay. The body of the function
+would already be aware of and check those cases. This enables patterns like passing
+in an immutable container and a mutable reference inside the same container.&#160;<a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 <li id="fn:6" role="doc-endnote">
-<p>Ante could actually represent it in its previous system as well, but these new rules
-tracking unstable places allow us to do it even more efficiently without incrementing reference counts.&#160;<a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<p>Future versions of Ante will allow for &lsquo;abstract places&rsquo; where structs could
+declare a set of places inside of them to expose, separate from their actual fields.
+Library authors wanting to hide specific struct fields while keeping multiple places
+within the same struct distinct from each other in usual code could make use of this.
+The downside is that since these aren&rsquo;t connected to specific struct fields, it&rsquo;d be
+up to the library author to keep the translation to abstract places sound.&#160;<a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:7" role="doc-endnote">
+<p>Using <code>Rc</code> to form cycles still leads to leaks! Some other collection
+mechanism is needed to prevent leaks, but that is a separate issue from the
+mutability of a cycle.&#160;<a href="#fnref:7" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
 </section>

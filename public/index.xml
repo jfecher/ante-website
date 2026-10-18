@@ -6,7 +6,7 @@
     <description>Recent content on Ante</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 25 May 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://antelang.org/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 17 Oct 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://antelang.org/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Std.C</title>
       <link>https://antelang.org/docs/stdlib/c/</link>
@@ -287,6 +287,16 @@ source
  Vec.is_empty (Vec.is_empty: fn (ref (Vec a)) -&amp;gt; Bool is pure) (v: ref (Vec a)) source
  Vec.len (Vec.len: fn (ref (Vec a)) -&amp;gt; Usz is pure) (v: ref (Vec a)) source
  Vec.capacity (Vec.capacity: fn (ref (Vec a)) -&amp;gt; Usz is pure) (v: ref (Vec a)) source</description>
+    </item>
+    
+    <item>
+      <title>Borrow Checking Zero-Cost Cyclic Mutability</title>
+      <link>https://antelang.org/blog/safe_cyclic_mutability/</link>
+      <pubDate>Sat, 17 Oct 2026 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/blog/safe_cyclic_mutability/</guid>
+      <description>Ante is a low-level1 functional language built on ownership semantics and borrowing, similar to Rust. Unlike Rust, however, a core goal of Ante is to be more lenient in its borrow checker, notably by relaxing Rust&amp;rsquo;s rule that you can either alias a reference or mutate it, but never both at the same time.
+// In Rust: letmutmy_tuple=(1,2);letfirst_elem=&amp;amp;my_tuple.0;// error[E0506]: cannot assign to `my_tuple` because it is borrowed my_tuple=(3,4);println!(&amp;#34;{first_elem}&amp;#34;);I wanted to allow for code like the above while still disallowing code that would lead to dangling pointers, and I wanted to do this entirely statically in the type system.</description>
     </item>
     
     <item>
