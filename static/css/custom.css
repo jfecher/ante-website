@@ -226,8 +226,21 @@ details {
     margin: 0 0 20px;
 }
 
-.toc-details > summary {
-    padding-left: 64px;
+.table-of-contents {
+    overflow-wrap: break-word;
+}
+
+.table-of-contents ul {
+    padding-left: 1em;
+}
+
+.toc-details {
+    margin-left: 2em;
+}
+
+.toc-details > ul,
+.toc-details > ul > ul {
+    padding-left: 0;
 }
 
 .sidebar-pages {

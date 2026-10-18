@@ -264,6 +264,29 @@ String element of a `Vec (Vec String)`. If a type has multiple sources of instab
 struct holding multiple vectors), an API designer may choose to expose the separate fields, e.g.
 `'foo.bar!` vs `'foo.baz!`, or may choose to hide this by coercing to the parent place `'foo!`.
 
+## Loops
+
+Loops and branching in general are fairly straightforward. They largely follow the same rules
+ownership has where an error is issued if a variable declared outside of the loop is
+invalidated within it:
+
+```ante
+var v = Vec.of [1, 2, 3]
+one = v.get 0
+
+for _ in 0 .. 3 do
+    println one  // error: one may be invalidated by a later mutation in the for loop
+    v.clear ()   // note: one invalidated here
+```
+
+Similarly, any closure which invalidates any part of its captured environment is treated
+as a `FnOnce` in Rust terms, preventing it from being called more than a single time.
+
+> Ante has effect handlers too! Control-flow for them is more complex and the rules
+> for how they interact with invalidations of unstable places are [documented here](/docs/language/#in-traits-and-effect-handlers),
+> but are subject to change (I think they're a bit hacky). Note that `handle` interactions
+> with unstable places are (at the time of writing) still unimplemented.
+
 ---
 # Exclusivity
 
@@ -431,35 +454,7 @@ If we wanted, we could even use `shared mut type` sugar to simplify things a bit
 mechanism is needed to prevent leaks, but that is a separate issue from the
 mutability of a cycle.
 
----
-# Extras
-
-Here are some details I couldn't find a good place for elsewhere in the article:
-
-## Loops
-
-Loops and branching in general are fairly straightforward. They largely follow the same rules
-ownership has where an error is issued if a variable declared outside of the loop is
-invalidated within it:
-
-```ante
-var v = Vec.of [1, 2, 3]
-one = v.get 0
-
-for _ in 0 .. 3 do
-    println one  // error: one may be invalidated by a later mutation in the for loop
-    v.clear ()   // note: one invalidated here
-```
-
-Similarly, any closure which invalidates any part of its captured environment is treated
-as a `FnOnce` in Rust terms, preventing it from being called more than a single time.
-
-> Ante has effect handlers too! Control-flow for them is more complex and the rules
-> for how they interact with invalidations of unstable places are [documented here](/docs/language/#in-traits-and-effect-handlers),
-> but are subject to change (I think they're a bit hacky). Note that `handle` interactions
-> with unstable places are (at the time of writing) still unimplemented.
-
-## Multi-threading
+# Note on Multi-threading
 
 With more permissive shared mutability, how does Ante maintain thread-safety?
 
@@ -488,3 +483,5 @@ to speak on some motivations behind the change.
 
 If any of this interests you, join [Ante's Discord](https://discord.gg/NPJncGBAws) to keep up with the language and ask me questions!
 You can also clone the compiler at [GitHub page](https://github.com/jfecher/ante) to try out the language yourself.
+If you are interested in the project, the best way to help would be to help spread the project around
+to get some more visibility on it! Contributing would be appreciated as well of course (the compiler is small and I can help)!

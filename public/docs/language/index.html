@@ -503,8 +503,6 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
-                
                 
                 
                 
@@ -512,8 +510,6 @@
                     <li>Module Namespacing</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -532,8 +528,6 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
-                
                 
                 
                 
@@ -541,8 +535,6 @@
                     <li>Methods</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -2694,13 +2686,13 @@ below are exactly equivalent except for their name.</p>
     <span class="n">print</span> <span class="n">a</span>
     <span class="n">print</span> <span class="n">b</span>
     <span class="n">print</span> <span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>
-</code></pre></div><h3 id="module-namespacing">Module Namespacing</h3>
+</code></pre></div><h2 id="module-namespacing">Module Namespacing</h2>
 <p>By default functions are placed in the current module. Optionally, functions may also
 be placed in a child module by prefixing the function&rsquo;s name with the module name.
 For example:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Foo</span><span class="o">.</span><span class="n">bar</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="kt">U32</span><span class="p">)</span> <span class="p">(</span><span class="n">b</span><span class="o">:</span> <span class="kt">U32</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="ow">=</span>
     <span class="n">print</span> <span class="s">&#34;I am defined in Foo now&#34;</span>
-</code></pre></div><h3 id="methods">Methods</h3>
+</code></pre></div><h2 id="methods">Methods</h2>
 <p>Module namespacing is also how methods are defined. In Ante the <code>.</code> operator can be used
 for method calls as well as field accesses. When used for method calls, the function name
 will be searched for in the module with the same full path as the type of the first argument.</p>

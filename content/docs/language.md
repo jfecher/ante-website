@@ -232,7 +232,7 @@ bar (a: U32) (b: U32): Unit =
     print (a + b)
 ```
 
-### Module Namespacing
+## Module Namespacing
 
 By default functions are placed in the current module. Optionally, functions may also
 be placed in a child module by prefixing the function's name with the module name.
@@ -243,7 +243,7 @@ Foo.bar (a: U32) (b: U32): Unit =
     print "I am defined in Foo now"
 ```
 
-### Methods
+## Methods
 
 Module namespacing is also how methods are defined. In Ante the `.` operator can be used
 for method calls as well as field accesses. When used for method calls, the function name

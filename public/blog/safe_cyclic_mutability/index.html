@@ -394,6 +394,31 @@
                 
                     <ul class="toc-h1">
                 
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/blog/safe_cyclic_mutability/#loops">
+                    <li>Loops</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
                 
                 
                 
@@ -485,60 +510,10 @@
                 
                 
                 
-                <a href="/blog/safe_cyclic_mutability/#extras">
-                    <li>Extras</li>
+                <a href="/blog/safe_cyclic_mutability/#note-on-multi-threading">
+                    <li>Note on Multi-threading</li>
                 </a>
                 
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                    <ul class="toc-h2">
-                
-                
-                
-                
-                <a href="/blog/safe_cyclic_mutability/#loops">
-                    <li>Loops</li>
-                </a>
-                
-                
-                    </ul>
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                    <ul class="toc-h2">
-                
-                
-                
-                
-                <a href="/blog/safe_cyclic_mutability/#multi-threading">
-                    <li>Multi-threading</li>
-                </a>
-                
-                
-                    </ul>
                 
                     </ul>
                 
@@ -808,6 +783,24 @@ free to use both <code>first</code> and <code>last</code> even if they alias.</p
 be a manual choice by users. Any reference through a tagged union or element of a collection
 type will be unstable for example.</p>
 </blockquote>
+<h2 id="loops">Loops</h2>
+<p>Loops and branching in general are fairly straightforward. They largely follow the same rules
+ownership has where an error is issued if a variable declared outside of the loop is
+invalidated within it:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">var</span> <span class="n">v</span> <span class="ow">=</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="nf">one</span> <span class="ow">=</span> <span class="n">v</span><span class="o">.</span><span class="n">get</span> <span class="mi">0</span>
+
+<span class="k">for</span> <span class="n">_</span> <span class="k">in</span> <span class="mi">0</span> <span class="o">..</span> <span class="mi">3</span> <span class="k">do</span>
+    <span class="n">println</span> <span class="n">one</span>  <span class="c1">// error: one may be invalidated by a later mutation in the for loop</span>
+    <span class="n">v</span><span class="o">.</span><span class="n">clear</span> <span class="p">()</span>   <span class="c1">// note: one invalidated here</span>
+</code></pre></div><p>Similarly, any closure which invalidates any part of its captured environment is treated
+as a <code>FnOnce</code> in Rust terms, preventing it from being called more than a single time.</p>
+<blockquote>
+<p>Ante has effect handlers too! Control-flow for them is more complex and the rules
+for how they interact with invalidations of unstable places are <a href="/docs/language/#in-traits-and-effect-handlers">documented here</a>,
+but are subject to change (I think they&rsquo;re a bit hacky). Note that <code>handle</code> interactions
+with unstable places are (at the time of writing) still unimplemented.</p>
+</blockquote>
 <hr>
 <h1 id="exclusivity">Exclusivity</h1>
 <p>It&rsquo;s possible to write functions that are only valid if certain parameters don&rsquo;t alias:</p>
@@ -920,28 +913,7 @@ but in a more ergonomic (no more <code>GhostToken</code>), built-in way. I&rsquo
 <em>entirely static</em> with <em>no runtime checks</em>.</p>
 <p>If we wanted, we could even use <code>shared mut type</code> sugar to simplify things a bit. See
 <a href="/docs/language#shared-mutable-types">the relevant section in the docs</a> for that.</p>
-<hr>
-<h1 id="extras">Extras</h1>
-<p>Here are some details I couldn&rsquo;t find a good place for elsewhere in the article:</p>
-<h2 id="loops">Loops</h2>
-<p>Loops and branching in general are fairly straightforward. They largely follow the same rules
-ownership has where an error is issued if a variable declared outside of the loop is
-invalidated within it:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">var</span> <span class="n">v</span> <span class="ow">=</span> <span class="kt">Vec</span><span class="o">.</span><span class="n">of</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
-<span class="nf">one</span> <span class="ow">=</span> <span class="n">v</span><span class="o">.</span><span class="n">get</span> <span class="mi">0</span>
-
-<span class="k">for</span> <span class="n">_</span> <span class="k">in</span> <span class="mi">0</span> <span class="o">..</span> <span class="mi">3</span> <span class="k">do</span>
-    <span class="n">println</span> <span class="n">one</span>  <span class="c1">// error: one may be invalidated by a later mutation in the for loop</span>
-    <span class="n">v</span><span class="o">.</span><span class="n">clear</span> <span class="p">()</span>   <span class="c1">// note: one invalidated here</span>
-</code></pre></div><p>Similarly, any closure which invalidates any part of its captured environment is treated
-as a <code>FnOnce</code> in Rust terms, preventing it from being called more than a single time.</p>
-<blockquote>
-<p>Ante has effect handlers too! Control-flow for them is more complex and the rules
-for how they interact with invalidations of unstable places are <a href="/docs/language/#in-traits-and-effect-handlers">documented here</a>,
-but are subject to change (I think they&rsquo;re a bit hacky). Note that <code>handle</code> interactions
-with unstable places are (at the time of writing) still unimplemented.</p>
-</blockquote>
-<h2 id="multi-threading">Multi-threading</h2>
+<h1 id="note-on-multi-threading">Note on Multi-threading</h1>
 <p>With more permissive shared mutability, how does Ante maintain thread-safety?</p>
 <p>There&rsquo;s not a very interesting answer here. Ante simply copies Rust&rsquo;s <code>Send</code>/<code>Sync</code> traits.
 <code>ref</code>/<code>mut</code> references both allow for shared mutability and thus implement neither trait.</p>
@@ -963,7 +935,9 @@ mental model is keeping track of the <em>places</em> a reference may borrow from
 documentation, but I wanted to write an article version of it to follow up the original shared mutability article and
 to speak on some motivations behind the change.</p>
 <p>If any of this interests you, join <a href="https://discord.gg/NPJncGBAws">Ante&rsquo;s Discord</a> to keep up with the language and ask me questions!
-You can also clone the compiler at <a href="https://github.com/jfecher/ante">GitHub page</a> to try out the language yourself.</p>
+You can also clone the compiler at <a href="https://github.com/jfecher/ante">GitHub page</a> to try out the language yourself.
+If you are interested in the project, the best way to help would be to help spread the project around
+to get some more visibility on it! Contributing would be appreciated as well of course (the compiler is small and I can help)!</p>
 <section class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
