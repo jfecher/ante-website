@@ -370,7 +370,7 @@ within the same struct distinct from each other in usual code could make use of 
 The downside is that since these aren't connected to specific struct fields, it'd be
 up to the library author to keep the translation to abstract places sound.
 
-## No Need for Polonius
+## Complex Data-Flow
 
 Taking a bit of a step back, I want to show a bit how powerful it is to reframe
 borrow checking in terms of _places_ and _mutations_ rather than lifetimes. Because
@@ -393,8 +393,9 @@ fn get_default<'r, K: Hash + Eq + Copy, V: Default>(
 }
 ```
 
-With Rust's current model, getting the above code working requires more complex flow
-sensitivity (with the next-gen borrow checker called [Polonius](https://goals.rust-lang.org/2026/polonius.html)).
+With Rust's current model, getting the above code working requires a next-gen borrow checker
+called [Polonius](https://goals.rust-lang.org/2026/polonius.html) which models lifetimes as
+something much closer to places (alias sets) than regions of source code.
 In Ante, it just works:
 
 ```ante
@@ -410,7 +411,7 @@ get_default
         map.get_mut key ~> panic_on_fail
 ```
 
-Ante's borrow checker is based on places and thus doesn't try tying references
+Ante's borrow checker is already based on places and thus doesn't try tying references
 to any particular region of code. Instead, since the returned element reference from `map.get_mut`
 is unused in the `None` branch, it doesn't need to be verified at all.
 This should make some intuitive sense. If the reference is never used, it shouldn't matter whether

@@ -470,8 +470,8 @@
                 
                 
                 
-                <a href="/blog/safe_cyclic_mutability/#no-need-for-polonius">
-                    <li>No Need for Polonius</li>
+                <a href="/blog/safe_cyclic_mutability/#complex-data-flow">
+                    <li>Complex Data-Flow</li>
                 </a>
                 
                 
@@ -878,7 +878,7 @@ within <code>ctx</code> to begin with:</p>
 desirable since it&rsquo;d mean <code>entity</code> as an unstable reference wouldn&rsquo;t be valid after the
 call to <code>on_death</code> ends. For other patterns of code though, we may truly need to mutate
 all of <code>'ctx</code> or keep it opaque<sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup> and this would be exactly what we&rsquo;d want.</p>
-<h2 id="no-need-for-polonius">No Need for Polonius</h2>
+<h2 id="complex-data-flow">Complex Data-Flow</h2>
 <p>Taking a bit of a step back, I want to show a bit how powerful it is to reframe
 borrow checking in terms of <em>places</em> and <em>mutations</em> rather than lifetimes. Because
 lifetimes are tied to a region of code, Rust can struggle with complex data-flow:</p>
@@ -896,8 +896,9 @@ lifetimes are tied to a region of code, Rust can struggle with complex data-flow
 </span><span class="w">        </span><span class="p">}</span><span class="w">
 </span><span class="w">    </span><span class="p">}</span><span class="w">
 </span><span class="w"></span><span class="p">}</span><span class="w">
-</span></code></pre></div><p>With Rust&rsquo;s current model, getting the above code working requires more complex flow
-sensitivity (with the next-gen borrow checker called <a href="https://goals.rust-lang.org/2026/polonius.html">Polonius</a>).
+</span></code></pre></div><p>With Rust&rsquo;s current model, getting the above code working requires a next-gen borrow checker
+called <a href="https://goals.rust-lang.org/2026/polonius.html">Polonius</a> which models lifetimes as
+something much closer to places (alias sets) than regions of source code.
 In Ante, it just works:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">get_default</span>
     <span class="p">(</span><span class="n">map</span><span class="o">:</span> <span class="k">mut</span> <span class="n">&#39;r</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span>
@@ -909,7 +910,7 @@ In Ante, it just works:</p>
     <span class="o">|</span> <span class="kt">None</span> <span class="ow">-&gt;</span>
         <span class="n">map</span><span class="o">.</span><span class="n">insert</span> <span class="n">key</span> <span class="p">(</span><span class="n">default</span> <span class="p">())</span>  <span class="c1">// ok!</span>
         <span class="n">map</span><span class="o">.</span><span class="n">get_mut</span> <span class="n">key</span> <span class="o">~&gt;</span> <span class="n">panic_on_fail</span>
-</code></pre></div><p>Ante&rsquo;s borrow checker is based on places and thus doesn&rsquo;t try tying references
+</code></pre></div><p>Ante&rsquo;s borrow checker is already based on places and thus doesn&rsquo;t try tying references
 to any particular region of code. Instead, since the returned element reference from <code>map.get_mut</code>
 is unused in the <code>None</code> branch, it doesn&rsquo;t need to be verified at all.
 This should make some intuitive sense. If the reference is never used, it shouldn&rsquo;t matter whether
