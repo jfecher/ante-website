@@ -1,7 +1,7 @@
 +++
 authors = ["Jake Fecher"]
 title = "Borrow Checking Zero-Cost Cyclic Mutability"
-date = "2026-10-17"
+date = "2026-10-19"
 categories = ["mutability", "thread safety", "memory management"]
 banner = "img/banners/antelope_canyon2.jpg"
 +++
@@ -31,7 +31,7 @@ Now, it has changed again, having blended many elements from
 [group borrowing](https://verdagon.dev/blog/group-borrowing) with my own ideas to produce a more
 radically safe whole.
 In this post, I want to go over the new design and show how it leads to a more flexible kind of safe, shared
-mutability that is expressive enough to even support _cyclic mutability_ safely.
+mutability that is expressive enough to support _cyclic mutability_ and _complex data flow_ safely.
 
 [^low-level]: Low-level is always a contentious term. I'm using it here to mean a language with unboxed
 types by default and no pervasive GC. If you have a preferred definition, let me know!
@@ -369,6 +369,96 @@ Library authors wanting to hide specific struct fields while keeping multiple pl
 within the same struct distinct from each other in usual code could make use of this.
 The downside is that since these aren't connected to specific struct fields, it'd be
 up to the library author to keep the translation to abstract places sound.
+
+## No Need for Polonius
+
+Taking a bit of a step back, I want to show a bit how powerful it is to reframe
+borrow checking in terms of _places_ and _mutations_ rather than lifetimes. Because
+lifetimes are tied to a region of code, Rust can struggle with complex data-flow:
+
+```rs
+fn get_default<'r, K: Hash + Eq + Copy, V: Default>(
+    map: &'r mut HashMap<K, V>,
+    key: K,
+) -> &'r mut V {
+    match map.get_mut(&key) {
+    //    --- first mutable borrow occurs here
+        Some(value) => value,
+        None => {
+            map.insert(key, V::default());
+            //  ^~~~~~ error[E0499]: cannot borrow `*map` as mutable more than once at a time
+            map.get_mut(&key).unwrap()
+        }
+    }
+}
+```
+
+With Rust's current model, getting the above code working requires more complex flow
+sensitivity (with the next-gen borrow checker called [Polonius](https://goals.rust-lang.org/2026/polonius.html)).
+In Ante, it just works:
+
+```ante
+get_default
+    (map: mut 'r HashMap k v)
+    (key: k)
+    {Hash k} {Eq k} {Copy k} {Default v}
+: mut 'r! v can Mutate 'r, Panic =
+    match try do map.get_mut key
+    | Some value -> value
+    | None ->
+        map.insert key (default ())  // ok!
+        map.get_mut key ~> panic_on_fail
+```
+
+Ante's borrow checker is based on places and thus doesn't try tying references
+to any particular region of code. Instead, since the returned element reference from `map.get_mut`
+is unused in the `None` branch, it doesn't need to be verified at all.
+This should make some intuitive sense. If the reference is never used, it shouldn't matter whether
+it's dangling or not.
+
+Let's look at another example:
+
+```rs
+struct Thing;
+
+impl Thing {
+    fn maybe_next(&mut self) -> Option<&mut Self> { None }
+}
+
+fn main() {
+    let mut temp = &mut Thing;
+
+    loop {
+        match temp.maybe_next() {
+        //    ^^^^ error: `*temp` was mutably borrowed here in the previous iteration
+        //         of the loop first borrow used here, in later iteration of loop
+            Some(v) => { temp = v; }
+            None => { }
+        }
+    }
+}
+```
+
+Above, Rust thinks the `maybe_next` borrow may last longer than the loop itself due
+to the `temp = v;` assignment to a variable defined outside of the loop.
+
+```ante
+type Thing = x: Unit
+
+Thing.maybe_next (_: mut Thing): Maybe (mut Thing) = None
+
+main () =
+    var temp = mut Thing ()
+
+    while true do
+        match temp.maybe_next ()  // ok!
+        | Some v -> temp := v
+        | None -> ()
+```
+
+Meanwhile, the equivalent Ante code is okay since `temp` gets some anonymous place `'p`,
+`maybe_next` returns the same `'p`, and the mutation would only invalidate any _unstable_
+references to `'p`.
 
 ---
 # Shared Mutability

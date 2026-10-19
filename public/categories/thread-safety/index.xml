@@ -6,11 +6,11 @@
     <description>Recent content in thread safety on Ante</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 17 Oct 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://antelang.org/categories/thread-safety/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 19 Oct 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://antelang.org/categories/thread-safety/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Borrow Checking Zero-Cost Cyclic Mutability</title>
       <link>https://antelang.org/blog/safe_cyclic_mutability/</link>
-      <pubDate>Sat, 17 Oct 2026 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 19 Oct 2026 00:00:00 +0000</pubDate>
       
       <guid>https://antelang.org/blog/safe_cyclic_mutability/</guid>
       <description>Ante is a low-level1 functional language built on ownership semantics and borrowing, similar to Rust. Unlike Rust, however, a core goal of Ante is to be more lenient in its borrow checker, notably by relaxing Rust&amp;rsquo;s rule that you can either alias a reference or mutate it, but never both at the same time.
