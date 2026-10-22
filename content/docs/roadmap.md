@@ -24,7 +24,6 @@ The following features are unimplemented but are not my top priority to implemen
 - Design & impl of a `comptime` system enough to write your own `derive`s but also cached by the compiler's incremental metadata
 - `Char` is 1 byte rather than 4 currently. There is an open design question of
 whether Ante should use Rust's model for chars (4 bytes), Swift's model (variable bytes), or something else.
-- Bit shift functions
 - Pattern guards such as `| pattern if expr -> ...`
 - Performance guarantees on `for_` to be as fast as the native `for` loop
 - A check to ensure only pure implicit functions can be called implicitly
