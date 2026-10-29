@@ -307,7 +307,7 @@ source
       
       <guid>https://antelang.org/docs/roadmap/</guid>
       <description>Most features on the tour page are currently implemented to varying degrees. Below is a rough list of features being worked on.
-Near Future  Language Server: Better support for struct members and methods Inserting drop automatically after a variable&amp;rsquo;s last use Default handlers for Panic, Print, and some other effects in main Renaming of the Fs, Net primitive effects Compiler option to write inferred types into the file Formatter Rework or removal of ~&amp;gt; operator for effect handling  Futurer The following features are unimplemented but are not my top priority to implement in the near future.</description>
+Near Future  Better effect optimization for non-tail-resumptive effects. Goal is to guarantee Std.Stream.for_ compiles to the same code as a native for loop, and to remove ante&amp;rsquo;s current native for loop. Inserting drop automatically after a variable&amp;rsquo;s last use Default handlers for Panic, Print, and some other effects in main Renaming of the Fs, Net primitive effects Compiler option to write inferred types into the file Formatter Rework or removal of ~&amp;gt; operator for effect handling  Futurer The following features are unimplemented but are not my top priority to implement in the near future.</description>
     </item>
     
     <item>

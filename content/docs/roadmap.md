@@ -9,7 +9,8 @@ list of features being worked on.
 
 # Near Future
 
-- Language Server: Better support for struct members and methods
+- Better effect optimization for non-tail-resumptive effects. Goal is to guarantee `Std.Stream.for_`
+  compiles to the same code as a native `for` loop, and to remove ante's current native `for` loop.
 - Inserting `drop` automatically after a variable's last use
 - Default handlers for `Panic`, `Print`, and some other effects in `main`
 - Renaming of the `Fs`, `Net` primitive effects

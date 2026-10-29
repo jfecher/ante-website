@@ -353,7 +353,8 @@
 list of features being worked on.</p>
 <h1 id="near-future">Near Future</h1>
 <ul>
-<li>Language Server: Better support for struct members and methods</li>
+<li>Better effect optimization for non-tail-resumptive effects. Goal is to guarantee <code>Std.Stream.for_</code>
+compiles to the same code as a native <code>for</code> loop, and to remove ante&rsquo;s current native <code>for</code> loop.</li>
 <li>Inserting <code>drop</code> automatically after a variable&rsquo;s last use</li>
 <li>Default handlers for <code>Panic</code>, <code>Print</code>, and some other effects in <code>main</code></li>
 <li>Renaming of the <code>Fs</code>, <code>Net</code> primitive effects</li>
