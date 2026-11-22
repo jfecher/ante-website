@@ -6,7 +6,7 @@
 <meta name="googlebot" content="index,follow,snippet,archive">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Std.HashSet</title>
+<title>Std.Collections.HashSet</title>
 <meta name="author" content="Jake Fecher" />
 
 
@@ -68,7 +68,7 @@
 
 <meta name="twitter:card" content="summary">
 
-<meta name="twitter:title" content="Std.HashSet">
+<meta name="twitter:title" content="Std.Collections.HashSet">
 
 <meta name="twitter:description" content="">
 
@@ -77,7 +77,7 @@
   <meta name="robots" content="all,follow">
   <meta name="googlebot" content="index,follow,snippet,archive">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Std.HashSet</title>
+  <title>Std.Collections.HashSet</title>
   <meta name="author" content="" />
 
   <meta name="keywords" content="ante, programming, language, antelang, lang">	
@@ -125,7 +125,7 @@
   <link rel="alternate" href="https://antelang.org/index.xml" type="application/rss+xml" title="Ante">
 
   
-  <meta property="og:title" content="Std.HashSet" />
+  <meta property="og:title" content="Std.Collections.HashSet" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://antelang.org/docs/stdlib/hashset//" />
   <meta property="og:image" content="" />
@@ -143,9 +143,9 @@
         <div class="container">
             <div class="navbar-header">
                 <a class="navbar-brand home" href="https://antelang.org/">
-                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="Std.HashSet" class="hidden-xs hidden-sm">
-                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="Std.HashSet" class="visible-xs visible-sm">
-                    <span class="sr-only">Std.HashSet - go to homepage</span>
+                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="Std.Collections.HashSet" class="hidden-xs hidden-sm">
+                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="Std.Collections.HashSet" class="visible-xs visible-sm">
+                    <span class="sr-only">Std.Collections.HashSet - go to homepage</span>
                 </a>
                 
 <div class="navbar-buttons">
@@ -226,7 +226,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h1>Std.HashSet</h1>
+                <h1>Std.Collections.HashSet</h1>
             </div>
         </div>
     </div>
@@ -253,7 +253,25 @@
         
         
         <li>
+            <a href="/docs/stdlib/array/">Std.Array</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/bitwise/">Std.Bitwise</a>
+            
+        </li>
+        
+        
+        <li>
             <a href="/docs/stdlib/c/">Std.C</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/cast/">Std.Cast</a>
             
         </li>
         
@@ -265,37 +283,19 @@
         
         
         <li>
-            <a href="/docs/stdlib/earlyreturn/">Std.EarlyReturn</a>
+            <a href="/docs/stdlib/deque/">Std.Collections.Deque</a>
             
         </li>
         
         
         <li>
-            <a href="/docs/stdlib/env/">Std.Env</a>
-            
-        </li>
-        
-        
-        <li>
-            <a href="/docs/stdlib/fail/">Std.Fail</a>
-            
-        </li>
-        
-        
-        <li>
-            <a href="/docs/stdlib/hash/">Std.Hash</a>
-            
-        </li>
-        
-        
-        <li>
-            <a href="/docs/stdlib/hashmap/">Std.HashMap</a>
+            <a href="/docs/stdlib/hashmap/">Std.Collections.HashMap</a>
             
         </li>
         
         
         <li class="current">
-            <a href="/docs/stdlib/hashset/">Std.HashSet</a>
+            <a href="/docs/stdlib/hashset/">Std.Collections.HashSet</a>
             
 
 
@@ -313,8 +313,8 @@
                 
                 
                 
-                <a href="/docs/stdlib/hashset/#types">
-                    <li>Types</li>
+                <a href="/docs/stdlib/hashset/#functions">
+                    <li>Functions</li>
                 </a>
                 
                 
@@ -336,8 +336,8 @@
                 
                 
                 
-                <a href="/docs/stdlib/hashset/#hashset">
-                    <li>HashSet</li>
+                <a href="/docs/stdlib/hashset/#len">
+                    <li>len</li>
                 </a>
                 
                 
@@ -358,17 +358,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/hashset/#hashsetlen">
-                    <li>HashSet.len</li>
+                <a href="/docs/stdlib/hashset/#is_empty">
+                    <li>is_empty</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -387,17 +383,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/hashset/#hashsetis_empty">
-                    <li>HashSet.is_empty</li>
+                <a href="/docs/stdlib/hashset/#empty">
+                    <li>empty</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -416,17 +408,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/hashset/#hashsetempty">
-                    <li>HashSet.empty</li>
+                <a href="/docs/stdlib/hashset/#of">
+                    <li>of</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -445,17 +433,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/hashset/#hashsetof">
-                    <li>HashSet.of</li>
+                <a href="/docs/stdlib/hashset/#clear">
+                    <li>clear</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -474,17 +458,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/hashset/#hashsetclear">
-                    <li>HashSet.clear</li>
+                <a href="/docs/stdlib/hashset/#contains">
+                    <li>contains</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -503,17 +483,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/hashset/#hashsetcontains">
-                    <li>HashSet.contains</li>
+                <a href="/docs/stdlib/hashset/#insert">
+                    <li>insert</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -532,17 +508,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/hashset/#hashsetinsert">
-                    <li>HashSet.insert</li>
+                <a href="/docs/stdlib/hashset/#remove">
+                    <li>remove</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -561,17 +533,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/hashset/#hashsetremove">
-                    <li>HashSet.remove</li>
+                <a href="/docs/stdlib/hashset/#extend">
+                    <li>extend</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -590,17 +558,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/hashset/#hashsetextend">
-                    <li>HashSet.extend</li>
+                <a href="/docs/stdlib/hashset/#retain">
+                    <li>retain</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -619,17 +583,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/hashset/#hashsetretain">
-                    <li>HashSet.retain</li>
+                <a href="/docs/stdlib/hashset/#merge">
+                    <li>merge</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -648,46 +608,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/hashset/#hashsetmerge">
-                    <li>HashSet.merge</li>
+                <a href="/docs/stdlib/hashset/#keys">
+                    <li>keys</li>
                 </a>
                 
-                
-                    </ul>
-                
-                    </ul>
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                    <ul class="toc-h2">
-                
-                    <ul class="toc-h3">
-                
-                
-                
-                
-                <a href="/docs/stdlib/hashset/#hashsetkeys">
-                    <li>HashSet.keys</li>
-                </a>
-                
-                
-                    </ul>
                 
                     </ul>
                 
@@ -780,8 +707,58 @@
                 
                 
                 
+                <a href="/docs/stdlib/hashset/#clone_hashset">
+                    <li>clone_hashset</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
                 <a href="/docs/stdlib/hashset/#print_hashset">
                     <li>print_hashset</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/hashset/#drop_hashset">
+                    <li>drop_hashset</li>
                 </a>
                 
                 
@@ -799,7 +776,61 @@
         
         
         <li>
+            <a href="/docs/stdlib/heap/">Std.Collections.Heap</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/seq/">Std.Collections.Seq</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/vec/">Std.Collections.Vec</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/earlyreturn/">Std.EarlyReturn</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/env/">Std.Env</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/fail/">Std.Fail</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/hash/">Std.Hash</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/file/">Std.IO.File</a>
+            
+        </li>
+        
+        
+        <li>
             <a href="/docs/stdlib/io/">Std.IO</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/sync/">Std.Sync</a>
             
         </li>
         
@@ -811,19 +842,31 @@
         
         
         <li>
+            <a href="/docs/stdlib/mem/">Std.Mem</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/num/">Std.Num</a>
+            
+        </li>
+        
+        
+        <li>
             <a href="/docs/stdlib/prelude/">Std.Prelude</a>
             
         </li>
         
         
         <li>
-            <a href="/docs/stdlib/rc/">Std.Rc</a>
+            <a href="/docs/stdlib/print/">Std.Print</a>
             
         </li>
         
         
         <li>
-            <a href="/docs/stdlib/seq/">Std.Seq</a>
+            <a href="/docs/stdlib/rc/">Std.Rc</a>
             
         </li>
         
@@ -847,7 +890,31 @@
         
         
         <li>
-            <a href="/docs/stdlib/sync/">Std.Sync</a>
+            <a href="/docs/stdlib/arc/">Std.Sync.Arc</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/atomic/">Std.Sync.Atomic</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/condvar/">Std.Sync.Condvar</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/mutex/">Std.Sync.Mutex</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/thread/">Std.Sync.Thread</a>
             
         </li>
         
@@ -859,13 +926,19 @@
         
         
         <li>
-            <a href="/docs/stdlib/time/">Std.Time</a>
+            <a href="/docs/stdlib/duration/">Std.Time.Duration</a>
             
         </li>
         
         
         <li>
-            <a href="/docs/stdlib/vec/">Std.Vec</a>
+            <a href="/docs/stdlib/instant/">Std.Time.Instant</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/time/">Std.Time</a>
             
         </li>
         
@@ -885,69 +958,65 @@
                         
 
                         <div id="post-content">
-                          <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Std</span><span class="o">.</span><span class="kt">HashSet</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashSet.an">Source</a></p>
+                          <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Std</span><span class="o">.</span><span class="kt">Collections</span><span class="o">.</span><span class="kt">HashSet</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashSet.an">Source</a></p>
 <hr>
-<h1 id="types">Types</h1>
+<h1 id="functions">Functions</h1>
 <hr>
-<h2 id="hashset">HashSet</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">HashSet</span> <span class="n">k</span> <span class="ow">=</span>
-    <span class="n">inner</span><span class="o">:</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="kt">Unit</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashSet.an#L12">source</a></p>
+<h2 id="len">len</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">len</span> <span class="p">(</span><span class="n">set</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">HashSet</span> <span class="n">v</span><span class="p">)</span><span class="o">:</span> <span class="kt">Usz</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashSet.an#L15">source</a></p>
 <hr>
-<h3 id="hashsetlen">HashSet.len</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">HashSet</span><span class="o">.</span><span class="n">len</span> <span class="p">(</span><span class="n">set</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">HashSet</span> <span class="n">v</span><span class="p">)</span><span class="o">:</span> <span class="kt">Usz</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashSet.an#L15">source</a></p>
+<h2 id="is_empty">is_empty</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">is_empty</span> <span class="p">(</span><span class="n">set</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">HashSet</span> <span class="n">k</span><span class="p">)</span><span class="o">:</span> <span class="kt">Bool</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashSet.an#L17">source</a></p>
 <hr>
-<h3 id="hashsetis_empty">HashSet.is_empty</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">HashSet</span><span class="o">.</span><span class="n">is_empty</span> <span class="p">(</span><span class="n">set</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">HashSet</span> <span class="n">k</span><span class="p">)</span><span class="o">:</span> <span class="kt">Bool</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashSet.an#L17">source</a></p>
+<h2 id="empty">empty</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">empty</span> <span class="p">()</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Hash</span> <span class="n">k</span> <span class="n">h</span><span class="p">}</span><span class="o">:</span> <span class="kt">HashSet</span> <span class="n">k</span> <span class="n">h</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashSet.an#L20">source</a></p>
 <hr>
-<h3 id="hashsetempty">HashSet.empty</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">HashSet</span><span class="o">.</span><span class="n">empty</span> <span class="p">()</span><span class="o">:</span> <span class="kt">HashSet</span> <span class="n">k</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashSet.an#L20">source</a></p>
+<h2 id="of">of</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">of</span> <span class="p">(</span><span class="n">stream</span><span class="o">:</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Stream</span> <span class="n">s</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Hash</span> <span class="n">k</span> <span class="n">h</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">k</span> <span class="n">d</span><span class="p">}</span><span class="o">:</span> <span class="kt">HashSet</span> <span class="n">k</span> <span class="n">h</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">d</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashSet.an#L22">source</a></p>
 <hr>
-<h3 id="hashsetof">HashSet.of</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">HashSet</span><span class="o">.</span><span class="n">of</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Stream</span> <span class="n">s</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Hash</span> <span class="n">k</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">HashSet</span> <span class="n">k</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashSet.an#L22">source</a></p>
+<h2 id="clear">clear</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">clear</span> <span class="p">(</span><span class="n">set</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">HashSet</span> <span class="n">k</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">k</span> <span class="n">d</span><span class="p">}</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="n">d</span><span class="p">,</span> <span class="kt">Mutate</span> <span class="n">&#39;set</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashSet.an#L27">source</a></p>
 <hr>
-<h3 id="hashsetclear">HashSet.clear</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">HashSet</span><span class="o">.</span><span class="n">clear</span> <span class="p">(</span><span class="n">set</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">HashSet</span> <span class="n">k</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashSet.an#L27">source</a></p>
+<h2 id="contains">contains</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">contains</span> <span class="p">(</span><span class="n">set</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">HashSet</span> <span class="n">k</span><span class="p">)</span> <span class="p">(</span><span class="n">key</span><span class="o">:</span> <span class="k">ref</span> <span class="n">k</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Bool</span> <span class="k">can</span> <span class="n">e</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashSet.an#L30">source</a></p>
 <hr>
-<h3 id="hashsetcontains">HashSet.contains</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">HashSet</span><span class="o">.</span><span class="n">contains</span> <span class="p">(</span><span class="n">set</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">HashSet</span> <span class="n">k</span><span class="p">)</span> <span class="p">(</span><span class="n">key</span><span class="o">:</span> <span class="k">ref</span> <span class="n">k</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Hash</span> <span class="n">k</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Bool</span> <span class="k">can</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashSet.an#L30">source</a></p>
-<hr>
-<h3 id="hashsetinsert">HashSet.insert</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">HashSet</span><span class="o">.</span><span class="n">insert</span> <span class="p">(</span><span class="n">set</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">HashSet</span> <span class="n">k</span><span class="p">)</span> <span class="p">(</span><span class="n">key</span><span class="o">:</span> <span class="n">k</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Hash</span> <span class="n">k</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Bool</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="n">e</span>
+<h2 id="insert">insert</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">insert</span> <span class="p">(</span><span class="n">set</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">HashSet</span> <span class="n">k</span><span class="p">)</span> <span class="p">(</span><span class="n">key</span><span class="o">:</span> <span class="n">k</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">k</span> <span class="n">d</span><span class="p">}</span><span class="o">:</span> <span class="kt">Bool</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="kt">Mutate</span> <span class="n">&#39;set</span>
 </code></pre></div><p>Insert a new element into the HashSet
 Returns True if the key is newly inserted
 Returns False if the key already existed</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashSet.an#L36">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashSet.an#L36">source</a></p>
 <hr>
-<h3 id="hashsetremove">HashSet.remove</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">HashSet</span><span class="o">.</span><span class="n">remove</span> <span class="p">(</span><span class="n">set</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">HashSet</span> <span class="n">k</span><span class="p">)</span> <span class="p">(</span><span class="n">key</span><span class="o">:</span> <span class="k">ref</span> <span class="n">k</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Hash</span> <span class="n">k</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Bool</span> <span class="k">can</span> <span class="n">e</span>
+<h2 id="remove">remove</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">remove</span> <span class="p">(</span><span class="n">set</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">HashSet</span> <span class="n">k</span><span class="p">)</span> <span class="p">(</span><span class="n">key</span><span class="o">:</span> <span class="k">ref</span> <span class="n">k</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">k</span> <span class="n">d</span><span class="p">}</span><span class="o">:</span> <span class="kt">Bool</span> <span class="k">can</span> <span class="n">e</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="kt">Mutate</span> <span class="n">&#39;set</span>
 </code></pre></div><p>Remove an element from the HashSet
 Returns True if the key existed and was removed
 Return False if the key was not present in the HashSet</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashSet.an#L42">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashSet.an#L42">source</a></p>
 <hr>
-<h3 id="hashsetextend">HashSet.extend</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">HashSet</span><span class="o">.</span><span class="n">extend</span> <span class="p">(</span><span class="n">set</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">HashSet</span> <span class="n">k</span><span class="p">)</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Stream</span> <span class="n">s</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Hash</span> <span class="n">k</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashSet.an#L45">source</a></p>
+<h2 id="extend">extend</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">extend</span> <span class="p">(</span><span class="n">set</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">HashSet</span> <span class="n">k</span><span class="p">)</span> <span class="p">(</span><span class="n">stream</span><span class="o">:</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Stream</span> <span class="n">s</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">k</span> <span class="n">d</span><span class="p">}</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="kt">Mutate</span> <span class="n">&#39;set</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashSet.an#L45">source</a></p>
 <hr>
-<h3 id="hashsetretain">HashSet.retain</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">HashSet</span><span class="o">.</span><span class="n">retain</span> <span class="p">(</span><span class="n">set</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">HashSet</span> <span class="n">k</span><span class="p">)</span> <span class="p">(</span><span class="n">predicate</span><span class="o">:</span> <span class="k">fn</span> <span class="n">k</span> <span class="p">[</span><span class="n">_</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Copy</span> <span class="n">k</span><span class="p">}</span><span class="o">:</span> <span class="kt">Unit</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashSet.an#L49">source</a></p>
+<h2 id="retain">retain</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">retain</span> <span class="p">(</span><span class="n">set</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">HashSet</span> <span class="n">k</span><span class="p">)</span> <span class="p">(</span><span class="n">predicate</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">k</span><span class="p">)</span> <span class="p">[</span><span class="n">env</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">k</span> <span class="n">d</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">env</span> <span class="n">d</span><span class="p">}</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="n">d</span><span class="p">,</span> <span class="kt">Mutate</span> <span class="n">&#39;set</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashSet.an#L49">source</a></p>
 <hr>
-<h3 id="hashsetmerge">HashSet.merge</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">HashSet</span><span class="o">.</span><span class="n">merge</span> <span class="p">(</span><span class="n">dst</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">HashSet</span> <span class="n">k</span><span class="p">)</span> <span class="p">(</span><span class="n">src</span><span class="o">:</span> <span class="kt">HashSet</span> <span class="n">k</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Hash</span> <span class="n">k</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashSet.an#L57">source</a></p>
+<h2 id="merge">merge</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">merge</span> <span class="p">(</span><span class="n">dst</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">HashSet</span> <span class="n">k</span> <span class="n">h</span><span class="p">)</span> <span class="p">(</span><span class="n">src</span><span class="o">:</span> <span class="kt">HashSet</span> <span class="n">k</span> <span class="n">h</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">k</span> <span class="n">d</span><span class="p">}</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="kt">Mutate</span> <span class="n">&#39;dst</span>
+</code></pre></div><p>Insert every key of <code>src</code> into <code>dst</code>.</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashSet.an#L53">source</a></p>
 <hr>
-<h3 id="hashsetkeys">HashSet.keys</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="kt">HashSet</span><span class="o">.</span><span class="n">keys</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="p">(</span><span class="kt">HashSet</span> <span class="n">k</span><span class="p">))</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[(</span><span class="k">ref</span> <span class="p">(</span><span class="kt">HashMap</span> <span class="n">k</span> <span class="kt">Unit</span><span class="p">))]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="n">k</span><span class="p">)</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">set</span><span class="o">:</span> <span class="k">ref</span> <span class="p">(</span><span class="kt">HashSet</span> <span class="n">k</span><span class="p">))</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashSet.an#L60">source</a></p>
+<h2 id="keys">keys</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">keys</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="p">((</span><span class="n">error</span><span class="p">)</span> <span class="n">k</span><span class="p">))</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[(</span><span class="k">ref</span> <span class="p">((</span><span class="n">error</span><span class="p">)</span> <span class="n">_</span> <span class="n">_</span><span class="p">))]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="p">(</span><span class="n">error</span><span class="p">)</span> <span class="p">(</span><span class="k">ref</span> <span class="n">_</span><span class="p">))</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">set</span><span class="o">:</span> <span class="k">ref</span> <span class="p">((</span><span class="n">error</span><span class="p">)</span> <span class="n">k</span><span class="p">))</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashSet.an#L56">source</a></p>
 <hr>
 <h1 id="implicits">Implicits</h1>
 <hr>
@@ -955,15 +1024,23 @@ Return False if the key was not present in the HashSet</p>
 <summary>Show Implicits</summary>
 <h2 id="stream_set">stream_set</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">stream_set</span><span class="o">:</span> <span class="kt">Stream</span> <span class="p">(</span><span class="kt">HashSet</span> <span class="n">k</span><span class="p">)</span> <span class="n">k</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashSet.an#L63">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashSet.an#L59">source</a></p>
 <hr>
 <h2 id="stream_ref_hashset">stream_ref_hashset</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">stream_ref_hashset</span><span class="o">:</span> <span class="kt">Stream</span> <span class="p">(</span><span class="k">ref</span> <span class="kt">HashSet</span> <span class="n">k</span><span class="p">)</span> <span class="n">k</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashSet.an#L70">source</a></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">stream_ref_hashset</span><span class="o">:</span> <span class="kt">Stream</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="kt">HashSet</span> <span class="n">k</span><span class="p">)</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="n">k</span><span class="p">)</span> <span class="n">pure</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashSet.an#L62">source</a></p>
+<hr>
+<h2 id="clone_hashset">clone_hashset</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">clone_hashset</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Clone</span> <span class="n">k</span><span class="p">}</span><span class="o">:</span> <span class="kt">Clone</span> <span class="p">(</span><span class="kt">HashSet</span> <span class="n">k</span><span class="p">)</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashSet.an#L70">source</a></p>
 <hr>
 <h2 id="print_hashset">print_hashset</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">print_hashset</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Display</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Display</span> <span class="p">(</span><span class="kt">HashSet</span> <span class="n">k</span><span class="p">)</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashSet.an#L75">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashSet.an#L73">source</a></p>
+<hr>
+<h2 id="drop_hashset">drop_hashset</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">drop_hashset</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">k</span> <span class="n">d</span><span class="p">}</span><span class="o">:</span> <span class="kt">Drop</span> <span class="p">(</span><span class="kt">HashSet</span> <span class="n">k</span> <span class="n">h</span><span class="p">)</span> <span class="n">d</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashSet.an#L87">source</a></p>
 </details>
 
                         </div>

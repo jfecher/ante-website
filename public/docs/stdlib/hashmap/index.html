@@ -6,7 +6,7 @@
 <meta name="googlebot" content="index,follow,snippet,archive">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Std.HashMap</title>
+<title>Std.Collections.HashMap</title>
 <meta name="author" content="Jake Fecher" />
 
 
@@ -68,7 +68,7 @@
 
 <meta name="twitter:card" content="summary">
 
-<meta name="twitter:title" content="Std.HashMap">
+<meta name="twitter:title" content="Std.Collections.HashMap">
 
 <meta name="twitter:description" content="">
 
@@ -77,7 +77,7 @@
   <meta name="robots" content="all,follow">
   <meta name="googlebot" content="index,follow,snippet,archive">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Std.HashMap</title>
+  <title>Std.Collections.HashMap</title>
   <meta name="author" content="" />
 
   <meta name="keywords" content="ante, programming, language, antelang, lang">	
@@ -125,7 +125,7 @@
   <link rel="alternate" href="https://antelang.org/index.xml" type="application/rss+xml" title="Ante">
 
   
-  <meta property="og:title" content="Std.HashMap" />
+  <meta property="og:title" content="Std.Collections.HashMap" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://antelang.org/docs/stdlib/hashmap//" />
   <meta property="og:image" content="" />
@@ -143,9 +143,9 @@
         <div class="container">
             <div class="navbar-header">
                 <a class="navbar-brand home" href="https://antelang.org/">
-                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="Std.HashMap" class="hidden-xs hidden-sm">
-                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="Std.HashMap" class="visible-xs visible-sm">
-                    <span class="sr-only">Std.HashMap - go to homepage</span>
+                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="Std.Collections.HashMap" class="hidden-xs hidden-sm">
+                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="Std.Collections.HashMap" class="visible-xs visible-sm">
+                    <span class="sr-only">Std.Collections.HashMap - go to homepage</span>
                 </a>
                 
 <div class="navbar-buttons">
@@ -226,7 +226,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h1>Std.HashMap</h1>
+                <h1>Std.Collections.HashMap</h1>
             </div>
         </div>
     </div>
@@ -253,7 +253,25 @@
         
         
         <li>
+            <a href="/docs/stdlib/array/">Std.Array</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/bitwise/">Std.Bitwise</a>
+            
+        </li>
+        
+        
+        <li>
             <a href="/docs/stdlib/c/">Std.C</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/cast/">Std.Cast</a>
             
         </li>
         
@@ -265,31 +283,13 @@
         
         
         <li>
-            <a href="/docs/stdlib/earlyreturn/">Std.EarlyReturn</a>
-            
-        </li>
-        
-        
-        <li>
-            <a href="/docs/stdlib/env/">Std.Env</a>
-            
-        </li>
-        
-        
-        <li>
-            <a href="/docs/stdlib/fail/">Std.Fail</a>
-            
-        </li>
-        
-        
-        <li>
-            <a href="/docs/stdlib/hash/">Std.Hash</a>
+            <a href="/docs/stdlib/deque/">Std.Collections.Deque</a>
             
         </li>
         
         
         <li class="current">
-            <a href="/docs/stdlib/hashmap/">Std.HashMap</a>
+            <a href="/docs/stdlib/hashmap/">Std.Collections.HashMap</a>
             
 
 
@@ -330,584 +330,404 @@
                 
                 
                 
-                <a href="/docs/stdlib/hashmap/#hashmap">
-                    <li>HashMap</li>
-                </a>
-                
-                
-                    </ul>
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                    <ul class="toc-h2">
-                
-                    <ul class="toc-h3">
-                
-                
-                
-                
-                <a href="/docs/stdlib/hashmap/#hashmaplen">
-                    <li>HashMap.len</li>
-                </a>
-                
-                
-                    </ul>
-                
-                    </ul>
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                    <ul class="toc-h2">
-                
-                    <ul class="toc-h3">
-                
-                
-                
-                
-                <a href="/docs/stdlib/hashmap/#hashmapis_empty">
-                    <li>HashMap.is_empty</li>
-                </a>
-                
-                
-                    </ul>
-                
-                    </ul>
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                    <ul class="toc-h2">
-                
-                    <ul class="toc-h3">
-                
-                
-                
-                
-                <a href="/docs/stdlib/hashmap/#hashmapempty">
-                    <li>HashMap.empty</li>
-                </a>
-                
-                
-                    </ul>
-                
-                    </ul>
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                    <ul class="toc-h2">
-                
-                    <ul class="toc-h3">
-                
-                
-                
-                
-                <a href="/docs/stdlib/hashmap/#hashmapof">
-                    <li>HashMap.of</li>
-                </a>
-                
-                
-                    </ul>
-                
-                    </ul>
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                    <ul class="toc-h2">
-                
-                    <ul class="toc-h3">
-                
-                
-                
-                
-                <a href="/docs/stdlib/hashmap/#hashmapextend">
-                    <li>HashMap.extend</li>
-                </a>
-                
-                
-                    </ul>
-                
-                    </ul>
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                    <ul class="toc-h2">
-                
-                    <ul class="toc-h3">
-                
-                
-                
-                
-                <a href="/docs/stdlib/hashmap/#hashmapclear">
-                    <li>HashMap.clear</li>
-                </a>
-                
-                
-                    </ul>
-                
-                    </ul>
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                    <ul class="toc-h2">
-                
-                    <ul class="toc-h3">
-                
-                
-                
-                
-                <a href="/docs/stdlib/hashmap/#hashmapresize">
-                    <li>HashMap.resize</li>
-                </a>
-                
-                
-                    </ul>
-                
-                    </ul>
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                    <ul class="toc-h2">
-                
-                    <ul class="toc-h3">
-                
-                
-                
-                
-                <a href="/docs/stdlib/hashmap/#hashmapshould_resize">
-                    <li>HashMap.should_resize</li>
-                </a>
-                
-                
-                    </ul>
-                
-                    </ul>
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                    <ul class="toc-h2">
-                
-                    <ul class="toc-h3">
-                
-                
-                
-                
-                <a href="/docs/stdlib/hashmap/#hashmapinsert">
-                    <li>HashMap.insert</li>
-                </a>
-                
-                
-                    </ul>
-                
-                    </ul>
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                    <ul class="toc-h2">
-                
-                    <ul class="toc-h3">
-                
-                
-                
-                
-                <a href="/docs/stdlib/hashmap/#hashmapget_entry">
-                    <li>HashMap.get_entry</li>
-                </a>
-                
-                
-                    </ul>
-                
-                    </ul>
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                    <ul class="toc-h2">
-                
-                    <ul class="toc-h3">
-                
-                
-                
-                
-                <a href="/docs/stdlib/hashmap/#hashmapget">
-                    <li>HashMap.get</li>
-                </a>
-                
-                
-                    </ul>
-                
-                    </ul>
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                    <ul class="toc-h2">
-                
-                    <ul class="toc-h3">
-                
-                
-                
-                
-                <a href="/docs/stdlib/hashmap/#hashmapcontains">
-                    <li>HashMap.contains</li>
-                </a>
-                
-                
-                    </ul>
-                
-                    </ul>
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                    <ul class="toc-h2">
-                
-                    <ul class="toc-h3">
-                
-                
-                
-                
-                <a href="/docs/stdlib/hashmap/#hashmapremove">
-                    <li>HashMap.remove</li>
-                </a>
-                
-                
-                    </ul>
-                
-                    </ul>
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                    <ul class="toc-h2">
-                
-                    <ul class="toc-h3">
-                
-                
-                
-                
-                <a href="/docs/stdlib/hashmap/#hashmapkeys">
-                    <li>HashMap.keys</li>
-                </a>
-                
-                
-                    </ul>
-                
-                    </ul>
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                    <ul class="toc-h2">
-                
-                    <ul class="toc-h3">
-                
-                
-                
-                
-                <a href="/docs/stdlib/hashmap/#hashmapvalues">
-                    <li>HashMap.values</li>
-                </a>
-                
-                
-                    </ul>
-                
-                    </ul>
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                    <ul class="toc-h2">
-                
-                    <ul class="toc-h3">
-                
-                
-                
-                
-                <a href="/docs/stdlib/hashmap/#hashmapget_or_insert">
-                    <li>HashMap.get_or_insert</li>
-                </a>
-                
-                
-                    </ul>
-                
-                    </ul>
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                    <ul class="toc-h2">
-                
-                    <ul class="toc-h3">
-                
-                
-                
-                
-                <a href="/docs/stdlib/hashmap/#hashmapget_or_insert_with">
-                    <li>HashMap.get_or_insert_with</li>
-                </a>
-                
-                
-                    </ul>
-                
-                    </ul>
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                    <ul class="toc-h2">
-                
-                    <ul class="toc-h3">
-                
-                
-                
-                
-                <a href="/docs/stdlib/hashmap/#hashmapretain">
-                    <li>HashMap.retain</li>
-                </a>
-                
-                
-                    </ul>
-                
-                    </ul>
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                    <ul class="toc-h2">
-                
-                    <ul class="toc-h3">
-                
-                
-                
-                
-                <a href="/docs/stdlib/hashmap/#hashmapmerge">
-                    <li>HashMap.merge</li>
-                </a>
-                
-                
-                    </ul>
-                
-                    </ul>
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                    <ul class="toc-h2">
-                
-                
-                
-                
                 <a href="/docs/stdlib/hashmap/#entry">
                     <li>Entry</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                
+                
+                
+                <a href="/docs/stdlib/hashmap/#functions">
+                    <li>Functions</li>
+                </a>
+                
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/hashmap/#len">
+                    <li>len</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/hashmap/#is_empty">
+                    <li>is_empty</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/hashmap/#empty">
+                    <li>empty</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/hashmap/#of">
+                    <li>of</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/hashmap/#extend">
+                    <li>extend</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/hashmap/#clear">
+                    <li>clear</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/hashmap/#resize">
+                    <li>resize</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/hashmap/#should_resize">
+                    <li>should_resize</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/hashmap/#insert">
+                    <li>insert</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/hashmap/#contains">
+                    <li>contains</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/hashmap/#remove">
+                    <li>remove</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/hashmap/#keys">
+                    <li>keys</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/hashmap/#values">
+                    <li>values</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/hashmap/#retain">
+                    <li>retain</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/hashmap/#merge">
+                    <li>merge</li>
                 </a>
                 
                 
@@ -989,6 +809,156 @@
             
         
     
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/hashmap/#stream_ref_map">
+                    <li>stream_ref_map</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/hashmap/#insert_hashmap">
+                    <li>insert_hashmap</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/hashmap/#clone_hashmap">
+                    <li>clone_hashmap</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/hashmap/#drop_entry">
+                    <li>drop_entry</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/hashmap/#drop_hashmap">
+                    <li>drop_hashmap</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/hashmap/#eq_hashmap">
+                    <li>eq_hashmap</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
 </div>
 
 
@@ -996,7 +966,55 @@
         
         
         <li>
-            <a href="/docs/stdlib/hashset/">Std.HashSet</a>
+            <a href="/docs/stdlib/hashset/">Std.Collections.HashSet</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/heap/">Std.Collections.Heap</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/seq/">Std.Collections.Seq</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/vec/">Std.Collections.Vec</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/earlyreturn/">Std.EarlyReturn</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/env/">Std.Env</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/fail/">Std.Fail</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/hash/">Std.Hash</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/file/">Std.IO.File</a>
             
         </li>
         
@@ -1008,7 +1026,25 @@
         
         
         <li>
+            <a href="/docs/stdlib/sync/">Std.Sync</a>
+            
+        </li>
+        
+        
+        <li>
             <a href="/docs/stdlib/math/">Std.Math</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/mem/">Std.Mem</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/num/">Std.Num</a>
             
         </li>
         
@@ -1020,13 +1056,13 @@
         
         
         <li>
-            <a href="/docs/stdlib/rc/">Std.Rc</a>
+            <a href="/docs/stdlib/print/">Std.Print</a>
             
         </li>
         
         
         <li>
-            <a href="/docs/stdlib/seq/">Std.Seq</a>
+            <a href="/docs/stdlib/rc/">Std.Rc</a>
             
         </li>
         
@@ -1050,7 +1086,31 @@
         
         
         <li>
-            <a href="/docs/stdlib/sync/">Std.Sync</a>
+            <a href="/docs/stdlib/arc/">Std.Sync.Arc</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/atomic/">Std.Sync.Atomic</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/condvar/">Std.Sync.Condvar</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/mutex/">Std.Sync.Mutex</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/thread/">Std.Sync.Thread</a>
             
         </li>
         
@@ -1062,13 +1122,19 @@
         
         
         <li>
-            <a href="/docs/stdlib/time/">Std.Time</a>
+            <a href="/docs/stdlib/duration/">Std.Time.Duration</a>
             
         </li>
         
         
         <li>
-            <a href="/docs/stdlib/vec/">Std.Vec</a>
+            <a href="/docs/stdlib/instant/">Std.Time.Instant</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/time/">Std.Time</a>
             
         </li>
         
@@ -1088,108 +1154,10 @@
                         
 
                         <div id="post-content">
-                          <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Std</span><span class="o">.</span><span class="kt">HashMap</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashMap.an">Source</a></p>
+                          <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Std</span><span class="o">.</span><span class="kt">Collections</span><span class="o">.</span><span class="kt">HashMap</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashMap.an">Source</a></p>
 <hr>
 <h1 id="types">Types</h1>
-<hr>
-<h2 id="hashmap">HashMap</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span> <span class="ow">=</span>
-    <span class="n">len</span><span class="o">:</span> <span class="kt">Usz</span>
-    <span class="n">capacity</span><span class="o">:</span> <span class="kt">Usz</span>
-    <span class="n">entries</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span>
-</code></pre></div><p>A linear-scan mutable HashMap using a resize factor of 2.0</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashMap.an#L12">source</a></p>
-<hr>
-<h3 id="hashmaplen">HashMap.len</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">HashMap</span><span class="o">.</span><span class="n">len</span> <span class="p">(</span><span class="n">m</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span><span class="o">:</span> <span class="kt">Usz</span>
-</code></pre></div><p>Returns the length of this HashMap</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashMap.an#L24">source</a></p>
-<hr>
-<h3 id="hashmapis_empty">HashMap.is_empty</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">HashMap</span><span class="o">.</span><span class="n">is_empty</span> <span class="p">(</span><span class="n">m</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span><span class="o">:</span> <span class="kt">Bool</span>
-</code></pre></div><p>Returns true if this HashMap is empty. Equivalent to <code>map.len () == 0</code></p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashMap.an#L27">source</a></p>
-<hr>
-<h3 id="hashmapempty">HashMap.empty</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="kt">HashMap</span><span class="o">.</span><span class="n">empty</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">HashMap</span> <span class="n">_</span> <span class="n">_</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">()</span>
-</code></pre></div><p>Create a new, empty HashMap
-This will not allocate until the first entry is inserted.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashMap.an#L31">source</a></p>
-<hr>
-<h3 id="hashmapof">HashMap.of</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">HashMap</span><span class="o">.</span><span class="n">of</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Stream</span> <span class="n">s</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Hash</span> <span class="n">k</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="n">e</span>
-</code></pre></div><p>Create a HashMap containing each <code>k, v</code> pair from the given stream.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashMap.an#L34">source</a></p>
-<hr>
-<h3 id="hashmapextend">HashMap.extend</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">HashMap</span><span class="o">.</span><span class="n">extend</span> <span class="p">(</span><span class="n">map</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Stream</span> <span class="n">s</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Hash</span> <span class="n">k</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashMap.an#L39">source</a></p>
-<hr>
-<h3 id="hashmapclear">HashMap.clear</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">HashMap</span><span class="o">.</span><span class="n">clear</span> <span class="p">(</span><span class="n">map</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashMap.an#L42">source</a></p>
-<hr>
-<h3 id="hashmapresize">HashMap.resize</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">HashMap</span><span class="o">.</span><span class="n">resize</span> <span class="p">(</span><span class="n">map</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="p">(</span><span class="n">new_capacity</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Hash</span> <span class="n">k</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashMap.an#L50">source</a></p>
-<hr>
-<h3 id="hashmapshould_resize">HashMap.should_resize</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">HashMap</span><span class="o">.</span><span class="n">should_resize</span> <span class="p">(</span><span class="n">map</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span><span class="o">:</span> <span class="kt">Bool</span>
-</code></pre></div><p>Should we resize this map when pushing another element?</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashMap.an#L68">source</a></p>
-<hr>
-<h3 id="hashmapinsert">HashMap.insert</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">HashMap</span><span class="o">.</span><span class="n">insert</span> <span class="p">(</span><span class="n">map</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="p">(</span><span class="n">key</span><span class="o">:</span> <span class="n">k</span><span class="p">)</span> <span class="p">(</span><span class="n">value</span><span class="o">:</span> <span class="n">v</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Hash</span> <span class="n">k</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="n">v</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="n">e</span>
-</code></pre></div><p>Inserts a key-value pair into the map, removing any item that may previously
-have been associated with the same key and returning the removed value if there was one.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashMap.an#L74">source</a></p>
-<hr>
-<h3 id="hashmapget_entry">HashMap.get_entry</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">HashMap</span><span class="o">.</span><span class="n">get_entry</span> <span class="p">(</span><span class="n">map</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;m</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="p">(</span><span class="n">key</span><span class="o">:</span> <span class="k">ref</span> <span class="n">k</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Hash</span> <span class="n">k</span><span class="p">}</span> <span class="p">{</span><span class="n">eq</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="k">can</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashMap.an#L126">source</a></p>
-<hr>
-<h3 id="hashmapget">HashMap.get</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">HashMap</span><span class="o">.</span><span class="n">get</span> <span class="p">(</span><span class="n">map</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;m</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="p">(</span><span class="n">key</span><span class="o">:</span> <span class="k">ref</span> <span class="n">k</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Hash</span> <span class="n">k</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;m</span> <span class="n">v</span> <span class="k">can</span> <span class="kt">Fail</span><span class="p">,</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashMap.an#L159">source</a></p>
-<hr>
-<h3 id="hashmapcontains">HashMap.contains</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">HashMap</span><span class="o">.</span><span class="n">contains</span> <span class="p">(</span><span class="n">map</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="p">(</span><span class="n">key</span><span class="o">:</span> <span class="k">ref</span> <span class="n">k</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Hash</span> <span class="n">k</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Bool</span> <span class="k">can</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashMap.an#L164">source</a></p>
-<hr>
-<h3 id="hashmapremove">HashMap.remove</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">HashMap</span><span class="o">.</span><span class="n">remove</span> <span class="p">(</span><span class="n">map</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="p">(</span><span class="n">key</span><span class="o">:</span> <span class="k">ref</span> <span class="n">k</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Hash</span> <span class="n">k</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="n">v</span> <span class="k">can</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashMap.an#L167">source</a></p>
-<hr>
-<h3 id="hashmapkeys">HashMap.keys</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="kt">HashMap</span><span class="o">.</span><span class="n">keys</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="p">(</span><span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">))</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[(</span><span class="k">ref</span> <span class="p">(</span><span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">))]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="n">k</span><span class="p">)</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">m</span><span class="o">:</span> <span class="k">ref</span> <span class="p">(</span><span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">))</span>
-</code></pre></div><p>Emit each key. Bit-copies the key; safe for <code>Copy</code> keys.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashMap.an#L201">source</a></p>
-<hr>
-<h3 id="hashmapvalues">HashMap.values</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="kt">HashMap</span><span class="o">.</span><span class="n">values</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="p">(</span><span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">))</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[(</span><span class="k">ref</span> <span class="p">(</span><span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">))]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="n">v</span><span class="p">)</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">m</span><span class="o">:</span> <span class="k">ref</span> <span class="p">(</span><span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">))</span>
-</code></pre></div><p>Emit each value. Bit-copies the value; safe for <code>Copy</code> values.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashMap.an#L207">source</a></p>
-<hr>
-<h3 id="hashmapget_or_insert">HashMap.get_or_insert</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">HashMap</span><span class="o">.</span><span class="n">get_or_insert</span> <span class="p">(</span><span class="n">m</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="p">(</span><span class="n">key</span><span class="o">:</span> <span class="n">k</span><span class="p">)</span> <span class="p">(</span><span class="n">default</span><span class="o">:</span> <span class="n">v</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Hash</span> <span class="n">k</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Copy</span> <span class="n">k</span><span class="p">}</span><span class="o">:</span> <span class="k">ref</span> <span class="n">v</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="n">e</span>
-</code></pre></div><p>Return the existing value at <code>key</code>, or insert <code>default</code> and return it.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashMap.an#L213">source</a></p>
-<hr>
-<h3 id="hashmapget_or_insert_with">HashMap.get_or_insert_with</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">HashMap</span><span class="o">.</span><span class="n">get_or_insert_with</span> <span class="p">(</span><span class="n">m</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="p">(</span><span class="n">key</span><span class="o">:</span> <span class="n">k</span><span class="p">)</span> <span class="p">(</span><span class="n">mk</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[</span><span class="n">_</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="n">v</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Hash</span> <span class="n">k</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Copy</span> <span class="n">k</span><span class="p">}</span><span class="o">:</span> <span class="k">ref</span> <span class="n">v</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="n">e</span>
-</code></pre></div><p>Same as <code>get_or_insert</code> but builds the default lazily.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashMap.an#L219">source</a></p>
-<hr>
-<h3 id="hashmapretain">HashMap.retain</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">HashMap</span><span class="o">.</span><span class="n">retain</span> <span class="p">(</span><span class="n">m</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="p">(</span><span class="n">pred</span><span class="o">:</span> <span class="k">fn</span> <span class="n">k</span> <span class="n">v</span> <span class="p">[</span><span class="n">_</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Copy</span> <span class="n">k</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Copy</span> <span class="n">v</span><span class="p">}</span><span class="o">:</span> <span class="kt">Unit</span>
-</code></pre></div><p>Remove every entry for which <code>pred key value</code> returns false.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashMap.an#L225">source</a></p>
-<hr>
-<h3 id="hashmapmerge">HashMap.merge</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">HashMap</span><span class="o">.</span><span class="n">merge</span> <span class="p">(</span><span class="n">dst</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="p">(</span><span class="n">src</span><span class="o">:</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Hash</span> <span class="n">k</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="n">e</span>
-</code></pre></div><p>Insert every entry from <code>src</code> into <code>dst</code>, overwriting on conflict.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashMap.an#L236">source</a></p>
 <hr>
 <h2 id="entry">Entry</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span> <span class="ow">=</span>
@@ -1197,7 +1165,82 @@ have been associated with the same key and returning the removed value if there 
     <span class="n">value</span><span class="o">:</span> <span class="n">v</span>
     <span class="n">occupied</span><span class="o">:</span> <span class="kt">Bool</span>
     <span class="n">tombstone</span><span class="o">:</span> <span class="kt">Bool</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashMap.an#L17">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashMap.an#L20">source</a></p>
+<hr>
+<h1 id="functions">Functions</h1>
+<hr>
+<h2 id="len">len</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">len</span> <span class="p">(</span><span class="n">m</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span><span class="o">:</span> <span class="kt">Usz</span>
+</code></pre></div><p>Returns the length of this HashMap</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashMap.an#L27">source</a></p>
+<hr>
+<h2 id="is_empty">is_empty</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">is_empty</span> <span class="p">(</span><span class="n">m</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span><span class="o">:</span> <span class="kt">Bool</span>
+</code></pre></div><p>Returns true if this HashMap is empty. Equivalent to <code>map.len () == 0</code></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashMap.an#L30">source</a></p>
+<hr>
+<h2 id="empty">empty</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">empty</span> <span class="p">()</span> <span class="p">{</span><span class="n">hasher</span><span class="o">:</span> <span class="kt">Hash</span> <span class="n">k</span> <span class="n">h</span><span class="p">}</span><span class="o">:</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span> <span class="n">h</span>
+</code></pre></div><p>Create a new, empty HashMap
+This will not allocate until the first entry is inserted.</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashMap.an#L34">source</a></p>
+<hr>
+<h2 id="of">of</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">of</span> <span class="p">(</span><span class="n">stream</span><span class="o">:</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Stream</span> <span class="n">s</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Hash</span> <span class="n">k</span> <span class="n">h</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">k</span> <span class="n">d</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">v</span> <span class="n">d</span><span class="p">}</span><span class="o">:</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span> <span class="n">h</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">d</span>
+</code></pre></div><p>Create a HashMap containing each <code>k, v</code> pair from the given stream.</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashMap.an#L37">source</a></p>
+<hr>
+<h2 id="extend">extend</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">extend</span> <span class="p">(</span><span class="n">map</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="p">(</span><span class="n">stream</span><span class="o">:</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Stream</span> <span class="n">s</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">k</span> <span class="n">d</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">v</span> <span class="n">d</span><span class="p">}</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="kt">Mutate</span> <span class="n">&#39;map</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashMap.an#L42">source</a></p>
+<hr>
+<h2 id="clear">clear</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">clear</span> <span class="p">(</span><span class="n">map</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">k</span> <span class="n">d</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">v</span> <span class="n">d</span><span class="p">}</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="n">d</span><span class="p">,</span> <span class="kt">Mutate</span> <span class="n">&#39;map</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashMap.an#L45">source</a></p>
+<hr>
+<h2 id="resize">resize</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">resize</span> <span class="p">(</span><span class="n">map</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="p">(</span><span class="n">new_capacity</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="kt">Mutate</span> <span class="n">&#39;map</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashMap.an#L56">source</a></p>
+<hr>
+<h2 id="should_resize">should_resize</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">should_resize</span> <span class="p">(</span><span class="n">map</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span><span class="o">:</span> <span class="kt">Bool</span>
+</code></pre></div><p>Should we resize this map when pushing another element?</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashMap.an#L81">source</a></p>
+<hr>
+<h2 id="insert">insert</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">insert</span> <span class="p">(</span><span class="n">map</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="p">(</span><span class="n">key</span><span class="o">:</span> <span class="n">k</span><span class="p">)</span> <span class="p">(</span><span class="n">value</span><span class="o">:</span> <span class="n">v</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">k</span> <span class="n">d</span><span class="p">}</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="n">v</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="kt">Mutate</span> <span class="n">&#39;map</span>
+</code></pre></div><p>Inserts a key-value pair into the map, removing any item that may previously
+have been associated with the same key and returning the removed value if there was one.</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashMap.an#L119">source</a></p>
+<hr>
+<h2 id="contains">contains</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">contains</span> <span class="p">(</span><span class="n">map</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="p">(</span><span class="n">key</span><span class="o">:</span> <span class="k">ref</span> <span class="n">k</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Bool</span> <span class="k">can</span> <span class="n">e</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashMap.an#L158">source</a></p>
+<hr>
+<h2 id="remove">remove</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">remove</span> <span class="p">(</span><span class="n">map</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="p">(</span><span class="n">key</span><span class="o">:</span> <span class="k">ref</span> <span class="n">k</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">k</span> <span class="n">d</span><span class="p">}</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="n">v</span> <span class="k">can</span> <span class="n">e</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="kt">Mutate</span> <span class="n">&#39;map</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashMap.an#L161">source</a></p>
+<hr>
+<h2 id="keys">keys</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">keys</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="p">((</span><span class="n">error</span><span class="p">)</span> <span class="n">k</span> <span class="n">v</span><span class="p">))</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[(</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="p">((</span><span class="n">error</span><span class="p">)</span> <span class="n">k</span> <span class="n">v</span><span class="p">))]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="p">(</span><span class="n">error</span><span class="p">)</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="n">k</span><span class="p">))</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">m</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;m</span> <span class="p">((</span><span class="n">error</span><span class="p">)</span> <span class="n">k</span> <span class="n">v</span><span class="p">))</span>
+</code></pre></div><p>Emit a reference to each key</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashMap.an#L213">source</a></p>
+<hr>
+<h2 id="values">values</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">values</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="p">((</span><span class="n">error</span><span class="p">)</span> <span class="n">k</span> <span class="n">v</span><span class="p">))</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[(</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="p">((</span><span class="n">error</span><span class="p">)</span> <span class="n">k</span> <span class="n">v</span><span class="p">))]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="p">(</span><span class="n">error</span><span class="p">)</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="n">v</span><span class="p">))</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">m</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;m</span> <span class="p">((</span><span class="n">error</span><span class="p">)</span> <span class="n">k</span> <span class="n">v</span><span class="p">))</span>
+</code></pre></div><p>Emit a reference to each value</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashMap.an#L221">source</a></p>
+<hr>
+<h2 id="retain">retain</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">retain</span> <span class="p">(</span><span class="n">m</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="p">(</span><span class="n">pred</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">k</span><span class="p">)</span> <span class="p">(</span><span class="k">mut</span> <span class="n">v</span><span class="p">)</span> <span class="p">[</span><span class="n">env</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">k</span> <span class="n">d</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">v</span> <span class="n">d</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">env</span> <span class="n">d</span><span class="p">}</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="n">d</span><span class="p">,</span> <span class="kt">Mutate</span> <span class="n">&#39;m</span>
+</code></pre></div><p>Remove every entry for which <code>pred key value</code> returns false.</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashMap.an#L247">source</a></p>
+<hr>
+<h2 id="merge">merge</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">merge</span> <span class="p">(</span><span class="n">dst</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span> <span class="n">h</span><span class="p">)</span> <span class="p">(</span><span class="n">src</span><span class="o">:</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span> <span class="n">h</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">k</span> <span class="n">d</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">v</span> <span class="n">d</span><span class="p">}</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="kt">Mutate</span> <span class="n">&#39;dst</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">d</span>
+</code></pre></div><p>Insert every entry from <code>src</code> into <code>dst</code>, overwriting on conflict.
+Both maps must hash their keys with the same <code>Hash</code> impl.</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashMap.an#L260">source</a></p>
 <hr>
 <h1 id="implicits">Implicits</h1>
 <hr>
@@ -1205,11 +1248,35 @@ have been associated with the same key and returning the removed value if there 
 <summary>Show Implicits</summary>
 <h2 id="print_hashmap">print_hashmap</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">print_hashmap</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Display</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Display</span> <span class="n">v</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Display</span> <span class="p">(</span><span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashMap.an#L176">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashMap.an#L173">source</a></p>
 <hr>
 <h2 id="stream_map">stream_map</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">stream_map</span><span class="o">:</span> <span class="kt">Stream</span> <span class="p">(</span><span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/HashMap.an#L193">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashMap.an#L190">source</a></p>
+<hr>
+<h2 id="stream_ref_map">stream_ref_map</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">stream_ref_map</span><span class="o">:</span> <span class="kt">Stream</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="n">k</span><span class="p">,</span> <span class="k">ref</span> <span class="n">&#39;m</span> <span class="n">v</span><span class="p">)</span> <span class="n">pure</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashMap.an#L203">source</a></p>
+<hr>
+<h2 id="insert_hashmap">insert_hashmap</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">insert_hashmap</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">k</span> <span class="n">d</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">v</span> <span class="n">d</span><span class="p">}</span><span class="o">:</span> <span class="kt">Insert</span> <span class="p">(</span><span class="k">mut</span> <span class="n">&#39;m</span> <span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="n">k</span> <span class="n">v</span> <span class="kt">Panic</span> <span class="o">&amp;</span> <span class="kt">Mutate</span> <span class="n">&#39;m</span> <span class="o">&amp;</span> <span class="n">e</span> <span class="o">&amp;</span> <span class="n">d</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashMap.an#L266">source</a></p>
+<hr>
+<h2 id="clone_hashmap">clone_hashmap</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">clone_hashmap</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Clone</span> <span class="n">k</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Clone</span> <span class="n">v</span><span class="p">}</span><span class="o">:</span> <span class="kt">Clone</span> <span class="p">(</span><span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashMap.an#L271">source</a></p>
+<hr>
+<h2 id="drop_entry">drop_entry</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">drop_entry</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">k</span> <span class="n">d</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">v</span> <span class="n">d</span><span class="p">}</span><span class="o">:</span> <span class="kt">Drop</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="n">d</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashMap.an#L285">source</a></p>
+<hr>
+<h2 id="drop_hashmap">drop_hashmap</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">drop_hashmap</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">k</span> <span class="n">d</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">v</span> <span class="n">d</span><span class="p">}</span><span class="o">:</span> <span class="kt">Drop</span> <span class="p">(</span><span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span> <span class="n">h</span><span class="p">)</span> <span class="n">d</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashMap.an#L288">source</a></p>
+<hr>
+<h2 id="eq_hashmap">eq_hashmap</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">eq_hashmap</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">v</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Eq</span> <span class="p">(</span><span class="kt">HashMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="n">e</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashMap.an#L298">source</a></p>
 </details>
 
                         </div>

@@ -9,13 +9,13 @@ list of features being worked on.
 
 # Near Future
 
-- Language Server: Better support for struct members and methods
-- Inserting `drop` automatically after a variable's last use
+- Proper unwinding when `resume` is dropped
 - Default handlers for `Panic`, `Print`, and some other effects in `main`
 - Renaming of the `Fs`, `Net` primitive effects
 - Compiler option to write inferred types into the file
 - Formatter
 - Rework or removal of `~>` operator for effect handling
+- Rework of closure types
 
 # Futurer
 
@@ -25,12 +25,8 @@ The following features are unimplemented but are not my top priority to implemen
 - `Char` is 1 byte rather than 4 currently. There is an open design question of
 whether Ante should use Rust's model for chars (4 bytes), Swift's model (variable bytes), or something else.
 - Pattern guards such as `| pattern if expr -> ...`
-- Performance guarantees on `for_` to be as fast as the native `for` loop
 - A check to ensure only pure implicit functions can be called implicitly
 - Row-polymorphic struct types
 - Cranelift backend
 - Language Server: Fill in match arms action
-- Proper unwinding when `resume` is dropped
-- Modules: `as name`, re-exports, `import implicit`
-- Marker type on each `trait impl`
-- Rework of closure types
+- Modules: `as name`, `import implicit`

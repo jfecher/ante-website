@@ -253,13 +253,67 @@
         
         
         <li>
+            <a href="/docs/stdlib/array/">Std.Array</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/bitwise/">Std.Bitwise</a>
+            
+        </li>
+        
+        
+        <li>
             <a href="/docs/stdlib/c/">Std.C</a>
             
         </li>
         
         
         <li>
+            <a href="/docs/stdlib/cast/">Std.Cast</a>
+            
+        </li>
+        
+        
+        <li>
             <a href="/docs/stdlib/char/">Std.Char</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/deque/">Std.Collections.Deque</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/hashmap/">Std.Collections.HashMap</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/hashset/">Std.Collections.HashSet</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/heap/">Std.Collections.Heap</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/seq/">Std.Collections.Seq</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/vec/">Std.Collections.Vec</a>
             
         </li>
         
@@ -289,19 +343,19 @@
         
         
         <li>
-            <a href="/docs/stdlib/hashmap/">Std.HashMap</a>
-            
-        </li>
-        
-        
-        <li>
-            <a href="/docs/stdlib/hashset/">Std.HashSet</a>
+            <a href="/docs/stdlib/file/">Std.IO.File</a>
             
         </li>
         
         
         <li>
             <a href="/docs/stdlib/io/">Std.IO</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/sync/">Std.Sync</a>
             
         </li>
         
@@ -1021,6 +1075,56 @@
                 
                 <a href="/docs/stdlib/math/#abs">
                     <li>abs</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/math/#gcd">
+                    <li>gcd</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/math/#lcm">
+                    <li>lcm</li>
                 </a>
                 
                 
@@ -2059,19 +2163,31 @@
         
         
         <li>
+            <a href="/docs/stdlib/mem/">Std.Mem</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/num/">Std.Num</a>
+            
+        </li>
+        
+        
+        <li>
             <a href="/docs/stdlib/prelude/">Std.Prelude</a>
             
         </li>
         
         
         <li>
-            <a href="/docs/stdlib/rc/">Std.Rc</a>
+            <a href="/docs/stdlib/print/">Std.Print</a>
             
         </li>
         
         
         <li>
-            <a href="/docs/stdlib/seq/">Std.Seq</a>
+            <a href="/docs/stdlib/rc/">Std.Rc</a>
             
         </li>
         
@@ -2095,7 +2211,31 @@
         
         
         <li>
-            <a href="/docs/stdlib/sync/">Std.Sync</a>
+            <a href="/docs/stdlib/arc/">Std.Sync.Arc</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/atomic/">Std.Sync.Atomic</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/condvar/">Std.Sync.Condvar</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/mutex/">Std.Sync.Mutex</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/thread/">Std.Sync.Thread</a>
             
         </li>
         
@@ -2107,13 +2247,19 @@
         
         
         <li>
-            <a href="/docs/stdlib/time/">Std.Time</a>
+            <a href="/docs/stdlib/duration/">Std.Time.Duration</a>
             
         </li>
         
         
         <li>
-            <a href="/docs/stdlib/vec/">Std.Vec</a>
+            <a href="/docs/stdlib/instant/">Std.Time.Instant</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/time/">Std.Time</a>
             
         </li>
         
@@ -2143,238 +2289,246 @@
     <span class="n">checked_add</span><span class="o">:</span> <span class="k">fn</span> <span class="n">t</span> <span class="n">t</span> <span class="ow">-&gt;</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span>
     <span class="n">checked_sub</span><span class="o">:</span> <span class="k">fn</span> <span class="n">t</span> <span class="n">t</span> <span class="ow">-&gt;</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span>
     <span class="n">checked_mul</span><span class="o">:</span> <span class="k">fn</span> <span class="n">t</span> <span class="n">t</span> <span class="ow">-&gt;</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L302">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L317">source</a></p>
 <hr>
 <h1 id="functions">Functions</h1>
 <hr>
 <h2 id="sqrt">sqrt</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">sqrt</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">F64</span> <span class="ow">-&gt;</span> <span class="kt">F64</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L18">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L16">source</a></p>
 <hr>
 <h2 id="sqrtf">sqrtf</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">sqrtf</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">F32</span> <span class="ow">-&gt;</span> <span class="kt">F32</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L19">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L17">source</a></p>
 <hr>
 <h2 id="cbrt">cbrt</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">cbrt</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">F64</span> <span class="ow">-&gt;</span> <span class="kt">F64</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L20">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L18">source</a></p>
 <hr>
 <h2 id="pow">pow</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">pow</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">F64</span> <span class="kt">F64</span> <span class="ow">-&gt;</span> <span class="kt">F64</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L22">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L20">source</a></p>
 <hr>
 <h2 id="powf">powf</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">powf</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">F32</span> <span class="kt">F32</span> <span class="ow">-&gt;</span> <span class="kt">F32</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L23">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L21">source</a></p>
 <hr>
 <h2 id="exp">exp</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">exp</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">F64</span> <span class="ow">-&gt;</span> <span class="kt">F64</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L25">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L23">source</a></p>
 <hr>
 <h2 id="log">log</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">log</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">F64</span> <span class="ow">-&gt;</span> <span class="kt">F64</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L26">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L24">source</a></p>
 <hr>
 <h2 id="log2">log2</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">log2</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">F64</span> <span class="ow">-&gt;</span> <span class="kt">F64</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L27">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L25">source</a></p>
 <hr>
 <h2 id="log10">log10</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">log10</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">F64</span> <span class="ow">-&gt;</span> <span class="kt">F64</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L28">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L26">source</a></p>
 <hr>
 <h2 id="sin">sin</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">sin</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">F64</span> <span class="ow">-&gt;</span> <span class="kt">F64</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L30">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L28">source</a></p>
 <hr>
 <h2 id="cos">cos</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">cos</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">F64</span> <span class="ow">-&gt;</span> <span class="kt">F64</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L31">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L29">source</a></p>
 <hr>
 <h2 id="tan">tan</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">tan</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">F64</span> <span class="ow">-&gt;</span> <span class="kt">F64</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L32">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L30">source</a></p>
 <hr>
 <h2 id="asin">asin</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">asin</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">F64</span> <span class="ow">-&gt;</span> <span class="kt">F64</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L33">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L31">source</a></p>
 <hr>
 <h2 id="acos">acos</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">acos</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">F64</span> <span class="ow">-&gt;</span> <span class="kt">F64</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L34">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L32">source</a></p>
 <hr>
 <h2 id="atan">atan</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">atan</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">F64</span> <span class="ow">-&gt;</span> <span class="kt">F64</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L35">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L33">source</a></p>
 <hr>
 <h2 id="atan2">atan2</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">atan2</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">F64</span> <span class="kt">F64</span> <span class="ow">-&gt;</span> <span class="kt">F64</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L36">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L34">source</a></p>
 <hr>
 <h2 id="floor">floor</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">floor</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">F64</span> <span class="ow">-&gt;</span> <span class="kt">F64</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L38">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L36">source</a></p>
 <hr>
 <h2 id="ceil">ceil</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">ceil</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">F64</span> <span class="ow">-&gt;</span> <span class="kt">F64</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L39">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L37">source</a></p>
 <hr>
 <h2 id="round">round</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">round</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">F64</span> <span class="ow">-&gt;</span> <span class="kt">F64</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L40">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L38">source</a></p>
 <hr>
 <h2 id="trunc">trunc</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">trunc</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">F64</span> <span class="ow">-&gt;</span> <span class="kt">F64</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L41">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L39">source</a></p>
 <hr>
 <h2 id="fmod">fmod</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">fmod</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">F64</span> <span class="kt">F64</span> <span class="ow">-&gt;</span> <span class="kt">F64</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L42">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L40">source</a></p>
 <hr>
 <h2 id="hypot">hypot</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">hypot</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">F64</span> <span class="kt">F64</span> <span class="ow">-&gt;</span> <span class="kt">F64</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L43">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L41">source</a></p>
 <hr>
 <h2 id="pi">pi</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">pi</span><span class="o">:</span> <span class="kt">F64</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L45">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L43">source</a></p>
 <hr>
 <h2 id="tau">tau</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">tau</span><span class="o">:</span> <span class="kt">F64</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L46">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L44">source</a></p>
 <hr>
 <h2 id="e">e</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">e</span><span class="o">:</span> <span class="kt">F64</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L47">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L45">source</a></p>
 <hr>
 <h2 id="abs">abs</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">abs</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="n">n</span><span class="o">:</span> <span class="kt">Num</span> <span class="n">t</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Copy</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="n">t</span>
 </code></pre></div><p>Returns the absolute value of this integer
 Note that <code>abs MIN</code> will return <code>MIN</code> since there is no corresponding positive integer that fits in the same bit size.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L51">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L49">source</a></p>
+<hr>
+<h2 id="gcd">gcd</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">gcd</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">b</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="n">n</span><span class="o">:</span> <span class="kt">Num</span> <span class="n">t</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Mod</span> <span class="n">t</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Copy</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="n">t</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L54">source</a></p>
+<hr>
+<h2 id="lcm">lcm</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">lcm</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">b</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="n">n</span><span class="o">:</span> <span class="kt">Num</span> <span class="n">t</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Mod</span> <span class="n">t</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Copy</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="n">t</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L64">source</a></p>
 <hr>
 <h2 id="checked_add_i8">checked_add_i8</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">checked_add_i8</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">I8</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">I8</span><span class="p">)</span><span class="o">:</span> <span class="kt">I8</span> <span class="k">can</span> <span class="kt">Fail</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L56">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L71">source</a></p>
 <hr>
 <h2 id="checked_add_i16">checked_add_i16</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">checked_add_i16</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">I16</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">I16</span><span class="p">)</span><span class="o">:</span> <span class="kt">I16</span> <span class="k">can</span> <span class="kt">Fail</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L61">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L76">source</a></p>
 <hr>
 <h2 id="checked_add_i32">checked_add_i32</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">checked_add_i32</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">I32</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">I32</span><span class="p">)</span><span class="o">:</span> <span class="kt">I32</span> <span class="k">can</span> <span class="kt">Fail</span>
 </code></pre></div><p>Add two I32 values, failing on overflow.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L67">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L82">source</a></p>
 <hr>
 <h2 id="checked_add_i64">checked_add_i64</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">checked_add_i64</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">I64</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">I64</span><span class="p">)</span><span class="o">:</span> <span class="kt">I64</span> <span class="k">can</span> <span class="kt">Fail</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L72">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L87">source</a></p>
 <hr>
 <h2 id="checked_add_isz">checked_add_isz</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">checked_add_isz</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">Isz</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">Isz</span><span class="p">)</span><span class="o">:</span> <span class="kt">Isz</span> <span class="k">can</span> <span class="kt">Fail</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L77">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L92">source</a></p>
 <hr>
 <h2 id="checked_add_u8">checked_add_u8</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">checked_add_u8</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">U8</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">U8</span><span class="p">)</span><span class="o">:</span> <span class="kt">U8</span> <span class="k">can</span> <span class="kt">Fail</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L82">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L97">source</a></p>
 <hr>
 <h2 id="checked_add_u16">checked_add_u16</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">checked_add_u16</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">U16</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">U16</span><span class="p">)</span><span class="o">:</span> <span class="kt">U16</span> <span class="k">can</span> <span class="kt">Fail</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L87">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L102">source</a></p>
 <hr>
 <h2 id="checked_add_u32">checked_add_u32</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">checked_add_u32</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">U32</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">U32</span><span class="p">)</span><span class="o">:</span> <span class="kt">U32</span> <span class="k">can</span> <span class="kt">Fail</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L92">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L107">source</a></p>
 <hr>
 <h2 id="checked_add_u64">checked_add_u64</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">checked_add_u64</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">U64</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">U64</span><span class="p">)</span><span class="o">:</span> <span class="kt">U64</span> <span class="k">can</span> <span class="kt">Fail</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L97">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L112">source</a></p>
 <hr>
 <h2 id="checked_add_usz">checked_add_usz</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">checked_add_usz</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="kt">Usz</span> <span class="k">can</span> <span class="kt">Fail</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L102">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L117">source</a></p>
 <hr>
 <h2 id="checked_sub_i8">checked_sub_i8</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">checked_sub_i8</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">I8</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">I8</span><span class="p">)</span><span class="o">:</span> <span class="kt">I8</span> <span class="k">can</span> <span class="kt">Fail</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L107">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L122">source</a></p>
 <hr>
 <h2 id="checked_sub_i16">checked_sub_i16</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">checked_sub_i16</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">I16</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">I16</span><span class="p">)</span><span class="o">:</span> <span class="kt">I16</span> <span class="k">can</span> <span class="kt">Fail</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L112">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L127">source</a></p>
 <hr>
 <h2 id="checked_sub_i32">checked_sub_i32</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">checked_sub_i32</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">I32</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">I32</span><span class="p">)</span><span class="o">:</span> <span class="kt">I32</span> <span class="k">can</span> <span class="kt">Fail</span>
 </code></pre></div><p>Subtract two I32 values, failing on overflow.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L118">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L133">source</a></p>
 <hr>
 <h2 id="checked_sub_i64">checked_sub_i64</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">checked_sub_i64</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">I64</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">I64</span><span class="p">)</span><span class="o">:</span> <span class="kt">I64</span> <span class="k">can</span> <span class="kt">Fail</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L123">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L138">source</a></p>
 <hr>
 <h2 id="checked_sub_isz">checked_sub_isz</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">checked_sub_isz</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">Isz</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">Isz</span><span class="p">)</span><span class="o">:</span> <span class="kt">Isz</span> <span class="k">can</span> <span class="kt">Fail</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L128">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L143">source</a></p>
 <hr>
 <h2 id="checked_sub_u8">checked_sub_u8</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">checked_sub_u8</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">U8</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">U8</span><span class="p">)</span><span class="o">:</span> <span class="kt">U8</span> <span class="k">can</span> <span class="kt">Fail</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L133">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L148">source</a></p>
 <hr>
 <h2 id="checked_sub_u16">checked_sub_u16</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">checked_sub_u16</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">U16</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">U16</span><span class="p">)</span><span class="o">:</span> <span class="kt">U16</span> <span class="k">can</span> <span class="kt">Fail</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L138">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L153">source</a></p>
 <hr>
 <h2 id="checked_sub_u32">checked_sub_u32</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">checked_sub_u32</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">U32</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">U32</span><span class="p">)</span><span class="o">:</span> <span class="kt">U32</span> <span class="k">can</span> <span class="kt">Fail</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L143">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L158">source</a></p>
 <hr>
 <h2 id="checked_sub_u64">checked_sub_u64</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">checked_sub_u64</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">U64</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">U64</span><span class="p">)</span><span class="o">:</span> <span class="kt">U64</span> <span class="k">can</span> <span class="kt">Fail</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L148">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L163">source</a></p>
 <hr>
 <h2 id="checked_sub_usz">checked_sub_usz</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">checked_sub_usz</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="kt">Usz</span> <span class="k">can</span> <span class="kt">Fail</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L153">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L168">source</a></p>
 <hr>
 <h2 id="checked_mul_i8">checked_mul_i8</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">checked_mul_i8</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">I8</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">I8</span><span class="p">)</span><span class="o">:</span> <span class="kt">I8</span> <span class="k">can</span> <span class="kt">Fail</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L158">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L173">source</a></p>
 <hr>
 <h2 id="checked_mul_i16">checked_mul_i16</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">checked_mul_i16</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">I16</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">I16</span><span class="p">)</span><span class="o">:</span> <span class="kt">I16</span> <span class="k">can</span> <span class="kt">Fail</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L163">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L178">source</a></p>
 <hr>
 <h2 id="checked_mul_i32">checked_mul_i32</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">checked_mul_i32</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">I32</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">I32</span><span class="p">)</span><span class="o">:</span> <span class="kt">I32</span> <span class="k">can</span> <span class="kt">Fail</span>
 </code></pre></div><p>Multiply two I32 values, failing on overflow.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L169">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L184">source</a></p>
 <hr>
 <h2 id="checked_mul_i64">checked_mul_i64</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">checked_mul_i64</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">I64</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">I64</span><span class="p">)</span><span class="o">:</span> <span class="kt">I64</span> <span class="k">can</span> <span class="kt">Fail</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L174">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L189">source</a></p>
 <hr>
 <h2 id="checked_mul_isz">checked_mul_isz</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">checked_mul_isz</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">Isz</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">Isz</span><span class="p">)</span><span class="o">:</span> <span class="kt">Isz</span> <span class="k">can</span> <span class="kt">Fail</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L179">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L194">source</a></p>
 <hr>
 <h2 id="checked_mul_u8">checked_mul_u8</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">checked_mul_u8</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">U8</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">U8</span><span class="p">)</span><span class="o">:</span> <span class="kt">U8</span> <span class="k">can</span> <span class="kt">Fail</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L184">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L199">source</a></p>
 <hr>
 <h2 id="checked_mul_u16">checked_mul_u16</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">checked_mul_u16</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">U16</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">U16</span><span class="p">)</span><span class="o">:</span> <span class="kt">U16</span> <span class="k">can</span> <span class="kt">Fail</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L189">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L204">source</a></p>
 <hr>
 <h2 id="checked_mul_u32">checked_mul_u32</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">checked_mul_u32</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">U32</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">U32</span><span class="p">)</span><span class="o">:</span> <span class="kt">U32</span> <span class="k">can</span> <span class="kt">Fail</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L194">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L209">source</a></p>
 <hr>
 <h2 id="checked_mul_u64">checked_mul_u64</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">checked_mul_u64</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">U64</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">U64</span><span class="p">)</span><span class="o">:</span> <span class="kt">U64</span> <span class="k">can</span> <span class="kt">Fail</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L199">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L214">source</a></p>
 <hr>
 <h2 id="checked_mul_usz">checked_mul_usz</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">checked_mul_usz</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="kt">Usz</span> <span class="k">can</span> <span class="kt">Fail</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L204">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L219">source</a></p>
 <hr>
 <h1 id="implicits">Implicits</h1>
 <hr>
@@ -2382,43 +2536,43 @@ Note that <code>abs MIN</code> will return <code>MIN</code> since there is no co
 <summary>Show Implicits</summary>
 <h2 id="checked_num_i8">checked_num_i8</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">checked_num_i8</span><span class="o">:</span> <span class="kt">CheckedNum</span> <span class="kt">I8</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L307">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L322">source</a></p>
 <hr>
 <h2 id="checked_num_i16">checked_num_i16</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">checked_num_i16</span><span class="o">:</span> <span class="kt">CheckedNum</span> <span class="kt">I16</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L312">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L327">source</a></p>
 <hr>
 <h2 id="checked_num_i32">checked_num_i32</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">checked_num_i32</span><span class="o">:</span> <span class="kt">CheckedNum</span> <span class="kt">I32</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L317">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L332">source</a></p>
 <hr>
 <h2 id="checked_num_i64">checked_num_i64</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">checked_num_i64</span><span class="o">:</span> <span class="kt">CheckedNum</span> <span class="kt">I64</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L322">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L337">source</a></p>
 <hr>
 <h2 id="checked_num_isz">checked_num_isz</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">checked_num_isz</span><span class="o">:</span> <span class="kt">CheckedNum</span> <span class="kt">Isz</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L327">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L342">source</a></p>
 <hr>
 <h2 id="checked_num_u8">checked_num_u8</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">checked_num_u8</span><span class="o">:</span> <span class="kt">CheckedNum</span> <span class="kt">U8</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L332">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L347">source</a></p>
 <hr>
 <h2 id="checked_num_u16">checked_num_u16</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">checked_num_u16</span><span class="o">:</span> <span class="kt">CheckedNum</span> <span class="kt">U16</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L337">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L352">source</a></p>
 <hr>
 <h2 id="checked_num_u32">checked_num_u32</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">checked_num_u32</span><span class="o">:</span> <span class="kt">CheckedNum</span> <span class="kt">U32</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L342">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L357">source</a></p>
 <hr>
 <h2 id="checked_num_u64">checked_num_u64</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">checked_num_u64</span><span class="o">:</span> <span class="kt">CheckedNum</span> <span class="kt">U64</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L347">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L362">source</a></p>
 <hr>
 <h2 id="checked_num_usz">checked_num_usz</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">checked_num_usz</span><span class="o">:</span> <span class="kt">CheckedNum</span> <span class="kt">Usz</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L352">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L367">source</a></p>
 </details>
 
                         </div>

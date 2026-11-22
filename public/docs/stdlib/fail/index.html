@@ -253,13 +253,67 @@
         
         
         <li>
+            <a href="/docs/stdlib/array/">Std.Array</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/bitwise/">Std.Bitwise</a>
+            
+        </li>
+        
+        
+        <li>
             <a href="/docs/stdlib/c/">Std.C</a>
             
         </li>
         
         
         <li>
+            <a href="/docs/stdlib/cast/">Std.Cast</a>
+            
+        </li>
+        
+        
+        <li>
             <a href="/docs/stdlib/char/">Std.Char</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/deque/">Std.Collections.Deque</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/hashmap/">Std.Collections.HashMap</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/hashset/">Std.Collections.HashSet</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/heap/">Std.Collections.Heap</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/seq/">Std.Collections.Seq</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/vec/">Std.Collections.Vec</a>
             
         </li>
         
@@ -366,31 +420,6 @@
                 
                 <a href="/docs/stdlib/fail/#try">
                     <li>try</li>
-                </a>
-                
-                
-                    </ul>
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                    <ul class="toc-h2">
-                
-                
-                
-                
-                <a href="/docs/stdlib/fail/#on_fail">
-                    <li>on_fail</li>
                 </a>
                 
                 
@@ -589,13 +618,7 @@
         
         
         <li>
-            <a href="/docs/stdlib/hashmap/">Std.HashMap</a>
-            
-        </li>
-        
-        
-        <li>
-            <a href="/docs/stdlib/hashset/">Std.HashSet</a>
+            <a href="/docs/stdlib/file/">Std.IO.File</a>
             
         </li>
         
@@ -607,7 +630,25 @@
         
         
         <li>
+            <a href="/docs/stdlib/sync/">Std.Sync</a>
+            
+        </li>
+        
+        
+        <li>
             <a href="/docs/stdlib/math/">Std.Math</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/mem/">Std.Mem</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/num/">Std.Num</a>
             
         </li>
         
@@ -619,13 +660,13 @@
         
         
         <li>
-            <a href="/docs/stdlib/rc/">Std.Rc</a>
+            <a href="/docs/stdlib/print/">Std.Print</a>
             
         </li>
         
         
         <li>
-            <a href="/docs/stdlib/seq/">Std.Seq</a>
+            <a href="/docs/stdlib/rc/">Std.Rc</a>
             
         </li>
         
@@ -649,7 +690,31 @@
         
         
         <li>
-            <a href="/docs/stdlib/sync/">Std.Sync</a>
+            <a href="/docs/stdlib/arc/">Std.Sync.Arc</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/atomic/">Std.Sync.Atomic</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/condvar/">Std.Sync.Condvar</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/mutex/">Std.Sync.Mutex</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/thread/">Std.Sync.Thread</a>
             
         </li>
         
@@ -661,13 +726,19 @@
         
         
         <li>
-            <a href="/docs/stdlib/time/">Std.Time</a>
+            <a href="/docs/stdlib/duration/">Std.Time.Duration</a>
             
         </li>
         
         
         <li>
-            <a href="/docs/stdlib/vec/">Std.Vec</a>
+            <a href="/docs/stdlib/instant/">Std.Time.Instant</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/time/">Std.Time</a>
             
         </li>
         
@@ -695,65 +766,61 @@
 <h2 id="fail">Fail</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">effect</span> <span class="kt">Fail</span> <span class="ow">=</span>
     <span class="n">fail</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">Never</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Fail.an#L2">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Fail.an#L3">source</a></p>
 <hr>
 <h1 id="functions">Functions</h1>
 <hr>
 <h2 id="try">try</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">try</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Fail</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="n">a</span> <span class="k">can</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Fail.an#L5">source</a></p>
-<hr>
-<h2 id="on_fail">on_fail</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">on_fail</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Fail</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="p">(</span><span class="n">default</span><span class="o">:</span> <span class="n">a</span> <span class="k">can</span> <span class="n">e</span><span class="p">)</span><span class="o">:</span> <span class="n">a</span> <span class="k">can</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Fail.an#L9">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Fail.an#L6">source</a></p>
 <hr>
 <h2 id="assert">assert</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">assert</span> <span class="p">(</span><span class="n">cond</span><span class="o">:</span> <span class="kt">Bool</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Fail</span>
 </code></pre></div><p>Fails if <code>cond</code> is false
 Note that this is the inverse of <code>fail_if</code></p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Fail.an#L15">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Fail.an#L16">source</a></p>
 <hr>
 <h2 id="fail_if">fail_if</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">fail_if</span> <span class="p">(</span><span class="n">cond</span><span class="o">:</span> <span class="kt">Bool</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Fail</span>
 </code></pre></div><p>Fails if <code>cond</code> is true
 Note that this is the inverse of <code>assert</code></p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Fail.an#L20">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Fail.an#L21">source</a></p>
 <hr>
 <h2 id="panic_on_fail">panic_on_fail</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">panic_on_fail</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Fail</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span><span class="o">:</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="n">e</span>
 </code></pre></div><p>Asserts the operation cannot fail.
 Panics at runtime if it does.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Fail.an#L25">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Fail.an#L26">source</a></p>
 <hr>
 <h2 id="abort_on_fail">abort_on_fail</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">abort_on_fail</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Fail</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span><span class="o">:</span> <span class="n">a</span> <span class="k">can</span> <span class="n">e</span>
 </code></pre></div><p>Similar to panic_on_fail but aborts the entire process instead of panicking.
 Generally this should be avoided when possible unless you can guarantee a
 panic will not occur and cannot have the Panic effect in a function.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Fail.an#L31">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Fail.an#L32">source</a></p>
 <hr>
 <h2 id="or_panic">or_panic</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">or_panic</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Fail</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="p">(</span><span class="n">message</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="n">e</span>
 </code></pre></div><p>Panics on failure with the given error message</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Fail.an#L38">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Fail.an#L39">source</a></p>
 <hr>
 <h2 id="ignore_fail">ignore_fail</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">ignore_fail</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Fail</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="n">e</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">ignore_fail</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Fail</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">a</span> <span class="n">d</span><span class="p">}</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="n">e</span><span class="p">,</span> <span class="n">d</span>
 </code></pre></div><p>Ignores a <code>Fail</code> effect, discarding it and returning Unit</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Fail.an#L42">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Fail.an#L43">source</a></p>
 <hr>
 <h2 id="retry_until_success">retry_until_success</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">retry_until_success</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Fail</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span><span class="o">:</span> <span class="n">a</span> <span class="k">can</span> <span class="n">e</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">retry_until_success</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[</span><span class="n">env</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Fail</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">env</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="n">a</span> <span class="k">can</span> <span class="n">e</span>
 </code></pre></div><p>Retry a function until it succeeds (doesn&rsquo;t call fail).
 This should be used with functions using a Fail effect
 along with other effects. Otherwise, it will loop forever.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">get_input</span> <span class="p">()</span> <span class="ow">-&gt;</span> <span class="n">string</span> <span class="k">can</span> <span class="kt">IO</span> <span class="ow">=</span> <span class="o">...</span>
-<span class="nf">parse</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="n">string</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="n">u32</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">get_input</span> <span class="p">()</span><span class="o">:</span> <span class="kt">String</span> <span class="k">can</span> <span class="kt">IO</span> <span class="ow">=</span> <span class="o">...</span>
+<span class="nf">parse</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span><span class="o">:</span> <span class="kt">U32</span> <span class="k">can</span> <span class="kt">Fail</span> <span class="ow">=</span> <span class="o">...</span>
 
-<span class="nf">number</span> <span class="ow">=</span> <span class="n">retry_until_success</span> <span class="o">$$</span>
+<span class="nf">number</span> <span class="ow">=</span> <span class="n">retry_until_success</span> <span class="k">do</span>
     <span class="n">input</span> <span class="ow">=</span> <span class="n">get_input</span> <span class="p">()</span>
     <span class="n">parse</span> <span class="n">input</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Fail.an#L57">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Fail.an#L58">source</a></p>
 
                         </div>
                         

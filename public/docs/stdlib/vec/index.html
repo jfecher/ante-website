@@ -6,7 +6,7 @@
 <meta name="googlebot" content="index,follow,snippet,archive">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Std.Vec</title>
+<title>Std.Collections.Vec</title>
 <meta name="author" content="Jake Fecher" />
 
 
@@ -68,7 +68,7 @@
 
 <meta name="twitter:card" content="summary">
 
-<meta name="twitter:title" content="Std.Vec">
+<meta name="twitter:title" content="Std.Collections.Vec">
 
 <meta name="twitter:description" content="">
 
@@ -77,7 +77,7 @@
   <meta name="robots" content="all,follow">
   <meta name="googlebot" content="index,follow,snippet,archive">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Std.Vec</title>
+  <title>Std.Collections.Vec</title>
   <meta name="author" content="" />
 
   <meta name="keywords" content="ante, programming, language, antelang, lang">	
@@ -125,7 +125,7 @@
   <link rel="alternate" href="https://antelang.org/index.xml" type="application/rss+xml" title="Ante">
 
   
-  <meta property="og:title" content="Std.Vec" />
+  <meta property="og:title" content="Std.Collections.Vec" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://antelang.org/docs/stdlib/vec//" />
   <meta property="og:image" content="" />
@@ -143,9 +143,9 @@
         <div class="container">
             <div class="navbar-header">
                 <a class="navbar-brand home" href="https://antelang.org/">
-                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="Std.Vec" class="hidden-xs hidden-sm">
-                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="Std.Vec" class="visible-xs visible-sm">
-                    <span class="sr-only">Std.Vec - go to homepage</span>
+                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="Std.Collections.Vec" class="hidden-xs hidden-sm">
+                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="Std.Collections.Vec" class="visible-xs visible-sm">
+                    <span class="sr-only">Std.Collections.Vec - go to homepage</span>
                 </a>
                 
 <div class="navbar-buttons">
@@ -226,7 +226,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h1>Std.Vec</h1>
+                <h1>Std.Collections.Vec</h1>
             </div>
         </div>
     </div>
@@ -253,7 +253,25 @@
         
         
         <li>
+            <a href="/docs/stdlib/array/">Std.Array</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/bitwise/">Std.Bitwise</a>
+            
+        </li>
+        
+        
+        <li>
             <a href="/docs/stdlib/c/">Std.C</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/cast/">Std.Cast</a>
             
         </li>
         
@@ -265,109 +283,37 @@
         
         
         <li>
-            <a href="/docs/stdlib/earlyreturn/">Std.EarlyReturn</a>
+            <a href="/docs/stdlib/deque/">Std.Collections.Deque</a>
             
         </li>
         
         
         <li>
-            <a href="/docs/stdlib/env/">Std.Env</a>
+            <a href="/docs/stdlib/hashmap/">Std.Collections.HashMap</a>
             
         </li>
         
         
         <li>
-            <a href="/docs/stdlib/fail/">Std.Fail</a>
+            <a href="/docs/stdlib/hashset/">Std.Collections.HashSet</a>
             
         </li>
         
         
         <li>
-            <a href="/docs/stdlib/hash/">Std.Hash</a>
+            <a href="/docs/stdlib/heap/">Std.Collections.Heap</a>
             
         </li>
         
         
         <li>
-            <a href="/docs/stdlib/hashmap/">Std.HashMap</a>
-            
-        </li>
-        
-        
-        <li>
-            <a href="/docs/stdlib/hashset/">Std.HashSet</a>
-            
-        </li>
-        
-        
-        <li>
-            <a href="/docs/stdlib/io/">Std.IO</a>
-            
-        </li>
-        
-        
-        <li>
-            <a href="/docs/stdlib/math/">Std.Math</a>
-            
-        </li>
-        
-        
-        <li>
-            <a href="/docs/stdlib/prelude/">Std.Prelude</a>
-            
-        </li>
-        
-        
-        <li>
-            <a href="/docs/stdlib/rc/">Std.Rc</a>
-            
-        </li>
-        
-        
-        <li>
-            <a href="/docs/stdlib/seq/">Std.Seq</a>
-            
-        </li>
-        
-        
-        <li>
-            <a href="/docs/stdlib/slice/">Std.Slice</a>
-            
-        </li>
-        
-        
-        <li>
-            <a href="/docs/stdlib/stream/">Std.Stream</a>
-            
-        </li>
-        
-        
-        <li>
-            <a href="/docs/stdlib/string/">Std.String</a>
-            
-        </li>
-        
-        
-        <li>
-            <a href="/docs/stdlib/sync/">Std.Sync</a>
-            
-        </li>
-        
-        
-        <li>
-            <a href="/docs/stdlib/throw/">Std.Throw</a>
-            
-        </li>
-        
-        
-        <li>
-            <a href="/docs/stdlib/time/">Std.Time</a>
+            <a href="/docs/stdlib/seq/">Std.Collections.Seq</a>
             
         </li>
         
         
         <li class="current">
-            <a href="/docs/stdlib/vec/">Std.Vec</a>
+            <a href="/docs/stdlib/vec/">Std.Collections.Vec</a>
             
 
 
@@ -428,19 +374,36 @@
                 
                     <ul class="toc-h1">
                 
-                    <ul class="toc-h2">
-                
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/vec/#vecempty">
-                    <li>Vec.empty</li>
+                <a href="/docs/stdlib/vec/#functions">
+                    <li>Functions</li>
                 </a>
                 
                 
                     </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/vec/#empty">
+                    <li>empty</li>
+                </a>
+                
                 
                     </ul>
                 
@@ -459,17 +422,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/vec/#vecis_empty">
-                    <li>Vec.is_empty</li>
+                <a href="/docs/stdlib/vec/#is_empty">
+                    <li>is_empty</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -488,17 +447,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/vec/#veclen">
-                    <li>Vec.len</li>
+                <a href="/docs/stdlib/vec/#len">
+                    <li>len</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -517,17 +472,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/vec/#veccapacity">
-                    <li>Vec.capacity</li>
+                <a href="/docs/stdlib/vec/#capacity">
+                    <li>capacity</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -546,17 +497,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/vec/#vecof">
-                    <li>Vec.of</li>
+                <a href="/docs/stdlib/vec/#of">
+                    <li>of</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -575,17 +522,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/vec/#vecextend">
-                    <li>Vec.extend</li>
+                <a href="/docs/stdlib/vec/#extend">
+                    <li>extend</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -604,17 +547,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/vec/#vecreserve">
-                    <li>Vec.reserve</li>
+                <a href="/docs/stdlib/vec/#reserve">
+                    <li>reserve</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -633,17 +572,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/vec/#vecpush">
-                    <li>Vec.push</li>
+                <a href="/docs/stdlib/vec/#push">
+                    <li>push</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -662,17 +597,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/vec/#vecpop">
-                    <li>Vec.pop</li>
+                <a href="/docs/stdlib/vec/#pop">
+                    <li>pop</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -691,17 +622,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/vec/#vecget">
-                    <li>Vec.get</li>
+                <a href="/docs/stdlib/vec/#remove_index">
+                    <li>remove_index</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -720,17 +647,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/vec/#vecget_mut">
-                    <li>Vec.get_mut</li>
+                <a href="/docs/stdlib/vec/#remove_first">
+                    <li>remove_first</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -749,17 +672,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/vec/#vecget_unchecked">
-                    <li>Vec.get_unchecked</li>
+                <a href="/docs/stdlib/vec/#remove_indices">
+                    <li>remove_indices</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -778,17 +697,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/vec/#vecget_mut_unchecked">
-                    <li>Vec.get_mut_unchecked</li>
+                <a href="/docs/stdlib/vec/#remove_all">
+                    <li>remove_all</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -807,17 +722,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/vec/#vecremove_index">
-                    <li>Vec.remove_index</li>
+                <a href="/docs/stdlib/vec/#swap_last">
+                    <li>swap_last</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -836,17 +747,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/vec/#vecremove_first">
-                    <li>Vec.remove_first</li>
+                <a href="/docs/stdlib/vec/#insert">
+                    <li>insert</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -865,17 +772,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/vec/#vecremove_indices">
-                    <li>Vec.remove_indices</li>
+                <a href="/docs/stdlib/vec/#dedup">
+                    <li>dedup</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -894,17 +797,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/vec/#vecremove_all">
-                    <li>Vec.remove_all</li>
+                <a href="/docs/stdlib/vec/#truncate">
+                    <li>truncate</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -923,17 +822,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/vec/#vecswap_last">
-                    <li>Vec.swap_last</li>
+                <a href="/docs/stdlib/vec/#clear">
+                    <li>clear</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -952,17 +847,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/vec/#vecreverse">
-                    <li>Vec.reverse</li>
+                <a href="/docs/stdlib/vec/#windows">
+                    <li>windows</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -981,17 +872,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/vec/#vecswap">
-                    <li>Vec.swap</li>
+                <a href="/docs/stdlib/vec/#chunks">
+                    <li>chunks</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -1010,162 +897,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/vec/#vecinsert">
-                    <li>Vec.insert</li>
+                <a href="/docs/stdlib/vec/#permutations">
+                    <li>permutations</li>
                 </a>
                 
-                
-                    </ul>
-                
-                    </ul>
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                    <ul class="toc-h2">
-                
-                    <ul class="toc-h3">
-                
-                
-                
-                
-                <a href="/docs/stdlib/vec/#vecdedup">
-                    <li>Vec.dedup</li>
-                </a>
-                
-                
-                    </ul>
-                
-                    </ul>
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                    <ul class="toc-h2">
-                
-                    <ul class="toc-h3">
-                
-                
-                
-                
-                <a href="/docs/stdlib/vec/#vectruncate">
-                    <li>Vec.truncate</li>
-                </a>
-                
-                
-                    </ul>
-                
-                    </ul>
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                    <ul class="toc-h2">
-                
-                    <ul class="toc-h3">
-                
-                
-                
-                
-                <a href="/docs/stdlib/vec/#vecclear">
-                    <li>Vec.clear</li>
-                </a>
-                
-                
-                    </ul>
-                
-                    </ul>
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                    <ul class="toc-h2">
-                
-                    <ul class="toc-h3">
-                
-                
-                
-                
-                <a href="/docs/stdlib/vec/#vecsort_by">
-                    <li>Vec.sort_by</li>
-                </a>
-                
-                
-                    </ul>
-                
-                    </ul>
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                    <ul class="toc-h2">
-                
-                    <ul class="toc-h3">
-                
-                
-                
-                
-                <a href="/docs/stdlib/vec/#vecsort">
-                    <li>Vec.sort</li>
-                </a>
-                
-                
-                    </ul>
                 
                     </ul>
                 
@@ -1233,81 +971,6 @@
                 
                 
                 
-                <a href="/docs/stdlib/vec/#extract_vec_move">
-                    <li>extract_vec_move</li>
-                </a>
-                
-                
-                    </ul>
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                    <ul class="toc-h2">
-                
-                
-                
-                
-                <a href="/docs/stdlib/vec/#extract_vec">
-                    <li>extract_vec</li>
-                </a>
-                
-                
-                    </ul>
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                    <ul class="toc-h2">
-                
-                
-                
-                
-                <a href="/docs/stdlib/vec/#insert_vec">
-                    <li>insert_vec</li>
-                </a>
-                
-                
-                    </ul>
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
-                    <ul class="toc-h2">
-                
-                
-                
-                
                 <a href="/docs/stdlib/vec/#stream_vec">
                     <li>stream_vec</li>
                 </a>
@@ -1333,8 +996,33 @@
                 
                 
                 
-                <a href="/docs/stdlib/vec/#stream_imm_vec">
-                    <li>stream_imm_vec</li>
+                <a href="/docs/stdlib/vec/#stream_ref_vec">
+                    <li>stream_ref_vec</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/vec/#clone_vec">
+                    <li>clone_vec</li>
                 </a>
                 
                 
@@ -1395,9 +1083,184 @@
             
         
     
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/vec/#cmp_vec">
+                    <li>cmp_vec</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
 </div>
 
 
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/earlyreturn/">Std.EarlyReturn</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/env/">Std.Env</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/fail/">Std.Fail</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/hash/">Std.Hash</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/file/">Std.IO.File</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/io/">Std.IO</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/sync/">Std.Sync</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/math/">Std.Math</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/mem/">Std.Mem</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/num/">Std.Num</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/prelude/">Std.Prelude</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/print/">Std.Print</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/rc/">Std.Rc</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/slice/">Std.Slice</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/stream/">Std.Stream</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/string/">Std.String</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/arc/">Std.Sync.Arc</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/atomic/">Std.Sync.Atomic</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/condvar/">Std.Sync.Condvar</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/mutex/">Std.Sync.Mutex</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/thread/">Std.Sync.Thread</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/throw/">Std.Throw</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/duration/">Std.Time.Duration</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/instant/">Std.Time.Instant</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/time/">Std.Time</a>
+            
         </li>
         
     </ul>
@@ -1416,8 +1279,8 @@
                         
 
                         <div id="post-content">
-                          <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Std</span><span class="o">.</span><span class="kt">Vec</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an">Source</a></p>
+                          <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Std</span><span class="o">.</span><span class="kt">Collections</span><span class="o">.</span><span class="kt">Vec</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an">Source</a></p>
 <hr>
 <h1 id="types">Types</h1>
 <hr>
@@ -1426,150 +1289,119 @@
     <span class="n">data</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="n">t</span>
     <span class="n">len</span><span class="o">:</span> <span class="kt">Usz</span>
     <span class="n">cap</span><span class="o">:</span> <span class="kt">Usz</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L10">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L12">source</a></p>
 <hr>
-<h3 id="vecempty">Vec.empty</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="kt">Vec</span><span class="o">.</span><span class="n">empty</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">Vec</span> <span class="n">_</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">()</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L15">source</a></p>
+<h1 id="functions">Functions</h1>
 <hr>
-<h3 id="vecis_empty">Vec.is_empty</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="kt">Vec</span><span class="o">.</span><span class="n">is_empty</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="p">(</span><span class="kt">Vec</span> <span class="n">a</span><span class="p">))</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">ref</span> <span class="p">(</span><span class="kt">Vec</span> <span class="n">a</span><span class="p">))</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L17">source</a></p>
+<h2 id="empty">empty</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">empty</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="ow">-&gt;</span> <span class="kt">Vec</span> <span class="n">_</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">()</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L17">source</a></p>
 <hr>
-<h3 id="veclen">Vec.len</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="kt">Vec</span><span class="o">.</span><span class="n">len</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="p">(</span><span class="kt">Vec</span> <span class="n">a</span><span class="p">))</span> <span class="ow">-&gt;</span> <span class="kt">Usz</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">ref</span> <span class="p">(</span><span class="kt">Vec</span> <span class="n">a</span><span class="p">))</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L19">source</a></p>
+<h2 id="is_empty">is_empty</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">is_empty</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="p">(</span><span class="kt">Vec</span> <span class="n">a</span><span class="p">))</span> <span class="ow">-&gt;</span> <span class="n">_</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">ref</span> <span class="p">(</span><span class="kt">Vec</span> <span class="n">a</span><span class="p">))</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L19">source</a></p>
 <hr>
-<h3 id="veccapacity">Vec.capacity</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="kt">Vec</span><span class="o">.</span><span class="n">capacity</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="p">(</span><span class="kt">Vec</span> <span class="n">a</span><span class="p">))</span> <span class="ow">-&gt;</span> <span class="kt">Usz</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">ref</span> <span class="p">(</span><span class="kt">Vec</span> <span class="n">a</span><span class="p">))</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L21">source</a></p>
+<h2 id="len">len</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">len</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="p">(</span><span class="kt">Vec</span> <span class="n">a</span><span class="p">))</span> <span class="ow">-&gt;</span> <span class="kt">Usz</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">ref</span> <span class="p">(</span><span class="kt">Vec</span> <span class="n">a</span><span class="p">))</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L21">source</a></p>
 <hr>
-<h3 id="vecof">Vec.of</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Vec</span><span class="o">.</span><span class="n">of</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Stream</span> <span class="n">s</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="n">e</span>
+<h2 id="capacity">capacity</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">capacity</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="p">(</span><span class="kt">Vec</span> <span class="n">a</span><span class="p">))</span> <span class="ow">-&gt;</span> <span class="kt">Usz</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">ref</span> <span class="p">(</span><span class="kt">Vec</span> <span class="n">a</span><span class="p">))</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L23">source</a></p>
+<hr>
+<h2 id="of">of</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">of</span> <span class="p">(</span><span class="n">stream</span><span class="o">:</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Stream</span> <span class="n">s</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="n">e</span>
 </code></pre></div><p>Create a new Vec with the elements from the given stream</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L24">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L26">source</a></p>
 <hr>
-<h3 id="vecextend">Vec.extend</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Vec</span><span class="o">.</span><span class="n">extend</span> <span class="p">(</span><span class="n">vec</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Stream</span> <span class="n">s</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L29">source</a></p>
+<h2 id="extend">extend</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">extend</span> <span class="p">(</span><span class="n">vec</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">stream</span><span class="o">:</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Stream</span> <span class="n">s</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="kt">Mutate</span> <span class="n">&#39;vec</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L31">source</a></p>
 <hr>
-<h3 id="vecreserve">Vec.reserve</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Vec</span><span class="o">.</span><span class="n">reserve</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">numElems</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Panic</span>
+<h2 id="reserve">reserve</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">reserve</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">numElems</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="kt">Mutate</span> <span class="n">&#39;v</span>
 </code></pre></div><p>Reserve space for <code>numElems</code> more elements in <code>v</code>. The new slots are uninitialized.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L33">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L35">source</a></p>
 <hr>
-<h3 id="vecpush">Vec.push</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Vec</span><span class="o">.</span><span class="n">push</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">elem</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Panic</span>
+<h2 id="push">push</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">push</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">elem</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="kt">Mutate</span> <span class="n">&#39;v</span>
 </code></pre></div><p>Push an element onto the end of the vector.
 Resizes if necessary.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L46">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L48">source</a></p>
 <hr>
-<h3 id="vecpop">Vec.pop</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Vec</span><span class="o">.</span><span class="n">pop</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fs</span>
+<h2 id="pop">pop</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">pop</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Mutate</span> <span class="n">&#39;v</span>
 </code></pre></div><p>Removes the last element of this vector and returns it.
 Returns None if the vector is empty.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L55">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L57">source</a></p>
 <hr>
-<h3 id="vecget">Vec.get</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Vec</span><span class="o">.</span><span class="n">get</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">imm</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">i</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="k">imm</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span>
-</code></pre></div><p>Retrieves the element at the given 0-based index.
-Fails if the index is out of bounds</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L63">source</a></p>
-<hr>
-<h3 id="vecget_mut">Vec.get_mut</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Vec</span><span class="o">.</span><span class="n">get_mut</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">uniq</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">i</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="k">uniq</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span>
-</code></pre></div><p>Retrieves a mutable reference to the element at the given 0-based index.
-Fails if the index is out of bounds</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L70">source</a></p>
-<hr>
-<h3 id="vecget_unchecked">Vec.get_unchecked</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Vec</span><span class="o">.</span><span class="n">get_unchecked</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">imm</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">i</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="k">imm</span> <span class="n">t</span>
-</code></pre></div><p>An unsafe function to retrieve an element at the given index
-without checking if the index is inbounds</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L77">source</a></p>
-<hr>
-<h3 id="vecget_mut_unchecked">Vec.get_mut_unchecked</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Vec</span><span class="o">.</span><span class="n">get_mut_unchecked</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">uniq</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">i</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="k">uniq</span> <span class="n">t</span>
-</code></pre></div><p>An unsafe function to retrieve a mutable element at the given index
-without checking if the index is inbounds</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L83">source</a></p>
-<hr>
-<h3 id="vecremove_index">Vec.remove_index</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Vec</span><span class="o">.</span><span class="n">remove_index</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">idx</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span>
+<h2 id="remove_index">remove_index</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">remove_index</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">idx</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span><span class="p">,</span> <span class="kt">Mutate</span> <span class="n">&#39;v</span>
 </code></pre></div><p>Remove the element at the given index and return it.
 will Fail if the index is out of bounds.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L89">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L78">source</a></p>
 <hr>
-<h3 id="vecremove_first">Vec.remove_first</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Vec</span><span class="o">.</span><span class="n">remove_first</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">elem</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Copy</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="kt">Usz</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="n">e</span>
+<h2 id="remove_first">remove_first</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">remove_first</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">elem</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Copy</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="kt">Usz</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="kt">Mutate</span> <span class="n">&#39;v</span>
 </code></pre></div><p>Removes the first instance of the given element from the vector,
 returning the index it was found at. Returns <code>None</code> if the element was not found.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L102">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L91">source</a></p>
 <hr>
-<h3 id="vecremove_indices">Vec.remove_indices</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Vec</span><span class="o">.</span><span class="n">remove_indices</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">idxs</span><span class="o">:</span> <span class="kt">Vec</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Fail</span>
+<h2 id="remove_indices">remove_indices</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">remove_indices</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">idxs</span><span class="o">:</span> <span class="kt">Vec</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Fail</span><span class="p">,</span> <span class="kt">Mutate</span> <span class="n">&#39;v</span>
 </code></pre></div><p>Remove the given indices from the vector
 Expects the indices to be in sorted order.
 Will Fail if any index is out of bounds.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L112">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L101">source</a></p>
 <hr>
-<h3 id="vecremove_all">Vec.remove_all</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Vec</span><span class="o">.</span><span class="n">remove_all</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">elem</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Copy</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="kt">Usz</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="n">e</span>
+<h2 id="remove_all">remove_all</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">remove_all</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">elem</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Copy</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="kt">Usz</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="kt">Mutate</span> <span class="n">&#39;v</span>
 </code></pre></div><p>Remove all matching elements from the vector and
 return the number of elements removed.
 Uses = to determine element equality.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L136">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L125">source</a></p>
 <hr>
-<h3 id="vecswap_last">Vec.swap_last</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Vec</span><span class="o">.</span><span class="n">swap_last</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">idx</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="kt">Bool</span> <span class="k">can</span> <span class="kt">Fs</span>
+<h2 id="swap_last">swap_last</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">swap_last</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">idx</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="kt">Bool</span> <span class="k">can</span> <span class="kt">Mutate</span> <span class="n">&#39;v</span>
 </code></pre></div><p>Remove an element by swapping it with the last element in O(1) time.
 Returns true if a swap was performed or false otherwise.
 Will not swap if the given index is the index of the last element.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L150">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L140">source</a></p>
 <hr>
-<h3 id="vecreverse">Vec.reverse</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Vec</span><span class="o">.</span><span class="n">reverse</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Fs</span>
-</code></pre></div><p>Reverse the elements of this vector in place.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L158">source</a></p>
-<hr>
-<h3 id="vecswap">Vec.swap</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Vec</span><span class="o">.</span><span class="n">swap</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">i</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="p">(</span><span class="n">j</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Fail</span><span class="p">,</span> <span class="kt">Fs</span>
-</code></pre></div><p>Swap the elements at indices <code>i</code> and <code>j</code>. Fails if either index is out of bounds.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L168">source</a></p>
-<hr>
-<h3 id="vecinsert">Vec.insert</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Vec</span><span class="o">.</span><span class="n">insert</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">idx</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="p">(</span><span class="n">elem</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Fail</span><span class="p">,</span> <span class="kt">Panic</span>
+<h2 id="insert">insert</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">insert</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">idx</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="p">(</span><span class="n">elem</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Fail</span><span class="p">,</span> <span class="kt">Panic</span><span class="p">,</span> <span class="kt">Mutate</span> <span class="n">&#39;v</span>
 </code></pre></div><p>Insert <code>elem</code> at <code>idx</code>, shifting elements at <code>[idx, len)</code> one position right.
 Fails if <code>idx &gt; len</code>.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L177">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L167">source</a></p>
 <hr>
-<h3 id="vecdedup">Vec.dedup</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Vec</span><span class="o">.</span><span class="n">dedup</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Copy</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Fs</span><span class="p">,</span> <span class="n">e</span>
+<h2 id="dedup">dedup</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">dedup</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Copy</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="n">e</span><span class="p">,</span> <span class="kt">Mutate</span> <span class="n">&#39;v</span>
 </code></pre></div><p>Remove consecutive runs of equal elements, keeping only the first of each run.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L189">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L179">source</a></p>
 <hr>
-<h3 id="vectruncate">Vec.truncate</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Vec</span><span class="o">.</span><span class="n">truncate</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">new_len</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="n">e</span>
+<h2 id="truncate">truncate</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">truncate</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">new_len</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="n">e</span><span class="p">,</span> <span class="kt">Mutate</span> <span class="n">&#39;v</span>
 </code></pre></div><p>Shrink the vector to at most <code>new_len</code> elements, dropping any tail.
 Does nothing if <code>new_len &gt;= v.len</code>.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L201">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L191">source</a></p>
 <hr>
-<h3 id="vecclear">Vec.clear</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Vec</span><span class="o">.</span><span class="n">clear</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="n">e</span>
+<h2 id="clear">clear</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">clear</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="n">e</span><span class="p">,</span> <span class="kt">Mutate</span> <span class="n">&#39;v</span>
 </code></pre></div><p>Remove and drop every element.
 After being cleared, a Vec&rsquo;s length will be zero, but its capacity will be unchanged.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L210">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L200">source</a></p>
 <hr>
-<h3 id="vecsort_by">Vec.sort_by</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Vec</span><span class="o">.</span><span class="n">sort_by</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">cmp</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">[</span><span class="n">_</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span>
-</code></pre></div><p>Sort the vector in place using <code>cmp</code> to compare elements.
-Insertion sort: stable, O(n^2) worst case. Good enough for small vectors.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L215">source</a></p>
+<h2 id="windows">windows</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">windows</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;v</span> <span class="p">(</span><span class="kt">Vec</span> <span class="n">t</span><span class="p">))</span> <span class="kt">Usz</span> <span class="ow">-&gt;</span> <span class="n">_</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;v</span> <span class="p">(</span><span class="kt">Vec</span> <span class="n">t</span><span class="p">))</span> <span class="p">(</span><span class="n">n</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L280">source</a></p>
 <hr>
-<h3 id="vecsort">Vec.sort</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Vec</span><span class="o">.</span><span class="n">sort</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Fs</span>
-</code></pre></div><p>Sort the vector in place using the <code>Cmp</code> ordering.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L228">source</a></p>
+<h2 id="chunks">chunks</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">chunks</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;v</span> <span class="p">(</span><span class="kt">Vec</span> <span class="n">t</span><span class="p">))</span> <span class="kt">Usz</span> <span class="ow">-&gt;</span> <span class="n">_</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;v</span> <span class="p">(</span><span class="kt">Vec</span> <span class="n">t</span><span class="p">))</span> <span class="p">(</span><span class="n">n</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L285">source</a></p>
+<hr>
+<h2 id="permutations">permutations</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">permutations</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;v</span> <span class="p">(</span><span class="kt">Vec</span> <span class="n">t</span><span class="p">))</span> <span class="ow">-&gt;</span> <span class="n">_</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;v</span> <span class="p">(</span><span class="kt">Vec</span> <span class="n">t</span><span class="p">))</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L293">source</a></p>
 <hr>
 <h1 id="implicits">Implicits</h1>
 <hr>
@@ -1577,39 +1409,31 @@ Insertion sort: stable, O(n^2) worst case. Good enough for small vectors.</p>
 <summary>Show Implicits</summary>
 <h2 id="print_vec">print_vec</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">print_vec</span> <span class="p">{</span><span class="n">p</span><span class="o">:</span> <span class="kt">Display</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Display</span> <span class="p">(</span><span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L232">source</a></p>
-<hr>
-<h2 id="extract_vec_move">extract_vec_move</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">extract_vec_move</span><span class="o">:</span> <span class="kt">Extract</span> <span class="p">(</span><span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="kt">Usz</span> <span class="n">t</span> <span class="kt">Panic</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L243">source</a></p>
-<hr>
-<h2 id="extract_vec">extract_vec</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">extract_vec</span><span class="o">:</span> <span class="kt">Extract</span> <span class="p">(</span><span class="k">ref</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="kt">Usz</span> <span class="p">(</span><span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="kt">Panic</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L249">source</a></p>
-<hr>
-<h2 id="insert_vec">insert_vec</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">insert_vec</span><span class="o">:</span> <span class="kt">Insert</span> <span class="p">(</span><span class="k">mut</span> <span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="kt">Usz</span> <span class="n">t</span> <span class="kt">Panic</span>
-</code></pre></div><p>Note that this impl is different from <code>Vec.insert</code>.
-Vec.insert will insert into a slot, moving the previous element and each
-element after to the right. This <code>Insert</code> implementation will instead
-directly mutate the element at the given index to the new element.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L259">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L319">source</a></p>
 <hr>
 <h2 id="stream_vec">stream_vec</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">stream_vec</span><span class="o">:</span> <span class="kt">Stream</span> <span class="p">(</span><span class="kt">Vec</span> <span class="n">a</span><span class="p">)</span> <span class="n">a</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L265">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L344">source</a></p>
 <hr>
-<h2 id="stream_imm_vec">stream_imm_vec</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">stream_imm_vec</span><span class="o">:</span> <span class="kt">Stream</span> <span class="p">(</span><span class="k">imm</span> <span class="kt">Vec</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="k">imm</span> <span class="n">a</span><span class="p">)</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L270">source</a></p>
+<h2 id="stream_ref_vec">stream_ref_vec</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">stream_ref_vec</span><span class="o">:</span> <span class="kt">Stream</span> <span class="p">(</span><span class="k">ref</span> <span class="kt">Vec</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="k">ref</span> <span class="n">a</span><span class="p">)</span> <span class="n">pure</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L354">source</a></p>
+<hr>
+<h2 id="clone_vec">clone_vec</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">clone_vec</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Clone</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="kt">Clone</span> <span class="p">(</span><span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L359">source</a></p>
 <hr>
 <h2 id="drop_vec">drop_vec</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">drop_vec</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Drop</span> <span class="p">(</span><span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L275">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L369">source</a></p>
 <hr>
 <h2 id="eq_vec">eq_vec</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">eq_vec</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Eq</span> <span class="p">(</span><span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L283">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L377">source</a></p>
+<hr>
+<h2 id="cmp_vec">cmp_vec</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">cmp_vec</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="p">(</span><span class="kt">Vec</span> <span class="n">t</span><span class="p">)</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L389">source</a></p>
 </details>
 
                         </div>

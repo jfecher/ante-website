@@ -2,9 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://antelang.org/docs/stdlib/array/</loc>
+  </url><url>
+    <loc>https://antelang.org/docs/stdlib/bitwise/</loc>
+  </url><url>
     <loc>https://antelang.org/docs/stdlib/c/</loc>
   </url><url>
+    <loc>https://antelang.org/docs/stdlib/cast/</loc>
+  </url><url>
     <loc>https://antelang.org/docs/stdlib/char/</loc>
+  </url><url>
+    <loc>https://antelang.org/docs/stdlib/deque/</loc>
+  </url><url>
+    <loc>https://antelang.org/docs/stdlib/hashmap/</loc>
+  </url><url>
+    <loc>https://antelang.org/docs/stdlib/hashset/</loc>
+  </url><url>
+    <loc>https://antelang.org/docs/stdlib/heap/</loc>
+  </url><url>
+    <loc>https://antelang.org/docs/stdlib/seq/</loc>
+  </url><url>
+    <loc>https://antelang.org/docs/stdlib/vec/</loc>
   </url><url>
     <loc>https://antelang.org/docs/stdlib/earlyreturn/</loc>
   </url><url>
@@ -14,19 +32,23 @@
   </url><url>
     <loc>https://antelang.org/docs/stdlib/hash/</loc>
   </url><url>
-    <loc>https://antelang.org/docs/stdlib/hashmap/</loc>
-  </url><url>
-    <loc>https://antelang.org/docs/stdlib/hashset/</loc>
+    <loc>https://antelang.org/docs/stdlib/file/</loc>
   </url><url>
     <loc>https://antelang.org/docs/stdlib/io/</loc>
   </url><url>
+    <loc>https://antelang.org/docs/stdlib/sync/</loc>
+  </url><url>
     <loc>https://antelang.org/docs/stdlib/math/</loc>
+  </url><url>
+    <loc>https://antelang.org/docs/stdlib/mem/</loc>
+  </url><url>
+    <loc>https://antelang.org/docs/stdlib/num/</loc>
   </url><url>
     <loc>https://antelang.org/docs/stdlib/prelude/</loc>
   </url><url>
-    <loc>https://antelang.org/docs/stdlib/rc/</loc>
+    <loc>https://antelang.org/docs/stdlib/print/</loc>
   </url><url>
-    <loc>https://antelang.org/docs/stdlib/seq/</loc>
+    <loc>https://antelang.org/docs/stdlib/rc/</loc>
   </url><url>
     <loc>https://antelang.org/docs/stdlib/slice/</loc>
   </url><url>
@@ -34,13 +56,23 @@
   </url><url>
     <loc>https://antelang.org/docs/stdlib/string/</loc>
   </url><url>
-    <loc>https://antelang.org/docs/stdlib/sync/</loc>
+    <loc>https://antelang.org/docs/stdlib/arc/</loc>
+  </url><url>
+    <loc>https://antelang.org/docs/stdlib/atomic/</loc>
+  </url><url>
+    <loc>https://antelang.org/docs/stdlib/condvar/</loc>
+  </url><url>
+    <loc>https://antelang.org/docs/stdlib/mutex/</loc>
+  </url><url>
+    <loc>https://antelang.org/docs/stdlib/thread/</loc>
   </url><url>
     <loc>https://antelang.org/docs/stdlib/throw/</loc>
   </url><url>
-    <loc>https://antelang.org/docs/stdlib/time/</loc>
+    <loc>https://antelang.org/docs/stdlib/duration/</loc>
   </url><url>
-    <loc>https://antelang.org/docs/stdlib/vec/</loc>
+    <loc>https://antelang.org/docs/stdlib/instant/</loc>
+  </url><url>
+    <loc>https://antelang.org/docs/stdlib/time/</loc>
   </url><url>
     <loc>https://antelang.org/</loc>
     <lastmod>2026-10-19T00:00:00+00:00</lastmod>

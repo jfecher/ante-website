@@ -353,13 +353,13 @@
 list of features being worked on.</p>
 <h1 id="near-future">Near Future</h1>
 <ul>
-<li>Language Server: Better support for struct members and methods</li>
-<li>Inserting <code>drop</code> automatically after a variable&rsquo;s last use</li>
+<li>Proper unwinding when <code>resume</code> is dropped</li>
 <li>Default handlers for <code>Panic</code>, <code>Print</code>, and some other effects in <code>main</code></li>
 <li>Renaming of the <code>Fs</code>, <code>Net</code> primitive effects</li>
 <li>Compiler option to write inferred types into the file</li>
 <li>Formatter</li>
 <li>Rework or removal of <code>~&gt;</code> operator for effect handling</li>
+<li>Rework of closure types</li>
 </ul>
 <h1 id="futurer">Futurer</h1>
 <p>The following features are unimplemented but are not my top priority to implement in the near future.</p>
@@ -368,15 +368,11 @@ list of features being worked on.</p>
 <li><code>Char</code> is 1 byte rather than 4 currently. There is an open design question of
 whether Ante should use Rust&rsquo;s model for chars (4 bytes), Swift&rsquo;s model (variable bytes), or something else.</li>
 <li>Pattern guards such as <code>| pattern if expr -&gt; ...</code></li>
-<li>Performance guarantees on <code>for_</code> to be as fast as the native <code>for</code> loop</li>
 <li>A check to ensure only pure implicit functions can be called implicitly</li>
 <li>Row-polymorphic struct types</li>
 <li>Cranelift backend</li>
 <li>Language Server: Fill in match arms action</li>
-<li>Proper unwinding when <code>resume</code> is dropped</li>
-<li>Modules: <code>as name</code>, re-exports, <code>import implicit</code></li>
-<li>Marker type on each <code>trait impl</code></li>
-<li>Rework of closure types</li>
+<li>Modules: <code>as name</code>, <code>import implicit</code></li>
 </ul>
 
                         </div>

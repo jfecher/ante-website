@@ -6,7 +6,7 @@
 <meta name="googlebot" content="index,follow,snippet,archive">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Std.Seq</title>
+<title>Std.Collections.Seq</title>
 <meta name="author" content="Jake Fecher" />
 
 
@@ -68,7 +68,7 @@
 
 <meta name="twitter:card" content="summary">
 
-<meta name="twitter:title" content="Std.Seq">
+<meta name="twitter:title" content="Std.Collections.Seq">
 
 <meta name="twitter:description" content="">
 
@@ -77,7 +77,7 @@
   <meta name="robots" content="all,follow">
   <meta name="googlebot" content="index,follow,snippet,archive">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Std.Seq</title>
+  <title>Std.Collections.Seq</title>
   <meta name="author" content="" />
 
   <meta name="keywords" content="ante, programming, language, antelang, lang">	
@@ -125,7 +125,7 @@
   <link rel="alternate" href="https://antelang.org/index.xml" type="application/rss+xml" title="Ante">
 
   
-  <meta property="og:title" content="Std.Seq" />
+  <meta property="og:title" content="Std.Collections.Seq" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://antelang.org/docs/stdlib/seq//" />
   <meta property="og:image" content="" />
@@ -143,9 +143,9 @@
         <div class="container">
             <div class="navbar-header">
                 <a class="navbar-brand home" href="https://antelang.org/">
-                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="Std.Seq" class="hidden-xs hidden-sm">
-                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="Std.Seq" class="visible-xs visible-sm">
-                    <span class="sr-only">Std.Seq - go to homepage</span>
+                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="Std.Collections.Seq" class="hidden-xs hidden-sm">
+                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="Std.Collections.Seq" class="visible-xs visible-sm">
+                    <span class="sr-only">Std.Collections.Seq - go to homepage</span>
                 </a>
                 
 <div class="navbar-buttons">
@@ -226,7 +226,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h1>Std.Seq</h1>
+                <h1>Std.Collections.Seq</h1>
             </div>
         </div>
     </div>
@@ -253,7 +253,25 @@
         
         
         <li>
+            <a href="/docs/stdlib/array/">Std.Array</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/bitwise/">Std.Bitwise</a>
+            
+        </li>
+        
+        
+        <li>
             <a href="/docs/stdlib/c/">Std.C</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/cast/">Std.Cast</a>
             
         </li>
         
@@ -265,67 +283,31 @@
         
         
         <li>
-            <a href="/docs/stdlib/earlyreturn/">Std.EarlyReturn</a>
+            <a href="/docs/stdlib/deque/">Std.Collections.Deque</a>
             
         </li>
         
         
         <li>
-            <a href="/docs/stdlib/env/">Std.Env</a>
+            <a href="/docs/stdlib/hashmap/">Std.Collections.HashMap</a>
             
         </li>
         
         
         <li>
-            <a href="/docs/stdlib/fail/">Std.Fail</a>
+            <a href="/docs/stdlib/hashset/">Std.Collections.HashSet</a>
             
         </li>
         
         
         <li>
-            <a href="/docs/stdlib/hash/">Std.Hash</a>
-            
-        </li>
-        
-        
-        <li>
-            <a href="/docs/stdlib/hashmap/">Std.HashMap</a>
-            
-        </li>
-        
-        
-        <li>
-            <a href="/docs/stdlib/hashset/">Std.HashSet</a>
-            
-        </li>
-        
-        
-        <li>
-            <a href="/docs/stdlib/io/">Std.IO</a>
-            
-        </li>
-        
-        
-        <li>
-            <a href="/docs/stdlib/math/">Std.Math</a>
-            
-        </li>
-        
-        
-        <li>
-            <a href="/docs/stdlib/prelude/">Std.Prelude</a>
-            
-        </li>
-        
-        
-        <li>
-            <a href="/docs/stdlib/rc/">Std.Rc</a>
+            <a href="/docs/stdlib/heap/">Std.Collections.Heap</a>
             
         </li>
         
         
         <li class="current">
-            <a href="/docs/stdlib/seq/">Std.Seq</a>
+            <a href="/docs/stdlib/seq/">Std.Collections.Seq</a>
             
 
 
@@ -386,19 +368,36 @@
                 
                     <ul class="toc-h1">
                 
-                    <ul class="toc-h2">
-                
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/seq/#seqempty">
-                    <li>Seq.empty</li>
+                <a href="/docs/stdlib/seq/#functions">
+                    <li>Functions</li>
                 </a>
                 
                 
                     </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/seq/#empty">
+                    <li>empty</li>
+                </a>
+                
                 
                     </ul>
                 
@@ -417,17 +416,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/seq/#seqof">
-                    <li>Seq.of</li>
+                <a href="/docs/stdlib/seq/#of">
+                    <li>of</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -446,17 +441,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/seq/#seqwith_capacity">
-                    <li>Seq.with_capacity</li>
+                <a href="/docs/stdlib/seq/#with_capacity">
+                    <li>with_capacity</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -475,17 +466,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/seq/#seqpush">
-                    <li>Seq.push</li>
+                <a href="/docs/stdlib/seq/#push">
+                    <li>push</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -504,17 +491,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/seq/#seqpop">
-                    <li>Seq.pop</li>
+                <a href="/docs/stdlib/seq/#pop">
+                    <li>pop</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -533,17 +516,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/seq/#seqremove_last">
-                    <li>Seq.remove_last</li>
+                <a href="/docs/stdlib/seq/#remove_last">
+                    <li>remove_last</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -562,17 +541,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/seq/#seqget_copied">
-                    <li>Seq.get_copied</li>
+                <a href="/docs/stdlib/seq/#get_copied">
+                    <li>get_copied</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -591,17 +566,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/seq/#seqget">
-                    <li>Seq.get</li>
+                <a href="/docs/stdlib/seq/#get">
+                    <li>get</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -620,17 +591,13 @@
                 
                     <ul class="toc-h2">
                 
-                    <ul class="toc-h3">
                 
                 
                 
-                
-                <a href="/docs/stdlib/seq/#seqiter">
-                    <li>Seq.iter</li>
+                <a href="/docs/stdlib/seq/#iter">
+                    <li>iter</li>
                 </a>
                 
-                
-                    </ul>
                 
                     </ul>
                 
@@ -760,9 +727,143 @@
             
         
     
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/seq/#eq_seq">
+                    <li>eq_seq</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/seq/#cmp_seq">
+                    <li>cmp_seq</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
 </div>
 
 
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/vec/">Std.Collections.Vec</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/earlyreturn/">Std.EarlyReturn</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/env/">Std.Env</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/fail/">Std.Fail</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/hash/">Std.Hash</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/file/">Std.IO.File</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/io/">Std.IO</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/sync/">Std.Sync</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/math/">Std.Math</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/mem/">Std.Mem</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/num/">Std.Num</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/prelude/">Std.Prelude</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/print/">Std.Print</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/rc/">Std.Rc</a>
+            
         </li>
         
         
@@ -785,7 +886,31 @@
         
         
         <li>
-            <a href="/docs/stdlib/sync/">Std.Sync</a>
+            <a href="/docs/stdlib/arc/">Std.Sync.Arc</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/atomic/">Std.Sync.Atomic</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/condvar/">Std.Sync.Condvar</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/mutex/">Std.Sync.Mutex</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/thread/">Std.Sync.Thread</a>
             
         </li>
         
@@ -797,13 +922,19 @@
         
         
         <li>
-            <a href="/docs/stdlib/time/">Std.Time</a>
+            <a href="/docs/stdlib/duration/">Std.Time.Duration</a>
             
         </li>
         
         
         <li>
-            <a href="/docs/stdlib/vec/">Std.Vec</a>
+            <a href="/docs/stdlib/instant/">Std.Time.Instant</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/time/">Std.Time</a>
             
         </li>
         
@@ -823,8 +954,8 @@
                         
 
                         <div id="post-content">
-                          <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Std</span><span class="o">.</span><span class="kt">Seq</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Seq.an">Source</a></p>
+                          <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Std</span><span class="o">.</span><span class="kt">Collections</span><span class="o">.</span><span class="kt">Seq</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an">Source</a></p>
 <hr>
 <h1 id="types">Types</h1>
 <hr>
@@ -865,14 +996,14 @@ Seqs are only ever followed on Drop.</p>
 Since the rc becomes one after each copy, its not enough to reuse a Seq and one clone, we must clone
 at every step and push to both the original and the clone to overwrite the same element in both Seqs
 at every step, e.g:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">var</span> <span class="n">seq</span> <span class="ow">=</span> <span class="kt">Seq</span><span class="o">.</span><span class="n">empty</span> <span class="p">()</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">var</span> <span class="n">seq</span> <span class="ow">=</span> <span class="n">empty</span> <span class="p">()</span>
 <span class="k">while</span> <span class="mi">true</span> <span class="k">do</span>
     <span class="n">other</span> <span class="ow">=</span> <span class="n">clone</span> <span class="n">seq</span> <span class="c1">// clone seq forcing both this and seq to be shared</span>
     <span class="n">seq</span> <span class="ow">=</span> <span class="n">seq</span><span class="o">.</span><span class="n">push</span> <span class="mi">0</span>  <span class="c1">// push</span>
     <span class="n">other</span><span class="o">.</span><span class="n">push</span> <span class="mi">1</span>      <span class="c1">// then immediately overwrite the element, forcing a fork</span>
 
 <span class="c1">// Or similarly:</span>
-<span class="nf">seq</span> <span class="ow">=</span> <span class="kt">Seq</span><span class="o">.</span><span class="n">empty</span> <span class="p">()</span>
+<span class="nf">seq</span> <span class="ow">=</span> <span class="n">empty</span> <span class="p">()</span>
 <span class="nf">seq_view</span> <span class="o">:=</span> <span class="n">clone</span> <span class="n">seq</span>
 <span class="nf">seq_user</span> <span class="o">:=</span> <span class="n">seq</span><span class="o">.</span><span class="n">push</span> <span class="mi">0</span>
 <span class="k">while</span> <span class="mi">true</span> <span class="k">do</span>
@@ -883,50 +1014,52 @@ can be used instead. A more common usage would be for each clone to be a snapsho
 at a point in time, or for the clone to be reused - in either of these scenarios, the original
 sequence would still be O(1) amortized when pushed to.</p>
 <p>Note that Seq is not thread-safe</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Seq.an#L63">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L63">source</a></p>
 <hr>
-<h3 id="seqempty">Seq.empty</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Seq</span><span class="o">.</span><span class="n">empty</span> <span class="p">()</span><span class="o">:</span> <span class="kt">Seq</span> <span class="n">t</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Seq.an#L83">source</a></p>
+<h1 id="functions">Functions</h1>
 <hr>
-<h3 id="seqof">Seq.of</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Seq</span><span class="o">.</span><span class="n">of</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Stream</span> <span class="n">s</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Seq</span> <span class="n">t</span> <span class="k">can</span> <span class="n">e</span>
+<h2 id="empty">empty</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">empty</span> <span class="p">()</span><span class="o">:</span> <span class="kt">Seq</span> <span class="n">t</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L83">source</a></p>
+<hr>
+<h2 id="of">of</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">of</span> <span class="p">(</span><span class="n">stream</span><span class="o">:</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Stream</span> <span class="n">s</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Seq</span> <span class="n">t</span> <span class="k">can</span> <span class="n">e</span>
 </code></pre></div><p>Create a Seq holding each item from the given stream</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Seq.an#L87">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L87">source</a></p>
 <hr>
-<h3 id="seqwith_capacity">Seq.with_capacity</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Seq</span><span class="o">.</span><span class="n">with_capacity</span> <span class="p">(</span><span class="n">capacity</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="kt">Seq</span> <span class="n">t</span>
+<h2 id="with_capacity">with_capacity</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">with_capacity</span> <span class="p">(</span><span class="n">capacity</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="kt">Seq</span> <span class="n">t</span>
 </code></pre></div><p>Create a Seq with the given initial capacity</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Seq.an#L92">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L92">source</a></p>
 <hr>
-<h3 id="seqpush">Seq.push</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Seq</span><span class="o">.</span><span class="n">push</span> <span class="p">(</span><span class="n">seq</span><span class="o">:</span> <span class="kt">Seq</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">elem</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Seq</span> <span class="n">t</span> <span class="k">can</span> <span class="n">e</span>
+<h2 id="push">push</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">push</span> <span class="p">(</span><span class="k">var</span> <span class="n">seq</span><span class="o">:</span> <span class="kt">Seq</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">elem</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Seq</span> <span class="n">t</span> <span class="k">can</span> <span class="n">e</span>
 </code></pre></div><p>Push an element to this sequence, returning a new sequence.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Seq.an#L109">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L109">source</a></p>
 <hr>
-<h3 id="seqpop">Seq.pop</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Seq</span><span class="o">.</span><span class="n">pop</span> <span class="p">(</span><span class="k">var</span> <span class="n">seq</span><span class="o">:</span> <span class="kt">Seq</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Copy</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="kt">Seq</span> <span class="n">t</span><span class="p">,</span> <span class="kt">Maybe</span> <span class="n">t</span>
+<h2 id="pop">pop</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">pop</span> <span class="p">(</span><span class="k">var</span> <span class="n">seq</span><span class="o">:</span> <span class="kt">Seq</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Copy</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="kt">Seq</span> <span class="n">t</span><span class="p">,</span> <span class="kt">Maybe</span> <span class="n">t</span>
 </code></pre></div><p>Return a new <code>Seq t</code> without the last element.
 Returns the popped element if this seq was non-empty.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Seq.an#L169">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L172">source</a></p>
 <hr>
-<h3 id="seqremove_last">Seq.remove_last</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Seq</span><span class="o">.</span><span class="n">remove_last</span> <span class="p">(</span><span class="k">var</span> <span class="n">seq</span><span class="o">:</span> <span class="kt">Seq</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">Seq</span> <span class="n">t</span>
+<h2 id="remove_last">remove_last</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">remove_last</span> <span class="p">(</span><span class="k">var</span> <span class="n">seq</span><span class="o">:</span> <span class="kt">Seq</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">Seq</span> <span class="n">t</span>
 </code></pre></div><p>Same as <code>pop</code> but does not return the last element, and thus
 does not require a <code>Copy</code> constraint</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Seq.an#L179">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L182">source</a></p>
 <hr>
-<h3 id="seqget_copied">Seq.get_copied</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Seq</span><span class="o">.</span><span class="n">get_copied</span> <span class="p">(</span><span class="n">seq</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Seq</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">U32</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Copy</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="n">t</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Seq.an#L184">source</a></p>
+<h2 id="get_copied">get_copied</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">get_copied</span> <span class="p">(</span><span class="n">seq</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Seq</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">U32</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Copy</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="n">t</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L187">source</a></p>
 <hr>
-<h3 id="seqget">Seq.get</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Seq</span><span class="o">.</span><span class="n">get</span> <span class="p">(</span><span class="n">seq</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Seq</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">U32</span><span class="p">)</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="p">(</span><span class="k">ref</span> <span class="n">t</span><span class="p">)</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Seq.an#L189">source</a></p>
+<h2 id="get">get</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">get</span> <span class="p">(</span><span class="n">seq</span><span class="o">:</span> <span class="n">read</span> <span class="kt">Seq</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">U32</span><span class="p">)</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="p">(</span><span class="n">read</span> <span class="n">t</span><span class="p">)</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L192">source</a></p>
 <hr>
-<h3 id="seqiter">Seq.iter</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="kt">Seq</span><span class="o">.</span><span class="n">iter</span> <span class="p">(</span><span class="n">seq</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Seq</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">[</span><span class="n">_</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Seq.an#L195">source</a></p>
+<h2 id="iter">iter</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">iter</span> <span class="p">(</span><span class="n">seq</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Seq</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;seq</span> <span class="n">t</span><span class="p">)</span> <span class="p">[</span><span class="n">env</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">env</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="n">e</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L198">source</a></p>
 <hr>
 <h1 id="implicits">Implicits</h1>
 <hr>
@@ -934,19 +1067,27 @@ does not require a <code>Copy</code> constraint</p>
 <summary>Show Implicits</summary>
 <h2 id="print_seq">print_seq</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">print_seq</span> <span class="p">{</span><span class="n">p</span><span class="o">:</span> <span class="kt">Display</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Copy</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="kt">Display</span> <span class="p">(</span><span class="kt">Seq</span> <span class="n">t</span><span class="p">)</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Seq.an#L206">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L204">source</a></p>
 <hr>
 <h2 id="clone_seq">clone_seq</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">clone_seq</span><span class="o">:</span> <span class="kt">Clone</span> <span class="p">(</span><span class="kt">Seq</span> <span class="n">t</span><span class="p">)</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Seq.an#L216">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L214">source</a></p>
 <hr>
 <h2 id="drop_seq">drop_seq</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">drop_seq</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Drop</span> <span class="p">(</span><span class="kt">Seq</span> <span class="n">t</span><span class="p">)</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Seq.an#L224">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L222">source</a></p>
 <hr>
 <h2 id="stream_seq">stream_seq</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">stream_seq</span><span class="o">:</span> <span class="kt">Stream</span> <span class="p">(</span><span class="kt">Seq</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="k">ref</span> <span class="n">a</span><span class="p">)</span> <span class="n">pure</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Seq.an#L275">source</a></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">stream_seq</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">a</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Stream</span> <span class="p">(</span><span class="kt">Seq</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="k">ref</span> <span class="n">a</span><span class="p">)</span> <span class="n">e</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L273">source</a></p>
+<hr>
+<h2 id="eq_seq">eq_seq</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">eq_seq</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Eq</span> <span class="p">(</span><span class="kt">Seq</span> <span class="n">t</span><span class="p">)</span> <span class="n">e</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L279">source</a></p>
+<hr>
+<h2 id="cmp_seq">cmp_seq</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">cmp_seq</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="p">(</span><span class="kt">Seq</span> <span class="n">t</span><span class="p">)</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L291">source</a></p>
 </details>
 
                         </div>

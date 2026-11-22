@@ -1,0 +1,4515 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="robots" content="all,follow">
+<meta name="googlebot" content="index,follow,snippet,archive">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Std.Num</title>
+<meta name="author" content="Jake Fecher" />
+
+
+
+
+<meta name="keywords" content="ante, programming, language, antelang, lang">
+
+
+<meta name="description" content="">
+
+<meta name="generator" content="Hugo 0.89.0-DEV" />
+
+
+<link href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800' rel='stylesheet' type='text/css'>
+
+
+<link rel="stylesheet" href="//use.fontawesome.com/releases/v5.11.2/css/all.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+
+<link href="/css/animate.css" rel="stylesheet">
+
+
+
+  <link href="/css/style.red.css" rel="stylesheet" id="theme-stylesheet">
+
+
+
+<link href="/css/custom.css" rel="stylesheet">
+
+
+
+  <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+
+
+<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon" />
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
+
+
+<link href="/css/owl.carousel.css" rel="stylesheet">
+<link href="/css/owl.theme.css" rel="stylesheet">
+
+
+<link rel="alternate" href="https://antelang.org/index.xml" type="application/rss+xml" title="Ante">
+
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+
+<meta name="twitter:title" content="Std.Num">
+
+<meta name="twitter:description" content="">
+
+
+      <meta charset="utf-8">
+  <meta name="robots" content="all,follow">
+  <meta name="googlebot" content="index,follow,snippet,archive">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Std.Num</title>
+  <meta name="author" content="" />
+
+  <meta name="keywords" content="ante, programming, language, antelang, lang">	
+  <meta name="description" content="For exploring algebraic effects, safe shared mutability, and other novel features">
+
+  <meta name="generator" content="Hugo 0.89.0-DEV" />
+
+  <link href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800' rel='stylesheet' type='text/css'>
+
+  
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+  
+  <link href="https://antelang.org/css/animate.css" rel="stylesheet">
+
+  
+  
+    <link href="https://antelang.org/css/style.red.css" rel="stylesheet" id="theme-stylesheet">
+  
+
+
+  
+  <link href="https://antelang.org/css/custom.css" rel="stylesheet">
+ 
+  
+  <link rel="stylesheet" href="https://antelang.org/css/syntax.css">
+
+  
+  
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  
+
+  
+  <link rel="shortcut icon" href="https://antelang.org/img/favicon.ico" type="image/x-icon" />
+  <link rel="apple-touch-icon" href="https://antelang.org/img/apple-touch-icon.png" />
+  
+
+  <link href="https://antelang.org/css/owl.carousel.css" rel="stylesheet">
+  <link href="https://antelang.org/css/owl.theme.css" rel="stylesheet">
+
+  <link rel="alternate" href="https://antelang.org/index.xml" type="application/rss+xml" title="Ante">
+
+  
+  <meta property="og:title" content="Std.Num" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://antelang.org/docs/stdlib/num//" />
+  <meta property="og:image" content="" />
+
+  </head>
+
+  <body>
+    <div id="all">
+        
+
+        
+
+    <div class="navbar navbar-default yamm" role="navigation" id="navbar">
+
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand home" href="https://antelang.org/">
+                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="Std.Num" class="hidden-xs hidden-sm">
+                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="Std.Num" class="visible-xs visible-sm">
+                    <span class="sr-only">Std.Num - go to homepage</span>
+                </a>
+                
+<div class="navbar-buttons">
+        <div class="navbar-collapse collapse" id="navigation">
+            <ul class="nav navbar-nav navbar-right">
+            
+            <li class="dropdown">
+                <a href="https://antelang.org//docs/language">Tour</a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//docs/stdlib">Stdlib</a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//docs/ideas">Ideas</a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//docs/roadmap">Roadmap</a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//blog">Blog</a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//docs/faq">FAQ</a>
+            </li>
+
+            <li class="dropdown">
+                <a href="https://github.com/jfecher/ante"><i class="fa fa-15x fa-github"></i></a>
+            </li>
+            <li class="dropdown">
+                <a href="https://reddit.com/r/ante"><i class="fab fa-15x fa-reddit"></i></a>
+            </li>
+            <li class="dropdown">
+                <a href="https://discord.gg/NPJncGBAws"><i class="fab fa-15x fa-discord"></i></a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//index.xml"><i class="fa fa-15x fa-rss"></i></a>
+            </li>
+
+            </ul>
+        </div>
+        <button type="button" class="navbar-toggle btn-template-main" onclick="document.getElementById('navigation').classList.toggle('collapse')">
+    <span class="sr-only">Toggle Navigation</span>
+        <i class="fa fa-align-justify"></i>
+    </button>
+</div>
+
+            </div>
+            
+
+            
+            
+
+            <div class="collapse clearfix" id="search">
+
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search">
+                        <span class="input-group-btn">
+
+                    <button type="submit" class="btn btn-template-main"><i class="fa fa-search"></i></button>
+
+                </span>
+                    </div>
+                </form>
+
+            </div>
+            
+
+        </div>
+    </div>
+    
+
+
+
+
+
+        <div id="heading-breadcrumbs">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Std.Num</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+        <div id="content">
+            <div class="container" id="post-container">
+                <div class="row">
+                    
+
+                    <div class="col-md-3">
+                        
+                        <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>Contents</h1>
+    </div>
+
+    
+    
+    
+    
+    <ul class="sidebar-pages">
+        
+        
+        <li>
+            <a href="/docs/stdlib/array/">Std.Array</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/bitwise/">Std.Bitwise</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/c/">Std.C</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/cast/">Std.Cast</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/char/">Std.Char</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/deque/">Std.Collections.Deque</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/hashmap/">Std.Collections.HashMap</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/hashset/">Std.Collections.HashSet</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/heap/">Std.Collections.Heap</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/seq/">Std.Collections.Seq</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/vec/">Std.Collections.Vec</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/earlyreturn/">Std.EarlyReturn</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/env/">Std.Env</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/fail/">Std.Fail</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/hash/">Std.Hash</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/file/">Std.IO.File</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/io/">Std.IO</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/sync/">Std.Sync</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/math/">Std.Math</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/mem/">Std.Mem</a>
+            
+        </li>
+        
+        
+        <li class="current">
+            <a href="/docs/stdlib/num/">Std.Num</a>
+            
+
+
+<div class="table-of-contents toc bd-callout">
+    
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#traits">
+                    <li>Traits</li>
+                </a>
+                
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#add">
+                    <li>Add</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#sub">
+                    <li>Sub</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#mul">
+                    <li>Mul</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#div">
+                    <li>Div</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#mod">
+                    <li>Mod</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#eq">
+                    <li>Eq</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#not">
+                    <li>Not</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#cmp">
+                    <li>Cmp</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#wrapping">
+                    <li>Wrapping</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#functions">
+                    <li>Functions</li>
+                </a>
+                
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#heading">
+                    <li>%%</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#heading-1">
+                    <li>!=</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#heading-2">
+                    <li>&gt;</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#heading-3">
+                    <li>&lt;=</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#heading-4">
+                    <li>&gt;=</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#max">
+                    <li>max</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#min">
+                    <li>min</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#implicits">
+                    <li>Implicits</li>
+                </a>
+                
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#add_i8">
+                    <li>add_i8</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#add_i16">
+                    <li>add_i16</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#add_i32">
+                    <li>add_i32</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#add_i64">
+                    <li>add_i64</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#add_isz">
+                    <li>add_isz</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#add_u8">
+                    <li>add_u8</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#add_u16">
+                    <li>add_u16</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#add_u32">
+                    <li>add_u32</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#add_u64">
+                    <li>add_u64</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#add_usz">
+                    <li>add_usz</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#add_f32">
+                    <li>add_f32</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#add_f64">
+                    <li>add_f64</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#sub_i8">
+                    <li>sub_i8</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#sub_i16">
+                    <li>sub_i16</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#sub_i32">
+                    <li>sub_i32</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#sub_i64">
+                    <li>sub_i64</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#sub_isz">
+                    <li>sub_isz</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#sub_u8">
+                    <li>sub_u8</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#sub_u16">
+                    <li>sub_u16</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#sub_u32">
+                    <li>sub_u32</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#sub_u64">
+                    <li>sub_u64</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#sub_usz">
+                    <li>sub_usz</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#sub_f32">
+                    <li>sub_f32</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#sub_f64">
+                    <li>sub_f64</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#mul_i8">
+                    <li>mul_i8</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#mul_i16">
+                    <li>mul_i16</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#mul_i32">
+                    <li>mul_i32</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#mul_i64">
+                    <li>mul_i64</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#mul_isz">
+                    <li>mul_isz</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#mul_u8">
+                    <li>mul_u8</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#mul_u16">
+                    <li>mul_u16</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#mul_u32">
+                    <li>mul_u32</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#mul_u64">
+                    <li>mul_u64</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#mul_usz">
+                    <li>mul_usz</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#mul_f32">
+                    <li>mul_f32</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#mul_f64">
+                    <li>mul_f64</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#div_i8">
+                    <li>div_i8</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#div_i16">
+                    <li>div_i16</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#div_i32">
+                    <li>div_i32</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#div_i64">
+                    <li>div_i64</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#div_isz">
+                    <li>div_isz</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#div_u8">
+                    <li>div_u8</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#div_u16">
+                    <li>div_u16</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#div_u32">
+                    <li>div_u32</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#div_u64">
+                    <li>div_u64</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#div_usz">
+                    <li>div_usz</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#div_f32">
+                    <li>div_f32</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#div_f64">
+                    <li>div_f64</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#mod_i8">
+                    <li>mod_i8</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#mod_i16">
+                    <li>mod_i16</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#mod_i32">
+                    <li>mod_i32</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#mod_i64">
+                    <li>mod_i64</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#mod_isz">
+                    <li>mod_isz</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#mod_u8">
+                    <li>mod_u8</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#mod_u16">
+                    <li>mod_u16</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#mod_u32">
+                    <li>mod_u32</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#mod_u64">
+                    <li>mod_u64</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#mod_usz">
+                    <li>mod_usz</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#eq_i8">
+                    <li>eq_i8</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#eq_i16">
+                    <li>eq_i16</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#eq_i32">
+                    <li>eq_i32</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#eq_i64">
+                    <li>eq_i64</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#eq_isz">
+                    <li>eq_isz</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#eq_u8">
+                    <li>eq_u8</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#eq_u16">
+                    <li>eq_u16</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#eq_u32">
+                    <li>eq_u32</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#eq_u64">
+                    <li>eq_u64</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#eq_usz">
+                    <li>eq_usz</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#eq_f32">
+                    <li>eq_f32</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#eq_f64">
+                    <li>eq_f64</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#eq_char">
+                    <li>eq_char</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#eq_bool">
+                    <li>eq_bool</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#eq_ref">
+                    <li>eq_ref</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#eq_ptr">
+                    <li>eq_ptr</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#eq_maybe">
+                    <li>eq_maybe</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#eq_pair">
+                    <li>eq_pair</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#not_bool">
+                    <li>not_bool</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#not_i32">
+                    <li>not_i32</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#cmp_i8">
+                    <li>cmp_i8</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#cmp_i16">
+                    <li>cmp_i16</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#cmp_i32">
+                    <li>cmp_i32</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#cmp_i64">
+                    <li>cmp_i64</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#cmp_isz">
+                    <li>cmp_isz</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#cmp_u8">
+                    <li>cmp_u8</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#cmp_u16">
+                    <li>cmp_u16</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#cmp_u32">
+                    <li>cmp_u32</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#cmp_u64">
+                    <li>cmp_u64</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#cmp_usz">
+                    <li>cmp_usz</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#cmp_f32">
+                    <li>cmp_f32</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#cmp_f64">
+                    <li>cmp_f64</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#cmp_char">
+                    <li>cmp_char</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#cmp_pair">
+                    <li>cmp_pair</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#cmp_reverse">
+                    <li>cmp_reverse</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#num_i8">
+                    <li>num_i8</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#num_i16">
+                    <li>num_i16</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#num_i32">
+                    <li>num_i32</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#num_i64">
+                    <li>num_i64</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#num_isz">
+                    <li>num_isz</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#num_u8">
+                    <li>num_u8</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#num_u16">
+                    <li>num_u16</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#num_u32">
+                    <li>num_u32</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#num_u64">
+                    <li>num_u64</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#num_usz">
+                    <li>num_usz</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#num_f32">
+                    <li>num_f32</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#num_f64">
+                    <li>num_f64</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#wrapping_i8">
+                    <li>wrapping_i8</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#wrapping_i16">
+                    <li>wrapping_i16</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#wrapping_i32">
+                    <li>wrapping_i32</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#wrapping_i64">
+                    <li>wrapping_i64</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#wrapping_isz">
+                    <li>wrapping_isz</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#wrapping_u8">
+                    <li>wrapping_u8</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#wrapping_u16">
+                    <li>wrapping_u16</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#wrapping_u32">
+                    <li>wrapping_u32</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#wrapping_u64">
+                    <li>wrapping_u64</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#wrapping_usz">
+                    <li>wrapping_usz</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+</div>
+
+
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/prelude/">Std.Prelude</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/print/">Std.Print</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/rc/">Std.Rc</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/slice/">Std.Slice</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/stream/">Std.Stream</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/string/">Std.String</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/arc/">Std.Sync.Arc</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/atomic/">Std.Sync.Atomic</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/condvar/">Std.Sync.Condvar</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/mutex/">Std.Sync.Mutex</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/thread/">Std.Sync.Thread</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/throw/">Std.Throw</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/duration/">Std.Time.Duration</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/instant/">Std.Time.Instant</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/time/">Std.Time</a>
+            
+        </li>
+        
+    </ul>
+    
+
+    
+  </div>
+</div>
+
+                        
+                    </div>
+                    
+
+                    <div class="col-md-9" id="blog-post">
+
+                        
+
+                        <div id="post-content">
+                          <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Std</span><span class="o">.</span><span class="kt">Num</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an">Source</a></p>
+<hr>
+<h1 id="traits">Traits</h1>
+<hr>
+<h2 id="add">Add</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">trait</span> <span class="kt">Add</span> <span class="n">n</span> <span class="ow">=</span>
+    <span class="o">+:</span> <span class="k">fn</span> <span class="n">n</span> <span class="n">n</span> <span class="ow">-&gt;</span> <span class="n">n</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L2">source</a></p>
+<hr>
+<h2 id="sub">Sub</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">trait</span> <span class="kt">Sub</span> <span class="n">n</span> <span class="ow">=</span>
+    <span class="o">-:</span> <span class="k">fn</span> <span class="n">n</span> <span class="n">n</span> <span class="ow">-&gt;</span> <span class="n">n</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L16">source</a></p>
+<hr>
+<h2 id="mul">Mul</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">trait</span> <span class="kt">Mul</span> <span class="n">n</span> <span class="ow">=</span>
+    <span class="o">*:</span> <span class="k">fn</span> <span class="n">n</span> <span class="n">n</span> <span class="ow">-&gt;</span> <span class="n">n</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L30">source</a></p>
+<hr>
+<h2 id="div">Div</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">trait</span> <span class="kt">Div</span> <span class="n">n</span> <span class="ow">=</span>
+    <span class="o">/:</span> <span class="k">fn</span> <span class="n">n</span> <span class="n">n</span> <span class="ow">-&gt;</span> <span class="n">n</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L44">source</a></p>
+<hr>
+<h2 id="mod">Mod</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">trait</span> <span class="kt">Mod</span> <span class="n">n</span> <span class="ow">=</span>
+    <span class="o">%:</span> <span class="k">fn</span> <span class="n">n</span> <span class="n">n</span> <span class="ow">-&gt;</span> <span class="n">n</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L58">source</a></p>
+<hr>
+<h2 id="eq">Eq</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">trait</span> <span class="kt">Eq</span> <span class="n">t</span> <span class="p">(</span><span class="n">e</span><span class="o">:</span> <span class="k">effect</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="o">==:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span> <span class="k">can</span> <span class="n">e</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L75">source</a></p>
+<hr>
+<h2 id="not">Not</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">trait</span> <span class="kt">Not</span> <span class="n">t</span> <span class="ow">=</span>
+    <span class="k">not</span><span class="o">:</span> <span class="k">fn</span> <span class="n">t</span> <span class="ow">-&gt;</span> <span class="n">t</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L112">source</a></p>
+<hr>
+<h2 id="cmp">Cmp</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">trait</span> <span class="kt">Cmp</span> <span class="n">a</span> <span class="ow">=</span>
+    <span class="o">&lt;:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="k">ref</span> <span class="n">a</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L121">source</a></p>
+<hr>
+<h2 id="wrapping">Wrapping</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">trait</span> <span class="kt">Wrapping</span> <span class="n">n</span> <span class="ow">=</span>
+    <span class="n">wrapping_add</span><span class="o">:</span> <span class="k">fn</span> <span class="n">n</span> <span class="n">n</span> <span class="ow">-&gt;</span> <span class="n">n</span>
+    <span class="n">wrapping_sub</span><span class="o">:</span> <span class="k">fn</span> <span class="n">n</span> <span class="n">n</span> <span class="ow">-&gt;</span> <span class="n">n</span>
+    <span class="n">wrapping_mul</span><span class="o">:</span> <span class="k">fn</span> <span class="n">n</span> <span class="n">n</span> <span class="ow">-&gt;</span> <span class="n">n</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L289">source</a></p>
+<hr>
+<h1 id="functions">Functions</h1>
+<hr>
+<h2 id="heading">%%</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="o">%%</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">b</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Mod</span> <span class="n">t</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Cast</span> <span class="kt">U8</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Copy</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="kt">Bool</span> <span class="k">can</span> <span class="n">e</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L72">source</a></p>
+<hr>
+<h2 id="heading-1">!=</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="o">!=:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="kt">Eq</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span> <span class="k">can</span> <span class="n">e</span><span class="p">)</span> <span class="p">(</span><span class="n">l</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">r</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">{(</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">t</span> <span class="n">e</span><span class="p">)}</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L110">source</a></p>
+<hr>
+<h2 id="heading-2">&gt;</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="o">&gt;:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="kt">Cmp</span> <span class="n">t</span><span class="p">}</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">b</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">{(</span><span class="n">cmp</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="n">t</span><span class="p">)}</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L125">source</a></p>
+<hr>
+<h2 id="heading-3">&lt;=</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="o">&lt;=:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="kt">Cmp</span> <span class="n">t</span><span class="p">}</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">b</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">{(</span><span class="n">cmp</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="n">t</span><span class="p">)}</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L126">source</a></p>
+<hr>
+<h2 id="heading-4">&gt;=</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="o">&gt;=:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="kt">Cmp</span> <span class="n">t</span><span class="p">}</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">b</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">{(</span><span class="n">cmp</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="n">t</span><span class="p">)}</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L127">source</a></p>
+<hr>
+<h2 id="max">max</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">max</span> <span class="p">(</span><span class="n">l</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;a</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">r</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;a</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="n">cmp</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;a</span> <span class="n">t</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L156">source</a></p>
+<hr>
+<h2 id="min">min</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">min</span> <span class="p">(</span><span class="n">l</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;a</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">r</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;a</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="n">cmp</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;a</span> <span class="n">t</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L157">source</a></p>
+<hr>
+<h1 id="implicits">Implicits</h1>
+<hr>
+<details>
+<summary>Show Implicits</summary>
+<h2 id="add_i8">add_i8</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">add_i8</span><span class="o">:</span> <span class="kt">Add</span> <span class="kt">I8</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L3">source</a></p>
+<hr>
+<h2 id="add_i16">add_i16</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">add_i16</span><span class="o">:</span> <span class="kt">Add</span> <span class="kt">I16</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L4">source</a></p>
+<hr>
+<h2 id="add_i32">add_i32</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">add_i32</span><span class="o">:</span> <span class="kt">Add</span> <span class="kt">I32</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L5">source</a></p>
+<hr>
+<h2 id="add_i64">add_i64</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">add_i64</span><span class="o">:</span> <span class="kt">Add</span> <span class="kt">I64</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L6">source</a></p>
+<hr>
+<h2 id="add_isz">add_isz</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">add_isz</span><span class="o">:</span> <span class="kt">Add</span> <span class="kt">Isz</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L7">source</a></p>
+<hr>
+<h2 id="add_u8">add_u8</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">add_u8</span><span class="o">:</span> <span class="kt">Add</span> <span class="kt">U8</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L8">source</a></p>
+<hr>
+<h2 id="add_u16">add_u16</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">add_u16</span><span class="o">:</span> <span class="kt">Add</span> <span class="kt">U16</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L9">source</a></p>
+<hr>
+<h2 id="add_u32">add_u32</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">add_u32</span><span class="o">:</span> <span class="kt">Add</span> <span class="kt">U32</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L10">source</a></p>
+<hr>
+<h2 id="add_u64">add_u64</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">add_u64</span><span class="o">:</span> <span class="kt">Add</span> <span class="kt">U64</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L11">source</a></p>
+<hr>
+<h2 id="add_usz">add_usz</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">add_usz</span><span class="o">:</span> <span class="kt">Add</span> <span class="kt">Usz</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L12">source</a></p>
+<hr>
+<h2 id="add_f32">add_f32</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">add_f32</span><span class="o">:</span> <span class="kt">Add</span> <span class="kt">F32</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L13">source</a></p>
+<hr>
+<h2 id="add_f64">add_f64</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">add_f64</span><span class="o">:</span> <span class="kt">Add</span> <span class="kt">F64</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L14">source</a></p>
+<hr>
+<h2 id="sub_i8">sub_i8</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">sub_i8</span><span class="o">:</span> <span class="kt">Sub</span> <span class="kt">I8</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L17">source</a></p>
+<hr>
+<h2 id="sub_i16">sub_i16</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">sub_i16</span><span class="o">:</span> <span class="kt">Sub</span> <span class="kt">I16</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L18">source</a></p>
+<hr>
+<h2 id="sub_i32">sub_i32</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">sub_i32</span><span class="o">:</span> <span class="kt">Sub</span> <span class="kt">I32</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L19">source</a></p>
+<hr>
+<h2 id="sub_i64">sub_i64</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">sub_i64</span><span class="o">:</span> <span class="kt">Sub</span> <span class="kt">I64</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L20">source</a></p>
+<hr>
+<h2 id="sub_isz">sub_isz</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">sub_isz</span><span class="o">:</span> <span class="kt">Sub</span> <span class="kt">Isz</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L21">source</a></p>
+<hr>
+<h2 id="sub_u8">sub_u8</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">sub_u8</span><span class="o">:</span> <span class="kt">Sub</span> <span class="kt">U8</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L22">source</a></p>
+<hr>
+<h2 id="sub_u16">sub_u16</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">sub_u16</span><span class="o">:</span> <span class="kt">Sub</span> <span class="kt">U16</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L23">source</a></p>
+<hr>
+<h2 id="sub_u32">sub_u32</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">sub_u32</span><span class="o">:</span> <span class="kt">Sub</span> <span class="kt">U32</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L24">source</a></p>
+<hr>
+<h2 id="sub_u64">sub_u64</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">sub_u64</span><span class="o">:</span> <span class="kt">Sub</span> <span class="kt">U64</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L25">source</a></p>
+<hr>
+<h2 id="sub_usz">sub_usz</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">sub_usz</span><span class="o">:</span> <span class="kt">Sub</span> <span class="kt">Usz</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L26">source</a></p>
+<hr>
+<h2 id="sub_f32">sub_f32</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">sub_f32</span><span class="o">:</span> <span class="kt">Sub</span> <span class="kt">F32</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L27">source</a></p>
+<hr>
+<h2 id="sub_f64">sub_f64</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">sub_f64</span><span class="o">:</span> <span class="kt">Sub</span> <span class="kt">F64</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L28">source</a></p>
+<hr>
+<h2 id="mul_i8">mul_i8</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">mul_i8</span><span class="o">:</span> <span class="kt">Mul</span> <span class="kt">I8</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L31">source</a></p>
+<hr>
+<h2 id="mul_i16">mul_i16</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">mul_i16</span><span class="o">:</span> <span class="kt">Mul</span> <span class="kt">I16</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L32">source</a></p>
+<hr>
+<h2 id="mul_i32">mul_i32</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">mul_i32</span><span class="o">:</span> <span class="kt">Mul</span> <span class="kt">I32</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L33">source</a></p>
+<hr>
+<h2 id="mul_i64">mul_i64</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">mul_i64</span><span class="o">:</span> <span class="kt">Mul</span> <span class="kt">I64</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L34">source</a></p>
+<hr>
+<h2 id="mul_isz">mul_isz</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">mul_isz</span><span class="o">:</span> <span class="kt">Mul</span> <span class="kt">Isz</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L35">source</a></p>
+<hr>
+<h2 id="mul_u8">mul_u8</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">mul_u8</span><span class="o">:</span> <span class="kt">Mul</span> <span class="kt">U8</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L36">source</a></p>
+<hr>
+<h2 id="mul_u16">mul_u16</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">mul_u16</span><span class="o">:</span> <span class="kt">Mul</span> <span class="kt">U16</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L37">source</a></p>
+<hr>
+<h2 id="mul_u32">mul_u32</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">mul_u32</span><span class="o">:</span> <span class="kt">Mul</span> <span class="kt">U32</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L38">source</a></p>
+<hr>
+<h2 id="mul_u64">mul_u64</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">mul_u64</span><span class="o">:</span> <span class="kt">Mul</span> <span class="kt">U64</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L39">source</a></p>
+<hr>
+<h2 id="mul_usz">mul_usz</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">mul_usz</span><span class="o">:</span> <span class="kt">Mul</span> <span class="kt">Usz</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L40">source</a></p>
+<hr>
+<h2 id="mul_f32">mul_f32</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">mul_f32</span><span class="o">:</span> <span class="kt">Mul</span> <span class="kt">F32</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L41">source</a></p>
+<hr>
+<h2 id="mul_f64">mul_f64</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">mul_f64</span><span class="o">:</span> <span class="kt">Mul</span> <span class="kt">F64</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L42">source</a></p>
+<hr>
+<h2 id="div_i8">div_i8</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">div_i8</span><span class="o">:</span> <span class="kt">Div</span> <span class="kt">I8</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L45">source</a></p>
+<hr>
+<h2 id="div_i16">div_i16</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">div_i16</span><span class="o">:</span> <span class="kt">Div</span> <span class="kt">I16</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L46">source</a></p>
+<hr>
+<h2 id="div_i32">div_i32</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">div_i32</span><span class="o">:</span> <span class="kt">Div</span> <span class="kt">I32</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L47">source</a></p>
+<hr>
+<h2 id="div_i64">div_i64</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">div_i64</span><span class="o">:</span> <span class="kt">Div</span> <span class="kt">I64</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L48">source</a></p>
+<hr>
+<h2 id="div_isz">div_isz</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">div_isz</span><span class="o">:</span> <span class="kt">Div</span> <span class="kt">Isz</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L49">source</a></p>
+<hr>
+<h2 id="div_u8">div_u8</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">div_u8</span><span class="o">:</span> <span class="kt">Div</span> <span class="kt">U8</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L50">source</a></p>
+<hr>
+<h2 id="div_u16">div_u16</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">div_u16</span><span class="o">:</span> <span class="kt">Div</span> <span class="kt">U16</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L51">source</a></p>
+<hr>
+<h2 id="div_u32">div_u32</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">div_u32</span><span class="o">:</span> <span class="kt">Div</span> <span class="kt">U32</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L52">source</a></p>
+<hr>
+<h2 id="div_u64">div_u64</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">div_u64</span><span class="o">:</span> <span class="kt">Div</span> <span class="kt">U64</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L53">source</a></p>
+<hr>
+<h2 id="div_usz">div_usz</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">div_usz</span><span class="o">:</span> <span class="kt">Div</span> <span class="kt">Usz</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L54">source</a></p>
+<hr>
+<h2 id="div_f32">div_f32</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">div_f32</span><span class="o">:</span> <span class="kt">Div</span> <span class="kt">F32</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L55">source</a></p>
+<hr>
+<h2 id="div_f64">div_f64</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">div_f64</span><span class="o">:</span> <span class="kt">Div</span> <span class="kt">F64</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L56">source</a></p>
+<hr>
+<h2 id="mod_i8">mod_i8</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">mod_i8</span><span class="o">:</span> <span class="kt">Mod</span> <span class="kt">I8</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L59">source</a></p>
+<hr>
+<h2 id="mod_i16">mod_i16</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">mod_i16</span><span class="o">:</span> <span class="kt">Mod</span> <span class="kt">I16</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L60">source</a></p>
+<hr>
+<h2 id="mod_i32">mod_i32</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">mod_i32</span><span class="o">:</span> <span class="kt">Mod</span> <span class="kt">I32</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L61">source</a></p>
+<hr>
+<h2 id="mod_i64">mod_i64</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">mod_i64</span><span class="o">:</span> <span class="kt">Mod</span> <span class="kt">I64</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L62">source</a></p>
+<hr>
+<h2 id="mod_isz">mod_isz</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">mod_isz</span><span class="o">:</span> <span class="kt">Mod</span> <span class="kt">Isz</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L63">source</a></p>
+<hr>
+<h2 id="mod_u8">mod_u8</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">mod_u8</span><span class="o">:</span> <span class="kt">Mod</span> <span class="kt">U8</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L64">source</a></p>
+<hr>
+<h2 id="mod_u16">mod_u16</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">mod_u16</span><span class="o">:</span> <span class="kt">Mod</span> <span class="kt">U16</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L65">source</a></p>
+<hr>
+<h2 id="mod_u32">mod_u32</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">mod_u32</span><span class="o">:</span> <span class="kt">Mod</span> <span class="kt">U32</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L66">source</a></p>
+<hr>
+<h2 id="mod_u64">mod_u64</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">mod_u64</span><span class="o">:</span> <span class="kt">Mod</span> <span class="kt">U64</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L67">source</a></p>
+<hr>
+<h2 id="mod_usz">mod_usz</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">mod_usz</span><span class="o">:</span> <span class="kt">Mod</span> <span class="kt">Usz</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L68">source</a></p>
+<hr>
+<h2 id="eq_i8">eq_i8</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">eq_i8</span><span class="o">:</span> <span class="kt">Eq</span> <span class="kt">I8</span> <span class="n">pure</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L76">source</a></p>
+<hr>
+<h2 id="eq_i16">eq_i16</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">eq_i16</span><span class="o">:</span> <span class="kt">Eq</span> <span class="kt">I16</span> <span class="n">pure</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L77">source</a></p>
+<hr>
+<h2 id="eq_i32">eq_i32</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">eq_i32</span><span class="o">:</span> <span class="kt">Eq</span> <span class="kt">I32</span> <span class="n">pure</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L78">source</a></p>
+<hr>
+<h2 id="eq_i64">eq_i64</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">eq_i64</span><span class="o">:</span> <span class="kt">Eq</span> <span class="kt">I64</span> <span class="n">pure</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L79">source</a></p>
+<hr>
+<h2 id="eq_isz">eq_isz</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">eq_isz</span><span class="o">:</span> <span class="kt">Eq</span> <span class="kt">Isz</span> <span class="n">pure</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L80">source</a></p>
+<hr>
+<h2 id="eq_u8">eq_u8</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">eq_u8</span><span class="o">:</span> <span class="kt">Eq</span> <span class="kt">U8</span> <span class="n">pure</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L81">source</a></p>
+<hr>
+<h2 id="eq_u16">eq_u16</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">eq_u16</span><span class="o">:</span> <span class="kt">Eq</span> <span class="kt">U16</span> <span class="n">pure</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L82">source</a></p>
+<hr>
+<h2 id="eq_u32">eq_u32</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">eq_u32</span><span class="o">:</span> <span class="kt">Eq</span> <span class="kt">U32</span> <span class="n">pure</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L83">source</a></p>
+<hr>
+<h2 id="eq_u64">eq_u64</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">eq_u64</span><span class="o">:</span> <span class="kt">Eq</span> <span class="kt">U64</span> <span class="n">pure</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L84">source</a></p>
+<hr>
+<h2 id="eq_usz">eq_usz</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">eq_usz</span><span class="o">:</span> <span class="kt">Eq</span> <span class="kt">Usz</span> <span class="n">pure</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L85">source</a></p>
+<hr>
+<h2 id="eq_f32">eq_f32</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">eq_f32</span><span class="o">:</span> <span class="kt">Eq</span> <span class="kt">F32</span> <span class="n">pure</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L86">source</a></p>
+<hr>
+<h2 id="eq_f64">eq_f64</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">eq_f64</span><span class="o">:</span> <span class="kt">Eq</span> <span class="kt">F64</span> <span class="n">pure</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L87">source</a></p>
+<hr>
+<h2 id="eq_char">eq_char</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">eq_char</span><span class="o">:</span> <span class="kt">Eq</span> <span class="kt">Char</span> <span class="n">pure</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L89">source</a></p>
+<hr>
+<h2 id="eq_bool">eq_bool</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">eq_bool</span><span class="o">:</span> <span class="kt">Eq</span> <span class="kt">Bool</span> <span class="n">pure</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L90">source</a></p>
+<hr>
+<h2 id="eq_ref">eq_ref</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">eq_ref</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Eq</span> <span class="p">(</span><span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="n">e</span>
+</code></pre></div><p>References are equal if their elements are equal</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L93">source</a></p>
+<hr>
+<h2 id="eq_ptr">eq_ptr</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">eq_ptr</span><span class="o">:</span> <span class="kt">Eq</span> <span class="p">(</span><span class="kt">Ptr</span> <span class="n">t</span><span class="p">)</span> <span class="n">pure</span>
+</code></pre></div><p>Pointers are equal if their addresses are equal</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L97">source</a></p>
+<hr>
+<h2 id="eq_maybe">eq_maybe</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">eq_maybe</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">e2</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Eq</span> <span class="p">(</span><span class="kt">Maybe</span> <span class="n">e2</span><span class="p">)</span> <span class="n">e</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L100">source</a></p>
+<hr>
+<h2 id="eq_pair">eq_pair</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">eq_pair</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">a</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">b</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Eq</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="n">e</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L107">source</a></p>
+<hr>
+<h2 id="not_bool">not_bool</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">not_bool</span><span class="o">:</span> <span class="kt">Not</span> <span class="kt">Bool</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L115">source</a></p>
+<hr>
+<h2 id="not_i32">not_i32</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">not_i32</span><span class="o">:</span> <span class="kt">Not</span> <span class="kt">I32</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L118">source</a></p>
+<hr>
+<h2 id="cmp_i8">cmp_i8</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">cmp_i8</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="kt">I8</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L129">source</a></p>
+<hr>
+<h2 id="cmp_i16">cmp_i16</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">cmp_i16</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="kt">I16</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L130">source</a></p>
+<hr>
+<h2 id="cmp_i32">cmp_i32</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">cmp_i32</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="kt">I32</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L131">source</a></p>
+<hr>
+<h2 id="cmp_i64">cmp_i64</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">cmp_i64</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="kt">I64</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L132">source</a></p>
+<hr>
+<h2 id="cmp_isz">cmp_isz</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">cmp_isz</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="kt">Isz</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L133">source</a></p>
+<hr>
+<h2 id="cmp_u8">cmp_u8</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">cmp_u8</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="kt">U8</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L135">source</a></p>
+<hr>
+<h2 id="cmp_u16">cmp_u16</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">cmp_u16</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="kt">U16</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L136">source</a></p>
+<hr>
+<h2 id="cmp_u32">cmp_u32</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">cmp_u32</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="kt">U32</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L137">source</a></p>
+<hr>
+<h2 id="cmp_u64">cmp_u64</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">cmp_u64</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="kt">U64</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L138">source</a></p>
+<hr>
+<h2 id="cmp_usz">cmp_usz</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">cmp_usz</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="kt">Usz</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L139">source</a></p>
+<hr>
+<h2 id="cmp_f32">cmp_f32</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">cmp_f32</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="kt">F32</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L141">source</a></p>
+<hr>
+<h2 id="cmp_f64">cmp_f64</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">cmp_f64</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="kt">F64</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L142">source</a></p>
+<hr>
+<h2 id="cmp_char">cmp_char</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">cmp_char</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="kt">Char</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L144">source</a></p>
+<hr>
+<h2 id="cmp_pair">cmp_pair</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">cmp_pair</span> <span class="p">{</span><span class="n">ca</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="n">a</span><span class="p">}</span> <span class="p">{</span><span class="n">cb</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="n">b</span><span class="p">}</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L146">source</a></p>
+<hr>
+<h2 id="cmp_reverse">cmp_reverse</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">cmp_reverse</span> <span class="p">{</span><span class="n">cmp</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="n">t</span>
+</code></pre></div><p>Reverses the ordering of another <code>Cmp</code> impl. For example, <code>cmp_reverse cmp_i8</code> will
+order integers from greatest to least instead of least to greatest.</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L153">source</a></p>
+<hr>
+<h2 id="num_i8">num_i8</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">num_i8</span><span class="o">:</span> <span class="kt">Num</span> <span class="kt">I8</span> <span class="n">add_i8</span> <span class="n">sub_i8</span> <span class="n">mul_i8</span> <span class="n">div_i8</span> <span class="n">eq_i8</span> <span class="n">cmp_i8</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L169">source</a></p>
+<hr>
+<h2 id="num_i16">num_i16</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">num_i16</span><span class="o">:</span> <span class="kt">Num</span> <span class="kt">I16</span> <span class="n">add_i16</span> <span class="n">sub_i16</span> <span class="n">mul_i16</span> <span class="n">div_i16</span> <span class="n">eq_i16</span> <span class="n">cmp_i16</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L179">source</a></p>
+<hr>
+<h2 id="num_i32">num_i32</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">num_i32</span><span class="o">:</span> <span class="kt">Num</span> <span class="kt">I32</span> <span class="n">add_i32</span> <span class="n">sub_i32</span> <span class="n">mul_i32</span> <span class="n">div_i32</span> <span class="n">eq_i32</span> <span class="n">cmp_i32</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L189">source</a></p>
+<hr>
+<h2 id="num_i64">num_i64</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">num_i64</span><span class="o">:</span> <span class="kt">Num</span> <span class="kt">I64</span> <span class="n">add_i64</span> <span class="n">sub_i64</span> <span class="n">mul_i64</span> <span class="n">div_i64</span> <span class="n">eq_i64</span> <span class="n">cmp_i64</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L199">source</a></p>
+<hr>
+<h2 id="num_isz">num_isz</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">num_isz</span><span class="o">:</span> <span class="kt">Num</span> <span class="kt">Isz</span> <span class="n">add_isz</span> <span class="n">sub_isz</span> <span class="n">mul_isz</span> <span class="n">div_isz</span> <span class="n">eq_isz</span> <span class="n">cmp_isz</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L209">source</a></p>
+<hr>
+<h2 id="num_u8">num_u8</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">num_u8</span><span class="o">:</span> <span class="kt">Num</span> <span class="kt">U8</span> <span class="n">add_u8</span> <span class="n">sub_u8</span> <span class="n">mul_u8</span> <span class="n">div_u8</span> <span class="n">eq_u8</span> <span class="n">cmp_u8</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L219">source</a></p>
+<hr>
+<h2 id="num_u16">num_u16</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">num_u16</span><span class="o">:</span> <span class="kt">Num</span> <span class="kt">U16</span> <span class="n">add_u16</span> <span class="n">sub_u16</span> <span class="n">mul_u16</span> <span class="n">div_u16</span> <span class="n">eq_u16</span> <span class="n">cmp_u16</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L229">source</a></p>
+<hr>
+<h2 id="num_u32">num_u32</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">num_u32</span><span class="o">:</span> <span class="kt">Num</span> <span class="kt">U32</span> <span class="n">add_u32</span> <span class="n">sub_u32</span> <span class="n">mul_u32</span> <span class="n">div_u32</span> <span class="n">eq_u32</span> <span class="n">cmp_u32</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L239">source</a></p>
+<hr>
+<h2 id="num_u64">num_u64</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">num_u64</span><span class="o">:</span> <span class="kt">Num</span> <span class="kt">U64</span> <span class="n">add_u64</span> <span class="n">sub_u64</span> <span class="n">mul_u64</span> <span class="n">div_u64</span> <span class="n">eq_u64</span> <span class="n">cmp_u64</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L249">source</a></p>
+<hr>
+<h2 id="num_usz">num_usz</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">num_usz</span><span class="o">:</span> <span class="kt">Num</span> <span class="kt">Usz</span> <span class="n">add_usz</span> <span class="n">sub_usz</span> <span class="n">mul_usz</span> <span class="n">div_usz</span> <span class="n">eq_usz</span> <span class="n">cmp_usz</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L259">source</a></p>
+<hr>
+<h2 id="num_f32">num_f32</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">num_f32</span><span class="o">:</span> <span class="kt">Num</span> <span class="kt">F32</span> <span class="n">add_f32</span> <span class="n">sub_f32</span> <span class="n">mul_f32</span> <span class="n">div_f32</span> <span class="n">eq_f32</span> <span class="n">cmp_f32</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L269">source</a></p>
+<hr>
+<h2 id="num_f64">num_f64</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">num_f64</span><span class="o">:</span> <span class="kt">Num</span> <span class="kt">F64</span> <span class="n">add_f64</span> <span class="n">sub_f64</span> <span class="n">mul_f64</span> <span class="n">div_f64</span> <span class="n">eq_f64</span> <span class="n">cmp_f64</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L279">source</a></p>
+<hr>
+<h2 id="wrapping_i8">wrapping_i8</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">wrapping_i8</span><span class="o">:</span> <span class="kt">Wrapping</span> <span class="kt">I8</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L294">source</a></p>
+<hr>
+<h2 id="wrapping_i16">wrapping_i16</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">wrapping_i16</span><span class="o">:</span> <span class="kt">Wrapping</span> <span class="kt">I16</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L299">source</a></p>
+<hr>
+<h2 id="wrapping_i32">wrapping_i32</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">wrapping_i32</span><span class="o">:</span> <span class="kt">Wrapping</span> <span class="kt">I32</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L304">source</a></p>
+<hr>
+<h2 id="wrapping_i64">wrapping_i64</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">wrapping_i64</span><span class="o">:</span> <span class="kt">Wrapping</span> <span class="kt">I64</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L309">source</a></p>
+<hr>
+<h2 id="wrapping_isz">wrapping_isz</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">wrapping_isz</span><span class="o">:</span> <span class="kt">Wrapping</span> <span class="kt">Isz</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L314">source</a></p>
+<hr>
+<h2 id="wrapping_u8">wrapping_u8</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">wrapping_u8</span><span class="o">:</span> <span class="kt">Wrapping</span> <span class="kt">U8</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L319">source</a></p>
+<hr>
+<h2 id="wrapping_u16">wrapping_u16</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">wrapping_u16</span><span class="o">:</span> <span class="kt">Wrapping</span> <span class="kt">U16</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L324">source</a></p>
+<hr>
+<h2 id="wrapping_u32">wrapping_u32</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">wrapping_u32</span><span class="o">:</span> <span class="kt">Wrapping</span> <span class="kt">U32</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L329">source</a></p>
+<hr>
+<h2 id="wrapping_u64">wrapping_u64</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">wrapping_u64</span><span class="o">:</span> <span class="kt">Wrapping</span> <span class="kt">U64</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L334">source</a></p>
+<hr>
+<h2 id="wrapping_usz">wrapping_usz</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">wrapping_usz</span><span class="o">:</span> <span class="kt">Wrapping</span> <span class="kt">Usz</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L339">source</a></p>
+</details>
+
+                        </div>
+                        
+                        
+
+                    </div>
+                    
+
+                    
+
+                    
+                    <div class="col-md-3 right-float"/>
+
+                    
+
+                </div>
+                
+
+            </div>
+            
+        </div>
+        
+
+        <footer id="footer">
+    <div class="container">
+
+        
+
+        <div class="col-md-4 col-sm-6">
+
+            
+            <h4>Recent posts</h4>
+
+            <div class="blog-entries">
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="https://antelang.org/blog/safe_cyclic_mutability/">
+                          
+                            <img src="/img/banners/antelope_canyon2.jpg" class="img-responsive" alt="Borrow Checking Zero-Cost Cyclic Mutability">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/blog/safe_cyclic_mutability/">Borrow Checking Zero-Cost Cyclic Mutability</a></h5>
+                    </div>
+                </div>
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="https://antelang.org/blog/vision/">
+                          
+                            <img src="/img/banners/anteater3.jpg" class="img-responsive" alt="A Vision for Future Low-Level Languages">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/blog/vision/">A Vision for Future Low-Level Languages</a></h5>
+                    </div>
+                </div>
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="https://antelang.org/blog/stable_mutable_refs/">
+                          
+                            <img src="/img/banners/antelope_flowers_cropped.jpg" class="img-responsive" alt="Stable, Mutable References">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/blog/stable_mutable_refs/">Stable, Mutable References</a></h5>
+                    </div>
+                </div>
+                
+            </div>
+
+            <hr class="hidden-md hidden-lg">
+            
+
+        </div>
+        
+
+        
+
+    </div>
+    
+</footer>
+
+
+
+
+
+
+
+<div id="copyright">
+    <div class="container">
+        <div class="col-md-12">
+            
+            <p class="pull-right">
+              Template by <a href="https://bootstrapious.com/p/universal-business-e-commerce-template">Bootstrapious</a>.
+              
+
+              Ported to Hugo by <a href="https://github.com/devcows/hugo-universal-theme">DevCows</a>.
+            </p>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+    </div>
+    
+
+    
+<script src="//code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Counter-Up/1.0/jquery.counterup.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-parallax/1.1.3/jquery-parallax.js"></script>
+
+<script src="https://antelang.org/js/front.js"></script>
+<script src="https://antelang.org/js/details-toc.js"></script>
+
+
+<script src="https://antelang.org/js/owl.carousel.min.js"></script>
+
+
+  </body>
+</html>
