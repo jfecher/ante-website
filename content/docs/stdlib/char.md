@@ -1,7 +1,7 @@
 +++
 title = "Std.Char"
 categories = ["docs"]
-weight = 2
+weight = 5
 +++
 
 ```ante

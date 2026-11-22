@@ -1,15 +1,15 @@
 +++
-title = "Std.Vec"
+title = "Std.Collections.Vec"
 categories = ["docs"]
-weight = 20
+weight = 11
 +++
 
 ```ante
-import Std.Vec
+import Std.Collections.Vec
 ```
 
 
-[Source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an)
+[Source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an)
 
 ---
 
@@ -26,327 +26,260 @@ type Vec t =
     cap: Usz
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L10)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L12)
 
 ---
 
-### Vec.empty
+# Functions
+
+---
+
+## empty
 
 ```ante
-(Vec.empty: fn Unit -> Vec _ is pure) ()
+(empty: fn Unit -> Vec _ is pure) ()
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L15)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L17)
 
 ---
 
-### Vec.is_empty
+## is_empty
 
 ```ante
-(Vec.is_empty: fn (ref (Vec a)) -> Bool is pure) (v: ref (Vec a))
+(is_empty: fn (ref (Vec a)) -> _ is pure) (v: ref (Vec a))
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L17)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L19)
 
 ---
 
-### Vec.len
+## len
 
 ```ante
-(Vec.len: fn (ref (Vec a)) -> Usz is pure) (v: ref (Vec a))
+(len: fn (ref (Vec a)) -> Usz is pure) (v: ref (Vec a))
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L19)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L21)
 
 ---
 
-### Vec.capacity
+## capacity
 
 ```ante
-(Vec.capacity: fn (ref (Vec a)) -> Usz is pure) (v: ref (Vec a))
+(capacity: fn (ref (Vec a)) -> Usz is pure) (v: ref (Vec a))
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L21)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L23)
 
 ---
 
-### Vec.of
+## of
 
 ```ante
-Vec.of (s: s) {_: Stream s t e}: Vec t can Panic, e
+of (stream: s) {_: Stream s t e}: Vec t can Panic, e
 ```
 
 Create a new Vec with the elements from the given stream
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L24)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L26)
 
 ---
 
-### Vec.extend
+## extend
 
 ```ante
-Vec.extend (vec: mut Vec t) (s: s) {_: Stream s t e}: Unit can Panic, e
+extend (vec: mut Vec t) (stream: s) {_: Stream s t e}: Unit can Panic, e, Mutate 'vec
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L29)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L31)
 
 ---
 
-### Vec.reserve
+## reserve
 
 ```ante
-Vec.reserve (v: mut Vec t) (numElems: Usz): Unit can Panic
+reserve (v: mut Vec t) (numElems: Usz): Unit can Panic, Mutate 'v
 ```
 
 Reserve space for `numElems` more elements in `v`. The new slots are uninitialized.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L33)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L35)
 
 ---
 
-### Vec.push
+## push
 
 ```ante
-Vec.push (v: mut Vec t) (elem: t): Unit can Panic
+push (v: mut Vec t) (elem: t): Unit can Panic, Mutate 'v
 ```
 
 Push an element onto the end of the vector.
 Resizes if necessary.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L46)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L48)
 
 ---
 
-### Vec.pop
+## pop
 
 ```ante
-Vec.pop (v: mut Vec t): Maybe t can Fs
+pop (v: mut Vec t): Maybe t can Mutate 'v
 ```
 
 Removes the last element of this vector and returns it.
 Returns None if the vector is empty.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L55)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L57)
 
 ---
 
-### Vec.get
+## remove_index
 
 ```ante
-Vec.get (v: imm Vec t) (i: Usz): imm t can Fail
-```
-
-Retrieves the element at the given 0-based index.
-Fails if the index is out of bounds
-
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L63)
-
----
-
-### Vec.get_mut
-
-```ante
-Vec.get_mut (v: uniq Vec t) (i: Usz): uniq t can Fail
-```
-
-Retrieves a mutable reference to the element at the given 0-based index.
-Fails if the index is out of bounds
-
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L70)
-
----
-
-### Vec.get_unchecked
-
-```ante
-Vec.get_unchecked (v: imm Vec t) (i: Usz): imm t
-```
-
-An unsafe function to retrieve an element at the given index
-without checking if the index is inbounds
-
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L77)
-
----
-
-### Vec.get_mut_unchecked
-
-```ante
-Vec.get_mut_unchecked (v: uniq Vec t) (i: Usz): uniq t
-```
-
-An unsafe function to retrieve a mutable element at the given index
-without checking if the index is inbounds
-
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L83)
-
----
-
-### Vec.remove_index
-
-```ante
-Vec.remove_index (v: mut Vec t) (idx: Usz): t can Fail
+remove_index (v: mut Vec t) (idx: Usz): t can Fail, Mutate 'v
 ```
 
 Remove the element at the given index and return it.
 will Fail if the index is out of bounds.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L89)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L78)
 
 ---
 
-### Vec.remove_first
+## remove_first
 
 ```ante
-Vec.remove_first (v: mut Vec t) (elem: t) {_: Eq t e} {_: Copy t}: Maybe Usz can Panic, e
+remove_first (v: mut Vec t) (elem: t) {_: Eq t e} {_: Copy t}: Maybe Usz can Panic, e, Mutate 'v
 ```
 
 Removes the first instance of the given element from the vector,
 returning the index it was found at. Returns `None` if the element was not found.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L102)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L91)
 
 ---
 
-### Vec.remove_indices
+## remove_indices
 
 ```ante
-Vec.remove_indices (v: mut Vec t) (idxs: Vec Usz): Unit can Fail
+remove_indices (v: mut Vec t) (idxs: Vec Usz): Unit can Fail, Mutate 'v
 ```
 
 Remove the given indices from the vector
 Expects the indices to be in sorted order.
 Will Fail if any index is out of bounds.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L112)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L101)
 
 ---
 
-### Vec.remove_all
+## remove_all
 
 ```ante
-Vec.remove_all (v: mut Vec t) (elem: t) {_: Eq t e} {_: Copy t}: Usz can Panic, e
+remove_all (v: mut Vec t) (elem: t) {_: Eq t e} {_: Copy t}: Usz can Panic, e, Mutate 'v
 ```
 
 Remove all matching elements from the vector and
 return the number of elements removed.
 Uses = to determine element equality.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L136)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L125)
 
 ---
 
-### Vec.swap_last
+## swap_last
 
 ```ante
-Vec.swap_last (v: mut Vec t) (idx: Usz): Bool can Fs
+swap_last (v: mut Vec t) (idx: Usz): Bool can Mutate 'v
 ```
 
 Remove an element by swapping it with the last element in O(1) time.
 Returns true if a swap was performed or false otherwise.
 Will not swap if the given index is the index of the last element.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L150)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L140)
 
 ---
 
-### Vec.reverse
+## insert
 
 ```ante
-Vec.reverse (v: mut Vec t): Unit can Fs
-```
-
-Reverse the elements of this vector in place.
-
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L158)
-
----
-
-### Vec.swap
-
-```ante
-Vec.swap (v: mut Vec t) (i: Usz) (j: Usz): Unit can Fail, Fs
-```
-
-Swap the elements at indices `i` and `j`. Fails if either index is out of bounds.
-
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L168)
-
----
-
-### Vec.insert
-
-```ante
-Vec.insert (v: mut Vec t) (idx: Usz) (elem: t): Unit can Fail, Panic
+insert (v: mut Vec t) (idx: Usz) (elem: t): Unit can Fail, Panic, Mutate 'v
 ```
 
 Insert `elem` at `idx`, shifting elements at `[idx, len)` one position right.
 Fails if `idx > len`.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L177)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L167)
 
 ---
 
-### Vec.dedup
+## dedup
 
 ```ante
-Vec.dedup (v: mut Vec t) {_: Eq t e} {_: Copy t}: Unit can Fs, e
+dedup (v: mut Vec t) {_: Eq t e} {_: Copy t}: Unit can e, Mutate 'v
 ```
 
 Remove consecutive runs of equal elements, keeping only the first of each run.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L189)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L179)
 
 ---
 
-### Vec.truncate
+## truncate
 
 ```ante
-Vec.truncate (v: mut Vec t) (new_len: Usz) {_: Drop t e}: Unit can e
+truncate (v: mut Vec t) (new_len: Usz) {_: Drop t e}: Unit can e, Mutate 'v
 ```
 
 Shrink the vector to at most `new_len` elements, dropping any tail.
 Does nothing if `new_len >= v.len`.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L201)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L191)
 
 ---
 
-### Vec.clear
+## clear
 
 ```ante
-Vec.clear (v: mut Vec t) {_: Drop t e}: Unit can e
+clear (v: mut Vec t) {_: Drop t e}: Unit can e, Mutate 'v
 ```
 
 Remove and drop every element.
 After being cleared, a Vec's length will be zero, but its capacity will be unchanged.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L210)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L200)
 
 ---
 
-### Vec.sort_by
+## windows
 
 ```ante
-Vec.sort_by (v: mut Vec t) (cmp: fn (ref t) (ref t) [_] -> Bool): Unit
+(windows: fn (ref 'v (Vec t)) Usz -> _ is pure) (v: ref 'v (Vec t)) (n: Usz)
 ```
 
-Sort the vector in place using `cmp` to compare elements.
-Insertion sort: stable, O(n^2) worst case. Good enough for small vectors.
-
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L215)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L280)
 
 ---
 
-### Vec.sort
+## chunks
 
 ```ante
-Vec.sort (v: mut Vec t) {_: Cmp t}: Unit can Fs
+(chunks: fn (ref 'v (Vec t)) Usz -> _ is pure) (v: ref 'v (Vec t)) (n: Usz)
 ```
 
-Sort the vector in place using the `Cmp` ordering.
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L285)
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L228)
+---
+
+## permutations
+
+```ante
+(permutations: fn (ref 'v (Vec t)) -> _ is pure) (v: ref 'v (Vec t))
+```
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L293)
 
 ---
 
@@ -363,42 +296,7 @@ Sort the vector in place using the `Cmp` ordering.
 impl print_vec {p: Display t e}: Display (Vec t) e
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L232)
-
----
-
-## extract_vec_move
-
-```ante
-impl extract_vec_move: Extract (Vec t) Usz t Panic
-```
-
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L243)
-
----
-
-## extract_vec
-
-```ante
-impl extract_vec: Extract (ref Vec t) Usz (ref t) Panic
-```
-
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L249)
-
----
-
-## insert_vec
-
-```ante
-impl insert_vec: Insert (mut Vec t) Usz t Panic
-```
-
-Note that this impl is different from `Vec.insert`.
-Vec.insert will insert into a slot, moving the previous element and each
-element after to the right. This `Insert` implementation will instead
-directly mutate the element at the given index to the new element.
-
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L259)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L319)
 
 ---
 
@@ -408,17 +306,27 @@ directly mutate the element at the given index to the new element.
 impl stream_vec: Stream (Vec a) a pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L265)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L344)
 
 ---
 
-## stream_imm_vec
+## stream_ref_vec
 
 ```ante
-impl stream_imm_vec: Stream (imm Vec a) (imm a) pure
+impl stream_ref_vec: Stream (ref Vec a) (ref a) pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L270)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L354)
+
+---
+
+## clone_vec
+
+```ante
+impl clone_vec {_: Clone t}: Clone (Vec t)
+```
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L359)
 
 ---
 
@@ -428,7 +336,7 @@ impl stream_imm_vec: Stream (imm Vec a) (imm a) pure
 impl drop_vec {_: Drop t e}: Drop (Vec t) e
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L275)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L369)
 
 ---
 
@@ -438,7 +346,17 @@ impl drop_vec {_: Drop t e}: Drop (Vec t) e
 impl eq_vec {_: Eq t e}: Eq (Vec t) e
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Vec.an#L283)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L377)
+
+---
+
+## cmp_vec
+
+```ante
+impl cmp_vec {_: Cmp t}: Cmp (Vec t)
+```
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Vec.an#L389)
 
 </details>
 

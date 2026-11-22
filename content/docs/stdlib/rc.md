@@ -1,7 +1,7 @@
 +++
 title = "Std.Rc"
 categories = ["docs"]
-weight = 12
+weight = 23
 +++
 
 ```ante
@@ -26,83 +26,21 @@ type Rc t =
 
 A non-threadsafe reference-counted pointer.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Rc.an#L7)
-
----
-
-### Rc.of
-
-```ante
-Rc.of (value: t): Rc t
-```
-
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Rc.an#L10)
-
----
-
-### Rc.as_ref
-
-```ante
-Rc.as_ref (rc: imm Rc t): ref t
-```
-
-Returns a shared reference into the inner element. Since other Rc clones of
-the same value may exist and may mutate the element via [Rc.as_mut], this
-can only be a shared `ref` reference instead of a fully immutable `imm`
-reference. Similarly, requiring a `uniq Rc t` ensures this Rc is not dropped
-while the returned reference is still alive.
-
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Rc.an#L21)
-
----
-
-### Rc.as_mut
-
-```ante
-Rc.as_mut (rc: uniq Rc t): mut t
-```
-
-Returns a shared, mutable reference into the inner element. Since other Rc
-clones of the same value may exist and may mutate the element through this
-function, this can only give a shared `mut` reference instead of a `uniq`
-reference. Similarly, requiring a `uniq Rc t` ensures this Rc is not dropped
-while the returned reference is still alive.
-
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Rc.an#L30)
-
----
-
-### Rc.try_unwrap
-
-```ante
-Rc.try_unwrap (var rc: Rc t): Result t (Rc t)
-```
-
-If the reference count is 1, unwraps the Rc returning the value directly.
-Otherwise, returns `Error rc` with the original Rc value.
-
-If you always need to extract the inner value from the Rc, consider
-using `Rc.unwrap_or_clone` which will clone the inner value in the shared case
-instead of returning an error.
-
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Rc.an#L52)
-
----
-
-### Rc.unwrap_or_clone
-
-```ante
-Rc.unwrap_or_clone (rc: Rc t) {_: Clone t}: t
-```
-
-If the reference count is 1, unwraps the Rc returning the value directly.
-Otherwise, clones the inner value.
-
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Rc.an#L66)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Rc.an#L8)
 
 ---
 
 # Functions
+
+---
+
+## of
+
+```ante
+of (value: t): Rc t
+```
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Rc.an#L11)
 
 ---
 
@@ -112,7 +50,7 @@ Otherwise, clones the inner value.
 ref_count (rc: ref Rc t): U32
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Rc.an#L34)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Rc.an#L21)
 
 ---
 
@@ -122,7 +60,7 @@ ref_count (rc: ref Rc t): U32
 inc_ref_count (rc: mut Rc t): Unit
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Rc.an#L38)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Rc.an#L25)
 
 ---
 
@@ -132,7 +70,37 @@ inc_ref_count (rc: mut Rc t): Unit
 dec_ref_count (rc: mut Rc t): Unit
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Rc.an#L42)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Rc.an#L29)
+
+---
+
+## try_unwrap
+
+```ante
+try_unwrap (rc: Rc t): Result t (Rc t)
+```
+
+If the reference count is 1, unwraps the Rc returning the value directly.
+Otherwise, returns `Error rc` with the original Rc value.
+
+If you always need to extract the inner value from the Rc, consider
+using `unwrap_or_clone` which will clone the inner value in the shared case
+instead of returning an error.
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Rc.an#L39)
+
+---
+
+## unwrap_or_clone
+
+```ante
+unwrap_or_clone (rc: Rc t) {_: Clone t} {_: Drop t e}: t can e
+```
+
+If the reference count is 1, unwraps the Rc returning the value directly.
+Otherwise, clones the inner value.
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Rc.an#L50)
 
 ---
 
@@ -149,7 +117,7 @@ dec_ref_count (rc: mut Rc t): Unit
 impl clone_rc: Clone (Rc t)
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Rc.an#L71)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Rc.an#L55)
 
 ---
 
@@ -159,7 +127,7 @@ impl clone_rc: Clone (Rc t)
 impl drop_rc {_: Drop t e}: Drop (Rc t) e
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Rc.an#L77)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Rc.an#L61)
 
 </details>
 

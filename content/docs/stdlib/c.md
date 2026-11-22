@@ -1,7 +1,7 @@
 +++
 title = "Std.C"
 categories = ["docs"]
-weight = 1
+weight = 3
 +++
 
 ```ante
@@ -27,19 +27,7 @@ type String =
 A C string is a pointer to a null-terminated character array.
 This is meant to be used qualified as `C.String`
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L9)
-
----
-
-### String.new
-
-```ante
-String.new (s: Std.Prelude.String): String
-```
-
-Copy a prelude string, append a '\0', and return it as a new C.String
-
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L14)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L10)
 
 ---
 
@@ -51,7 +39,7 @@ type VoidPtr = Ptr U8
 
 A convenience type for translating C APIs
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L18)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L23)
 
 ---
 
@@ -62,7 +50,7 @@ type File =
     f: Ptr Unit
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L57)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L62)
 
 ---
 
@@ -73,7 +61,7 @@ type FilePos =
     f: Ptr Unit
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L58)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L63)
 
 ---
 
@@ -85,11 +73,23 @@ type Clock =
     nsec: I64
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L83)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L89)
 
 ---
 
 # Functions
+
+---
+
+## from_string
+
+```ante
+from_string (s: Std.Prelude.String): String
+```
+
+Copy a prelude string, append a '\0', and return it as a new C.String
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L15)
 
 ---
 
@@ -99,7 +99,7 @@ type Clock =
 puts: fn String -> I32 can Fs
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L22)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L27)
 
 ---
 
@@ -109,7 +109,7 @@ puts: fn String -> I32 can Fs
 putchar: fn Char -> Unit can Fs
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L23)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L28)
 
 ---
 
@@ -119,7 +119,7 @@ putchar: fn Char -> Unit can Fs
 getchar: fn Unit -> I32 can Fs
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L24)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L29)
 
 ---
 
@@ -129,7 +129,7 @@ getchar: fn Unit -> I32 can Fs
 exit: fn I32 -> Never
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L25)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L30)
 
 ---
 
@@ -139,7 +139,7 @@ exit: fn I32 -> Never
 system: fn String -> I32 can IO
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L26)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L31)
 
 ---
 
@@ -149,7 +149,7 @@ system: fn String -> I32 can IO
 strlen: fn String -> Usz
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L27)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L32)
 
 ---
 
@@ -159,7 +159,7 @@ strlen: fn String -> Usz
 malloc (size: Usz): Ptr a
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L38)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L43)
 
 ---
 
@@ -169,7 +169,7 @@ malloc (size: Usz): Ptr a
 calloc (items: Usz) (size: Usz): Ptr a
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L41)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L46)
 
 ---
 
@@ -179,7 +179,7 @@ calloc (items: Usz) (size: Usz): Ptr a
 realloc (ptr: Ptr a) (size: Usz): Ptr a
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L44)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L49)
 
 ---
 
@@ -189,7 +189,7 @@ realloc (ptr: Ptr a) (size: Usz): Ptr a
 free (ptr: Ptr a): Unit
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L47)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L52)
 
 ---
 
@@ -199,7 +199,7 @@ free (ptr: Ptr a): Unit
 memcpy (dest: Ptr a) (src: Ptr b) (count: Usz): Ptr a
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L50)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L55)
 
 ---
 
@@ -209,7 +209,7 @@ memcpy (dest: Ptr a) (src: Ptr b) (count: Usz): Ptr a
 memcmp (lhs: Ptr a) (rhs: Ptr b) (size: Usz): I32
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L53)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L58)
 
 ---
 
@@ -219,7 +219,7 @@ memcmp (lhs: Ptr a) (rhs: Ptr b) (size: Usz): I32
 fopen: fn String String -> File can Fs
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L63)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L68)
 
 ---
 
@@ -229,7 +229,7 @@ fopen: fn String String -> File can Fs
 fclose: fn File -> Unit can Fs
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L64)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L69)
 
 ---
 
@@ -239,7 +239,7 @@ fclose: fn File -> Unit can Fs
 fputs: fn String File -> I32 can Fs
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L66)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L71)
 
 ---
 
@@ -249,7 +249,7 @@ fputs: fn String File -> I32 can Fs
 fputc: fn I32 File -> I32 can Fs
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L67)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L72)
 
 ---
 
@@ -259,7 +259,7 @@ fputc: fn I32 File -> I32 can Fs
 fwrite: fn VoidPtr Usz Usz File -> Usz can Fs
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L68)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L73)
 
 ---
 
@@ -269,7 +269,7 @@ fwrite: fn VoidPtr Usz Usz File -> Usz can Fs
 fgetc: fn File -> I32 can Fs
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L70)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L75)
 
 ---
 
@@ -279,7 +279,17 @@ fgetc: fn File -> I32 can Fs
 fgets: fn String I32 File -> String can Fs
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L71)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L76)
+
+---
+
+## fread
+
+```ante
+fread: fn VoidPtr Usz Usz File -> Usz can Fs
+```
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L77)
 
 ---
 
@@ -289,47 +299,47 @@ fgets: fn String I32 File -> String can Fs
 ungetc: fn I32 File -> I32 can Fs
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L72)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L78)
 
 ---
 
 ## fgetpos
 
 ```ante
-fgetpos: fn File FilePos -> Unit can Fs
+fgetpos: fn File FilePos -> I32 can Fs
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L74)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L80)
 
 ---
 
 ## ftell
 
 ```ante
-ftell: fn File -> I32 can Fs
+ftell: fn File -> I64 can Fs
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L75)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L81)
 
 ---
 
 ## fsetpos
 
 ```ante
-fsetpos: fn File FilePos -> Unit can Fs
+fsetpos: fn File FilePos -> I32 can Fs
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L76)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L82)
 
 ---
 
 ## fseek
 
 ```ante
-fseek: fn File I32 I32 -> I32 can Fs
+fseek: fn File I64 I32 -> I32 can Fs
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L77)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L83)
 
 ---
 
@@ -339,7 +349,7 @@ fseek: fn File I32 I32 -> I32 can Fs
 feof: fn File -> I32 can Fs
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L79)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L85)
 
 ---
 
@@ -349,7 +359,7 @@ feof: fn File -> I32 can Fs
 ferror: fn File -> I32 can Fs
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L80)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L86)
 
 ---
 
@@ -359,7 +369,7 @@ ferror: fn File -> I32 can Fs
 clock_gettime: fn I32 (Ptr Clock) -> I32 can Fs
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L88)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L96)
 
 ---
 
@@ -369,7 +379,7 @@ clock_gettime: fn I32 (Ptr Clock) -> I32 can Fs
 nanosleep: fn (Ptr Clock) (Ptr Clock) -> I32 can Fs
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L89)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L97)
 
 ---
 
@@ -386,7 +396,7 @@ nanosleep: fn (Ptr Clock) (Ptr Clock) -> I32 can Fs
 impl copy_cstring: Copy String
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L10)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L11)
 
 ---
 
@@ -396,7 +406,17 @@ impl copy_cstring: Copy String
 impl copy_file: Copy File
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L60)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L65)
+
+---
+
+## copy_clock
+
+```ante
+impl copy_clock: Copy Clock
+```
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/C.an#L93)
 
 </details>
 

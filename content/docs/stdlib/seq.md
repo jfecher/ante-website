@@ -1,15 +1,15 @@
 +++
-title = "Std.Seq"
+title = "Std.Collections.Seq"
 categories = ["docs"]
-weight = 13
+weight = 10
 +++
 
 ```ante
-import Std.Seq
+import Std.Collections.Seq
 ```
 
 
-[Source](https://github.com/jfecher/ante/blob/master/stdlib/src/Seq.an)
+[Source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an)
 
 ---
 
@@ -62,14 +62,14 @@ Since the rc becomes one after each copy, its not enough to reuse a Seq and one 
 at every step and push to both the original and the clone to overwrite the same element in both Seqs
 at every step, e.g:
 ```ante
-var seq = Seq.empty ()
+var seq = empty ()
 while true do
     other = clone seq // clone seq forcing both this and seq to be shared
     seq = seq.push 0  // push
     other.push 1      // then immediately overwrite the element, forcing a fork
 
 // Or similarly:
-seq = Seq.empty ()
+seq = empty ()
 seq_view := clone seq
 seq_user := seq.push 0
 while true do
@@ -83,109 +83,113 @@ sequence would still be O(1) amortized when pushed to.
 
 Note that Seq is not thread-safe
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Seq.an#L63)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L63)
 
 ---
 
-### Seq.empty
+# Functions
+
+---
+
+## empty
 
 ```ante
-Seq.empty (): Seq t
+empty (): Seq t
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Seq.an#L83)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L83)
 
 ---
 
-### Seq.of
+## of
 
 ```ante
-Seq.of (s: s) {_: Stream s t e} {_: Drop t e}: Seq t can e
+of (stream: s) {_: Stream s t e} {_: Drop t e}: Seq t can e
 ```
 
 Create a Seq holding each item from the given stream
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Seq.an#L87)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L87)
 
 ---
 
-### Seq.with_capacity
+## with_capacity
 
 ```ante
-Seq.with_capacity (capacity: Usz): Seq t
+with_capacity (capacity: Usz): Seq t
 ```
 
 Create a Seq with the given initial capacity
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Seq.an#L92)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L92)
 
 ---
 
-### Seq.push
+## push
 
 ```ante
-Seq.push (seq: Seq t) (elem: t) {_: Drop t e}: Seq t can e
+push (var seq: Seq t) (elem: t) {_: Drop t e}: Seq t can e
 ```
 
 Push an element to this sequence, returning a new sequence.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Seq.an#L109)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L109)
 
 ---
 
-### Seq.pop
+## pop
 
 ```ante
-Seq.pop (var seq: Seq t) {_: Copy t}: Seq t, Maybe t
+pop (var seq: Seq t) {_: Copy t}: Seq t, Maybe t
 ```
 
 Return a new `Seq t` without the last element.
 Returns the popped element if this seq was non-empty.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Seq.an#L169)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L172)
 
 ---
 
-### Seq.remove_last
+## remove_last
 
 ```ante
-Seq.remove_last (var seq: Seq t): Seq t
+remove_last (var seq: Seq t): Seq t
 ```
 
 Same as `pop` but does not return the last element, and thus
 does not require a `Copy` constraint
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Seq.an#L179)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L182)
 
 ---
 
-### Seq.get_copied
+## get_copied
 
 ```ante
-Seq.get_copied (seq: ref Seq t) (index: U32) {_: Copy t}: Maybe t
+get_copied (seq: ref Seq t) (index: U32) {_: Copy t}: Maybe t
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Seq.an#L184)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L187)
 
 ---
 
-### Seq.get
+## get
 
 ```ante
-Seq.get (seq: ref Seq t) (index: U32): Maybe (ref t)
+get (seq: read Seq t) (index: U32): Maybe (read t)
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Seq.an#L189)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L192)
 
 ---
 
-### Seq.iter
+## iter
 
 ```ante
-Seq.iter (seq: ref Seq t) (f: fn (ref t) [_] -> Unit): Unit
+iter (seq: ref Seq t) (f: fn (ref 'seq t) [env] -> Unit can e) {_: Drop env e}: Unit can e
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Seq.an#L195)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L198)
 
 ---
 
@@ -202,7 +206,7 @@ Seq.iter (seq: ref Seq t) (f: fn (ref t) [_] -> Unit): Unit
 impl print_seq {p: Display t e} {_: Copy t}: Display (Seq t) e
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Seq.an#L206)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L204)
 
 ---
 
@@ -212,7 +216,7 @@ impl print_seq {p: Display t e} {_: Copy t}: Display (Seq t) e
 impl clone_seq: Clone (Seq t)
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Seq.an#L216)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L214)
 
 ---
 
@@ -222,17 +226,37 @@ impl clone_seq: Clone (Seq t)
 impl drop_seq {_: Drop t e}: Drop (Seq t) e
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Seq.an#L224)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L222)
 
 ---
 
 ## stream_seq
 
 ```ante
-impl stream_seq: Stream (Seq a) (ref a) pure
+impl stream_seq {_: Drop a e}: Stream (Seq a) (ref a) e
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Seq.an#L275)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L273)
+
+---
+
+## eq_seq
+
+```ante
+impl eq_seq {_: Eq t e}: Eq (Seq t) e
+```
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L279)
+
+---
+
+## cmp_seq
+
+```ante
+impl cmp_seq {_: Cmp t}: Cmp (Seq t)
+```
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L291)
 
 </details>
 

@@ -1,158 +1,149 @@
 +++
-title = "Std.HashSet"
+title = "Std.Collections.HashSet"
 categories = ["docs"]
 weight = 8
 +++
 
 ```ante
-import Std.HashSet
+import Std.Collections.HashSet
 ```
 
 
-[Source](https://github.com/jfecher/ante/blob/master/stdlib/src/HashSet.an)
+[Source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashSet.an)
 
 ---
 
-# Types
+# Functions
 
 ---
 
-## HashSet
+## len
 
 ```ante
-type HashSet k =
-    inner: HashMap k Unit
+len (set: ref HashSet v): Usz
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/HashSet.an#L12)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashSet.an#L15)
 
 ---
 
-### HashSet.len
+## is_empty
 
 ```ante
-HashSet.len (set: ref HashSet v): Usz
+is_empty (set: ref HashSet k): Bool
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/HashSet.an#L15)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashSet.an#L17)
 
 ---
 
-### HashSet.is_empty
+## empty
 
 ```ante
-HashSet.is_empty (set: ref HashSet k): Bool
+empty () {_: Hash k h}: HashSet k h
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/HashSet.an#L17)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashSet.an#L20)
 
 ---
 
-### HashSet.empty
+## of
 
 ```ante
-HashSet.empty (): HashSet k
+of (stream: s) {_: Stream s k e} {_: Hash k h} {_: Eq k e} {_: Drop k d}: HashSet k h can Panic, e, d
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/HashSet.an#L20)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashSet.an#L22)
 
 ---
 
-### HashSet.of
+## clear
 
 ```ante
-HashSet.of (s: s) {_: Stream s k e} {_: Hash k} {_: Eq k e}: HashSet k can Panic, e
+clear (set: mut HashSet k) {_: Drop k d}: Unit can d, Mutate 'set
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/HashSet.an#L22)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashSet.an#L27)
 
 ---
 
-### HashSet.clear
+## contains
 
 ```ante
-HashSet.clear (set: mut HashSet k): Unit
+contains (set: ref HashSet k) (key: ref k) {_: Eq k e}: Bool can e
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/HashSet.an#L27)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashSet.an#L30)
 
 ---
 
-### HashSet.contains
+## insert
 
 ```ante
-HashSet.contains (set: ref HashSet k) (key: ref k) {_: Hash k} {_: Eq k e}: Bool can e
-```
-
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/HashSet.an#L30)
-
----
-
-### HashSet.insert
-
-```ante
-HashSet.insert (set: mut HashSet k) (key: k) {_: Hash k} {_: Eq k e}: Bool can Panic, e
+insert (set: mut HashSet k) (key: k) {_: Eq k e} {_: Drop k d}: Bool can Panic, e, d, Mutate 'set
 ```
 
 Insert a new element into the HashSet
 Returns True if the key is newly inserted
 Returns False if the key already existed
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/HashSet.an#L36)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashSet.an#L36)
 
 ---
 
-### HashSet.remove
+## remove
 
 ```ante
-HashSet.remove (set: mut HashSet k) (key: ref k) {_: Hash k} {_: Eq k e}: Bool can e
+remove (set: mut HashSet k) (key: ref k) {_: Eq k e} {_: Drop k d}: Bool can e, d, Mutate 'set
 ```
 
 Remove an element from the HashSet
 Returns True if the key existed and was removed
 Return False if the key was not present in the HashSet
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/HashSet.an#L42)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashSet.an#L42)
 
 ---
 
-### HashSet.extend
+## extend
 
 ```ante
-HashSet.extend (set: mut HashSet k) (s: s) {_: Stream s k e} {_: Hash k} {_: Eq k e}: Unit can Panic, e
+extend (set: mut HashSet k) (stream: s) {_: Stream s k e} {_: Eq k e} {_: Drop k d}: Unit can Panic, e, d, Mutate 'set
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/HashSet.an#L45)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashSet.an#L45)
 
 ---
 
-### HashSet.retain
+## retain
 
 ```ante
-HashSet.retain (set: mut HashSet k) (predicate: fn k [_] -> Bool) {_: Copy k}: Unit
+retain (set: mut HashSet k) (predicate: fn (ref k) [env] -> Bool) {_: Drop k d} {_: Drop env d}: Unit can d, Mutate 'set
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/HashSet.an#L49)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashSet.an#L49)
 
 ---
 
-### HashSet.merge
+## merge
 
 ```ante
-HashSet.merge (dst: mut HashSet k) (src: HashSet k) {_: Hash k} {_: Eq k e}: Unit can Panic, e
+merge (dst: mut HashSet k h) (src: HashSet k h) {_: Eq k e} {_: Drop k d}: Unit can Panic, e, d, Mutate 'dst
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/HashSet.an#L57)
+Insert every key of `src` into `dst`.
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashSet.an#L53)
 
 ---
 
-### HashSet.keys
+## keys
 
 ```ante
-(HashSet.keys: fn (ref (HashSet k)) -> (fn Unit [(ref (HashMap k Unit))] -> Unit can Emit k) is pure) (set: ref (HashSet k))
+(keys: fn (ref ((error) k)) -> (fn Unit [(ref ((error) _ _))] -> Unit can (error) (ref _)) is pure) (set: ref ((error) k))
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/HashSet.an#L60)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashSet.an#L56)
 
 ---
 
@@ -169,17 +160,27 @@ HashSet.merge (dst: mut HashSet k) (src: HashSet k) {_: Hash k} {_: Eq k e}: Uni
 impl stream_set: Stream (HashSet k) k pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/HashSet.an#L63)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashSet.an#L59)
 
 ---
 
 ## stream_ref_hashset
 
 ```ante
-impl stream_ref_hashset: Stream (ref HashSet k) k pure
+impl stream_ref_hashset: Stream (ref 'm HashSet k) (ref 'm k) pure
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/HashSet.an#L70)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashSet.an#L62)
+
+---
+
+## clone_hashset
+
+```ante
+impl clone_hashset {_: Clone k}: Clone (HashSet k)
+```
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashSet.an#L70)
 
 ---
 
@@ -189,7 +190,17 @@ impl stream_ref_hashset: Stream (ref HashSet k) k pure
 impl print_hashset {_: Display k e}: Display (HashSet k) e
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/HashSet.an#L75)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashSet.an#L73)
+
+---
+
+## drop_hashset
+
+```ante
+impl drop_hashset {_: Drop k d}: Drop (HashSet k h) d
+```
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashSet.an#L87)
 
 </details>
 

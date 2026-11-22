@@ -108,6 +108,8 @@ This is meant to be relatively efficient for the general case, although users wi
 optimization or representation requirements may wish to use alternative string types. Examples
 of alternate types include the null-terminated `C.String` and the OS-dependent `OsString`.
 
+> OsString is not yet implemented
+
 ```ante
 var my_str = "Hello!"
 
@@ -232,47 +234,29 @@ bar (a: U32) (b: U32): Unit =
     print (a + b)
 ```
 
-## Module Namespacing
+## Function Resolution
 
-By default functions are placed in the current module. Optionally, functions may also
-be placed in a child module by prefixing the function's name with the module name.
-For example:
+Ante does not have methods. Instead, all functions are resolved similarly to methods where if
+a function is not found in scope, Ante will look at the type of the first argument, and if it is known,
+it will then look in the module that type is declared in for the function in question. For example,
+if you have not imported `Std.Collections.Vec.push`, but you call `push my_vec 3` with no `push` in scope,
+it will still resolve to `Std.Collections.Vec.push`. In practice this gives similar semantics to
+method calls in other languages without requiring users to distinguish functions from methods.
 
-```ante
-Foo.bar (a: U32) (b: U32): Unit =
-    print "I am defined in Foo now"
+```
+import Std.Collections.Vec
+
+var vec = Vec.empty ()
+push vec 3     // Not imported, but okay
+vec |> push 3  // Also okay, no separate method call syntax needed
 ```
 
-## Methods
-
-Module namespacing is also how methods are defined. In Ante the `.` operator can be used
-for method calls as well as field accesses. When used for method calls, the function name
-will be searched for in the module with the same full path as the type of the first argument.
-
-Methods may only be added to types defined in the current project. If the type is defined in
-a dependency, it may not have new methods added to it.
-
-When defining a method, the `self` variable can be used as an argument which is implicitly
-of the same type as the module name. If there is no such type (e.g. it is just a normal module),
-an error will be given. Like other parameters, `self` on its own will use move semantics. It
-can also be borrowed either mutably or immutably by prepending a reference type such as `ref self`.
-
-For example, the standard library defines the `Vec` type for a mutable vector and defines
-methods on it like so:
-
-```ante
-type Vec a = ... // implementation omitted
-
-Vec.new () = ...
-
-Vec.push (vec: mut Vec a) (elem: a): Unit = ...
-
-// Call the methods. This can be done without explicitly importing `Vec.new` or `Vec.push`:
-var vec = Vec.new ()
-vec.push "called"
-vec.push "a"
-vec.push "method!"
-```
+Why not have methods instead? Methods require a different call syntax such as `vec.push 3` which does
+not mix well with chaining normal functions via `|>`, requires additional syntax like `|>.` to chain
+method calls in a similar way to normal functions, and requires users to make a decision when declaring
+each function whether it should be a method or not. I see these as unnecessary complications to the
+user experience of using a language and removing these unnecessary decisions and paper cuts hopefully
+leaves slightly more capacity to think about more important problems.
 
 ---
 # Significant Whitespace
@@ -425,13 +409,13 @@ trait Mod a =
 (%%) a b = a % b == 0
 
 trait Eq a =
-    (==): fn (ref a) (ref a) -> Bool
+    (==): fn (imm a) (imm a) -> Bool
 
 (!=) a b = not (a == b)
 
 // Comparison operators are implemented in terms of the `Cmp` trait
 trait Cmp a =
-    compare: fn (ref a) (ref a) -> Ordering
+    compare: fn (imm a) (imm a) -> Ordering
 
 type Ordering = | Lesser | Equal | Greater
 
@@ -468,7 +452,7 @@ if (false and true) or (true and true) then
 
 Since fiddling with individual bits is not a common operation, and precedence of these
 operators in other languages is often confused, there are no bitwise operators in Ante.
-Instead, there are functions in the `Bits` module for dealing with bits.
+Instead, there are functions in the `Std.Bitwise` module for dealing with bits.
 
 ## Subscript Operator
 
@@ -488,14 +472,24 @@ Note that `.[]` has a high enough precedence to be used in function calls:
 foo array.[0]
 ```
 
-Additionally, references to elements can be retrieved using the subscript operator
-with a reference kind:
+This operator is supplied by two separate traits in the stdlib. `Extract` for extracting
+a value out of a collection:
 
 ```ante
-print (ref my_array.[0])
-
-mutate (mut my_array.[1])
+trait Extract collection index elem (e: effect) =
+    (.[]): fn collection index -> elem can e
 ```
+
+And `Insert` for inserting a value into a collection:
+
+```ante
+trait Insert collection index elem (e: effect) =
+    (.[]:=): fn collection index elem -> Unit can e
+```
+
+`Insert` must be separate from `Extract` since the later typically errors when the
+given index does not exist, while the later is expected to mutate the collection to
+make room for the given index, or overwrite it.
 
 ## Dereference Operator, Copy, and Clone
 
@@ -528,7 +522,7 @@ foo (person: ref Person) (id: ref U32) =
     bar person.age id
 ```
 
-There is also an equivalent coercion if an immutable reference (`ref` or `imm`) was expected
+There is also an equivalent coercion if an immutable reference was expected
 but a value was provided to automatically reference the value. Mutable references must
 remain explicit however.
 
@@ -542,7 +536,7 @@ The pipeline operators `|>` and `<|` are sugar for function application and
 serve to pipe the results from one function to the input of another.
 
 `x |> f y` is equivalent to `f x y` and functions similar to method syntax
-`x |> f(y)` in object-oriented languages. It is left-associative so `x |> f y |> g z`
+`x.f(y)` in object-oriented languages. It is left-associative so `x |> f y |> g z`
 desugars to `g (f x y) z`. This operator is particularly useful for chaining
 iterator functions:
 
@@ -568,15 +562,14 @@ print (sqrt (3 + 1))
 print <| sqrt <| 3 + 1
 ```
 
-### Pipelines and Methods
+### Piping Fields
 
-Note that method calls can still be used with the pipeline operators.
-Method calls also work stand-alone (e.g. `.push 3` is short for `_.push 3`)
-as long as the expected object type can be figured out by the environment.
-So one can write code such as:
+Field accesses are also possible via `|>`, e.g:
 
 ```ante
-Vec.of [1, 2, 3] |> .split_first  // (1, [2, 3])
+type Foo = field: I32
+
+print (Foo 4 |> field)  // 4
 ```
 
 ## Pair Operator
@@ -784,7 +777,7 @@ if should_print () then
 ## Loops
 
 Ante includes the traditional `for` and `while` loops along with `break` and `continue`.
-`for` loops must iterate over an increasing range. For anything more complex, streams must be used.
+`for` loops may iterate over any `Stream` (See [the docs](/docs/stdlib/stream.md) for `Std.Stream`).
 
 ```ante
 for i in 0 .. 10 do
@@ -795,16 +788,19 @@ for i in 0 .. 10 do
 while true do println "hello"
 ```
 
-For more complex loops, Ante favors recursive functions like `map`, `foldl`, `iter`, and `for_`, which operate on streams:
+For more complex loops, Ante uses stream functions like `map`, `filter`, and `foldl`.
+`for` and `while` themselves are also normal functions defined in the `Stream` module of
+the standard library. You can call them with regular function syntax by parenthesizing them.
 
 ```ante
-iter (0..10) println   // prints 0-9 inclusive
+// Call Std.Stream.(for). This can be used to pass `for` to a higher-order function
+// if needed, but otherwise the dedicated syntax sugar is preferred.
+(for) (0..10) println  // prints 0-9 inclusive
 
-// `for_` allows using `continue_` and `break_` via the `Loop` effect
-for_ (enumerate array) fn (i, elem) ->
-    if i %% 3 then continue_ ()
-    if i > 7 then break_ ()
-    print elem
+for i, elem in enumerate array do
+    if i %% 3 then continue
+    if i > 7 then break
+    println elem
 ```
 
 Occasionally, it is natural to reach for a recursive function:
@@ -993,7 +989,7 @@ is_even_int (e: Expr) =
 ```
 
 Note that because `<expr> is <pattern>` is an expression and `and` also accepts two expressions,
-chaining matches is also possible:
+chaining matches is also possible (and `is` can be used in `if` conditions):
 
 ```ante
 print_if_large_product (x: Maybe I32) (y: Maybe I32) =
@@ -1028,6 +1024,18 @@ evaluate (e: Expr) (env: HashMap String I32): I32 can Error =
     | Var name -> error "${name} is not defined"
     | Int x -> x
     | Add lhs rhs -> evaluate lhs env + evaluate rhs env
+```
+
+### While-is loops
+
+`is` can be used in `while` loops as well:
+
+```ante
+items = Vec.of ["milk", "eggs", "tea"]
+
+// Print tea, then eggs, then milk
+while pop items is Some item do
+    println item
 ```
 
 ---
@@ -1090,7 +1098,7 @@ Ante is a strongly, statically typed language with global type inference.
 Types are used to restrict the set of values as best as possible such that
 only valid values are representable. For example, since references in Ante
 cannot be null we can instead represent possibly null references with
-`Maybe (ref t)` which makes it explicit whether a function can accept or
+`Maybe (imm t)` which makes it explicit whether a function can accept or
 return possibly null values.
 
 ## Type Definitions
@@ -1111,6 +1119,21 @@ type Vec a =
     data: Ptr a
     len: Usz
     capacity: Usz
+```
+
+### Kind Annotations
+
+By default, a parameter on a type definition is of kind `type`, these are things like `U32`, `String`, etc.
+Sometimes though, it is useful to parameterize type definitions over other kinds of things, like an array's length,
+an effect, or a place. In these cases a kind annotation may be required to be used (in simple cases, the compiler
+may infer the correct kind). A kind annotation is specified like a type annotation:
+
+```ante
+// Place kinds are relatively common so they have apostrophe sugar
+type Foo (n: U32) (e: effect) 'p =
+    array: Array n String
+    my_fn: fn Unit -> Unit can e
+    temp_ref: ref 'p String
 ```
 
 ### Optional Type Parameters
@@ -1244,11 +1267,10 @@ type Shape =
 area_circle (circle: Shape.Circle): U32 =
     radius = F64 circle.radius
     result = F64.pi * radius * radius
-    result.truncate ()  // round towards 0
+    truncate result  // round towards 0
 
-// Variant types can also have methods
-Shape.Square.area self: U32 =
-    self.length * self.length
+area_square (square: Shape.Square): U32 =
+    square.radius * square.radius
 ```
 
 Normally when matching on tagged unions, you will need to match on each field of
@@ -1256,16 +1278,16 @@ each variant. To get a value of the variant type instead, you can collect all fi
 to a single variable by placing `..` immediately after the variant name:
 
 ```ante
-Shape.area self: U32 =
+area (self: Shape): U32 =
     match self
     | Circle ..c -> area_circle c
-    | Square ..s -> s.area ()
+    | Square ..s -> area s
 ```
 
 This feature is not often useful in smaller types but can be useful in larger types
 to break up code. For example, functions just matching on each variant of a tagged union
-like `Shape.area` above can be derived such that users need only to implement the methods
-for each individual variant like `Shape.Square.area`, `Shape.Circle.area`, etc.
+like `area` above can be derived such that users need only to implement the functions
+for each individual variant like `area_circle`, `area_square`, etc.
 
 ## Type Annotations
 
@@ -1434,12 +1456,13 @@ s = "my string"
 
 // References can be used as many times as needed
 baz (ref s)
-baz (ref s)
+baz (imm s)
 ```
 
 Creating a temporary reference to a value can be done via a `ref <expr>` expression.
-These references do not allow mutation of the underlying value. If a mutable reference
-is desired, they can be created via `mut <expr>`:
+`ref t` references are polymorphic in their mutability - they are mutable if the value
+they borrow from is, and immutable otherwise. Additionally, there is `imm <expr>` for
+creating an explicitly immutable reference, and `mut <expr>` for a mutable one:
 
 ```ante
 var s = "my string"
@@ -1536,6 +1559,10 @@ reference parameters and returns a reference.
 concat_foo (foo1: ref Foo) (foo2: ref Foo): String =
     foo1.msg ++ foo2.msg
 ```
+
+Also note that a reference's mutability is stored in its places. This is how `ref t` is polymorphic
+over mutability. `mut t` then is just sugar for a reference with a mutable place: `ref (mut 'p) t`,
+similar for `imm t`.
 
 #### Types with Places
 
@@ -1769,6 +1796,8 @@ foo1 () =
 
 Similarly, a closure that invalidates its own capture is a `FnOnce`, so the following is prevented:
 
+> `FnOnce` is spelled `once fn` in the current version of the compiler. This design isn't final.
+
 ```ante
 foo2 () =
     var v = Vec.of [1, 2, 3]
@@ -1839,22 +1868,6 @@ bad3 () =
 > mutable reference `r` issues a `Mutate 'r_elem` effect which can then be tracked and used
 > to invalidate `first`.
 
-If mutating a value passed to an effect handler is needed, `uniq` references should be
-used instead. A branch may mutate a `uniq` reference's place but not any that may be shared
-still (such as those through an `Rc`):
-
-```ante
-ok () =
-    handle
-        v = Vec.of [1, 2, 3]
-        first = v.get 0
-        emit (uniq v)  // note: first dropped here when v was used again, which it borrows from
-        println first  // error: Conflicting borrow, first is no longer valid
-    | emit v2 ->
-        v2.clear ()  // ok
-        resume ()
-```
-
 #### Distinct Places
 
 Sometimes, code may only be safe if separate places are distinct:
@@ -1878,16 +1891,9 @@ caller1 (v: mut Vec I32) =
 #### Thread Safety of References
 
 Since `ref` and `mut` both allow mutable aliasing, neither implements `Send` nor `Sync`.
-Instead, Ante provides additional reference types `imm` and `uniq`. These additional reference
-types are rarely used, typically only in multithreaded code, and come with stricter invariants:
 
-- While `imm t` is being borrowed, we can only borrow other `imm` references from `t`.
-- While `uniq t` is being borrowed, we cannot borrow any other references from `t`.
-
-Since `uniq t` allows for mutability while `imm t` does not, we can freely `Send (imm t)` or `Sync (imm t)`
-between threads, and can still `Send (uniq t)` as well. Once in another thread,
-`imm t` can be used where a `ref t` is expected and `uniq t` can be used where any other reference
-type is expected.
+> This section is under construction! The previous solution of using separate reference kinds
+> `imm` and `uniq` with stricter invariants has been removed and a new solution is being worked on.
 
 ### Shared Types
 
@@ -2141,7 +2147,6 @@ consistent within some context. Since Ante's traits have no global [coherence](#
 is useful for some data structures like `HashMap` which need to ensure the trait implementation
 they use is consistent:
 
-
 ```ante
 type HashMap k v h = ...
 
@@ -2269,10 +2274,11 @@ print (add.(++) 2 3)  //=> 5
 print (mul.(++) 2 3)  //=> 6
 ```
 
-> Q: What about constructs like HashMap which rely on a consistent Hash implementation?
+> Q: What about constructs like `HashMap` which rely on a consistent Hash implementation?
 >
-> A: The plan is to have these types parameterized over the implementation chosen for them.
-> This generic can then be used to ensure consistency everywhere the type is used.
+> A: Types like `HashMap` which have invariants requiring a consistent impl to be selected
+> should take an additional type parameter for the impl. Since each impl has a unique type,
+> this extra parameter can be used to ensure `HashMap` is used everywhere with the original impl.
 
 The lack of global coherence also notably allows traits to be used in some places typical
 traits or interfaces are not, such as interning.
@@ -3091,6 +3097,19 @@ sum n = sum_helper n 0
 sum_helper n acc =
     if n <= 0 then acc
     else sum_helper (n - 1) (acc + n)
+```
+
+## Re-exports
+
+You can also export an imported item. When this is done, this re-exported item
+will be visible to users importing your module as well.
+
+```ante
+// In MyModule.an:
+import Std.Collections.Vec.push
+
+// Now users can also import push via `import MyProject.MyModule.push`
+export push
 ```
 
 ---

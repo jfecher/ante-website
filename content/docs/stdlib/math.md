@@ -1,7 +1,7 @@
 +++
 title = "Std.Math"
 categories = ["docs"]
-weight = 10
+weight = 18
 +++
 
 ```ante
@@ -26,7 +26,7 @@ trait CheckedNum t =
     checked_mul: fn t t -> t can Fail
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L302)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L317)
 
 ---
 
@@ -40,7 +40,7 @@ trait CheckedNum t =
 sqrt: fn F64 -> F64
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L18)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L16)
 
 ---
 
@@ -50,7 +50,7 @@ sqrt: fn F64 -> F64
 sqrtf: fn F32 -> F32
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L19)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L17)
 
 ---
 
@@ -60,7 +60,7 @@ sqrtf: fn F32 -> F32
 cbrt: fn F64 -> F64
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L20)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L18)
 
 ---
 
@@ -70,7 +70,7 @@ cbrt: fn F64 -> F64
 pow: fn F64 F64 -> F64
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L22)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L20)
 
 ---
 
@@ -80,7 +80,7 @@ pow: fn F64 F64 -> F64
 powf: fn F32 F32 -> F32
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L23)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L21)
 
 ---
 
@@ -90,7 +90,7 @@ powf: fn F32 F32 -> F32
 exp: fn F64 -> F64
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L25)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L23)
 
 ---
 
@@ -100,7 +100,7 @@ exp: fn F64 -> F64
 log: fn F64 -> F64
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L26)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L24)
 
 ---
 
@@ -110,7 +110,7 @@ log: fn F64 -> F64
 log2: fn F64 -> F64
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L27)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L25)
 
 ---
 
@@ -120,7 +120,7 @@ log2: fn F64 -> F64
 log10: fn F64 -> F64
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L28)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L26)
 
 ---
 
@@ -130,7 +130,7 @@ log10: fn F64 -> F64
 sin: fn F64 -> F64
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L30)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L28)
 
 ---
 
@@ -140,7 +140,7 @@ sin: fn F64 -> F64
 cos: fn F64 -> F64
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L31)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L29)
 
 ---
 
@@ -150,7 +150,7 @@ cos: fn F64 -> F64
 tan: fn F64 -> F64
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L32)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L30)
 
 ---
 
@@ -160,7 +160,7 @@ tan: fn F64 -> F64
 asin: fn F64 -> F64
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L33)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L31)
 
 ---
 
@@ -170,7 +170,7 @@ asin: fn F64 -> F64
 acos: fn F64 -> F64
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L34)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L32)
 
 ---
 
@@ -180,7 +180,7 @@ acos: fn F64 -> F64
 atan: fn F64 -> F64
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L35)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L33)
 
 ---
 
@@ -190,7 +190,7 @@ atan: fn F64 -> F64
 atan2: fn F64 F64 -> F64
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L36)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L34)
 
 ---
 
@@ -200,7 +200,7 @@ atan2: fn F64 F64 -> F64
 floor: fn F64 -> F64
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L38)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L36)
 
 ---
 
@@ -210,7 +210,7 @@ floor: fn F64 -> F64
 ceil: fn F64 -> F64
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L39)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L37)
 
 ---
 
@@ -220,7 +220,7 @@ ceil: fn F64 -> F64
 round: fn F64 -> F64
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L40)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L38)
 
 ---
 
@@ -230,7 +230,7 @@ round: fn F64 -> F64
 trunc: fn F64 -> F64
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L41)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L39)
 
 ---
 
@@ -240,7 +240,7 @@ trunc: fn F64 -> F64
 fmod: fn F64 F64 -> F64
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L42)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L40)
 
 ---
 
@@ -250,7 +250,7 @@ fmod: fn F64 F64 -> F64
 hypot: fn F64 F64 -> F64
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L43)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L41)
 
 ---
 
@@ -260,7 +260,7 @@ hypot: fn F64 F64 -> F64
 pi: F64
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L45)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L43)
 
 ---
 
@@ -270,7 +270,7 @@ pi: F64
 tau: F64
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L46)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L44)
 
 ---
 
@@ -280,7 +280,7 @@ tau: F64
 e: F64
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L47)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L45)
 
 ---
 
@@ -293,7 +293,27 @@ abs (x: t) {n: Num t} {_: Copy t}: t
 Returns the absolute value of this integer
 Note that `abs MIN` will return `MIN` since there is no corresponding positive integer that fits in the same bit size.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L51)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L49)
+
+---
+
+## gcd
+
+```ante
+gcd (a: t) (b: t) {n: Num t} {_: Mod t} {_: Copy t}: t
+```
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L54)
+
+---
+
+## lcm
+
+```ante
+lcm (a: t) (b: t) {n: Num t} {_: Mod t} {_: Copy t}: t
+```
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L64)
 
 ---
 
@@ -303,7 +323,7 @@ Note that `abs MIN` will return `MIN` since there is no corresponding positive i
 checked_add_i8 (x: I8) (y: I8): I8 can Fail
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L56)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L71)
 
 ---
 
@@ -313,7 +333,7 @@ checked_add_i8 (x: I8) (y: I8): I8 can Fail
 checked_add_i16 (x: I16) (y: I16): I16 can Fail
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L61)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L76)
 
 ---
 
@@ -325,7 +345,7 @@ checked_add_i32 (x: I32) (y: I32): I32 can Fail
 
 Add two I32 values, failing on overflow.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L67)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L82)
 
 ---
 
@@ -335,7 +355,7 @@ Add two I32 values, failing on overflow.
 checked_add_i64 (x: I64) (y: I64): I64 can Fail
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L72)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L87)
 
 ---
 
@@ -345,7 +365,7 @@ checked_add_i64 (x: I64) (y: I64): I64 can Fail
 checked_add_isz (x: Isz) (y: Isz): Isz can Fail
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L77)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L92)
 
 ---
 
@@ -355,7 +375,7 @@ checked_add_isz (x: Isz) (y: Isz): Isz can Fail
 checked_add_u8 (x: U8) (y: U8): U8 can Fail
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L82)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L97)
 
 ---
 
@@ -365,7 +385,7 @@ checked_add_u8 (x: U8) (y: U8): U8 can Fail
 checked_add_u16 (x: U16) (y: U16): U16 can Fail
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L87)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L102)
 
 ---
 
@@ -375,7 +395,7 @@ checked_add_u16 (x: U16) (y: U16): U16 can Fail
 checked_add_u32 (x: U32) (y: U32): U32 can Fail
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L92)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L107)
 
 ---
 
@@ -385,7 +405,7 @@ checked_add_u32 (x: U32) (y: U32): U32 can Fail
 checked_add_u64 (x: U64) (y: U64): U64 can Fail
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L97)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L112)
 
 ---
 
@@ -395,7 +415,7 @@ checked_add_u64 (x: U64) (y: U64): U64 can Fail
 checked_add_usz (x: Usz) (y: Usz): Usz can Fail
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L102)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L117)
 
 ---
 
@@ -405,7 +425,7 @@ checked_add_usz (x: Usz) (y: Usz): Usz can Fail
 checked_sub_i8 (x: I8) (y: I8): I8 can Fail
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L107)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L122)
 
 ---
 
@@ -415,7 +435,7 @@ checked_sub_i8 (x: I8) (y: I8): I8 can Fail
 checked_sub_i16 (x: I16) (y: I16): I16 can Fail
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L112)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L127)
 
 ---
 
@@ -427,7 +447,7 @@ checked_sub_i32 (x: I32) (y: I32): I32 can Fail
 
 Subtract two I32 values, failing on overflow.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L118)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L133)
 
 ---
 
@@ -437,7 +457,7 @@ Subtract two I32 values, failing on overflow.
 checked_sub_i64 (x: I64) (y: I64): I64 can Fail
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L123)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L138)
 
 ---
 
@@ -447,7 +467,7 @@ checked_sub_i64 (x: I64) (y: I64): I64 can Fail
 checked_sub_isz (x: Isz) (y: Isz): Isz can Fail
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L128)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L143)
 
 ---
 
@@ -457,7 +477,7 @@ checked_sub_isz (x: Isz) (y: Isz): Isz can Fail
 checked_sub_u8 (x: U8) (y: U8): U8 can Fail
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L133)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L148)
 
 ---
 
@@ -467,7 +487,7 @@ checked_sub_u8 (x: U8) (y: U8): U8 can Fail
 checked_sub_u16 (x: U16) (y: U16): U16 can Fail
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L138)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L153)
 
 ---
 
@@ -477,7 +497,7 @@ checked_sub_u16 (x: U16) (y: U16): U16 can Fail
 checked_sub_u32 (x: U32) (y: U32): U32 can Fail
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L143)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L158)
 
 ---
 
@@ -487,7 +507,7 @@ checked_sub_u32 (x: U32) (y: U32): U32 can Fail
 checked_sub_u64 (x: U64) (y: U64): U64 can Fail
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L148)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L163)
 
 ---
 
@@ -497,7 +517,7 @@ checked_sub_u64 (x: U64) (y: U64): U64 can Fail
 checked_sub_usz (x: Usz) (y: Usz): Usz can Fail
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L153)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L168)
 
 ---
 
@@ -507,7 +527,7 @@ checked_sub_usz (x: Usz) (y: Usz): Usz can Fail
 checked_mul_i8 (x: I8) (y: I8): I8 can Fail
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L158)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L173)
 
 ---
 
@@ -517,7 +537,7 @@ checked_mul_i8 (x: I8) (y: I8): I8 can Fail
 checked_mul_i16 (x: I16) (y: I16): I16 can Fail
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L163)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L178)
 
 ---
 
@@ -529,7 +549,7 @@ checked_mul_i32 (x: I32) (y: I32): I32 can Fail
 
 Multiply two I32 values, failing on overflow.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L169)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L184)
 
 ---
 
@@ -539,7 +559,7 @@ Multiply two I32 values, failing on overflow.
 checked_mul_i64 (x: I64) (y: I64): I64 can Fail
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L174)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L189)
 
 ---
 
@@ -549,7 +569,7 @@ checked_mul_i64 (x: I64) (y: I64): I64 can Fail
 checked_mul_isz (x: Isz) (y: Isz): Isz can Fail
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L179)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L194)
 
 ---
 
@@ -559,7 +579,7 @@ checked_mul_isz (x: Isz) (y: Isz): Isz can Fail
 checked_mul_u8 (x: U8) (y: U8): U8 can Fail
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L184)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L199)
 
 ---
 
@@ -569,7 +589,7 @@ checked_mul_u8 (x: U8) (y: U8): U8 can Fail
 checked_mul_u16 (x: U16) (y: U16): U16 can Fail
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L189)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L204)
 
 ---
 
@@ -579,7 +599,7 @@ checked_mul_u16 (x: U16) (y: U16): U16 can Fail
 checked_mul_u32 (x: U32) (y: U32): U32 can Fail
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L194)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L209)
 
 ---
 
@@ -589,7 +609,7 @@ checked_mul_u32 (x: U32) (y: U32): U32 can Fail
 checked_mul_u64 (x: U64) (y: U64): U64 can Fail
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L199)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L214)
 
 ---
 
@@ -599,7 +619,7 @@ checked_mul_u64 (x: U64) (y: U64): U64 can Fail
 checked_mul_usz (x: Usz) (y: Usz): Usz can Fail
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L204)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L219)
 
 ---
 
@@ -616,7 +636,7 @@ checked_mul_usz (x: Usz) (y: Usz): Usz can Fail
 impl checked_num_i8: CheckedNum I8
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L307)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L322)
 
 ---
 
@@ -626,7 +646,7 @@ impl checked_num_i8: CheckedNum I8
 impl checked_num_i16: CheckedNum I16
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L312)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L327)
 
 ---
 
@@ -636,7 +656,7 @@ impl checked_num_i16: CheckedNum I16
 impl checked_num_i32: CheckedNum I32
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L317)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L332)
 
 ---
 
@@ -646,7 +666,7 @@ impl checked_num_i32: CheckedNum I32
 impl checked_num_i64: CheckedNum I64
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L322)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L337)
 
 ---
 
@@ -656,7 +676,7 @@ impl checked_num_i64: CheckedNum I64
 impl checked_num_isz: CheckedNum Isz
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L327)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L342)
 
 ---
 
@@ -666,7 +686,7 @@ impl checked_num_isz: CheckedNum Isz
 impl checked_num_u8: CheckedNum U8
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L332)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L347)
 
 ---
 
@@ -676,7 +696,7 @@ impl checked_num_u8: CheckedNum U8
 impl checked_num_u16: CheckedNum U16
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L337)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L352)
 
 ---
 
@@ -686,7 +706,7 @@ impl checked_num_u16: CheckedNum U16
 impl checked_num_u32: CheckedNum U32
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L342)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L357)
 
 ---
 
@@ -696,7 +716,7 @@ impl checked_num_u32: CheckedNum U32
 impl checked_num_u64: CheckedNum U64
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L347)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L362)
 
 ---
 
@@ -706,7 +726,7 @@ impl checked_num_u64: CheckedNum U64
 impl checked_num_usz: CheckedNum Usz
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L352)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Math.an#L367)
 
 </details>
 
