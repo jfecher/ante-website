@@ -13,6 +13,36 @@ import Std.Collections.Heap
 
 ---
 
+# Types
+
+---
+
+## MaxHeap
+
+```ante
+type MaxHeap t (cmp = _) =
+    cmp: Cmp t cmp
+    data: Vec t
+```
+
+A priority queue where elements are popped from largest to smallest.
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L9)
+
+---
+
+## MinHeap
+
+```ante
+type MinHeap t (cmp = _) = MaxHeap t (Std.Num.cmp_reverse (Cmp t cmp))
+```
+
+A priority queue where elements are popped from smallest to largest.
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L14)
+
+---
+
 # Functions
 
 ---
@@ -23,7 +53,7 @@ import Std.Collections.Heap
 empty_maxheap {cmp: Cmp t c}: MaxHeap t c
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L17)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L16)
 
 ---
 
@@ -33,7 +63,7 @@ empty_maxheap {cmp: Cmp t c}: MaxHeap t c
 empty_minheap: fn {_} -> MinHeap _ _
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L19)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L18)
 
 ---
 
@@ -43,7 +73,7 @@ empty_minheap: fn {_} -> MinHeap _ _
 maxheap_with_capacity (capacity: Usz) {cmp: Cmp t c}: MaxHeap t c can Panic
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L21)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L20)
 
 ---
 
@@ -53,7 +83,7 @@ maxheap_with_capacity (capacity: Usz) {cmp: Cmp t c}: MaxHeap t c can Panic
 minheap_with_capacity: fn _ {_} -> MinHeap _ _
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L26)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L25)
 
 ---
 
@@ -65,7 +95,7 @@ maxheap_of (stream: s) {cmp: Cmp t c} {_: Stream s t e}: MaxHeap t c can Panic, 
 
 Create a new MaxHeap with the elements from the given stream
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L29)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L28)
 
 ---
 
@@ -77,7 +107,7 @@ minheap_of: fn _ {_} {_} -> MinHeap t c
 
 Create a new MinHeap with the elements from the given stream
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L35)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L34)
 
 ---
 
@@ -87,7 +117,7 @@ Create a new MinHeap with the elements from the given stream
 extend (heap: mut MaxHeap t) (stream: s) {_: Stream s t e}: Unit can Panic, e, Mutate 'heap
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L37)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L36)
 
 ---
 
@@ -97,7 +127,7 @@ extend (heap: mut MaxHeap t) (stream: s) {_: Stream s t e}: Unit can Panic, e, M
 is_empty (heap: ref MaxHeap t): Bool
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L40)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L39)
 
 ---
 
@@ -107,7 +137,7 @@ is_empty (heap: ref MaxHeap t): Bool
 len (heap: ref MaxHeap t): Usz
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L42)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L41)
 
 ---
 
@@ -119,7 +149,7 @@ push (heap: mut MaxHeap t) (elem: t): Unit can Panic, Mutate 'heap
 
 Push an element onto the heap in O(log n) time
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L82)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L81)
 
 ---
 
@@ -132,7 +162,7 @@ pop (heap: mut MaxHeap t): Maybe t can Mutate 'heap
 Remove and return the greatest element in O(log n) time.
 Returns None if the heap is empty.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L88)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L87)
 
 ---
 
@@ -144,7 +174,7 @@ peek (heap: ref MaxHeap t): ref t can Fail
 
 A reference to the greatest element. Fails if the heap is empty.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L97)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L96)
 
 ---
 
@@ -156,7 +186,7 @@ clear (heap: mut MaxHeap t) {_: Drop t e}: Unit can e, Mutate 'heap
 
 Remove and drop every element
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L102)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L101)
 
 ---
 
@@ -168,7 +198,7 @@ into_vec (heap: MaxHeap t): Vec t
 
 The heap's elements in an unspecified order. Does not allocate.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L106)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L105)
 
 ---
 
@@ -180,7 +210,7 @@ into_sorted_vec (heap: MaxHeap t): Vec t
 
 The heap's elements sorted in ascending order of the heap's `Cmp` impl
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L109)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L108)
 
 ---
 
@@ -197,7 +227,7 @@ The heap's elements sorted in ascending order of the heap's `Cmp` impl
 impl print_heap {_: Display t e}: Display (MaxHeap t) e
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L119)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L118)
 
 ---
 
@@ -209,7 +239,7 @@ impl stream_heap: Stream (MaxHeap a) a pure
 
 Streams elements in an unspecified order
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L123)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L122)
 
 ---
 
@@ -221,7 +251,7 @@ impl stream_ref_heap: Stream (ref MaxHeap a) (ref a) pure
 
 Streams elements in an unspecified order
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L127)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L126)
 
 ---
 
@@ -231,7 +261,7 @@ Streams elements in an unspecified order
 impl clone_heap {_: Clone t}: Clone (MaxHeap t)
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L130)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L129)
 
 ---
 
@@ -241,7 +271,7 @@ impl clone_heap {_: Clone t}: Clone (MaxHeap t)
 impl drop_heap {_: Drop t e}: Drop (MaxHeap t) e
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L133)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L132)
 
 </details>
 

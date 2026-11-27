@@ -1,7 +1,7 @@
 +++
 title = "Std.Sync.Atomic"
 categories = ["docs"]
-weight = 28
+weight = 29
 +++
 
 ```ante

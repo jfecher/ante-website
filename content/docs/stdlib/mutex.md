@@ -1,7 +1,7 @@
 +++
 title = "Std.Sync.Mutex"
 categories = ["docs"]
-weight = 30
+weight = 31
 +++
 
 ```ante
@@ -40,6 +40,21 @@ of (value: t): Mutex t
 ```
 
 [source](https://github.com/jfecher/ante/blob/master/stdlib/src/Sync/Mutex.an#L20)
+
+---
+
+## with_lock
+
+```ante
+with_lock (m: ref Mutex t) (f: once fn (mut t) [_] -> r): r
+```
+
+Acquires the lock, blocking until it can be acquired, then runs `f`, then releases the
+lock, returning the result of `f`.
+
+This may deadlock 
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Sync/Mutex.an#L29)
 
 ---
 

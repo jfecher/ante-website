@@ -105,12 +105,10 @@ source
       
       <guid>https://antelang.org/docs/stdlib/hashmap/</guid>
       <description>import Std.Collections.HashMap Source
- Types  Entry type Entry k v = key: k value: v occupied: Bool tombstone: Bool source
- Functions  len len (m: ref HashMap k v): Usz Returns the length of this HashMap
+ Types  HashMap type HashMap k v (h = _) = hasher: Hash k h len: Usz capacity: Usz entries: Ptr (Entry k v) A linear-scan mutable HashMap using a resize factor of 2.0
+HashMaps store their Hash impl upon construction to ensure two HashMaps used for merging, equality, etc. use the same impl.
 source
- is_empty is_empty (m: ref HashMap k v): Bool Returns true if this HashMap is empty. Equivalent to map.len () == 0
-source
- empty empty () {hasher: Hash k h}: HashMap k v h Create a new, empty HashMap This will not allocate until the first entry is inserted.</description>
+ Entry type Entry k v = key: k value: v occupied: Bool tombstone: Bool source</description>
     </item>
     
     <item>
@@ -120,11 +118,11 @@ source
       
       <guid>https://antelang.org/docs/stdlib/hashset/</guid>
       <description>import Std.Collections.HashSet Source
+ Types  HashSet type HashSet k (h = _) = inner: HashMap k Unit h source
  Functions  len len (set: ref HashSet v): Usz source
  is_empty is_empty (set: ref HashSet k): Bool source
  empty empty () {_: Hash k h}: HashSet k h source
- of of (stream: s) {_: Stream s k e} {_: Hash k h} {_: Eq k e} {_: Drop k d}: HashSet k h can Panic, e, d source
- clear clear (set: mut HashSet k) {_: Drop k d}: Unit can d, Mutate &amp;#39;set source</description>
+ of of (stream: s) {_: Stream s k e} {_: Hash k h} {_: Eq k e} {_: Drop k d}: HashSet k h can Panic, e, d source</description>
     </item>
     
     <item>
@@ -134,11 +132,11 @@ source
       
       <guid>https://antelang.org/docs/stdlib/heap/</guid>
       <description>import Std.Collections.Heap Source
- Functions  empty_maxheap empty_maxheap {cmp: Cmp t c}: MaxHeap t c source
- empty_minheap empty_minheap: fn {_} -&amp;gt; MinHeap _ _ source
- maxheap_with_capacity maxheap_with_capacity (capacity: Usz) {cmp: Cmp t c}: MaxHeap t c can Panic source
- minheap_with_capacity minheap_with_capacity: fn _ {_} -&amp;gt; MinHeap _ _ source
- maxheap_of maxheap_of (stream: s) {cmp: Cmp t c} {_: Stream s t e}: MaxHeap t c can Panic, e Create a new MaxHeap with the elements from the given stream</description>
+ Types  MaxHeap type MaxHeap t (cmp = _) = cmp: Cmp t cmp data: Vec t A priority queue where elements are popped from largest to smallest.
+source
+ MinHeap type MinHeap t (cmp = _) = MaxHeap t (Std.Num.cmp_reverse (Cmp t cmp)) A priority queue where elements are popped from smallest to largest.
+source
+ Functions  empty_maxheap empty_maxheap {cmp: Cmp t c}: MaxHeap t c source</description>
     </item>
     
     <item>
@@ -154,6 +152,18 @@ Common operations:
     </item>
     
     <item>
+      <title>Std.Collections.SeqMap</title>
+      <link>https://antelang.org/docs/stdlib/seqmap/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/docs/stdlib/seqmap/</guid>
+      <description>import Std.Collections.SeqMap Source
+ Types  SeqMap type SeqMap k v (h = _) = hasher: Hash k h log_len: U32 count: U32 data: Ptr (Data k v) A persistent hash map based on Seq. Performance is meant to be comparable to a mutable HashMap.
+Common operations:
+ insert, remove, get: O(1) amortized but can be O(N) with worst-case sharing patterns. clone: O(1)  Internally, a SeqMap is a Seq-like append-only log of entries.</description>
+    </item>
+    
+    <item>
       <title>Std.Collections.Vec</title>
       <link>https://antelang.org/docs/stdlib/vec/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -162,9 +172,9 @@ Common operations:
       <description>import Std.Collections.Vec Source
  Types  Vec type Vec t = data: Ptr t len: Usz cap: Usz source
  Functions  empty (empty: fn Unit -&amp;gt; Vec _ is pure) () source
- is_empty (is_empty: fn (ref (Vec a)) -&amp;gt; _ is pure) (v: ref (Vec a)) source
- len (len: fn (ref (Vec a)) -&amp;gt; Usz is pure) (v: ref (Vec a)) source
- capacity (capacity: fn (ref (Vec a)) -&amp;gt; Usz is pure) (v: ref (Vec a)) source</description>
+ is_empty (is_empty: fn (ref &amp;#39;v (Vec a)) -&amp;gt; Bool is pure) (v: ref &amp;#39;v (Vec a)) source
+ len (len: fn (ref &amp;#39;v (Vec a)) -&amp;gt; Usz is pure) (v: ref &amp;#39;v (Vec a)) source
+ capacity (capacity: fn (ref &amp;#39;v (Vec a)) -&amp;gt; Usz is pure) (v: ref &amp;#39;v (Vec a)) source</description>
     </item>
     
     <item>
@@ -198,9 +208,8 @@ Common operations:
       <description>import Std.Fail Source
  Effects  Fail effect Fail = fail: fn Unit -&amp;gt; Never source
  Functions  try try (f: a can Fail, e): Maybe a can e source
- assert assert (cond: Bool): Unit can Fail Fails if cond is false Note that this is the inverse of fail_if
-source
- fail_if fail_if (cond: Bool): Unit can Fail Fails if cond is true Note that this is the inverse of assert</description>
+ on_fail on_fail (f: a can Fail, e) (default: once fn Unit [env] -&amp;gt; a can e) {_: Drop env e}: a can e source
+ assert assert (cond: Bool): Unit can Fail Fails if cond is false Note that this is the inverse of fail_if</description>
     </item>
     
     <item>
@@ -211,7 +220,8 @@ source
       <guid>https://antelang.org/docs/stdlib/hash/</guid>
       <description>import Std.Hash Source
  Traits  Hash trait Hash t = hash: fn (ref t) -&amp;gt; U64 source
- Functions  hash_combine hash_combine (h1: U64) (h2: U64): U64 Combine two hashes to form a new one. This is order-sensitive so (a, b) and (b, a) hash differently. Uses a mixing constant of 2^64 / phi.
+ Functions  fibonacci_multiplier fibonacci_multiplier: U64 source
+ hash_combine hash_combine (h1: U64) (h2: U64): U64 Combine two hashes to form a new one. This is order-sensitive so (a, b) and (b, a) hash differently. Uses a mixing constant of 2^64 / phi.
 source
  Implicits   Show Implicits hash_string impl hash_string: Hash String FNV-1a 64-bit with an offset basis of 14695981039346656037 (0xcbf29ce484222325), and prime of 1099511628211 (0x100000001b3).</description>
     </item>
@@ -232,20 +242,6 @@ source
     </item>
     
     <item>
-      <title>Std.IO</title>
-      <link>https://antelang.org/docs/stdlib/io/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://antelang.org/docs/stdlib/io/</guid>
-      <description>import Std.IO Source
- Functions  read_line read_line (): String can Fs Read a line from stdin, ending with (and not including) a terminating &amp;lsquo;\n&amp;rsquo;
-source
- read_file_bytes read_file_bytes (path: String): Vec U8 can Fs, Fail source
- read_file read_file (path: String): String can Fs, Fail source
- create_dir create_dir (path: String): Unit can Fs, Fail Create the directory at path. Fails if it cannot be created, unless a directory already exists there.</description>
-    </item>
-    
-    <item>
       <title>Std.Sync</title>
       <link>https://antelang.org/docs/stdlib/sync/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -258,6 +254,20 @@ source
  Atomic.swap Atomic.swap (a: ref Atomic t) (value: t): t Replace the value, returning the previous one.
 source
  Atomic.compare_and_swap Atomic.compare_and_swap (a: ref Atomic t) (current: t) (desired: t): t If the current value equals current, replace it with desired.</description>
+    </item>
+    
+    <item>
+      <title>Std.IO</title>
+      <link>https://antelang.org/docs/stdlib/io/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://antelang.org/docs/stdlib/io/</guid>
+      <description>import Std.IO Source
+ Functions  read_line read_line (): String can Fs Read a line from stdin, ending with (and not including) a terminating &amp;lsquo;\n&amp;rsquo;
+source
+ read_file_bytes read_file_bytes (path: String): Vec U8 can Fs, Fail source
+ read_file read_file (path: String): String can Fs, Fail source
+ create_dir create_dir (path: String): Unit can Fs, Fail Create the directory at path. Fails if it cannot be created, unless a directory already exists there.</description>
     </item>
     
     <item>
@@ -341,6 +351,7 @@ source
  Types  Rc type Rc t = ptr: Ptr (U32, t) A non-threadsafe reference-counted pointer.
 source
  Functions  of of (value: t): Rc t source
+ as_ref as_ref (rc: ref Rc t): ref! t source
  ref_count ref_count (rc: ref Rc t): U32 source
  inc_ref_count inc_ref_count (rc: mut Rc t): Unit source
  dec_ref_count dec_ref_count (rc: mut Rc t): Unit source
@@ -356,7 +367,7 @@ source
       <description>import Std.Slice Source
  Types  Slice type Slice &amp;#39;a t = data: ref &amp;#39;a t len: Usz A contiguous series of elements from &amp;lsquo;a.
 source
- MutSlice type MutSlice &amp;#39;a t = Slice mut t A mutable, continguous series of elements from &amp;lsquo;a.
+ MutSlice type MutSlice &amp;#39;a t = Slice (mut &amp;#39;a) t A mutable, continguous series of elements from &amp;lsquo;a.
 source
  Functions  from_parts from_parts (data: Ptr t) (len: Usz): Slice &amp;#39;a t source
  slice_range slice_range (s: Slice &amp;#39;a t) (start: Usz) (end: Usz): Slice &amp;#39;a t can Panic source</description>
@@ -373,7 +384,7 @@ source
 source
  Effects  Emit effect Emit a = emit: fn a -&amp;gt; Unit Emit a single item of type a. Another name for this is Yield.
 source
- Loop effect Loop = Common control-flow effects for looping</description>
+ Loop effect Loop = break: fn Unit -&amp;gt; Never continue: fn Unit -&amp;gt; Never Common control-flow effects for looping</description>
     </item>
     
     <item>
@@ -442,8 +453,10 @@ source
       <description>import Std.Sync.Mutex Source
  Types  Mutex type Mutex t = raw: VoidPtr value: t source
  Functions  of of (value: t): Mutex t source
- Implicits   Show Implicits drop_mutex impl drop_mutex {_: Drop t e}: Drop (Mutex t) e source
- </description>
+ with_lock with_lock (m: ref Mutex t) (f: once fn (mut t) [_] -&amp;gt; r): r Acquires the lock, blocking until it can be acquired, then runs f, then releases the lock, returning the result of f.
+This may deadlock
+source
+ Implicits   Show Implicits drop_mutex impl drop_mutex {_: Drop t e}: Drop (Mutex t) e source</description>
     </item>
     
     <item>
@@ -454,10 +467,11 @@ source
       <guid>https://antelang.org/docs/stdlib/thread/</guid>
       <description>import Std.Sync.Thread Source
  Types  Thread type Thread a = raw: VoidPtr source
- Functions  join join (t: Thread a): a Block until the thread finishes and return its result.
+ Functions  spawn spawn (f: once fn Unit [e] -&amp;gt; a is pure): Thread a Spawn a new OS thread running f. The returned thread must be joined or detached.
 source
- detach detach (t: Thread a): Unit Detach the thread so its resources are reclaimed automatically on exit. The result value is leaked; use join if you need it.
-source</description>
+ join join (t: Thread a): a Block until the thread finishes and return its result.
+source
+ detach detach (t: Thread a): Unit Detach the thread so its resources are reclaimed automatically on exit.</description>
     </item>
     
     <item>
@@ -470,7 +484,7 @@ source</description>
  Effects  Throw effect Throw t = throw: fn t -&amp;gt; Never source
  Functions  catch catch (f: a can Throw e): Result a e source
  catch_or catch_or (f: a can Throw e) (default: a) {_: Drop a d} {_: Drop e d}: a can d source
- unwrap_err unwrap_err (f: t can Throw e) {_: Drop t d}: e can Fail, d Returns the error when thrown or fails if the operation finishes without throwing.</description>
+ catch_or_else catch_or_else (f: a can Throw e) (default: once fn e [env] -&amp;gt; a) {_: Drop env d}: a can d source</description>
     </item>
     
     <item>

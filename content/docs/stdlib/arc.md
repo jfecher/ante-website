@@ -1,7 +1,7 @@
 +++
 title = "Std.Sync.Arc"
 categories = ["docs"]
-weight = 27
+weight = 28
 +++
 
 ```ante
@@ -24,7 +24,7 @@ type Arc t =
     ptr: Ptr (ArcInner t)
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Sync/Arc.an#L12)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Sync/Arc.an#L11)
 
 ---
 
@@ -38,7 +38,7 @@ type Arc t =
 of (value: t): Arc t
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Sync/Arc.an#L14)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Sync/Arc.an#L13)
 
 ---
 
@@ -48,7 +48,7 @@ of (value: t): Arc t
 as_ref (a: ref 'a Arc t): ref 'a t
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Sync/Arc.an#L20)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Sync/Arc.an#L19)
 
 ---
 
@@ -65,7 +65,7 @@ as_ref (a: ref 'a Arc t): ref 'a t
 impl clone_arc: Clone (Arc t)
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Sync/Arc.an#L24)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Sync/Arc.an#L23)
 
 ---
 
@@ -75,7 +75,7 @@ impl clone_arc: Clone (Arc t)
 impl drop_arc {_: Drop t e}: Drop (Arc t) e
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Sync/Arc.an#L30)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Sync/Arc.an#L29)
 
 </details>
 

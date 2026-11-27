@@ -1,7 +1,7 @@
 +++
 title = "Std.Slice"
 categories = ["docs"]
-weight = 24
+weight = 25
 +++
 
 ```ante
@@ -34,7 +34,7 @@ A contiguous series of elements from 'a.
 ## MutSlice
 
 ```ante
-type MutSlice 'a t = Slice mut t
+type MutSlice 'a t = Slice (mut 'a) t
 ```
 
 A mutable, continguous series of elements from 'a.

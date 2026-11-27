@@ -1,7 +1,7 @@
 +++
 title = "Std.Sync.Condvar"
 categories = ["docs"]
-weight = 29
+weight = 30
 +++
 
 ```ante

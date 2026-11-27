@@ -1,7 +1,7 @@
 +++
 title = "Std.Sync.Thread"
 categories = ["docs"]
-weight = 31
+weight = 32
 +++
 
 ```ante
@@ -29,6 +29,18 @@ type Thread a =
 ---
 
 # Functions
+
+---
+
+## spawn
+
+```ante
+spawn (f: once fn Unit [e] -> a is pure): Thread a
+```
+
+Spawn a new OS thread running `f`. The returned thread must be joined or detached.
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Sync/Thread.an#L17)
 
 ---
 

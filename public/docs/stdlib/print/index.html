@@ -313,6 +313,12 @@
         
         
         <li>
+            <a href="/docs/stdlib/seqmap/">Std.Collections.SeqMap</a>
+            
+        </li>
+        
+        
+        <li>
             <a href="/docs/stdlib/vec/">Std.Collections.Vec</a>
             
         </li>
@@ -349,13 +355,13 @@
         
         
         <li>
-            <a href="/docs/stdlib/io/">Std.IO</a>
+            <a href="/docs/stdlib/sync/">Std.Sync</a>
             
         </li>
         
         
         <li>
-            <a href="/docs/stdlib/sync/">Std.Sync</a>
+            <a href="/docs/stdlib/io/">Std.IO</a>
             
         </li>
         
@@ -1248,7 +1254,7 @@ optimized out of the program.</p>
 <p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Print.an#L38">source</a></p>
 <hr>
 <h2 id="println">println</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">println</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="kt">Display</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Print</span><span class="p">)</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">{(</span><span class="n">_</span><span class="o">:</span> <span class="kt">Display</span> <span class="n">t</span> <span class="n">e</span><span class="p">)}</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">println</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;x</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="kt">Display</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Print</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;x</span> <span class="n">t</span><span class="p">)</span> <span class="p">{(</span><span class="n">_</span><span class="o">:</span> <span class="kt">Display</span> <span class="n">t</span> <span class="n">e</span><span class="p">)}</span>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Print.an#L46">source</a></p>
 <hr>
 <h1 id="implicits">Implicits</h1>

@@ -670,6 +670,81 @@
                 
                 
                 
+                <a href="/docs/stdlib/deque/#get">
+                    <li>get</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/deque/#front">
+                    <li>front</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/deque/#back">
+                    <li>back</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
                 <a href="/docs/stdlib/deque/#clear">
                     <li>clear</li>
                 </a>
@@ -718,6 +793,56 @@
                 
                 <a href="/docs/stdlib/deque/#print_deque">
                     <li>print_deque</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/deque/#extract_deque">
+                    <li>extract_deque</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/deque/#insert_deque">
+                    <li>insert_deque</li>
                 </a>
                 
                 
@@ -884,6 +1009,12 @@
         
         
         <li>
+            <a href="/docs/stdlib/seqmap/">Std.Collections.SeqMap</a>
+            
+        </li>
+        
+        
+        <li>
             <a href="/docs/stdlib/vec/">Std.Collections.Vec</a>
             
         </li>
@@ -920,13 +1051,13 @@
         
         
         <li>
-            <a href="/docs/stdlib/io/">Std.IO</a>
+            <a href="/docs/stdlib/sync/">Std.Sync</a>
             
         </li>
         
         
         <li>
-            <a href="/docs/stdlib/sync/">Std.Sync</a>
+            <a href="/docs/stdlib/io/">Std.IO</a>
             
         </li>
         
@@ -1089,15 +1220,15 @@ Pushing and popping from either end is O(1) amortized.</p>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Deque.an#L33">source</a></p>
 <hr>
 <h2 id="is_empty">is_empty</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">is_empty</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="p">(</span><span class="kt">Deque</span> <span class="n">t</span><span class="p">))</span> <span class="ow">-&gt;</span> <span class="n">_</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">d</span><span class="o">:</span> <span class="k">ref</span> <span class="p">(</span><span class="kt">Deque</span> <span class="n">t</span><span class="p">))</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">is_empty</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;d</span> <span class="p">(</span><span class="kt">Deque</span> <span class="n">t</span><span class="p">))</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">d</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;d</span> <span class="p">(</span><span class="kt">Deque</span> <span class="n">t</span><span class="p">))</span>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Deque.an#L36">source</a></p>
 <hr>
 <h2 id="len">len</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">len</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="p">(</span><span class="kt">Deque</span> <span class="n">t</span><span class="p">))</span> <span class="ow">-&gt;</span> <span class="kt">Usz</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">d</span><span class="o">:</span> <span class="k">ref</span> <span class="p">(</span><span class="kt">Deque</span> <span class="n">t</span><span class="p">))</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">len</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;d</span> <span class="p">(</span><span class="kt">Deque</span> <span class="n">t</span><span class="p">))</span> <span class="ow">-&gt;</span> <span class="kt">Usz</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">d</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;d</span> <span class="p">(</span><span class="kt">Deque</span> <span class="n">t</span><span class="p">))</span>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Deque.an#L38">source</a></p>
 <hr>
 <h2 id="capacity">capacity</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">capacity</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="p">(</span><span class="kt">Deque</span> <span class="n">t</span><span class="p">))</span> <span class="ow">-&gt;</span> <span class="kt">Usz</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">d</span><span class="o">:</span> <span class="k">ref</span> <span class="p">(</span><span class="kt">Deque</span> <span class="n">t</span><span class="p">))</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">capacity</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;d</span> <span class="p">(</span><span class="kt">Deque</span> <span class="n">t</span><span class="p">))</span> <span class="ow">-&gt;</span> <span class="kt">Usz</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">d</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;d</span> <span class="p">(</span><span class="kt">Deque</span> <span class="n">t</span><span class="p">))</span>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Deque.an#L40">source</a></p>
 <hr>
 <h2 id="reserve">reserve</h2>
@@ -1126,6 +1257,22 @@ elements to the front of a new buffer if it must grow.</p>
 </code></pre></div><p>Remove and return the first element, returning None if the deque was empty</p>
 <p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Deque.an#L98">source</a></p>
 <hr>
+<h2 id="get">get</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">get</span> <span class="p">(</span><span class="n">d</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Deque</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">i</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="k">ref</span><span class="o">!</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span>
+</code></pre></div><p>Retrieves a reference to the element at the given 0-based index from the front.
+Fails if the index is out of bounds.</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Deque.an#L108">source</a></p>
+<hr>
+<h2 id="front">front</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">front</span> <span class="p">(</span><span class="n">d</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Deque</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">ref</span><span class="o">!</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span>
+</code></pre></div><p>A reference to the first element. Fails if the deque is empty.</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Deque.an#L113">source</a></p>
+<hr>
+<h2 id="back">back</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">back</span> <span class="p">(</span><span class="n">d</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Deque</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">ref</span><span class="o">!</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span>
+</code></pre></div><p>A reference to the last element. Fails if the deque is empty.</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Deque.an#L116">source</a></p>
+<hr>
 <h2 id="clear">clear</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">clear</span> <span class="p">(</span><span class="n">d</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Deque</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="n">e</span><span class="p">,</span> <span class="kt">Mutate</span> <span class="n">&#39;d</span>
 </code></pre></div><p>Remove and drop every element. The capacity is unchanged.</p>
@@ -1138,6 +1285,14 @@ elements to the front of a new buffer if it must grow.</p>
 <h2 id="print_deque">print_deque</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">print_deque</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Display</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Display</span> <span class="p">(</span><span class="kt">Deque</span> <span class="n">t</span><span class="p">)</span> <span class="n">e</span>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Deque.an#L128">source</a></p>
+<hr>
+<h2 id="extract_deque">extract_deque</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">extract_deque</span><span class="o">:</span> <span class="kt">Extract</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;d</span> <span class="kt">Deque</span> <span class="n">t</span><span class="p">)</span> <span class="kt">Usz</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;d</span><span class="o">!</span> <span class="n">t</span><span class="p">)</span> <span class="kt">Panic</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Deque.an#L137">source</a></p>
+<hr>
+<h2 id="insert_deque">insert_deque</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">insert_deque</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Insert</span> <span class="p">(</span><span class="k">mut</span> <span class="n">&#39;d</span> <span class="kt">Deque</span> <span class="n">t</span><span class="p">)</span> <span class="kt">Usz</span> <span class="n">t</span> <span class="kt">Panic</span> <span class="o">&amp;</span> <span class="kt">Mutate</span> <span class="n">&#39;d</span><span class="o">!</span> <span class="o">&amp;</span> <span class="n">e</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Deque.an#L143">source</a></p>
 <hr>
 <h2 id="stream_deque">stream_deque</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">stream_deque</span><span class="o">:</span> <span class="kt">Stream</span> <span class="p">(</span><span class="kt">Deque</span> <span class="n">a</span><span class="p">)</span> <span class="n">a</span> <span class="n">pure</span>

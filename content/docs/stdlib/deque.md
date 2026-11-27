@@ -83,7 +83,7 @@ extend (deque: mut Deque t) (stream: s) {_: Stream s t e}: Unit can Panic, Mutat
 ## is_empty
 
 ```ante
-(is_empty: fn (ref (Deque t)) -> _ is pure) (d: ref (Deque t))
+(is_empty: fn (ref 'd (Deque t)) -> Bool is pure) (d: ref 'd (Deque t))
 ```
 
 [source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Deque.an#L36)
@@ -93,7 +93,7 @@ extend (deque: mut Deque t) (stream: s) {_: Stream s t e}: Unit can Panic, Mutat
 ## len
 
 ```ante
-(len: fn (ref (Deque t)) -> Usz is pure) (d: ref (Deque t))
+(len: fn (ref 'd (Deque t)) -> Usz is pure) (d: ref 'd (Deque t))
 ```
 
 [source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Deque.an#L38)
@@ -103,7 +103,7 @@ extend (deque: mut Deque t) (stream: s) {_: Stream s t e}: Unit can Panic, Mutat
 ## capacity
 
 ```ante
-(capacity: fn (ref (Deque t)) -> Usz is pure) (d: ref (Deque t))
+(capacity: fn (ref 'd (Deque t)) -> Usz is pure) (d: ref 'd (Deque t))
 ```
 
 [source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Deque.an#L40)
@@ -171,6 +171,43 @@ Remove and return the first element, returning None if the deque was empty
 
 ---
 
+## get
+
+```ante
+get (d: ref Deque t) (i: Usz): ref! t can Fail
+```
+
+Retrieves a reference to the element at the given 0-based index from the front.
+Fails if the index is out of bounds.
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Deque.an#L108)
+
+---
+
+## front
+
+```ante
+front (d: ref Deque t): ref! t can Fail
+```
+
+A reference to the first element. Fails if the deque is empty.
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Deque.an#L113)
+
+---
+
+## back
+
+```ante
+back (d: ref Deque t): ref! t can Fail
+```
+
+A reference to the last element. Fails if the deque is empty.
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Deque.an#L116)
+
+---
+
 ## clear
 
 ```ante
@@ -197,6 +234,26 @@ impl print_deque {_: Display t e}: Display (Deque t) e
 ```
 
 [source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Deque.an#L128)
+
+---
+
+## extract_deque
+
+```ante
+impl extract_deque: Extract (ref 'd Deque t) Usz (ref 'd! t) Panic
+```
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Deque.an#L137)
+
+---
+
+## insert_deque
+
+```ante
+impl insert_deque {_: Drop t e}: Insert (mut 'd Deque t) Usz t Panic & Mutate 'd! & e
+```
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Deque.an#L143)
 
 ---
 

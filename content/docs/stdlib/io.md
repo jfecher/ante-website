@@ -1,7 +1,7 @@
 +++
 title = "Std.IO"
 categories = ["docs"]
-weight = 17
+weight = 18
 +++
 
 ```ante

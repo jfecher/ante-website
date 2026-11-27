@@ -313,6 +313,12 @@
         
         
         <li>
+            <a href="/docs/stdlib/seqmap/">Std.Collections.SeqMap</a>
+            
+        </li>
+        
+        
+        <li>
             <a href="/docs/stdlib/vec/">Std.Collections.Vec</a>
             
         </li>
@@ -349,13 +355,13 @@
         
         
         <li>
-            <a href="/docs/stdlib/io/">Std.IO</a>
+            <a href="/docs/stdlib/sync/">Std.Sync</a>
             
         </li>
         
         
         <li>
-            <a href="/docs/stdlib/sync/">Std.Sync</a>
+            <a href="/docs/stdlib/io/">Std.IO</a>
             
         </li>
         
@@ -967,7 +973,7 @@
 <p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Slice.an#L9">source</a></p>
 <hr>
 <h2 id="mutslice">MutSlice</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">MutSlice</span> <span class="n">&#39;a</span> <span class="n">t</span> <span class="ow">=</span> <span class="kt">Slice</span> <span class="k">mut</span> <span class="n">t</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">MutSlice</span> <span class="n">&#39;a</span> <span class="n">t</span> <span class="ow">=</span> <span class="kt">Slice</span> <span class="p">(</span><span class="k">mut</span> <span class="n">&#39;a</span><span class="p">)</span> <span class="n">t</span>
 </code></pre></div><p>A mutable, continguous series of elements from &lsquo;a.</p>
 <p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Slice.an#L14">source</a></p>
 <hr>

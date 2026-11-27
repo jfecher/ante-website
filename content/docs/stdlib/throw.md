@@ -1,7 +1,7 @@
 +++
 title = "Std.Throw"
 categories = ["docs"]
-weight = 32
+weight = 33
 +++
 
 ```ante
@@ -49,6 +49,38 @@ catch_or (f: a can Throw e) (default: a) {_: Drop a d} {_: Drop e d}: a can d
 ```
 
 [source](https://github.com/jfecher/ante/blob/master/stdlib/src/Throw.an#L8)
+
+---
+
+## catch_or_else
+
+```ante
+catch_or_else (f: a can Throw e) (default: once fn e [env] -> a) {_: Drop env d}: a can d
+```
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Throw.an#L12)
+
+---
+
+## on_err
+
+```ante
+on_err (f: a can Throw e) (on_err: once fn e [env] -> Unit) {_: Drop a d} {_: Drop env d}: Unit can d
+```
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Throw.an#L16)
+
+---
+
+## map_err
+
+```ante
+map_err (f: t can Throw e1) (f2: once fn e1 [env] -> e2) {_: Drop env d}: t can Throw e2, d
+```
+
+Apply the given function to the thrown value and re-throw it
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Throw.an#L22)
 
 ---
 

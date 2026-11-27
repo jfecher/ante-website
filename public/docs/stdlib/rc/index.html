@@ -313,6 +313,12 @@
         
         
         <li>
+            <a href="/docs/stdlib/seqmap/">Std.Collections.SeqMap</a>
+            
+        </li>
+        
+        
+        <li>
             <a href="/docs/stdlib/vec/">Std.Collections.Vec</a>
             
         </li>
@@ -349,13 +355,13 @@
         
         
         <li>
-            <a href="/docs/stdlib/io/">Std.IO</a>
+            <a href="/docs/stdlib/sync/">Std.Sync</a>
             
         </li>
         
         
         <li>
-            <a href="/docs/stdlib/sync/">Std.Sync</a>
+            <a href="/docs/stdlib/io/">Std.IO</a>
             
         </li>
         
@@ -480,6 +486,31 @@
                 
                 <a href="/docs/stdlib/rc/#of">
                     <li>of</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/rc/#as_ref">
+                    <li>as_ref</li>
                 </a>
                 
                 
@@ -795,6 +826,10 @@
 <h2 id="of">of</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">of</span> <span class="p">(</span><span class="n">value</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">Rc</span> <span class="n">t</span>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Rc.an#L11">source</a></p>
+<hr>
+<h2 id="as_ref">as_ref</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">as_ref</span> <span class="p">(</span><span class="n">rc</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Rc</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">ref</span><span class="o">!</span> <span class="n">t</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Rc.an#L17">source</a></p>
 <hr>
 <h2 id="ref_count">ref_count</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">ref_count</span> <span class="p">(</span><span class="n">rc</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Rc</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">U32</span>

@@ -23,7 +23,7 @@ import Std.Array
 array_len (_array: ref Array n t): Usz
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L5)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L4)
 
 ---
 
@@ -35,7 +35,7 @@ array_get_unchecked (array: ref Array n t) (i: Usz): ref t
 
 Unsafe get without bounds-checking
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L11)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L10)
 
 ---
 
@@ -47,7 +47,7 @@ array_set_unchecked (array: mut Array n t) (i: Usz) (v: t): Unit can Mutate 'arr
 
 Unsafe set without bounds-checking
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L16)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L15)
 
 ---
 
@@ -57,7 +57,7 @@ Unsafe set without bounds-checking
 array_get (array: ref Array n t) (index: Usz): ref t can Panic
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L20)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L19)
 
 ---
 
@@ -67,7 +67,7 @@ array_get (array: ref Array n t) (index: Usz): ref t can Panic
 array_set (array: mut Array n t) (index: Usz) elem: Unit can Panic, Mutate 'array
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L25)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L24)
 
 ---
 
@@ -77,7 +77,7 @@ array_set (array: mut Array n t) (index: Usz) elem: Unit can Panic, Mutate 'arra
 slice (array: ref 'a Array n t): Slice 'a t
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L30)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L29)
 
 ---
 
@@ -87,7 +87,7 @@ slice (array: ref 'a Array n t): Slice 'a t
 slice_range (array: ref 'a Array n t) (start: Usz) (end: Usz): Slice 'a t can Panic
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L33)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L32)
 
 ---
 
@@ -97,7 +97,7 @@ slice_range (array: ref 'a Array n t) (start: Usz) (end: Usz): Slice 'a t can Pa
 slice_from (array: ref 'a Array n t) (start: Usz): Slice 'a t can Panic
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L36)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L35)
 
 ---
 
@@ -107,7 +107,7 @@ slice_from (array: ref 'a Array n t) (start: Usz): Slice 'a t can Panic
 slice_until (array: ref 'a Array n t) (end: Usz): Slice 'a t can Panic
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L39)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L38)
 
 ---
 
@@ -124,7 +124,7 @@ slice_until (array: ref 'a Array n t) (end: Usz): Slice 'a t can Panic
 impl extract_array: Extract (ref 'a Array n t) Usz (ref 'a t) Panic
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L42)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L41)
 
 ---
 
@@ -134,7 +134,7 @@ impl extract_array: Extract (ref 'a Array n t) Usz (ref 'a t) Panic
 impl insert_array: Insert (mut 'a Array n t) Usz t Panic & Mutate 'a
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L45)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L44)
 
 ---
 
@@ -144,7 +144,7 @@ impl insert_array: Insert (mut 'a Array n t) Usz t Panic & Mutate 'a
 impl copy_array {_: Copy t}: Copy (Array n t)
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L48)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L47)
 
 ---
 
@@ -154,7 +154,7 @@ impl copy_array {_: Copy t}: Copy (Array n t)
 impl drop_array {_: Drop t e}: Drop (Array n t) e
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L51)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L50)
 
 ---
 
@@ -164,7 +164,7 @@ impl drop_array {_: Drop t e}: Drop (Array n t) e
 impl cmp_array {_: Cmp t}: Cmp (Array n t)
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L56)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L55)
 
 ---
 
@@ -174,7 +174,7 @@ impl cmp_array {_: Cmp t}: Cmp (Array n t)
 impl print_array {_: Display t e}: Display (Array n t) Panic & e
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L65)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L64)
 
 </details>
 

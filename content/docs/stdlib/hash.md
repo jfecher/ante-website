@@ -1,7 +1,7 @@
 +++
 title = "Std.Hash"
 categories = ["docs"]
-weight = 15
+weight = 16
 +++
 
 ```ante
@@ -32,6 +32,16 @@ trait Hash t =
 
 ---
 
+## fibonacci_multiplier
+
+```ante
+fibonacci_multiplier: U64
+```
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L8)
+
+---
+
 ## hash_combine
 
 ```ante
@@ -41,7 +51,7 @@ hash_combine (h1: U64) (h2: U64): U64
 Combine two hashes to form a new one. This is order-sensitive so (a, b) and
 (b, a) hash differently. Uses a mixing constant of 2^64 / phi.
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L62)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L64)
 
 ---
 
@@ -61,7 +71,7 @@ impl hash_string: Hash String
 FNV-1a 64-bit with an offset basis of 14695981039346656037 (0xcbf29ce484222325),
 and prime of 1099511628211 (0x100000001b3).
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L10)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L12)
 
 ---
 
@@ -71,7 +81,7 @@ and prime of 1099511628211 (0x100000001b3).
 impl hash_u64: Hash U64
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L18)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L20)
 
 ---
 
@@ -81,7 +91,7 @@ impl hash_u64: Hash U64
 impl hash_u8: Hash U8
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L21)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L23)
 
 ---
 
@@ -91,7 +101,7 @@ impl hash_u8: Hash U8
 impl hash_u16: Hash U16
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L24)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L26)
 
 ---
 
@@ -101,7 +111,7 @@ impl hash_u16: Hash U16
 impl hash_u32: Hash U32
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L27)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L29)
 
 ---
 
@@ -111,7 +121,7 @@ impl hash_u32: Hash U32
 impl hash_usz: Hash Usz
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L30)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L32)
 
 ---
 
@@ -121,7 +131,7 @@ impl hash_usz: Hash Usz
 impl hash_i8: Hash I8
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L33)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L35)
 
 ---
 
@@ -131,7 +141,7 @@ impl hash_i8: Hash I8
 impl hash_i16: Hash I16
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L36)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L38)
 
 ---
 
@@ -141,7 +151,7 @@ impl hash_i16: Hash I16
 impl hash_i32: Hash I32
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L39)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L41)
 
 ---
 
@@ -151,7 +161,7 @@ impl hash_i32: Hash I32
 impl hash_i64: Hash I64
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L42)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L44)
 
 ---
 
@@ -161,7 +171,7 @@ impl hash_i64: Hash I64
 impl hash_isz: Hash Isz
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L45)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L47)
 
 ---
 
@@ -171,7 +181,7 @@ impl hash_isz: Hash Isz
 impl hash_f32: Hash F32
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L48)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L50)
 
 ---
 
@@ -181,7 +191,7 @@ impl hash_f32: Hash F32
 impl hash_f64: Hash F64
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L51)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L53)
 
 ---
 
@@ -191,7 +201,7 @@ impl hash_f64: Hash F64
 impl hash_bool: Hash Bool
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L54)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L56)
 
 ---
 
@@ -201,7 +211,7 @@ impl hash_bool: Hash Bool
 impl hash_char: Hash Char
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L57)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L59)
 
 ---
 
@@ -211,7 +221,7 @@ impl hash_char: Hash Char
 impl hash_pair {_: Hash a} {_: Hash b}: Hash (a, b)
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L66)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L68)
 
 ---
 
@@ -221,7 +231,7 @@ impl hash_pair {_: Hash a} {_: Hash b}: Hash (a, b)
 impl hash_maybe {_: Hash a}: Hash (Maybe a)
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L69)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L71)
 
 ---
 
@@ -231,7 +241,7 @@ impl hash_maybe {_: Hash a}: Hash (Maybe a)
 impl hash_result {_: Hash a} {_: Hash e}: Hash (Result a e)
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L75)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L77)
 
 </details>
 

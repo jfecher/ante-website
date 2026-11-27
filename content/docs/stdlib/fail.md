@@ -1,7 +1,7 @@
 +++
 title = "Std.Fail"
 categories = ["docs"]
-weight = 14
+weight = 15
 +++
 
 ```ante
@@ -39,6 +39,16 @@ try (f: a can Fail, e): Maybe a can e
 ```
 
 [source](https://github.com/jfecher/ante/blob/master/stdlib/src/Fail.an#L6)
+
+---
+
+## on_fail
+
+```ante
+on_fail (f: a can Fail, e) (default: once fn Unit [env] -> a can e) {_: Drop env e}: a can e
+```
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Fail.an#L10)
 
 ---
 

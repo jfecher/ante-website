@@ -319,6 +319,77 @@
                 
                 
                 
+                <a href="/docs/stdlib/heap/#types">
+                    <li>Types</li>
+                </a>
+                
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/heap/#maxheap">
+                    <li>MaxHeap</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/heap/#minheap">
+                    <li>MinHeap</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                
+                
+                
                 <a href="/docs/stdlib/heap/#functions">
                     <li>Functions</li>
                 </a>
@@ -863,6 +934,12 @@
         
         
         <li>
+            <a href="/docs/stdlib/seqmap/">Std.Collections.SeqMap</a>
+            
+        </li>
+        
+        
+        <li>
             <a href="/docs/stdlib/vec/">Std.Collections.Vec</a>
             
         </li>
@@ -899,13 +976,13 @@
         
         
         <li>
-            <a href="/docs/stdlib/io/">Std.IO</a>
+            <a href="/docs/stdlib/sync/">Std.Sync</a>
             
         </li>
         
         
         <li>
-            <a href="/docs/stdlib/sync/">Std.Sync</a>
+            <a href="/docs/stdlib/io/">Std.IO</a>
             
         </li>
         
@@ -1036,76 +1113,90 @@
                           <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Std</span><span class="o">.</span><span class="kt">Collections</span><span class="o">.</span><span class="kt">Heap</span>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an">Source</a></p>
 <hr>
+<h1 id="types">Types</h1>
+<hr>
+<h2 id="maxheap">MaxHeap</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">MaxHeap</span> <span class="n">t</span> <span class="p">(</span><span class="n">cmp</span> <span class="ow">=</span> <span class="n">_</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="n">cmp</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="n">t</span> <span class="n">cmp</span>
+    <span class="n">data</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span>
+</code></pre></div><p>A priority queue where elements are popped from largest to smallest.</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L9">source</a></p>
+<hr>
+<h2 id="minheap">MinHeap</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">MinHeap</span> <span class="n">t</span> <span class="p">(</span><span class="n">cmp</span> <span class="ow">=</span> <span class="n">_</span><span class="p">)</span> <span class="ow">=</span> <span class="kt">MaxHeap</span> <span class="n">t</span> <span class="p">(</span><span class="kt">Std</span><span class="o">.</span><span class="kt">Num</span><span class="o">.</span><span class="n">cmp_reverse</span> <span class="p">(</span><span class="kt">Cmp</span> <span class="n">t</span> <span class="n">cmp</span><span class="p">))</span>
+</code></pre></div><p>A priority queue where elements are popped from smallest to largest.</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L14">source</a></p>
+<hr>
 <h1 id="functions">Functions</h1>
 <hr>
 <h2 id="empty_maxheap">empty_maxheap</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">empty_maxheap</span> <span class="p">{</span><span class="n">cmp</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="n">t</span> <span class="n">c</span><span class="p">}</span><span class="o">:</span> <span class="kt">MaxHeap</span> <span class="n">t</span> <span class="n">c</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L17">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L16">source</a></p>
 <hr>
 <h2 id="empty_minheap">empty_minheap</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">empty_minheap</span><span class="o">:</span> <span class="k">fn</span> <span class="p">{</span><span class="n">_</span><span class="p">}</span> <span class="ow">-&gt;</span> <span class="kt">MinHeap</span> <span class="n">_</span> <span class="n">_</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L19">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L18">source</a></p>
 <hr>
 <h2 id="maxheap_with_capacity">maxheap_with_capacity</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">maxheap_with_capacity</span> <span class="p">(</span><span class="n">capacity</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="p">{</span><span class="n">cmp</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="n">t</span> <span class="n">c</span><span class="p">}</span><span class="o">:</span> <span class="kt">MaxHeap</span> <span class="n">t</span> <span class="n">c</span> <span class="k">can</span> <span class="kt">Panic</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L21">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L20">source</a></p>
 <hr>
 <h2 id="minheap_with_capacity">minheap_with_capacity</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">minheap_with_capacity</span><span class="o">:</span> <span class="k">fn</span> <span class="n">_</span> <span class="p">{</span><span class="n">_</span><span class="p">}</span> <span class="ow">-&gt;</span> <span class="kt">MinHeap</span> <span class="n">_</span> <span class="n">_</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L26">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L25">source</a></p>
 <hr>
 <h2 id="maxheap_of">maxheap_of</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">maxheap_of</span> <span class="p">(</span><span class="n">stream</span><span class="o">:</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span><span class="n">cmp</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="n">t</span> <span class="n">c</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Stream</span> <span class="n">s</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">MaxHeap</span> <span class="n">t</span> <span class="n">c</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="n">e</span>
 </code></pre></div><p>Create a new MaxHeap with the elements from the given stream</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L29">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L28">source</a></p>
 <hr>
 <h2 id="minheap_of">minheap_of</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">minheap_of</span><span class="o">:</span> <span class="k">fn</span> <span class="n">_</span> <span class="p">{</span><span class="n">_</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="p">}</span> <span class="ow">-&gt;</span> <span class="kt">MinHeap</span> <span class="n">t</span> <span class="n">c</span>
 </code></pre></div><p>Create a new MinHeap with the elements from the given stream</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L35">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L34">source</a></p>
 <hr>
 <h2 id="extend">extend</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">extend</span> <span class="p">(</span><span class="n">heap</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">MaxHeap</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">stream</span><span class="o">:</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Stream</span> <span class="n">s</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="kt">Mutate</span> <span class="n">&#39;heap</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L37">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L36">source</a></p>
 <hr>
 <h2 id="is_empty">is_empty</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">is_empty</span> <span class="p">(</span><span class="n">heap</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">MaxHeap</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">Bool</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L40">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L39">source</a></p>
 <hr>
 <h2 id="len">len</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">len</span> <span class="p">(</span><span class="n">heap</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">MaxHeap</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">Usz</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L42">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L41">source</a></p>
 <hr>
 <h2 id="push">push</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">push</span> <span class="p">(</span><span class="n">heap</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">MaxHeap</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">elem</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="kt">Mutate</span> <span class="n">&#39;heap</span>
 </code></pre></div><p>Push an element onto the heap in O(log n) time</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L82">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L81">source</a></p>
 <hr>
 <h2 id="pop">pop</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">pop</span> <span class="p">(</span><span class="n">heap</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">MaxHeap</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Mutate</span> <span class="n">&#39;heap</span>
 </code></pre></div><p>Remove and return the greatest element in O(log n) time.
 Returns None if the heap is empty.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L88">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L87">source</a></p>
 <hr>
 <h2 id="peek">peek</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">peek</span> <span class="p">(</span><span class="n">heap</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">MaxHeap</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Fail</span>
 </code></pre></div><p>A reference to the greatest element. Fails if the heap is empty.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L97">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L96">source</a></p>
 <hr>
 <h2 id="clear">clear</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">clear</span> <span class="p">(</span><span class="n">heap</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">MaxHeap</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="n">e</span><span class="p">,</span> <span class="kt">Mutate</span> <span class="n">&#39;heap</span>
 </code></pre></div><p>Remove and drop every element</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L102">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L101">source</a></p>
 <hr>
 <h2 id="into_vec">into_vec</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">into_vec</span> <span class="p">(</span><span class="n">heap</span><span class="o">:</span> <span class="kt">MaxHeap</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span>
 </code></pre></div><p>The heap&rsquo;s elements in an unspecified order. Does not allocate.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L106">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L105">source</a></p>
 <hr>
 <h2 id="into_sorted_vec">into_sorted_vec</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">into_sorted_vec</span> <span class="p">(</span><span class="n">heap</span><span class="o">:</span> <span class="kt">MaxHeap</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">Vec</span> <span class="n">t</span>
 </code></pre></div><p>The heap&rsquo;s elements sorted in ascending order of the heap&rsquo;s <code>Cmp</code> impl</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L109">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L108">source</a></p>
 <hr>
 <h1 id="implicits">Implicits</h1>
 <hr>
@@ -1113,25 +1204,25 @@ Returns None if the heap is empty.</p>
 <summary>Show Implicits</summary>
 <h2 id="print_heap">print_heap</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">print_heap</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Display</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Display</span> <span class="p">(</span><span class="kt">MaxHeap</span> <span class="n">t</span><span class="p">)</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L119">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L118">source</a></p>
 <hr>
 <h2 id="stream_heap">stream_heap</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">stream_heap</span><span class="o">:</span> <span class="kt">Stream</span> <span class="p">(</span><span class="kt">MaxHeap</span> <span class="n">a</span><span class="p">)</span> <span class="n">a</span> <span class="n">pure</span>
 </code></pre></div><p>Streams elements in an unspecified order</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L123">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L122">source</a></p>
 <hr>
 <h2 id="stream_ref_heap">stream_ref_heap</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">stream_ref_heap</span><span class="o">:</span> <span class="kt">Stream</span> <span class="p">(</span><span class="k">ref</span> <span class="kt">MaxHeap</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="k">ref</span> <span class="n">a</span><span class="p">)</span> <span class="n">pure</span>
 </code></pre></div><p>Streams elements in an unspecified order</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L127">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L126">source</a></p>
 <hr>
 <h2 id="clone_heap">clone_heap</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">clone_heap</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Clone</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="kt">Clone</span> <span class="p">(</span><span class="kt">MaxHeap</span> <span class="n">t</span><span class="p">)</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L130">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L129">source</a></p>
 <hr>
 <h2 id="drop_heap">drop_heap</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">drop_heap</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Drop</span> <span class="p">(</span><span class="kt">MaxHeap</span> <span class="n">t</span><span class="p">)</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L133">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Heap.an#L132">source</a></p>
 </details>
 
                         </div>

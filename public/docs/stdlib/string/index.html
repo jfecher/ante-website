@@ -313,6 +313,12 @@
         
         
         <li>
+            <a href="/docs/stdlib/seqmap/">Std.Collections.SeqMap</a>
+            
+        </li>
+        
+        
+        <li>
             <a href="/docs/stdlib/vec/">Std.Collections.Vec</a>
             
         </li>
@@ -349,13 +355,13 @@
         
         
         <li>
-            <a href="/docs/stdlib/io/">Std.IO</a>
+            <a href="/docs/stdlib/sync/">Std.Sync</a>
             
         </li>
         
         
         <li>
-            <a href="/docs/stdlib/sync/">Std.Sync</a>
+            <a href="/docs/stdlib/io/">Std.IO</a>
             
         </li>
         
@@ -1816,7 +1822,7 @@
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L103">source</a></p>
 <hr>
 <h2 id="split">split</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">split</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">String</span> <span class="kt">Char</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[</span><span class="kt">String</span><span class="p">,</span> <span class="kt">Char</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="n">_</span> <span class="k">can</span> <span class="p">(</span><span class="n">error</span><span class="p">)</span> <span class="kt">String</span><span class="p">)</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">(</span><span class="n">c</span><span class="o">:</span> <span class="kt">Char</span><span class="p">)</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">split</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">String</span> <span class="kt">Char</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="n">once</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[</span><span class="kt">String</span><span class="p">,</span> <span class="kt">Char</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="kt">String</span><span class="p">)</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">(</span><span class="n">c</span><span class="o">:</span> <span class="kt">Char</span><span class="p">)</span>
 </code></pre></div><p>Split a string at the given character. Emits substrings
 separated by the given character.</p>
 <p>For example <code>split &quot;foo bar  baz &quot;</code> will emit all of:
@@ -1824,11 +1830,11 @@ separated by the given character.</p>
 <p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L129">source</a></p>
 <hr>
 <h2 id="split_str">split_str</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">split_str</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">String</span> <span class="kt">String</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[</span><span class="kt">String</span><span class="p">,</span> <span class="kt">String</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="n">_</span> <span class="k">can</span> <span class="p">(</span><span class="n">error</span><span class="p">)</span> <span class="kt">String</span><span class="p">)</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">(</span><span class="n">separator</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">split_str</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">String</span> <span class="kt">String</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="n">once</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[</span><span class="kt">String</span><span class="p">,</span> <span class="kt">String</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="kt">String</span><span class="p">)</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">(</span><span class="n">separator</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L141">source</a></p>
 <hr>
 <h2 id="lines">lines</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">lines</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">String</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[</span><span class="kt">String</span><span class="p">,</span> <span class="kt">Char</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="n">_</span> <span class="k">can</span> <span class="p">(</span><span class="n">error</span><span class="p">)</span> <span class="kt">String</span><span class="p">)</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">lines</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">String</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="n">once</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[</span><span class="kt">String</span><span class="p">,</span> <span class="kt">Char</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="kt">String</span><span class="p">)</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span>
 </code></pre></div><p>Emit each line of a string. Excludes the newline character.
 Empty lines are emitted as empty strings.</p>
 <p>Shorthand for <code>s.split '\n'</code></p>
@@ -1857,12 +1863,12 @@ in combination with <code>intersperse</code>, e.g. <code>join &lt;| intersperse 
 <p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L197">source</a></p>
 <hr>
 <h2 id="bytes">bytes</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">bytes</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">String</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[</span><span class="kt">String</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="p">(</span><span class="n">error</span><span class="p">)</span> <span class="kt">U8</span><span class="p">)</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">bytes</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">String</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[</span><span class="kt">String</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="kt">U8</span><span class="p">)</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span>
 </code></pre></div><p>Emits each byte in this string</p>
 <p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L201">source</a></p>
 <hr>
 <h2 id="chars">chars</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">chars</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">String</span> <span class="ow">-&gt;</span> <span class="n">_</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">chars</span><span class="o">:</span> <span class="k">fn</span> <span class="kt">String</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="n">once</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[(</span><span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[</span><span class="kt">String</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="kt">U8</span><span class="p">),</span> <span class="p">((</span><span class="kt">Stream</span> <span class="p">(</span><span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[</span><span class="kt">String</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="kt">U8</span><span class="p">)</span> <span class="kt">U8</span> <span class="n">pure</span> <span class="p">(</span><span class="n">stream_fn</span> <span class="p">(</span><span class="kt">Drop</span> <span class="kt">String</span> <span class="n">pure</span> <span class="n">drop_string</span><span class="p">))),</span> <span class="p">((</span><span class="k">fn</span> <span class="kt">U8</span> <span class="ow">-&gt;</span> <span class="kt">Char</span> <span class="k">is</span> <span class="n">pure</span><span class="p">),</span> <span class="p">(</span><span class="kt">Drop</span> <span class="kt">NoClosureEnv</span> <span class="n">pure</span> <span class="kt">Unit</span><span class="p">)))]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="kt">Char</span><span class="p">)</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">s</span><span class="o">:</span> <span class="kt">String</span><span class="p">)</span>
 </code></pre></div><p>Emits each character in this string</p>
 <p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L209">source</a></p>
 <hr>

@@ -1,7 +1,7 @@
 +++
 title = "Std.EarlyReturn"
 categories = ["docs"]
-weight = 12
+weight = 13
 +++
 
 ```ante

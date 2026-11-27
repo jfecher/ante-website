@@ -313,6 +313,12 @@
         
         
         <li>
+            <a href="/docs/stdlib/seqmap/">Std.Collections.SeqMap</a>
+            
+        </li>
+        
+        
+        <li>
             <a href="/docs/stdlib/vec/">Std.Collections.Vec</a>
             
         </li>
@@ -349,13 +355,13 @@
         
         
         <li>
-            <a href="/docs/stdlib/io/">Std.IO</a>
+            <a href="/docs/stdlib/sync/">Std.Sync</a>
             
         </li>
         
         
         <li>
-            <a href="/docs/stdlib/sync/">Std.Sync</a>
+            <a href="/docs/stdlib/io/">Std.IO</a>
             
         </li>
         
@@ -582,6 +588,81 @@
                 
                 
                 
+                <a href="/docs/stdlib/throw/#catch_or_else">
+                    <li>catch_or_else</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/throw/#on_err">
+                    <li>on_err</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/throw/#map_err">
+                    <li>map_err</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
                 <a href="/docs/stdlib/throw/#unwrap_err">
                     <li>unwrap_err</li>
                 </a>
@@ -677,6 +758,19 @@
 <h2 id="catch_or">catch_or</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">catch_or</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Throw</span> <span class="n">e</span><span class="p">)</span> <span class="p">(</span><span class="n">default</span><span class="o">:</span> <span class="n">a</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">a</span> <span class="n">d</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">e</span> <span class="n">d</span><span class="p">}</span><span class="o">:</span> <span class="n">a</span> <span class="k">can</span> <span class="n">d</span>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Throw.an#L8">source</a></p>
+<hr>
+<h2 id="catch_or_else">catch_or_else</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">catch_or_else</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Throw</span> <span class="n">e</span><span class="p">)</span> <span class="p">(</span><span class="n">default</span><span class="o">:</span> <span class="n">once</span> <span class="k">fn</span> <span class="n">e</span> <span class="p">[</span><span class="n">env</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="n">a</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">env</span> <span class="n">d</span><span class="p">}</span><span class="o">:</span> <span class="n">a</span> <span class="k">can</span> <span class="n">d</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Throw.an#L12">source</a></p>
+<hr>
+<h2 id="on_err">on_err</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">on_err</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Throw</span> <span class="n">e</span><span class="p">)</span> <span class="p">(</span><span class="n">on_err</span><span class="o">:</span> <span class="n">once</span> <span class="k">fn</span> <span class="n">e</span> <span class="p">[</span><span class="n">env</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">a</span> <span class="n">d</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">env</span> <span class="n">d</span><span class="p">}</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="n">d</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Throw.an#L16">source</a></p>
+<hr>
+<h2 id="map_err">map_err</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">map_err</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Throw</span> <span class="n">e1</span><span class="p">)</span> <span class="p">(</span><span class="n">f2</span><span class="o">:</span> <span class="n">once</span> <span class="k">fn</span> <span class="n">e1</span> <span class="p">[</span><span class="n">env</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="n">e2</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">env</span> <span class="n">d</span><span class="p">}</span><span class="o">:</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Throw</span> <span class="n">e2</span><span class="p">,</span> <span class="n">d</span>
+</code></pre></div><p>Apply the given function to the thrown value and re-throw it</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Throw.an#L22">source</a></p>
 <hr>
 <h2 id="unwrap_err">unwrap_err</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">unwrap_err</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Throw</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">t</span> <span class="n">d</span><span class="p">}</span><span class="o">:</span> <span class="n">e</span> <span class="k">can</span> <span class="kt">Fail</span><span class="p">,</span> <span class="n">d</span>

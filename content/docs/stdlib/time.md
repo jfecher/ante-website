@@ -1,7 +1,7 @@
 +++
 title = "Std.Time"
 categories = ["docs"]
-weight = 35
+weight = 36
 +++
 
 ```ante

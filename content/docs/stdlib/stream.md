@@ -1,7 +1,7 @@
 +++
 title = "Std.Stream"
 categories = ["docs"]
-weight = 25
+weight = 26
 +++
 
 ```ante
@@ -51,6 +51,8 @@ Emit a single item of type `a`. Another name for this is `Yield`.
 
 ```ante
 effect Loop =
+    break: fn Unit -> Never
+    continue: fn Unit -> Never
 ```
 
 Common control-flow effects for looping
@@ -79,10 +81,41 @@ E.g. `iter (iota 5) print` will print `01234`
 
 ---
 
+## for
+
+```ante
+for (stream: s) {_: Stream s a e} (f: fn a [env] -> Unit can Loop, e) {_: Drop env e}: Unit can e
+```
+
+Consumes the given stream, applying `f` to each element, with
+an additional Loop handler installed to allow breaking/continuing
+within the overall loop.
+
+E.g. The following will print 012
+```ante
+for i in iota 5 do
+    if i > 2 then break
+    print i
+```
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L65)
+
+---
+
+## while
+
+```ante
+while (condition: fn Unit [c] -> Bool can e) {_: Drop c e} (body: fn Unit [b] -> Unit can Loop, e) {_: Drop b e}: Unit can e
+```
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L76)
+
+---
+
 ## map
 
 ```ante
-(map: fn s {Stream s a e} (fn a [env] -> b can e2) {Drop env e2} -> (fn Unit [s, (Stream s a e), (fn a [env] -> b can e2)] -> Unit can Emit b, e, e2) is pure) (stream: s) {(_: Stream s a e)} (f: fn a [env] -> b can e2) {(_: Drop env e2)}
+(map: fn s {Stream s a e} (fn a [env] -> b can e2) {Drop env e2} -> (once fn Unit [s, ((Stream s a e), ((fn a [env] -> b can e2), (Drop env e2)))] -> Unit can e, e2, Emit b) is pure) (stream: s) {(_: Stream s a e)} (f: fn a [env] -> b can e2) {(_: Drop env e2)}
 ```
 
 Applies `f` to each element from the stream, re-emitting each result.
@@ -96,7 +129,7 @@ Given `a1, a2, .., aN`, emit `f a1, f a2, .., f aN`
 ## filter
 
 ```ante
-(filter: fn s {Stream s a e} {Drop a d} (fn (ref 'a a) [env] -> Bool can $effect) {Drop env d} -> (fn Unit [s, (Stream s a e), (fn (ref 'a a) [env] -> Bool can $effect)] -> Unit can Emit a, e, $effect) is pure) (stream: s) {(_: Stream s a e)} {(_: Drop a d)} (f: fn (ref 'a a) [env] -> Bool can $effect) {(_: Drop env d)}
+(filter: fn s {Stream s a e} {Drop a d} (fn (ref 'a a) [env] -> Bool can _) {Drop env d} -> (once fn Unit [s, ((Stream s a e), ((Drop a d), ((fn (ref 'a a) [env] -> Bool can _), (Drop env d))))] -> Unit can e, Emit a, d, _) is pure) (stream: s) {(_: Stream s a e)} {(_: Drop a d)} (f: fn (ref 'a a) [env] -> Bool can _) {(_: Drop env d)}
 ```
 
 Re-emits only the elements from the original stream for which `f elem` is true
@@ -110,7 +143,7 @@ E.g. `filter (iota 5) (_ > 2)` will emit `3` and `4`.
 ## filter_map
 
 ```ante
-(filter_map: fn s {Stream s a e} (fn a [env] -> Maybe b can e2) {Drop env e2} -> (fn Unit [s, (Stream s a e), (fn a [env] -> Maybe b can e2)] -> Unit can Emit b, e, e2) is pure) (stream: s) {(_: Stream s a e)} (f: fn a [env] -> Maybe b can e2) {(_: Drop env e2)}
+(filter_map: fn s {Stream s a e} (fn a [env] -> Maybe b can e2) {Drop env e2} -> (once fn Unit [s, ((Stream s a e), ((fn a [env] -> Maybe b can e2), (Drop env e2)))] -> Unit can e, e2, Emit b) is pure) (stream: s) {(_: Stream s a e)} (f: fn a [env] -> Maybe b can e2) {(_: Drop env e2)}
 ```
 
 Performs a combined map and filter opereration, applying `f` to each element in
@@ -124,7 +157,7 @@ the `Some` elements.
 ## enumerate
 
 ```ante
-(enumerate: fn s {Stream s a e} -> (fn Unit [s, (Stream s a e)] -> Unit can Emit (Usz, a), e) is pure) (stream: s) {(_: Stream s a e)}
+(enumerate: fn s {Stream s a e} -> (once fn Unit [s, (Stream s a e)] -> Unit can Emit (Usz, a), e) is pure) (stream: s) {(_: Stream s a e)}
 ```
 
 Given `a1, a2, .., aN`, emit `(0, a1), (1, a2), .., (N-1, aN)`
@@ -183,7 +216,7 @@ This function is tail-resumptive. Fails if the stream is empty.
 ## map2
 
 ```ante
-(map2: fn s1 s2 {Stream s1 a e1} {Stream s2 b e2} {Copy a} {Copy b} (fn a b [env] -> c can e3) {Drop env e3} -> (fn Unit [s1, s2, (Copy a), (Copy b), (fn a b [env] -> c can e3)] -> Unit can Emit c, Panic, e3) is pure) (stream1: s1) (stream2: s2) {(_: Stream s1 a e1)} {(_: Stream s2 b e2)} {(_: Copy a)} {(_: Copy b)} (f: fn a b [env] -> c can e3) {(_: Drop env e3)}
+(map2: fn s1 s2 {Stream s1 a e1} {Stream s2 b e2} {Copy a} {Copy b} (fn a b [env] -> c can e3) {Drop env e3} -> (once fn Unit [s1, (s2, ((Stream s1 a e1), ((Stream s2 b e2), ((Copy a), ((Copy b), ((fn a b [env] -> c can e3), (Drop env e3)))))))] -> Unit can Panic, e1, e2, e3, Emit c) is pure) (stream1: s1) (stream2: s2) {(_: Stream s1 a e1)} {(_: Stream s2 b e2)} {(_: Copy a)} {(_: Copy b)} (f: fn a b [env] -> c can e3) {(_: Drop env e3)}
 ```
 
 Given `a1, a2, .., aN` and `b1, b2, .., bN`, emit `f a1 b1, f a2 b2, .., f aN bN`.
@@ -209,7 +242,7 @@ Emit numbers from 0 to `n`, end-exclusive
 ## zip
 
 ```ante
-(zip: fn s1 s2 {Stream s1 a e1} {Stream s2 b e2} {Copy a} {Copy b} -> (fn Unit [s1, s2, (Copy a), (Copy b), (fn a b [fn a b -> a, b is pure] -> a, b is pure)] -> Unit can Emit (a, b), Panic) is pure) (stream1: s1) (stream2: s2) {(sa: Stream s1 a e1)} {(sb: Stream s2 b e2)} {(_: Copy a)} {(_: Copy b)}
+(zip: fn s1 s2 {Stream s1 a e1} {Stream s2 b e2} {Copy a} {Copy b} -> (once fn Unit [s1, (s2, ((Stream s1 a e1), ((Stream s2 b e2), ((Copy a), ((Copy b), ((fn a b [fn a b -> a, b is pure] -> a, b is pure), (Drop (fn a b -> a, b is pure) pure Unit)))))))] -> Unit can Panic, e1, e2, Emit (a, b)) is pure) (stream1: s1) (stream2: s2) {(sa: Stream s1 a e1)} {(sb: Stream s2 b e2)} {(_: Copy a)} {(_: Copy b)}
 ```
 
 Zip the two streams together, emitting `x, y` for each
@@ -294,7 +327,7 @@ Returns the nth element of the stream (indexed starting from 0). Fails if the st
 ## intersperse
 
 ```ante
-(intersperse: fn s {Stream s a e} a {Clone a} {Drop a d} -> (fn Unit [s, (Stream s a e), a, (Clone a)] -> Unit can Emit a, e) is pure) (stream: s) {(_: Stream s a e)} (item: a) {(_: Clone a)} {(_: Drop a d)}
+(intersperse: fn s {Stream s a e} a {Clone a} {Drop a d} -> (once fn Unit [s, ((Stream s a e), (a, ((Clone a), (Drop a d))))] -> Unit can e, Emit a, d) is pure) (stream: s) {(_: Stream s a e)} (item: a) {(_: Clone a)} {(_: Drop a d)}
 ```
 
 Intersperse an item in between each element of the stream.
@@ -308,7 +341,7 @@ Given `a1, a2, .., aN` and `item`, emit `a1, item, a2, item, .., item, aN`
 ## intersperse_with
 
 ```ante
-(intersperse_with: fn s {Stream s a e} (fn Unit [env] -> a can e2) {Drop env e2} -> (fn Unit [s, (Stream s a e), (fn Unit [env] -> a can e2)] -> Unit can Emit a, e, e2) is pure) (stream: s) {(_: Stream s a e)} (item: fn Unit [env] -> a can e2) {(_: Drop env e2)}
+(intersperse_with: fn s {Stream s a e} (fn Unit [env] -> a can e2) {Drop env e2} -> (once fn Unit [s, ((Stream s a e), ((fn Unit [env] -> a can e2), (Drop env e2)))] -> Unit can e, e2, Emit a) is pure) (stream: s) {(_: Stream s a e)} (item: fn Unit [env] -> a can e2) {(_: Drop env e2)}
 ```
 
 Intersperse an item from the given function in between each element of the stream.
@@ -322,7 +355,7 @@ Given `a1, a2, .., aN` and `item`, emit `a1, item, a2, item, .., item, aN`
 ## chain
 
 ```ante
-(chain: fn s1 {Stream s1 a e1} s2 {Stream s2 a e2} -> (fn Unit [s1, (Stream s1 a e1), s2, (Stream s2 a e2)] -> Unit can Emit a, e1, e2) is pure) (stream1: s1) {(_: Stream s1 a e1)} (stream2: s2) {(_: Stream s2 a e2)}
+(chain: fn s1 {Stream s1 a e1} s2 {Stream s2 a e2} -> (once fn Unit [s1, ((Stream s1 a e1), (s2, (Stream s2 a e2)))] -> Unit can Emit a, e1, e2) is pure) (stream1: s1) {(_: Stream s1 a e1)} (stream2: s2) {(_: Stream s2 a e2)}
 ```
 
 Emits all elements from the first stream followed by all elements from the second stream
@@ -372,7 +405,7 @@ Fails if there is no such element
 ## take
 
 ```ante
-(take: fn s {Stream s a e} {Drop a d} U32 -> (fn Unit [s, (Stream s a e), U32] -> Unit can Emit a, e) is pure) (stream: s) {(_: Stream s a e)} {(_: Drop a d)} (initial_n: U32)
+(take: fn s {Stream s a e} {Drop a d} U32 -> (once fn Unit [s, ((Stream s a e), ((Drop a d), U32))] -> Unit can e, Emit a, d) is pure) (stream: s) {(_: Stream s a e)} {(_: Drop a d)} (initial_n: U32)
 ```
 
 Re-emit only the first `n` items from the stream
@@ -384,7 +417,7 @@ Re-emit only the first `n` items from the stream
 ## take_while
 
 ```ante
-(take_while: fn s {Stream s a e} {Drop a d} (fn (ref 'a a) [env] -> Bool can $effect) {Drop env d} -> (fn Unit [s, (Stream s a e), (fn (ref 'a a) [env] -> Bool can $effect)] -> Unit can Emit a, e, $effect) is pure) (stream: s) {(_: Stream s a e)} {(_: Drop a d)} (predicate: fn (ref 'a a) [env] -> Bool can $effect) {(_: Drop env d)}
+(take_while: fn s {Stream s a e} {Drop a d} (fn (ref 'a a) [env] -> Bool can _) {Drop env d} -> (once fn Unit [s, ((Stream s a e), ((Drop a d), ((fn (ref 'a a) [env] -> Bool can _), (Drop env d))))] -> Unit can e, Emit a, d, _) is pure) (stream: s) {(_: Stream s a e)} {(_: Drop a d)} (predicate: fn (ref 'a a) [env] -> Bool can _) {(_: Drop env d)}
 ```
 
 Re-emit items from the stream only while `predicate` keeps returning true.
@@ -397,7 +430,7 @@ When the predicate first returns false, the stream will stop.
 ## skip
 
 ```ante
-(skip: fn s {Stream s a e} {Drop a d} U32 -> (fn Unit [s, (Stream s a e), U32] -> Unit can Emit a, e) is pure) (stream: s) {(_: Stream s a e)} {(_: Drop a d)} (initial_n: U32)
+(skip: fn s {Stream s a e} {Drop a d} U32 -> (once fn Unit [s, ((Stream s a e), ((Drop a d), U32))] -> Unit can e, Emit a, d) is pure) (stream: s) {(_: Stream s a e)} {(_: Drop a d)} (initial_n: U32)
 ```
 
 Skips the first `n` items from the stream, emitting the rest as normal.
@@ -409,7 +442,7 @@ Skips the first `n` items from the stream, emitting the rest as normal.
 ## skip_while
 
 ```ante
-(skip_while: fn s {Stream s a e} {Drop a d} (fn (ref 'a a) [env] -> Bool can $effect) {Drop env d} -> (fn Unit [s, (Stream s a e), (fn (ref 'a a) [env] -> Bool can $effect)] -> Unit can Emit a, e, $effect) is pure) (stream: s) {(_: Stream s a e)} {(_: Drop a d)} (predicate: fn (ref 'a a) [env] -> Bool can $effect) {(_: Drop env d)}
+(skip_while: fn s {Stream s a e} {Drop a d} (fn (ref 'a a) [env] -> Bool can _) {Drop env d} -> (once fn Unit [s, ((Stream s a e), ((Drop a d), ((fn (ref 'a a) [env] -> Bool can _), (Drop env d))))] -> Unit can e, Emit a, d, _) is pure) (stream: s) {(_: Stream s a e)} {(_: Drop a d)} (predicate: fn (ref 'a a) [env] -> Bool can _) {(_: Drop env d)}
 ```
 
 Skips elements while `predicate elem` is true. After the first `false`,
@@ -461,6 +494,16 @@ that emit. This impl is most common in the middle of stream chains since
 functions like `map` and `filter` return such thunks.
 
 [source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L22)
+
+---
+
+## stream_once_fn
+
+```ante
+impl stream_once_fn: Stream (once fn Unit [env] -> Unit can Emit a, e) a e
+```
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Stream.an#L25)
 
 ---
 

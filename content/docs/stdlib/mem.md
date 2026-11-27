@@ -1,7 +1,7 @@
 +++
 title = "Std.Mem"
 categories = ["docs"]
-weight = 19
+weight = 20
 +++
 
 ```ante

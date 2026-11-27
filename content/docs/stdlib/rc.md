@@ -1,7 +1,7 @@
 +++
 title = "Std.Rc"
 categories = ["docs"]
-weight = 23
+weight = 24
 +++
 
 ```ante
@@ -41,6 +41,16 @@ of (value: t): Rc t
 ```
 
 [source](https://github.com/jfecher/ante/blob/master/stdlib/src/Rc.an#L11)
+
+---
+
+## as_ref
+
+```ante
+as_ref (rc: ref Rc t): ref! t
+```
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Rc.an#L17)
 
 ---
 

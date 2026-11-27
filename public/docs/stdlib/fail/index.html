@@ -313,6 +313,12 @@
         
         
         <li>
+            <a href="/docs/stdlib/seqmap/">Std.Collections.SeqMap</a>
+            
+        </li>
+        
+        
+        <li>
             <a href="/docs/stdlib/vec/">Std.Collections.Vec</a>
             
         </li>
@@ -420,6 +426,31 @@
                 
                 <a href="/docs/stdlib/fail/#try">
                     <li>try</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/fail/#on_fail">
+                    <li>on_fail</li>
                 </a>
                 
                 
@@ -624,13 +655,13 @@
         
         
         <li>
-            <a href="/docs/stdlib/io/">Std.IO</a>
+            <a href="/docs/stdlib/sync/">Std.Sync</a>
             
         </li>
         
         
         <li>
-            <a href="/docs/stdlib/sync/">Std.Sync</a>
+            <a href="/docs/stdlib/io/">Std.IO</a>
             
         </li>
         
@@ -773,6 +804,10 @@
 <h2 id="try">try</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">try</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Fail</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="n">a</span> <span class="k">can</span> <span class="n">e</span>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Fail.an#L6">source</a></p>
+<hr>
+<h2 id="on_fail">on_fail</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">on_fail</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">a</span> <span class="k">can</span> <span class="kt">Fail</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="p">(</span><span class="n">default</span><span class="o">:</span> <span class="n">once</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[</span><span class="n">env</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="k">can</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">env</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="n">a</span> <span class="k">can</span> <span class="n">e</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Fail.an#L10">source</a></p>
 <hr>
 <h2 id="assert">assert</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">assert</span> <span class="p">(</span><span class="n">cond</span><span class="o">:</span> <span class="kt">Bool</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Fail</span>

@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="robots" content="all,follow">
+<meta name="googlebot" content="index,follow,snippet,archive">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Std.Collections.SeqMap</title>
+<meta name="author" content="Jake Fecher" />
+
+
+
+
+<meta name="keywords" content="ante, programming, language, antelang, lang">
+
+
+<meta name="description" content="">
+
+<meta name="generator" content="Hugo 0.89.0-DEV" />
+
+
+<link href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800' rel='stylesheet' type='text/css'>
+
+
+<link rel="stylesheet" href="//use.fontawesome.com/releases/v5.11.2/css/all.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+
+<link href="/css/animate.css" rel="stylesheet">
+
+
+
+  <link href="/css/style.red.css" rel="stylesheet" id="theme-stylesheet">
+
+
+
+<link href="/css/custom.css" rel="stylesheet">
+
+
+
+  <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+
+
+<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon" />
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
+
+
+<link href="/css/owl.carousel.css" rel="stylesheet">
+<link href="/css/owl.theme.css" rel="stylesheet">
+
+
+<link rel="alternate" href="https://antelang.org/index.xml" type="application/rss+xml" title="Ante">
+
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+
+<meta name="twitter:title" content="Std.Collections.SeqMap">
+
+<meta name="twitter:description" content="">
+
+
+      <meta charset="utf-8">
+  <meta name="robots" content="all,follow">
+  <meta name="googlebot" content="index,follow,snippet,archive">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Std.Collections.SeqMap</title>
+  <meta name="author" content="" />
+
+  <meta name="keywords" content="ante, programming, language, antelang, lang">	
+  <meta name="description" content="For exploring algebraic effects, safe shared mutability, and other novel features">
+
+  <meta name="generator" content="Hugo 0.89.0-DEV" />
+
+  <link href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800' rel='stylesheet' type='text/css'>
+
+  
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+  
+  <link href="https://antelang.org/css/animate.css" rel="stylesheet">
+
+  
+  
+    <link href="https://antelang.org/css/style.red.css" rel="stylesheet" id="theme-stylesheet">
+  
+
+
+  
+  <link href="https://antelang.org/css/custom.css" rel="stylesheet">
+ 
+  
+  <link rel="stylesheet" href="https://antelang.org/css/syntax.css">
+
+  
+  
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  
+
+  
+  <link rel="shortcut icon" href="https://antelang.org/img/favicon.ico" type="image/x-icon" />
+  <link rel="apple-touch-icon" href="https://antelang.org/img/apple-touch-icon.png" />
+  
+
+  <link href="https://antelang.org/css/owl.carousel.css" rel="stylesheet">
+  <link href="https://antelang.org/css/owl.theme.css" rel="stylesheet">
+
+  <link rel="alternate" href="https://antelang.org/index.xml" type="application/rss+xml" title="Ante">
+
+  
+  <meta property="og:title" content="Std.Collections.SeqMap" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://antelang.org/docs/stdlib/seqmap//" />
+  <meta property="og:image" content="" />
+
+  </head>
+
+  <body>
+    <div id="all">
+        
+
+        
+
+    <div class="navbar navbar-default yamm" role="navigation" id="navbar">
+
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand home" href="https://antelang.org/">
+                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="Std.Collections.SeqMap" class="hidden-xs hidden-sm">
+                    <img src="https://antelang.org/img/ante_white.svg" width="90rem" alt="Std.Collections.SeqMap" class="visible-xs visible-sm">
+                    <span class="sr-only">Std.Collections.SeqMap - go to homepage</span>
+                </a>
+                
+<div class="navbar-buttons">
+        <div class="navbar-collapse collapse" id="navigation">
+            <ul class="nav navbar-nav navbar-right">
+            
+            <li class="dropdown">
+                <a href="https://antelang.org//docs/language">Tour</a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//docs/stdlib">Stdlib</a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//docs/ideas">Ideas</a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//docs/roadmap">Roadmap</a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//blog">Blog</a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//docs/faq">FAQ</a>
+            </li>
+
+            <li class="dropdown">
+                <a href="https://github.com/jfecher/ante"><i class="fa fa-15x fa-github"></i></a>
+            </li>
+            <li class="dropdown">
+                <a href="https://reddit.com/r/ante"><i class="fab fa-15x fa-reddit"></i></a>
+            </li>
+            <li class="dropdown">
+                <a href="https://discord.gg/NPJncGBAws"><i class="fab fa-15x fa-discord"></i></a>
+            </li>
+            <li class="dropdown">
+                <a href="https://antelang.org//index.xml"><i class="fa fa-15x fa-rss"></i></a>
+            </li>
+
+            </ul>
+        </div>
+        <button type="button" class="navbar-toggle btn-template-main" onclick="document.getElementById('navigation').classList.toggle('collapse')">
+    <span class="sr-only">Toggle Navigation</span>
+        <i class="fa fa-align-justify"></i>
+    </button>
+</div>
+
+            </div>
+            
+
+            
+            
+
+            <div class="collapse clearfix" id="search">
+
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search">
+                        <span class="input-group-btn">
+
+                    <button type="submit" class="btn btn-template-main"><i class="fa fa-search"></i></button>
+
+                </span>
+                    </div>
+                </form>
+
+            </div>
+            
+
+        </div>
+    </div>
+    
+
+
+
+
+
+        <div id="heading-breadcrumbs">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Std.Collections.SeqMap</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+        <div id="content">
+            <div class="container" id="post-container">
+                <div class="row">
+                    
+
+                    <div class="col-md-3">
+                        
+                        <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>Contents</h1>
+    </div>
+
+    
+    
+    
+    
+    <ul class="sidebar-pages">
+        
+        
+        <li>
+            <a href="/docs/stdlib/array/">Std.Array</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/bitwise/">Std.Bitwise</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/c/">Std.C</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/cast/">Std.Cast</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/char/">Std.Char</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/deque/">Std.Collections.Deque</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/hashmap/">Std.Collections.HashMap</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/hashset/">Std.Collections.HashSet</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/heap/">Std.Collections.Heap</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/seq/">Std.Collections.Seq</a>
+            
+        </li>
+        
+        
+        <li class="current">
+            <a href="/docs/stdlib/seqmap/">Std.Collections.SeqMap</a>
+            
+
+
+<div class="table-of-contents toc bd-callout">
+    
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                
+                
+                
+                <a href="/docs/stdlib/seqmap/#types">
+                    <li>Types</li>
+                </a>
+                
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/seqmap/#seqmap">
+                    <li>SeqMap</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                
+                
+                
+                <a href="/docs/stdlib/seqmap/#functions">
+                    <li>Functions</li>
+                </a>
+                
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/seqmap/#len">
+                    <li>len</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/seqmap/#is_empty">
+                    <li>is_empty</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/seqmap/#empty">
+                    <li>empty</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/seqmap/#of">
+                    <li>of</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/seqmap/#insert">
+                    <li>insert</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/seqmap/#remove">
+                    <li>remove</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/seqmap/#get">
+                    <li>get</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/seqmap/#contains">
+                    <li>contains</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/seqmap/#keys">
+                    <li>keys</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/seqmap/#values">
+                    <li>values</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                
+                
+                
+                <a href="/docs/stdlib/seqmap/#implicits">
+                    <li>Implicits</li>
+                </a>
+                
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/seqmap/#extract_seqmap">
+                    <li>extract_seqmap</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/seqmap/#stream_seqmap">
+                    <li>stream_seqmap</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/seqmap/#print_seqmap">
+                    <li>print_seqmap</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/seqmap/#eq_seqmap">
+                    <li>eq_seqmap</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/seqmap/#clone_seqmap">
+                    <li>clone_seqmap</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/seqmap/#drop_seqmap">
+                    <li>drop_seqmap</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+</div>
+
+
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/vec/">Std.Collections.Vec</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/earlyreturn/">Std.EarlyReturn</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/env/">Std.Env</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/fail/">Std.Fail</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/hash/">Std.Hash</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/file/">Std.IO.File</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/sync/">Std.Sync</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/io/">Std.IO</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/math/">Std.Math</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/mem/">Std.Mem</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/num/">Std.Num</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/prelude/">Std.Prelude</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/print/">Std.Print</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/rc/">Std.Rc</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/slice/">Std.Slice</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/stream/">Std.Stream</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/string/">Std.String</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/arc/">Std.Sync.Arc</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/atomic/">Std.Sync.Atomic</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/condvar/">Std.Sync.Condvar</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/mutex/">Std.Sync.Mutex</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/thread/">Std.Sync.Thread</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/throw/">Std.Throw</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/duration/">Std.Time.Duration</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/instant/">Std.Time.Instant</a>
+            
+        </li>
+        
+        
+        <li>
+            <a href="/docs/stdlib/time/">Std.Time</a>
+            
+        </li>
+        
+    </ul>
+    
+
+    
+  </div>
+</div>
+
+                        
+                    </div>
+                    
+
+                    <div class="col-md-9" id="blog-post">
+
+                        
+
+                        <div id="post-content">
+                          <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">import</span> <span class="kt">Std</span><span class="o">.</span><span class="kt">Collections</span><span class="o">.</span><span class="kt">SeqMap</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/SeqMap.an">Source</a></p>
+<hr>
+<h1 id="types">Types</h1>
+<hr>
+<h2 id="seqmap">SeqMap</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span> <span class="p">(</span><span class="n">h</span> <span class="ow">=</span> <span class="n">_</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="n">hasher</span><span class="o">:</span> <span class="kt">Hash</span> <span class="n">k</span> <span class="n">h</span>
+    <span class="n">log_len</span><span class="o">:</span> <span class="kt">U32</span>
+    <span class="n">count</span><span class="o">:</span> <span class="kt">U32</span>
+    <span class="n">data</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="p">(</span><span class="kt">Data</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span>
+</code></pre></div><p>A persistent hash map based on Seq.
+Performance is meant to be comparable to a mutable HashMap.</p>
+<p>Common operations:</p>
+<ul>
+<li>insert, remove, get: O(1) amortized but can be O(N) with worst-case sharing patterns.</li>
+<li>clone: O(1)</li>
+</ul>
+<p>Internally, a SeqMap is a Seq-like append-only log of entries. Inserts and removes
+are each recorded by adding an event to the end of the log.</p>
+<p>Each SeqMap remembers how much of the log it can see, which lets many SeqMaps share the
+same log. Each SeqMap never reads past its own length, so a newer SeqMap can keep adding
+to the shared log without disturbing any older ones. An older SeqMap simply skips any
+versions of a key which were added after it.</p>
+<p>A write only needs to copy when the log is out of room, or when the SeqMap being written
+to would overwrite later entries already used by other SeqMaps. In the second case
+its entries are compacted into a new log of its own.</p>
+<p>This can be exploited to force an O(N) copy on every write by cloning at every step and
+writing to both the original and the clone:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">var</span> <span class="n">map</span> <span class="ow">=</span> <span class="n">empty</span> <span class="p">()</span>
+<span class="k">while</span> <span class="mi">true</span> <span class="k">do</span>
+    <span class="n">other</span> <span class="ow">=</span> <span class="n">clone</span> <span class="n">map</span>      <span class="c1">// map and other now share the same log</span>
+    <span class="n">map</span> <span class="o">:=</span> <span class="n">insert</span> <span class="n">map</span> <span class="mi">0</span> <span class="mi">0</span>  <span class="c1">// add to the end of the shared log</span>
+    <span class="n">insert</span> <span class="n">other</span> <span class="mi">0</span> <span class="mi">1</span>       <span class="c1">// other is now behind the end of the log, forcing a copy</span>
+</code></pre></div><p>This scenario should be rare. A more common usage would be for each clone to be a snapshot
+of the map at a point in time, in which case writes to the original remain O(1) amortized.
+If you need a persistent map type, SeqMap should still be a good default, but always
+benchmark if performance is important.</p>
+<p>Note that SeqMap is not thread-safe</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/SeqMap.an#L45">source</a></p>
+<hr>
+<h1 id="functions">Functions</h1>
+<hr>
+<h2 id="len">len</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">len</span> <span class="p">(</span><span class="n">map</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span><span class="o">:</span> <span class="kt">Usz</span>
+</code></pre></div><p>The number of entries in the map</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/SeqMap.an#L184">source</a></p>
+<hr>
+<h2 id="is_empty">is_empty</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">is_empty</span> <span class="p">(</span><span class="n">map</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span><span class="o">:</span> <span class="kt">Bool</span>
+</code></pre></div><p>True if there are no entries in this map</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/SeqMap.an#L187">source</a></p>
+<hr>
+<h2 id="empty">empty</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">empty</span> <span class="p">()</span> <span class="p">{</span><span class="n">hasher</span><span class="o">:</span> <span class="kt">Hash</span> <span class="n">k</span> <span class="n">h</span><span class="p">}</span><span class="o">:</span> <span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span> <span class="n">h</span>
+</code></pre></div><p>Return a fresh, empty SeqMap</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/SeqMap.an#L190">source</a></p>
+<hr>
+<h2 id="of">of</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">of</span> <span class="p">(</span><span class="n">stream</span><span class="o">:</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Stream</span> <span class="n">s</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Hash</span> <span class="n">k</span> <span class="n">h</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">k</span> <span class="n">d</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">v</span> <span class="n">d</span><span class="p">}</span><span class="o">:</span> <span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span> <span class="n">h</span> <span class="k">can</span> <span class="n">e</span><span class="p">,</span> <span class="n">d</span>
+</code></pre></div><p>Create a SeqMap with the element of the given stream.
+Any repeated keys in the stream will overwrite their previous values.</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/SeqMap.an#L195">source</a></p>
+<hr>
+<h2 id="insert">insert</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">insert</span> <span class="p">(</span><span class="n">map</span><span class="o">:</span> <span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span> <span class="n">h</span><span class="p">)</span> <span class="p">(</span><span class="n">key</span><span class="o">:</span> <span class="n">k</span><span class="p">)</span> <span class="p">(</span><span class="n">value</span><span class="o">:</span> <span class="n">v</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">k</span> <span class="n">d</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">v</span> <span class="n">d</span><span class="p">}</span><span class="o">:</span> <span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span> <span class="n">h</span> <span class="k">can</span> <span class="n">e</span><span class="p">,</span> <span class="n">d</span>
+</code></pre></div><p>Insert a new key, value pair in the map. This will drop the previous entry of the
+same key only if no other shared map is still holding onto it.</p>
+<p>Runs in roughly O(1) amortized time, though can be O(N) over the shared chain with
+worst-case sharing patterns.</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/SeqMap.an#L371">source</a></p>
+<hr>
+<h2 id="remove">remove</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">remove</span> <span class="p">(</span><span class="n">map</span><span class="o">:</span> <span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span> <span class="n">h</span><span class="p">)</span> <span class="p">(</span><span class="n">key</span><span class="o">:</span> <span class="k">ref</span> <span class="n">k</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">k</span> <span class="n">d</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">v</span> <span class="n">d</span><span class="p">}</span><span class="o">:</span> <span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span> <span class="n">h</span> <span class="k">can</span> <span class="n">e</span><span class="p">,</span> <span class="n">d</span>
+</code></pre></div><p>Removes the entry with the given key from the map, if it exists. This will drop the
+removed entry only if no other shared map is still holding onto it.</p>
+<p>Runs in roughly O(1) amortized time, though can be O(N) over the shared chain with
+worst-case sharing patterns.</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/SeqMap.an#L400">source</a></p>
+<hr>
+<h2 id="get">get</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">get</span> <span class="p">(</span><span class="n">map</span><span class="o">:</span> <span class="n">read</span> <span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span> <span class="n">h</span><span class="p">)</span> <span class="p">(</span><span class="n">key</span><span class="o">:</span> <span class="k">ref</span> <span class="n">k</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="p">(</span><span class="n">read</span> <span class="n">&#39;map</span><span class="o">!</span> <span class="n">v</span><span class="p">)</span> <span class="k">can</span> <span class="n">e</span>
+</code></pre></div><p>Retrieves the entry with the given key from the map, if it exists.</p>
+<p>Runs in roughly O(1) time, though can be O(N) over the shared chain with
+worst-case sharing patterns.</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/SeqMap.an#L427">source</a></p>
+<hr>
+<h2 id="contains">contains</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">contains</span> <span class="p">(</span><span class="n">map</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span> <span class="n">h</span><span class="p">)</span> <span class="p">(</span><span class="n">key</span><span class="o">:</span> <span class="k">ref</span> <span class="n">k</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Bool</span> <span class="k">can</span> <span class="n">e</span>
+</code></pre></div><p>True if the map contains the given key</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/SeqMap.an#L453">source</a></p>
+<hr>
+<h2 id="keys">keys</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">keys</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="p">(</span><span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">))</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="n">once</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[(</span><span class="n">once</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[(</span><span class="n">once</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[(</span><span class="kt">Range</span> <span class="kt">U32</span><span class="p">),</span> <span class="p">((</span><span class="kt">Stream</span> <span class="p">(</span><span class="kt">Range</span> <span class="kt">U32</span><span class="p">)</span> <span class="kt">U32</span> <span class="n">pure</span> <span class="p">(</span><span class="n">stream_range</span> <span class="p">(</span><span class="kt">Num</span> <span class="kt">U32</span> <span class="n">add_u32</span> <span class="n">sub_u32</span> <span class="n">mul_u32</span> <span class="n">div_u32</span> <span class="n">eq_u32</span> <span class="n">cmp_u32</span> <span class="n">num_u32</span><span class="p">)</span> <span class="p">(</span><span class="kt">Copy</span> <span class="kt">U32</span> <span class="n">copy_u32</span><span class="p">))),</span> <span class="p">((</span><span class="k">fn</span> <span class="kt">U32</span> <span class="p">[</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="p">(</span><span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)]</span> <span class="ow">-&gt;</span> <span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="k">is</span> <span class="n">pure</span><span class="p">),</span> <span class="p">(</span><span class="kt">Drop</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="p">(</span><span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">))</span> <span class="n">pure</span> <span class="kt">Unit</span><span class="p">)))]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">))),</span> <span class="p">((</span><span class="kt">Stream</span> <span class="p">(</span><span class="n">once</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[(</span><span class="kt">Range</span> <span class="kt">U32</span><span class="p">),</span> <span class="p">((</span><span class="kt">Stream</span> <span class="p">(</span><span class="kt">Range</span> <span class="kt">U32</span><span class="p">)</span> <span class="kt">U32</span> <span class="n">pure</span> <span class="p">(</span><span class="n">stream_range</span> <span class="p">(</span><span class="kt">Num</span> <span class="kt">U32</span> <span class="n">add_u32</span> <span class="n">sub_u32</span> <span class="n">mul_u32</span> <span class="n">div_u32</span> <span class="n">eq_u32</span> <span class="n">cmp_u32</span> <span class="n">num_u32</span><span class="p">)</span> <span class="p">(</span><span class="kt">Copy</span> <span class="kt">U32</span> <span class="n">copy_u32</span><span class="p">))),</span> <span class="p">((</span><span class="k">fn</span> <span class="kt">U32</span> <span class="p">[</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="p">(</span><span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)]</span> <span class="ow">-&gt;</span> <span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="k">is</span> <span class="n">pure</span><span class="p">),</span> <span class="p">(</span><span class="kt">Drop</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="p">(</span><span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">))</span> <span class="n">pure</span> <span class="kt">Unit</span><span class="p">)))]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">)))</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">))</span> <span class="n">pure</span> <span class="n">stream_once_fn</span><span class="p">),</span> <span class="p">((</span><span class="kt">Drop</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">))</span> <span class="n">pure</span> <span class="kt">Unit</span><span class="p">),</span> <span class="p">((</span><span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="sc">&#39;</span><span class="err">#name-not-in-context (ref</span><span class="sc"> &#39;</span><span class="n">m</span><span class="o">!</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">)))</span> <span class="p">[</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="p">(</span><span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)]</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span> <span class="k">is</span> <span class="n">pure</span><span class="p">),</span> <span class="p">(</span><span class="kt">Drop</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="p">(</span><span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">))</span> <span class="n">pure</span> <span class="kt">Unit</span><span class="p">))))]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">))),</span> <span class="p">((</span><span class="kt">Stream</span> <span class="p">(</span><span class="n">once</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[(</span><span class="n">once</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[(</span><span class="kt">Range</span> <span class="kt">U32</span><span class="p">),</span> <span class="p">((</span><span class="kt">Stream</span> <span class="p">(</span><span class="kt">Range</span> <span class="kt">U32</span><span class="p">)</span> <span class="kt">U32</span> <span class="n">pure</span> <span class="p">(</span><span class="n">stream_range</span> <span class="p">(</span><span class="kt">Num</span> <span class="kt">U32</span> <span class="n">add_u32</span> <span class="n">sub_u32</span> <span class="n">mul_u32</span> <span class="n">div_u32</span> <span class="n">eq_u32</span> <span class="n">cmp_u32</span> <span class="n">num_u32</span><span class="p">)</span> <span class="p">(</span><span class="kt">Copy</span> <span class="kt">U32</span> <span class="n">copy_u32</span><span class="p">))),</span> <span class="p">((</span><span class="k">fn</span> <span class="kt">U32</span> <span class="p">[</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="p">(</span><span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)]</span> <span class="ow">-&gt;</span> <span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="k">is</span> <span class="n">pure</span><span class="p">),</span> <span class="p">(</span><span class="kt">Drop</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="p">(</span><span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">))</span> <span class="n">pure</span> <span class="kt">Unit</span><span class="p">)))]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">))),</span> <span class="p">((</span><span class="kt">Stream</span> <span class="p">(</span><span class="n">once</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[(</span><span class="kt">Range</span> <span class="kt">U32</span><span class="p">),</span> <span class="p">((</span><span class="kt">Stream</span> <span class="p">(</span><span class="kt">Range</span> <span class="kt">U32</span><span class="p">)</span> <span class="kt">U32</span> <span class="n">pure</span> <span class="p">(</span><span class="n">stream_range</span> <span class="p">(</span><span class="kt">Num</span> <span class="kt">U32</span> <span class="n">add_u32</span> <span class="n">sub_u32</span> <span class="n">mul_u32</span> <span class="n">div_u32</span> <span class="n">eq_u32</span> <span class="n">cmp_u32</span> <span class="n">num_u32</span><span class="p">)</span> <span class="p">(</span><span class="kt">Copy</span> <span class="kt">U32</span> <span class="n">copy_u32</span><span class="p">))),</span> <span class="p">((</span><span class="k">fn</span> <span class="kt">U32</span> <span class="p">[</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="p">(</span><span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)]</span> <span class="ow">-&gt;</span> <span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="k">is</span> <span class="n">pure</span><span class="p">),</span> <span class="p">(</span><span class="kt">Drop</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="p">(</span><span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">))</span> <span class="n">pure</span> <span class="kt">Unit</span><span class="p">)))]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">)))</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">))</span> <span class="n">pure</span> <span class="n">stream_once_fn</span><span class="p">),</span> <span class="p">((</span><span class="kt">Drop</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">))</span> <span class="n">pure</span> <span class="kt">Unit</span><span class="p">),</span> <span class="p">((</span><span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="sc">&#39;</span><span class="err">#name-not-in-context (ref</span><span class="sc"> &#39;</span><span class="n">m</span><span class="o">!</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">)))</span> <span class="p">[</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="p">(</span><span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)]</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span> <span class="k">is</span> <span class="n">pure</span><span class="p">),</span> <span class="p">(</span><span class="kt">Drop</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="p">(</span><span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">))</span> <span class="n">pure</span> <span class="kt">Unit</span><span class="p">))))]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">)))</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">))</span> <span class="n">pure</span> <span class="n">stream_once_fn</span><span class="p">),</span> <span class="p">((</span><span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">))</span> <span class="ow">-&gt;</span> <span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!.</span><span class="n">key</span> <span class="n">k</span> <span class="k">is</span> <span class="n">pure</span><span class="p">),</span> <span class="p">(</span><span class="kt">Drop</span> <span class="kt">NoClosureEnv</span> <span class="n">pure</span> <span class="kt">Unit</span><span class="p">)))]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!.</span><span class="n">key</span> <span class="n">k</span><span class="p">))</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">m</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;m</span> <span class="p">(</span><span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">))</span>
+</code></pre></div><p>Stream references to the keys of this map</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/SeqMap.an#L464">source</a></p>
+<hr>
+<h2 id="values">values</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="n">values</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="p">(</span><span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">))</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="n">once</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[(</span><span class="n">once</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[(</span><span class="n">once</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[(</span><span class="kt">Range</span> <span class="kt">U32</span><span class="p">),</span> <span class="p">((</span><span class="kt">Stream</span> <span class="p">(</span><span class="kt">Range</span> <span class="kt">U32</span><span class="p">)</span> <span class="kt">U32</span> <span class="n">pure</span> <span class="p">(</span><span class="n">stream_range</span> <span class="p">(</span><span class="kt">Num</span> <span class="kt">U32</span> <span class="n">add_u32</span> <span class="n">sub_u32</span> <span class="n">mul_u32</span> <span class="n">div_u32</span> <span class="n">eq_u32</span> <span class="n">cmp_u32</span> <span class="n">num_u32</span><span class="p">)</span> <span class="p">(</span><span class="kt">Copy</span> <span class="kt">U32</span> <span class="n">copy_u32</span><span class="p">))),</span> <span class="p">((</span><span class="k">fn</span> <span class="kt">U32</span> <span class="p">[</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="p">(</span><span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)]</span> <span class="ow">-&gt;</span> <span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="k">is</span> <span class="n">pure</span><span class="p">),</span> <span class="p">(</span><span class="kt">Drop</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="p">(</span><span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">))</span> <span class="n">pure</span> <span class="kt">Unit</span><span class="p">)))]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">))),</span> <span class="p">((</span><span class="kt">Stream</span> <span class="p">(</span><span class="n">once</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[(</span><span class="kt">Range</span> <span class="kt">U32</span><span class="p">),</span> <span class="p">((</span><span class="kt">Stream</span> <span class="p">(</span><span class="kt">Range</span> <span class="kt">U32</span><span class="p">)</span> <span class="kt">U32</span> <span class="n">pure</span> <span class="p">(</span><span class="n">stream_range</span> <span class="p">(</span><span class="kt">Num</span> <span class="kt">U32</span> <span class="n">add_u32</span> <span class="n">sub_u32</span> <span class="n">mul_u32</span> <span class="n">div_u32</span> <span class="n">eq_u32</span> <span class="n">cmp_u32</span> <span class="n">num_u32</span><span class="p">)</span> <span class="p">(</span><span class="kt">Copy</span> <span class="kt">U32</span> <span class="n">copy_u32</span><span class="p">))),</span> <span class="p">((</span><span class="k">fn</span> <span class="kt">U32</span> <span class="p">[</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="p">(</span><span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)]</span> <span class="ow">-&gt;</span> <span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="k">is</span> <span class="n">pure</span><span class="p">),</span> <span class="p">(</span><span class="kt">Drop</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="p">(</span><span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">))</span> <span class="n">pure</span> <span class="kt">Unit</span><span class="p">)))]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">)))</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">))</span> <span class="n">pure</span> <span class="n">stream_once_fn</span><span class="p">),</span> <span class="p">((</span><span class="kt">Drop</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">))</span> <span class="n">pure</span> <span class="kt">Unit</span><span class="p">),</span> <span class="p">((</span><span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="sc">&#39;</span><span class="err">#name-not-in-context (ref</span><span class="sc"> &#39;</span><span class="n">m</span><span class="o">!</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">)))</span> <span class="p">[</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="p">(</span><span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)]</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span> <span class="k">is</span> <span class="n">pure</span><span class="p">),</span> <span class="p">(</span><span class="kt">Drop</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="p">(</span><span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">))</span> <span class="n">pure</span> <span class="kt">Unit</span><span class="p">))))]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">))),</span> <span class="p">((</span><span class="kt">Stream</span> <span class="p">(</span><span class="n">once</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[(</span><span class="n">once</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[(</span><span class="kt">Range</span> <span class="kt">U32</span><span class="p">),</span> <span class="p">((</span><span class="kt">Stream</span> <span class="p">(</span><span class="kt">Range</span> <span class="kt">U32</span><span class="p">)</span> <span class="kt">U32</span> <span class="n">pure</span> <span class="p">(</span><span class="n">stream_range</span> <span class="p">(</span><span class="kt">Num</span> <span class="kt">U32</span> <span class="n">add_u32</span> <span class="n">sub_u32</span> <span class="n">mul_u32</span> <span class="n">div_u32</span> <span class="n">eq_u32</span> <span class="n">cmp_u32</span> <span class="n">num_u32</span><span class="p">)</span> <span class="p">(</span><span class="kt">Copy</span> <span class="kt">U32</span> <span class="n">copy_u32</span><span class="p">))),</span> <span class="p">((</span><span class="k">fn</span> <span class="kt">U32</span> <span class="p">[</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="p">(</span><span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)]</span> <span class="ow">-&gt;</span> <span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="k">is</span> <span class="n">pure</span><span class="p">),</span> <span class="p">(</span><span class="kt">Drop</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="p">(</span><span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">))</span> <span class="n">pure</span> <span class="kt">Unit</span><span class="p">)))]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">))),</span> <span class="p">((</span><span class="kt">Stream</span> <span class="p">(</span><span class="n">once</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[(</span><span class="kt">Range</span> <span class="kt">U32</span><span class="p">),</span> <span class="p">((</span><span class="kt">Stream</span> <span class="p">(</span><span class="kt">Range</span> <span class="kt">U32</span><span class="p">)</span> <span class="kt">U32</span> <span class="n">pure</span> <span class="p">(</span><span class="n">stream_range</span> <span class="p">(</span><span class="kt">Num</span> <span class="kt">U32</span> <span class="n">add_u32</span> <span class="n">sub_u32</span> <span class="n">mul_u32</span> <span class="n">div_u32</span> <span class="n">eq_u32</span> <span class="n">cmp_u32</span> <span class="n">num_u32</span><span class="p">)</span> <span class="p">(</span><span class="kt">Copy</span> <span class="kt">U32</span> <span class="n">copy_u32</span><span class="p">))),</span> <span class="p">((</span><span class="k">fn</span> <span class="kt">U32</span> <span class="p">[</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="p">(</span><span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)]</span> <span class="ow">-&gt;</span> <span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="k">is</span> <span class="n">pure</span><span class="p">),</span> <span class="p">(</span><span class="kt">Drop</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="p">(</span><span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">))</span> <span class="n">pure</span> <span class="kt">Unit</span><span class="p">)))]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">)))</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">))</span> <span class="n">pure</span> <span class="n">stream_once_fn</span><span class="p">),</span> <span class="p">((</span><span class="kt">Drop</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">))</span> <span class="n">pure</span> <span class="kt">Unit</span><span class="p">),</span> <span class="p">((</span><span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="sc">&#39;</span><span class="err">#name-not-in-context (ref</span><span class="sc"> &#39;</span><span class="n">m</span><span class="o">!</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">)))</span> <span class="p">[</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="p">(</span><span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)]</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span> <span class="k">is</span> <span class="n">pure</span><span class="p">),</span> <span class="p">(</span><span class="kt">Drop</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="p">(</span><span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">))</span> <span class="n">pure</span> <span class="kt">Unit</span><span class="p">))))]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">)))</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">))</span> <span class="n">pure</span> <span class="n">stream_once_fn</span><span class="p">),</span> <span class="p">((</span><span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!</span> <span class="p">(</span><span class="kt">Entry</span> <span class="n">k</span> <span class="n">v</span><span class="p">))</span> <span class="ow">-&gt;</span> <span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!.</span><span class="n">value</span> <span class="n">v</span> <span class="k">is</span> <span class="n">pure</span><span class="p">),</span> <span class="p">(</span><span class="kt">Drop</span> <span class="kt">NoClosureEnv</span> <span class="n">pure</span> <span class="kt">Unit</span><span class="p">)))]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Emit</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!.</span><span class="n">value</span> <span class="n">v</span><span class="p">))</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">m</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;m</span> <span class="p">(</span><span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">))</span>
+</code></pre></div><p>Stream references to the values of this map</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/SeqMap.an#L468">source</a></p>
+<hr>
+<h1 id="implicits">Implicits</h1>
+<hr>
+<details>
+<summary>Show Implicits</summary>
+<h2 id="extract_seqmap">extract_seqmap</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">extract_seqmap</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Extract</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="p">(</span><span class="k">ref</span> <span class="n">k</span><span class="p">)</span> <span class="p">(</span><span class="k">ref</span> <span class="p">(</span><span class="n">read</span> <span class="n">&#39;m</span><span class="o">!</span><span class="p">)</span> <span class="n">v</span><span class="p">)</span> <span class="kt">Panic</span> <span class="o">&amp;</span> <span class="n">e</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/SeqMap.an#L446">source</a></p>
+<hr>
+<h2 id="stream_seqmap">stream_seqmap</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">stream_seqmap</span><span class="o">:</span> <span class="kt">Stream</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span> <span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!</span> <span class="n">k</span><span class="p">,</span> <span class="k">ref</span> <span class="n">&#39;m</span><span class="o">!</span> <span class="n">v</span><span class="p">)</span> <span class="n">pure</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/SeqMap.an#L471">source</a></p>
+<hr>
+<h2 id="print_seqmap">print_seqmap</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">print_seqmap</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Display</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Display</span> <span class="n">v</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Display</span> <span class="p">(</span><span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="n">e</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/SeqMap.an#L478">source</a></p>
+<hr>
+<h2 id="eq_seqmap">eq_seqmap</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">eq_seqmap</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">v</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Eq</span> <span class="p">(</span><span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span> <span class="n">e</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/SeqMap.an#L488">source</a></p>
+<hr>
+<h2 id="clone_seqmap">clone_seqmap</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">clone_seqmap</span><span class="o">:</span> <span class="kt">Clone</span> <span class="p">(</span><span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span><span class="p">)</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/SeqMap.an#L493">source</a></p>
+<hr>
+<h2 id="drop_seqmap">drop_seqmap</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">drop_seqmap</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">k</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">v</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Drop</span> <span class="p">(</span><span class="kt">SeqMap</span> <span class="n">k</span> <span class="n">v</span> <span class="n">h</span><span class="p">)</span> <span class="n">e</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/SeqMap.an#L501">source</a></p>
+</details>
+
+                        </div>
+                        
+                        
+
+                    </div>
+                    
+
+                    
+
+                    
+                    <div class="col-md-3 right-float"/>
+
+                    
+
+                </div>
+                
+
+            </div>
+            
+        </div>
+        
+
+        <footer id="footer">
+    <div class="container">
+
+        
+
+        <div class="col-md-4 col-sm-6">
+
+            
+            <h4>Recent posts</h4>
+
+            <div class="blog-entries">
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="https://antelang.org/blog/safe_cyclic_mutability/">
+                          
+                            <img src="/img/banners/antelope_canyon2.jpg" class="img-responsive" alt="Borrow Checking Zero-Cost Cyclic Mutability">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/blog/safe_cyclic_mutability/">Borrow Checking Zero-Cost Cyclic Mutability</a></h5>
+                    </div>
+                </div>
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="https://antelang.org/blog/vision/">
+                          
+                            <img src="/img/banners/anteater3.jpg" class="img-responsive" alt="A Vision for Future Low-Level Languages">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/blog/vision/">A Vision for Future Low-Level Languages</a></h5>
+                    </div>
+                </div>
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="https://antelang.org/blog/stable_mutable_refs/">
+                          
+                            <img src="/img/banners/antelope_flowers_cropped.jpg" class="img-responsive" alt="Stable, Mutable References">
+                          
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="https://antelang.org/blog/stable_mutable_refs/">Stable, Mutable References</a></h5>
+                    </div>
+                </div>
+                
+            </div>
+
+            <hr class="hidden-md hidden-lg">
+            
+
+        </div>
+        
+
+        
+
+    </div>
+    
+</footer>
+
+
+
+
+
+
+
+<div id="copyright">
+    <div class="container">
+        <div class="col-md-12">
+            
+            <p class="pull-right">
+              Template by <a href="https://bootstrapious.com/p/universal-business-e-commerce-template">Bootstrapious</a>.
+              
+
+              Ported to Hugo by <a href="https://github.com/devcows/hugo-universal-theme">DevCows</a>.
+            </p>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+    </div>
+    
+
+    
+<script src="//code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Counter-Up/1.0/jquery.counterup.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-parallax/1.1.3/jquery-parallax.js"></script>
+
+<script src="https://antelang.org/js/front.js"></script>
+<script src="https://antelang.org/js/details-toc.js"></script>
+
+
+<script src="https://antelang.org/js/owl.carousel.min.js"></script>
+
+
+  </body>
+</html>

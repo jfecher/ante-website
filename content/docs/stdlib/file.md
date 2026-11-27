@@ -1,7 +1,7 @@
 +++
 title = "Std.IO.File"
 categories = ["docs"]
-weight = 16
+weight = 17
 +++
 
 ```ante

@@ -313,6 +313,12 @@
         
         
         <li>
+            <a href="/docs/stdlib/seqmap/">Std.Collections.SeqMap</a>
+            
+        </li>
+        
+        
+        <li>
             <a href="/docs/stdlib/vec/">Std.Collections.Vec</a>
             
         </li>
@@ -349,13 +355,13 @@
         
         
         <li>
-            <a href="/docs/stdlib/io/">Std.IO</a>
+            <a href="/docs/stdlib/sync/">Std.Sync</a>
             
         </li>
         
         
         <li>
-            <a href="/docs/stdlib/sync/">Std.Sync</a>
+            <a href="/docs/stdlib/io/">Std.IO</a>
             
         </li>
         
@@ -591,6 +597,31 @@
                 
                 <a href="/docs/stdlib/num/#cmp">
                     <li>Cmp</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/num/#num">
+                    <li>Num</li>
                 </a>
                 
                 
@@ -3874,6 +3905,18 @@
     <span class="o">&lt;:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="k">ref</span> <span class="n">a</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L121">source</a></p>
 <hr>
+<h2 id="num">Num</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">trait</span> <span class="kt">Num</span> <span class="n">a</span> <span class="p">(</span><span class="n">ai</span> <span class="ow">=</span> <span class="n">_</span><span class="p">)</span> <span class="p">(</span><span class="n">si</span> <span class="ow">=</span> <span class="n">_</span><span class="p">)</span> <span class="p">(</span><span class="n">mi</span> <span class="ow">=</span> <span class="n">_</span><span class="p">)</span> <span class="p">(</span><span class="n">di</span> <span class="ow">=</span> <span class="n">_</span><span class="p">)</span> <span class="p">(</span><span class="n">ei</span> <span class="ow">=</span> <span class="n">_</span><span class="p">)</span> <span class="p">(</span><span class="n">ci</span> <span class="ow">=</span> <span class="n">_</span><span class="p">)</span> <span class="ow">=</span>
+    <span class="n">add</span><span class="o">:</span> <span class="kt">Add</span> <span class="n">a</span> <span class="n">ai</span>
+    <span class="n">sub</span><span class="o">:</span> <span class="kt">Sub</span> <span class="n">a</span> <span class="n">si</span>
+    <span class="n">mul</span><span class="o">:</span> <span class="kt">Mul</span> <span class="n">a</span> <span class="n">mi</span>
+    <span class="n">div</span><span class="o">:</span> <span class="kt">Div</span> <span class="n">a</span> <span class="n">di</span>
+    <span class="n">eq</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">a</span> <span class="n">pure</span> <span class="n">ei</span>
+    <span class="n">cmp</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="n">a</span> <span class="n">ci</span>
+    <span class="n">zero</span><span class="o">:</span> <span class="n">a</span>
+    <span class="n">one</span><span class="o">:</span> <span class="n">a</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L159">source</a></p>
+<hr>
 <h2 id="wrapping">Wrapping</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">trait</span> <span class="kt">Wrapping</span> <span class="n">n</span> <span class="ow">=</span>
     <span class="n">wrapping_add</span><span class="o">:</span> <span class="k">fn</span> <span class="n">n</span> <span class="n">n</span> <span class="ow">-&gt;</span> <span class="n">n</span>
@@ -3888,19 +3931,19 @@
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L72">source</a></p>
 <hr>
 <h2 id="heading-1">!=</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="o">!=:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="kt">Eq</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span> <span class="k">can</span> <span class="n">e</span><span class="p">)</span> <span class="p">(</span><span class="n">l</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">r</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">{(</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">t</span> <span class="n">e</span><span class="p">)}</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="o">!=:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;l</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;r</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="kt">Eq</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span> <span class="k">can</span> <span class="n">e</span><span class="p">)</span> <span class="p">(</span><span class="n">l</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;l</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">r</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;r</span> <span class="n">t</span><span class="p">)</span> <span class="p">{(</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">t</span> <span class="n">e</span><span class="p">)}</span>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L110">source</a></p>
 <hr>
 <h2 id="heading-2">&gt;</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="o">&gt;:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="kt">Cmp</span> <span class="n">t</span><span class="p">}</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">b</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">{(</span><span class="n">cmp</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="n">t</span><span class="p">)}</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="o">&gt;:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;a</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;b</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="kt">Cmp</span> <span class="n">t</span><span class="p">}</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;a</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">b</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;b</span> <span class="n">t</span><span class="p">)</span> <span class="p">{(</span><span class="n">cmp</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="n">t</span><span class="p">)}</span>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L125">source</a></p>
 <hr>
 <h2 id="heading-3">&lt;=</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="o">&lt;=:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="kt">Cmp</span> <span class="n">t</span><span class="p">}</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">b</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">{(</span><span class="n">cmp</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="n">t</span><span class="p">)}</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="o">&lt;=:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;a</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;b</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="kt">Cmp</span> <span class="n">t</span><span class="p">}</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;a</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">b</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;b</span> <span class="n">t</span><span class="p">)</span> <span class="p">{(</span><span class="n">cmp</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="n">t</span><span class="p">)}</span>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L126">source</a></p>
 <hr>
 <h2 id="heading-4">&gt;=</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="o">&gt;=:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="kt">Cmp</span> <span class="n">t</span><span class="p">}</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">b</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span><span class="p">)</span> <span class="p">{(</span><span class="n">cmp</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="n">t</span><span class="p">)}</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="p">(</span><span class="o">&gt;=:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;a</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;b</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span><span class="kt">Cmp</span> <span class="n">t</span><span class="p">}</span> <span class="ow">-&gt;</span> <span class="kt">Bool</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;a</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">b</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;b</span> <span class="n">t</span><span class="p">)</span> <span class="p">{(</span><span class="n">cmp</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="n">t</span><span class="p">)}</span>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L127">source</a></p>
 <hr>
 <h2 id="max">max</h2>

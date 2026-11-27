@@ -22,6 +22,8 @@
   </url><url>
     <loc>https://antelang.org/docs/stdlib/seq/</loc>
   </url><url>
+    <loc>https://antelang.org/docs/stdlib/seqmap/</loc>
+  </url><url>
     <loc>https://antelang.org/docs/stdlib/vec/</loc>
   </url><url>
     <loc>https://antelang.org/docs/stdlib/earlyreturn/</loc>
@@ -34,9 +36,9 @@
   </url><url>
     <loc>https://antelang.org/docs/stdlib/file/</loc>
   </url><url>
-    <loc>https://antelang.org/docs/stdlib/io/</loc>
-  </url><url>
     <loc>https://antelang.org/docs/stdlib/sync/</loc>
+  </url><url>
+    <loc>https://antelang.org/docs/stdlib/io/</loc>
   </url><url>
     <loc>https://antelang.org/docs/stdlib/math/</loc>
   </url><url>

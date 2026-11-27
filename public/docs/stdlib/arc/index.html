@@ -313,6 +313,12 @@
         
         
         <li>
+            <a href="/docs/stdlib/seqmap/">Std.Collections.SeqMap</a>
+            
+        </li>
+        
+        
+        <li>
             <a href="/docs/stdlib/vec/">Std.Collections.Vec</a>
             
         </li>
@@ -349,13 +355,13 @@
         
         
         <li>
-            <a href="/docs/stdlib/io/">Std.IO</a>
+            <a href="/docs/stdlib/sync/">Std.Sync</a>
             
         </li>
         
         
         <li>
-            <a href="/docs/stdlib/sync/">Std.Sync</a>
+            <a href="/docs/stdlib/io/">Std.IO</a>
             
         </li>
         
@@ -687,17 +693,17 @@
 <h2 id="arc">Arc</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">type</span> <span class="kt">Arc</span> <span class="n">t</span> <span class="ow">=</span>
     <span class="n">ptr</span><span class="o">:</span> <span class="kt">Ptr</span> <span class="p">(</span><span class="kt">ArcInner</span> <span class="n">t</span><span class="p">)</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Sync/Arc.an#L12">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Sync/Arc.an#L11">source</a></p>
 <hr>
 <h1 id="functions">Functions</h1>
 <hr>
 <h2 id="of">of</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">of</span> <span class="p">(</span><span class="n">value</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">Arc</span> <span class="n">t</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Sync/Arc.an#L14">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Sync/Arc.an#L13">source</a></p>
 <hr>
 <h2 id="as_ref">as_ref</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">as_ref</span> <span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;a</span> <span class="kt">Arc</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;a</span> <span class="n">t</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Sync/Arc.an#L20">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Sync/Arc.an#L19">source</a></p>
 <hr>
 <h1 id="implicits">Implicits</h1>
 <hr>
@@ -705,11 +711,11 @@
 <summary>Show Implicits</summary>
 <h2 id="clone_arc">clone_arc</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">clone_arc</span><span class="o">:</span> <span class="kt">Clone</span> <span class="p">(</span><span class="kt">Arc</span> <span class="n">t</span><span class="p">)</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Sync/Arc.an#L24">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Sync/Arc.an#L23">source</a></p>
 <hr>
 <h2 id="drop_arc">drop_arc</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">drop_arc</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Drop</span> <span class="p">(</span><span class="kt">Arc</span> <span class="n">t</span><span class="p">)</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Sync/Arc.an#L30">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Sync/Arc.an#L29">source</a></p>
 </details>
 
                         </div>

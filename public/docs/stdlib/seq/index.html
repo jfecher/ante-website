@@ -589,31 +589,6 @@
                 
                     <ul class="toc-h1">
                 
-                    <ul class="toc-h2">
-                
-                
-                
-                
-                <a href="/docs/stdlib/seq/#iter">
-                    <li>iter</li>
-                </a>
-                
-                
-                    </ul>
-                
-                    </ul>
-                
-            
-        
-    
-        
-        
-            
-                
-                
-                
-                    <ul class="toc-h1">
-                
                 
                 
                 
@@ -784,6 +759,12 @@
         
         
         <li>
+            <a href="/docs/stdlib/seqmap/">Std.Collections.SeqMap</a>
+            
+        </li>
+        
+        
+        <li>
             <a href="/docs/stdlib/vec/">Std.Collections.Vec</a>
             
         </li>
@@ -820,13 +801,13 @@
         
         
         <li>
-            <a href="/docs/stdlib/io/">Std.IO</a>
+            <a href="/docs/stdlib/sync/">Std.Sync</a>
             
         </li>
         
         
         <li>
-            <a href="/docs/stdlib/sync/">Std.Sync</a>
+            <a href="/docs/stdlib/io/">Std.IO</a>
             
         </li>
         
@@ -1057,37 +1038,33 @@ does not require a <code>Copy</code> constraint</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">get</span> <span class="p">(</span><span class="n">seq</span><span class="o">:</span> <span class="n">read</span> <span class="kt">Seq</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">U32</span><span class="p">)</span><span class="o">:</span> <span class="kt">Maybe</span> <span class="p">(</span><span class="n">read</span> <span class="n">t</span><span class="p">)</span>
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L192">source</a></p>
 <hr>
-<h2 id="iter">iter</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">iter</span> <span class="p">(</span><span class="n">seq</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Seq</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="k">fn</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;seq</span> <span class="n">t</span><span class="p">)</span> <span class="p">[</span><span class="n">env</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">env</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L198">source</a></p>
-<hr>
 <h1 id="implicits">Implicits</h1>
 <hr>
 <details>
 <summary>Show Implicits</summary>
 <h2 id="print_seq">print_seq</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">print_seq</span> <span class="p">{</span><span class="n">p</span><span class="o">:</span> <span class="kt">Display</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Copy</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="kt">Display</span> <span class="p">(</span><span class="kt">Seq</span> <span class="n">t</span><span class="p">)</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L204">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L199">source</a></p>
 <hr>
 <h2 id="clone_seq">clone_seq</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">clone_seq</span><span class="o">:</span> <span class="kt">Clone</span> <span class="p">(</span><span class="kt">Seq</span> <span class="n">t</span><span class="p">)</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L214">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L209">source</a></p>
 <hr>
 <h2 id="drop_seq">drop_seq</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">drop_seq</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Drop</span> <span class="p">(</span><span class="kt">Seq</span> <span class="n">t</span><span class="p">)</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L222">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L217">source</a></p>
 <hr>
 <h2 id="stream_seq">stream_seq</h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">stream_seq</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">a</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Stream</span> <span class="p">(</span><span class="kt">Seq</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="k">ref</span> <span class="n">a</span><span class="p">)</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L273">source</a></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">stream_seq</span><span class="o">:</span> <span class="kt">Stream</span> <span class="p">(</span><span class="k">ref</span> <span class="kt">Seq</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="k">ref</span> <span class="n">a</span><span class="p">)</span> <span class="n">e</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L268">source</a></p>
 <hr>
 <h2 id="eq_seq">eq_seq</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">eq_seq</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Eq</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Eq</span> <span class="p">(</span><span class="kt">Seq</span> <span class="n">t</span><span class="p">)</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L279">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L274">source</a></p>
 <hr>
 <h2 id="cmp_seq">cmp_seq</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">cmp_seq</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="p">(</span><span class="kt">Seq</span> <span class="n">t</span><span class="p">)</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L291">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L286">source</a></p>
 </details>
 
                         </div>

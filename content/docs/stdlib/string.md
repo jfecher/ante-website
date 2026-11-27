@@ -1,7 +1,7 @@
 +++
 title = "Std.String"
 categories = ["docs"]
-weight = 26
+weight = 27
 +++
 
 ```ante
@@ -88,7 +88,7 @@ reverse (var s: String): String
 ## split
 
 ```ante
-(split: fn String Char -> (fn Unit [String, Char] -> _ can (error) String) is pure) (s: String) (c: Char)
+(split: fn String Char -> (once fn Unit [String, Char] -> Unit can Emit String) is pure) (s: String) (c: Char)
 ```
 
 Split a string at the given character. Emits substrings
@@ -104,7 +104,7 @@ For example `split "foo bar  baz "` will emit all of:
 ## split_str
 
 ```ante
-(split_str: fn String String -> (fn Unit [String, String] -> _ can (error) String) is pure) (s: String) (separator: String)
+(split_str: fn String String -> (once fn Unit [String, String] -> Unit can Emit String) is pure) (s: String) (separator: String)
 ```
 
 [source](https://github.com/jfecher/ante/blob/master/stdlib/src/String.an#L141)
@@ -114,7 +114,7 @@ For example `split "foo bar  baz "` will emit all of:
 ## lines
 
 ```ante
-(lines: fn String -> (fn Unit [String, Char] -> _ can (error) String) is pure) (s: String)
+(lines: fn String -> (once fn Unit [String, Char] -> Unit can Emit String) is pure) (s: String)
 ```
 
 Emit each line of a string. Excludes the newline character.
@@ -175,7 +175,7 @@ in combination with `intersperse`, e.g. `join <| intersperse my_stream (fn () ->
 ## bytes
 
 ```ante
-(bytes: fn String -> (fn Unit [String] -> Unit can (error) U8) is pure) (s: String)
+(bytes: fn String -> (fn Unit [String] -> Unit can Emit U8) is pure) (s: String)
 ```
 
 Emits each byte in this string
@@ -187,7 +187,7 @@ Emits each byte in this string
 ## chars
 
 ```ante
-(chars: fn String -> _ is pure) (s: String)
+(chars: fn String -> (once fn Unit [(fn Unit [String] -> Unit can Emit U8), ((Stream (fn Unit [String] -> Unit can Emit U8) U8 pure (stream_fn (Drop String pure drop_string))), ((fn U8 -> Char is pure), (Drop NoClosureEnv pure Unit)))] -> Unit can Emit Char) is pure) (s: String)
 ```
 
 Emits each character in this string

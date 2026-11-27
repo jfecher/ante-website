@@ -313,6 +313,12 @@
         
         
         <li>
+            <a href="/docs/stdlib/seqmap/">Std.Collections.SeqMap</a>
+            
+        </li>
+        
+        
+        <li>
             <a href="/docs/stdlib/vec/">Std.Collections.Vec</a>
             
         </li>
@@ -405,6 +411,31 @@
                     <li>Functions</li>
                 </a>
                 
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
+                <a href="/docs/stdlib/hash/#fibonacci_multiplier">
+                    <li>fibonacci_multiplier</li>
+                </a>
+                
+                
+                    </ul>
                 
                     </ul>
                 
@@ -920,13 +951,13 @@
         
         
         <li>
-            <a href="/docs/stdlib/io/">Std.IO</a>
+            <a href="/docs/stdlib/sync/">Std.Sync</a>
             
         </li>
         
         
         <li>
-            <a href="/docs/stdlib/sync/">Std.Sync</a>
+            <a href="/docs/stdlib/io/">Std.IO</a>
             
         </li>
         
@@ -1066,11 +1097,15 @@
 <hr>
 <h1 id="functions">Functions</h1>
 <hr>
+<h2 id="fibonacci_multiplier">fibonacci_multiplier</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">fibonacci_multiplier</span><span class="o">:</span> <span class="kt">U64</span>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L8">source</a></p>
+<hr>
 <h2 id="hash_combine">hash_combine</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">hash_combine</span> <span class="p">(</span><span class="n">h1</span><span class="o">:</span> <span class="kt">U64</span><span class="p">)</span> <span class="p">(</span><span class="n">h2</span><span class="o">:</span> <span class="kt">U64</span><span class="p">)</span><span class="o">:</span> <span class="kt">U64</span>
 </code></pre></div><p>Combine two hashes to form a new one. This is order-sensitive so (a, b) and
 (b, a) hash differently. Uses a mixing constant of 2^64 / phi.</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L62">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L64">source</a></p>
 <hr>
 <h1 id="implicits">Implicits</h1>
 <hr>
@@ -1080,75 +1115,75 @@
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">hash_string</span><span class="o">:</span> <span class="kt">Hash</span> <span class="kt">String</span>
 </code></pre></div><p>FNV-1a 64-bit with an offset basis of 14695981039346656037 (0xcbf29ce484222325),
 and prime of 1099511628211 (0x100000001b3).</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L10">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L12">source</a></p>
 <hr>
 <h2 id="hash_u64">hash_u64</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">hash_u64</span><span class="o">:</span> <span class="kt">Hash</span> <span class="kt">U64</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L18">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L20">source</a></p>
 <hr>
 <h2 id="hash_u8">hash_u8</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">hash_u8</span><span class="o">:</span> <span class="kt">Hash</span> <span class="kt">U8</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L21">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L23">source</a></p>
 <hr>
 <h2 id="hash_u16">hash_u16</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">hash_u16</span><span class="o">:</span> <span class="kt">Hash</span> <span class="kt">U16</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L24">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L26">source</a></p>
 <hr>
 <h2 id="hash_u32">hash_u32</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">hash_u32</span><span class="o">:</span> <span class="kt">Hash</span> <span class="kt">U32</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L27">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L29">source</a></p>
 <hr>
 <h2 id="hash_usz">hash_usz</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">hash_usz</span><span class="o">:</span> <span class="kt">Hash</span> <span class="kt">Usz</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L30">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L32">source</a></p>
 <hr>
 <h2 id="hash_i8">hash_i8</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">hash_i8</span><span class="o">:</span> <span class="kt">Hash</span> <span class="kt">I8</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L33">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L35">source</a></p>
 <hr>
 <h2 id="hash_i16">hash_i16</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">hash_i16</span><span class="o">:</span> <span class="kt">Hash</span> <span class="kt">I16</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L36">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L38">source</a></p>
 <hr>
 <h2 id="hash_i32">hash_i32</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">hash_i32</span><span class="o">:</span> <span class="kt">Hash</span> <span class="kt">I32</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L39">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L41">source</a></p>
 <hr>
 <h2 id="hash_i64">hash_i64</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">hash_i64</span><span class="o">:</span> <span class="kt">Hash</span> <span class="kt">I64</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L42">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L44">source</a></p>
 <hr>
 <h2 id="hash_isz">hash_isz</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">hash_isz</span><span class="o">:</span> <span class="kt">Hash</span> <span class="kt">Isz</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L45">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L47">source</a></p>
 <hr>
 <h2 id="hash_f32">hash_f32</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">hash_f32</span><span class="o">:</span> <span class="kt">Hash</span> <span class="kt">F32</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L48">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L50">source</a></p>
 <hr>
 <h2 id="hash_f64">hash_f64</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">hash_f64</span><span class="o">:</span> <span class="kt">Hash</span> <span class="kt">F64</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L51">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L53">source</a></p>
 <hr>
 <h2 id="hash_bool">hash_bool</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">hash_bool</span><span class="o">:</span> <span class="kt">Hash</span> <span class="kt">Bool</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L54">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L56">source</a></p>
 <hr>
 <h2 id="hash_char">hash_char</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">hash_char</span><span class="o">:</span> <span class="kt">Hash</span> <span class="kt">Char</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L57">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L59">source</a></p>
 <hr>
 <h2 id="hash_pair">hash_pair</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">hash_pair</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Hash</span> <span class="n">a</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Hash</span> <span class="n">b</span><span class="p">}</span><span class="o">:</span> <span class="kt">Hash</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L66">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L68">source</a></p>
 <hr>
 <h2 id="hash_maybe">hash_maybe</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">hash_maybe</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Hash</span> <span class="n">a</span><span class="p">}</span><span class="o">:</span> <span class="kt">Hash</span> <span class="p">(</span><span class="kt">Maybe</span> <span class="n">a</span><span class="p">)</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L69">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L71">source</a></p>
 <hr>
 <h2 id="hash_result">hash_result</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">hash_result</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Hash</span> <span class="n">a</span><span class="p">}</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Hash</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Hash</span> <span class="p">(</span><span class="kt">Result</span> <span class="n">a</span> <span class="n">e</span><span class="p">)</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L75">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Hash.an#L77">source</a></p>
 </details>
 
                         </div>

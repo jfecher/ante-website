@@ -1,7 +1,7 @@
 +++
 title = "Std.Math"
 categories = ["docs"]
-weight = 18
+weight = 19
 +++
 
 ```ante

@@ -183,16 +183,6 @@ get (seq: read Seq t) (index: U32): Maybe (read t)
 
 ---
 
-## iter
-
-```ante
-iter (seq: ref Seq t) (f: fn (ref 'seq t) [env] -> Unit can e) {_: Drop env e}: Unit can e
-```
-
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L198)
-
----
-
 # Implicits
 
 ---
@@ -206,7 +196,7 @@ iter (seq: ref Seq t) (f: fn (ref 'seq t) [env] -> Unit can e) {_: Drop env e}: 
 impl print_seq {p: Display t e} {_: Copy t}: Display (Seq t) e
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L204)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L199)
 
 ---
 
@@ -216,7 +206,7 @@ impl print_seq {p: Display t e} {_: Copy t}: Display (Seq t) e
 impl clone_seq: Clone (Seq t)
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L214)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L209)
 
 ---
 
@@ -226,17 +216,17 @@ impl clone_seq: Clone (Seq t)
 impl drop_seq {_: Drop t e}: Drop (Seq t) e
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L222)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L217)
 
 ---
 
 ## stream_seq
 
 ```ante
-impl stream_seq {_: Drop a e}: Stream (Seq a) (ref a) e
+impl stream_seq: Stream (ref Seq a) (ref a) e
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L273)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L268)
 
 ---
 
@@ -246,7 +236,7 @@ impl stream_seq {_: Drop a e}: Stream (Seq a) (ref a) e
 impl eq_seq {_: Eq t e}: Eq (Seq t) e
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L279)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L274)
 
 ---
 
@@ -256,7 +246,7 @@ impl eq_seq {_: Eq t e}: Eq (Seq t) e
 impl cmp_seq {_: Cmp t}: Cmp (Seq t)
 ```
 
-[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L291)
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/Seq.an#L286)
 
 </details>
 

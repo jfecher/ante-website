@@ -313,6 +313,12 @@
         
         
         <li>
+            <a href="/docs/stdlib/seqmap/">Std.Collections.SeqMap</a>
+            
+        </li>
+        
+        
+        <li>
             <a href="/docs/stdlib/vec/">Std.Collections.Vec</a>
             
         </li>
@@ -349,13 +355,13 @@
         
         
         <li>
-            <a href="/docs/stdlib/io/">Std.IO</a>
+            <a href="/docs/stdlib/sync/">Std.Sync</a>
             
         </li>
         
         
         <li>
-            <a href="/docs/stdlib/sync/">Std.Sync</a>
+            <a href="/docs/stdlib/io/">Std.IO</a>
             
         </li>
         
@@ -526,6 +532,31 @@
                 
                 
                 
+                <a href="/docs/stdlib/thread/#spawn">
+                    <li>spawn</li>
+                </a>
+                
+                
+                    </ul>
+                
+                    </ul>
+                
+            
+        
+    
+        
+        
+            
+                
+                
+                
+                    <ul class="toc-h1">
+                
+                    <ul class="toc-h2">
+                
+                
+                
+                
                 <a href="/docs/stdlib/thread/#join">
                     <li>join</li>
                 </a>
@@ -619,6 +650,11 @@
 </code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Sync/Thread.an#L14">source</a></p>
 <hr>
 <h1 id="functions">Functions</h1>
+<hr>
+<h2 id="spawn">spawn</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">spawn</span> <span class="p">(</span><span class="n">f</span><span class="o">:</span> <span class="n">once</span> <span class="k">fn</span> <span class="kt">Unit</span> <span class="p">[</span><span class="n">e</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="k">is</span> <span class="n">pure</span><span class="p">)</span><span class="o">:</span> <span class="kt">Thread</span> <span class="n">a</span>
+</code></pre></div><p>Spawn a new OS thread running <code>f</code>. The returned thread must be joined or detached.</p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Sync/Thread.an#L17">source</a></p>
 <hr>
 <h2 id="join">join</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">join</span> <span class="p">(</span><span class="n">t</span><span class="o">:</span> <span class="kt">Thread</span> <span class="n">a</span><span class="p">)</span><span class="o">:</span> <span class="n">a</span>

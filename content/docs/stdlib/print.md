@@ -1,7 +1,7 @@
 +++
 title = "Std.Print"
 categories = ["docs"]
-weight = 22
+weight = 23
 +++
 
 ```ante
@@ -107,7 +107,7 @@ optimized out of the program.
 ## println
 
 ```ante
-(println: fn (ref t) {Display t e} -> Unit can Print) (x: ref t) {(_: Display t e)}
+(println: fn (ref 'x t) {Display t e} -> Unit can Print, e) (x: ref 'x t) {(_: Display t e)}
 ```
 
 [source](https://github.com/jfecher/ante/blob/master/stdlib/src/Print.an#L46)

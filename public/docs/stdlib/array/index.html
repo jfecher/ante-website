@@ -738,6 +738,12 @@
         
         
         <li>
+            <a href="/docs/stdlib/seqmap/">Std.Collections.SeqMap</a>
+            
+        </li>
+        
+        
+        <li>
             <a href="/docs/stdlib/vec/">Std.Collections.Vec</a>
             
         </li>
@@ -774,13 +780,13 @@
         
         
         <li>
-            <a href="/docs/stdlib/io/">Std.IO</a>
+            <a href="/docs/stdlib/sync/">Std.Sync</a>
             
         </li>
         
         
         <li>
-            <a href="/docs/stdlib/sync/">Std.Sync</a>
+            <a href="/docs/stdlib/io/">Std.IO</a>
             
         </li>
         
@@ -915,41 +921,41 @@
 <hr>
 <h2 id="array_len">array_len</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">array_len</span> <span class="p">(</span><span class="n">_array</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Array</span> <span class="n">n</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">Usz</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L5">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L4">source</a></p>
 <hr>
 <h2 id="array_get_unchecked">array_get_unchecked</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">array_get_unchecked</span> <span class="p">(</span><span class="n">array</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Array</span> <span class="n">n</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">i</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span>
 </code></pre></div><p>Unsafe get without bounds-checking</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L11">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L10">source</a></p>
 <hr>
 <h2 id="array_set_unchecked">array_set_unchecked</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">array_set_unchecked</span> <span class="p">(</span><span class="n">array</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Array</span> <span class="n">n</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">i</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Mutate</span> <span class="n">&#39;array</span>
 </code></pre></div><p>Unsafe set without bounds-checking</p>
-<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L16">source</a></p>
+<p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L15">source</a></p>
 <hr>
 <h2 id="array_get">array_get</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">array_get</span> <span class="p">(</span><span class="n">array</span><span class="o">:</span> <span class="k">ref</span> <span class="kt">Array</span> <span class="n">n</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="k">ref</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Panic</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L20">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L19">source</a></p>
 <hr>
 <h2 id="array_set">array_set</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">array_set</span> <span class="p">(</span><span class="n">array</span><span class="o">:</span> <span class="k">mut</span> <span class="kt">Array</span> <span class="n">n</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">index</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="n">elem</span><span class="o">:</span> <span class="kt">Unit</span> <span class="k">can</span> <span class="kt">Panic</span><span class="p">,</span> <span class="kt">Mutate</span> <span class="n">&#39;array</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L25">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L24">source</a></p>
 <hr>
 <h2 id="slice">slice</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">slice</span> <span class="p">(</span><span class="n">array</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;a</span> <span class="kt">Array</span> <span class="n">n</span> <span class="n">t</span><span class="p">)</span><span class="o">:</span> <span class="kt">Slice</span> <span class="n">&#39;a</span> <span class="n">t</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L30">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L29">source</a></p>
 <hr>
 <h2 id="slice_range">slice_range</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">slice_range</span> <span class="p">(</span><span class="n">array</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;a</span> <span class="kt">Array</span> <span class="n">n</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">start</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span> <span class="p">(</span><span class="n">end</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="kt">Slice</span> <span class="n">&#39;a</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Panic</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L33">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L32">source</a></p>
 <hr>
 <h2 id="slice_from">slice_from</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">slice_from</span> <span class="p">(</span><span class="n">array</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;a</span> <span class="kt">Array</span> <span class="n">n</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">start</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="kt">Slice</span> <span class="n">&#39;a</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Panic</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L36">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L35">source</a></p>
 <hr>
 <h2 id="slice_until">slice_until</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="nf">slice_until</span> <span class="p">(</span><span class="n">array</span><span class="o">:</span> <span class="k">ref</span> <span class="n">&#39;a</span> <span class="kt">Array</span> <span class="n">n</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">end</span><span class="o">:</span> <span class="kt">Usz</span><span class="p">)</span><span class="o">:</span> <span class="kt">Slice</span> <span class="n">&#39;a</span> <span class="n">t</span> <span class="k">can</span> <span class="kt">Panic</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L39">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L38">source</a></p>
 <hr>
 <h1 id="implicits">Implicits</h1>
 <hr>
@@ -957,27 +963,27 @@
 <summary>Show Implicits</summary>
 <h2 id="extract_array">extract_array</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">extract_array</span><span class="o">:</span> <span class="kt">Extract</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;a</span> <span class="kt">Array</span> <span class="n">n</span> <span class="n">t</span><span class="p">)</span> <span class="kt">Usz</span> <span class="p">(</span><span class="k">ref</span> <span class="n">&#39;a</span> <span class="n">t</span><span class="p">)</span> <span class="kt">Panic</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L42">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L41">source</a></p>
 <hr>
 <h2 id="insert_array">insert_array</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">insert_array</span><span class="o">:</span> <span class="kt">Insert</span> <span class="p">(</span><span class="k">mut</span> <span class="n">&#39;a</span> <span class="kt">Array</span> <span class="n">n</span> <span class="n">t</span><span class="p">)</span> <span class="kt">Usz</span> <span class="n">t</span> <span class="kt">Panic</span> <span class="o">&amp;</span> <span class="kt">Mutate</span> <span class="n">&#39;a</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L45">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L44">source</a></p>
 <hr>
 <h2 id="copy_array">copy_array</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">copy_array</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Copy</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="kt">Copy</span> <span class="p">(</span><span class="kt">Array</span> <span class="n">n</span> <span class="n">t</span><span class="p">)</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L48">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L47">source</a></p>
 <hr>
 <h2 id="drop_array">drop_array</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">drop_array</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Drop</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Drop</span> <span class="p">(</span><span class="kt">Array</span> <span class="n">n</span> <span class="n">t</span><span class="p">)</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L51">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L50">source</a></p>
 <hr>
 <h2 id="cmp_array">cmp_array</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">cmp_array</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="n">t</span><span class="p">}</span><span class="o">:</span> <span class="kt">Cmp</span> <span class="p">(</span><span class="kt">Array</span> <span class="n">n</span> <span class="n">t</span><span class="p">)</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L56">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L55">source</a></p>
 <hr>
 <h2 id="print_array">print_array</h2>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ante" data-lang="ante"><span class="k">impl</span> <span class="n">print_array</span> <span class="p">{</span><span class="n">_</span><span class="o">:</span> <span class="kt">Display</span> <span class="n">t</span> <span class="n">e</span><span class="p">}</span><span class="o">:</span> <span class="kt">Display</span> <span class="p">(</span><span class="kt">Array</span> <span class="n">n</span> <span class="n">t</span><span class="p">)</span> <span class="kt">Panic</span> <span class="o">&amp;</span> <span class="n">e</span>
-</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L65">source</a></p>
+</code></pre></div><p><a href="https://github.com/jfecher/ante/blob/master/stdlib/src/Array.an#L64">source</a></p>
 </details>
 
                         </div>

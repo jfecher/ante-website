@@ -1,7 +1,7 @@
 +++
 title = "Std.Num"
 categories = ["docs"]
-weight = 20
+weight = 21
 +++
 
 ```ante
@@ -105,6 +105,24 @@ trait Cmp a =
 
 ---
 
+## Num
+
+```ante
+trait Num a (ai = _) (si = _) (mi = _) (di = _) (ei = _) (ci = _) =
+    add: Add a ai
+    sub: Sub a si
+    mul: Mul a mi
+    div: Div a di
+    eq: Eq a pure ei
+    cmp: Cmp a ci
+    zero: a
+    one: a
+```
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L159)
+
+---
+
 ## Wrapping
 
 ```ante
@@ -135,7 +153,7 @@ trait Wrapping n =
 ## !=
 
 ```ante
-(!=: fn (ref t) (ref t) {Eq t e} -> Bool can e) (l: ref t) (r: ref t) {(_: Eq t e)}
+(!=: fn (ref 'l t) (ref 'r t) {Eq t e} -> Bool can e) (l: ref 'l t) (r: ref 'r t) {(_: Eq t e)}
 ```
 
 [source](https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L110)
@@ -145,7 +163,7 @@ trait Wrapping n =
 ## >
 
 ```ante
-(>: fn (ref t) (ref t) {Cmp t} -> Bool is pure) (a: ref t) (b: ref t) {(cmp: Cmp t)}
+(>: fn (ref 'a t) (ref 'b t) {Cmp t} -> Bool is pure) (a: ref 'a t) (b: ref 'b t) {(cmp: Cmp t)}
 ```
 
 [source](https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L125)
@@ -155,7 +173,7 @@ trait Wrapping n =
 ## <=
 
 ```ante
-(<=: fn (ref t) (ref t) {Cmp t} -> Bool is pure) (a: ref t) (b: ref t) {(cmp: Cmp t)}
+(<=: fn (ref 'a t) (ref 'b t) {Cmp t} -> Bool is pure) (a: ref 'a t) (b: ref 'b t) {(cmp: Cmp t)}
 ```
 
 [source](https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L126)
@@ -165,7 +183,7 @@ trait Wrapping n =
 ## >=
 
 ```ante
-(>=: fn (ref t) (ref t) {Cmp t} -> Bool is pure) (a: ref t) (b: ref t) {(cmp: Cmp t)}
+(>=: fn (ref 'a t) (ref 'b t) {Cmp t} -> Bool is pure) (a: ref 'a t) (b: ref 'b t) {(cmp: Cmp t)}
 ```
 
 [source](https://github.com/jfecher/ante/blob/master/stdlib/src/Num.an#L127)

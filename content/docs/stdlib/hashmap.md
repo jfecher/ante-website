@@ -17,6 +17,25 @@ import Std.Collections.HashMap
 
 ---
 
+## HashMap
+
+```ante
+type HashMap k v (h = _) =
+    hasher: Hash k h
+    len: Usz
+    capacity: Usz
+    entries: Ptr (Entry k v)
+```
+
+A linear-scan mutable HashMap using a resize factor of 2.0
+
+HashMaps store their Hash impl upon construction to ensure two HashMaps
+used for merging, equality, etc. use the same impl.
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashMap.an#L14)
+
+---
+
 ## Entry
 
 ```ante
@@ -139,6 +158,26 @@ have been associated with the same key and returning the removed value if there 
 
 ---
 
+## get_entry
+
+```ante
+get_entry (map: ref 'm HashMap k v h) (key: ref k) {eq: Eq k e}: Maybe (ref 'm! Entry k v) can e
+```
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashMap.an#L132)
+
+---
+
+## get
+
+```ante
+get (map: ref 'm HashMap k v) (key: ref k) {_: Eq k e}: ref 'm! v can Fail, e
+```
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashMap.an#L153)
+
+---
+
 ## contains
 
 ```ante
@@ -162,7 +201,7 @@ remove (map: mut HashMap k v) (key: ref k) {_: Eq k e} {_: Drop k d}: Maybe v ca
 ## keys
 
 ```ante
-(keys: fn (ref 'm ((error) k v)) -> (fn Unit [(ref 'm ((error) k v))] -> Unit can (error) (ref 'm k)) is pure) (m: ref 'm ((error) k v))
+(keys: fn (ref 'm (HashMap k v)) -> (fn Unit [ref 'm (HashMap k v)] -> Unit can Emit (ref 'm k)) is pure) (m: ref 'm (HashMap k v))
 ```
 
 Emit a reference to each key
@@ -174,12 +213,36 @@ Emit a reference to each key
 ## values
 
 ```ante
-(values: fn (ref 'm ((error) k v)) -> (fn Unit [(ref 'm ((error) k v))] -> Unit can (error) (ref 'm v)) is pure) (m: ref 'm ((error) k v))
+(values: fn (ref 'm (HashMap k v)) -> (fn Unit [ref 'm (HashMap k v)] -> Unit can Emit (ref 'm v)) is pure) (m: ref 'm (HashMap k v))
 ```
 
 Emit a reference to each value
 
 [source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashMap.an#L221)
+
+---
+
+## get_or_insert
+
+```ante
+get_or_insert (m: mut 'm HashMap k v) (key: k) (default: v) {_: Eq k e} {_: Drop k d} {_: Drop v d}: ref 'm! v can Panic, e, d, Mutate 'm
+```
+
+Return the existing value at `key`, or insert `default` and return it.
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashMap.an#L229)
+
+---
+
+## get_or_insert_with
+
+```ante
+get_or_insert_with (m: mut 'm HashMap k v) (key: k) (mk: once fn Unit [env] -> v) {_: Eq k e} {_: Drop k d} {_: Drop env d}: ref 'm! v can Panic, e, d, Mutate 'm
+```
+
+Same as `get_or_insert` but builds the default lazily.
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashMap.an#L238)
 
 ---
 
@@ -242,6 +305,16 @@ impl stream_ref_map: Stream (ref 'm HashMap k v) (ref 'm k, ref 'm v) pure
 ```
 
 [source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashMap.an#L203)
+
+---
+
+## extract_hashmap
+
+```ante
+impl extract_hashmap {_: Eq k e}: Extract (ref 'm HashMap k v) (ref k) (ref 'm! v) Panic & e
+```
+
+[source](https://github.com/jfecher/ante/blob/master/stdlib/src/Collections/HashMap.an#L263)
 
 ---
 
